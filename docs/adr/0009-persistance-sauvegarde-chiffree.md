@@ -70,7 +70,8 @@ navigateur n'évince les données. Le cœur (domain, application) reste sans bib
   sur les types du domain est vérifié **à la compilation**. Les formats antérieurs passent
   par `SNAPSHOT_MIGRATIONS` (version n → n + 1) ; une version future est refusée avec un
   message dédié. Le remplacement est atomique ; en cas d'échec rien ne change. Le réglage
-  propre à l'appareil (`persistenceGranted`) est conservé.
+  propre à l'appareil (`persistenceGranted`) est conservé : jamais repris du fichier, et
+  gardé par « Tout effacer » (export → effacer → import rend le même état).
 - Zod et les schémas sont chargés à la demande (import dynamique), comme les catalogues.
 
 ### Rappel de sauvegarde et stockage persistant

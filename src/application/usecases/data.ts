@@ -1,6 +1,11 @@
 import { validateProfile } from '@domain/profile';
 import type { IsoDateTime } from '@domain/shared';
-import { backupFileName, isBackupReminderDue, latestInstant } from '@domain/userdata';
+import {
+  DEFAULT_SETTINGS,
+  backupFileName,
+  isBackupReminderDue,
+  latestInstant,
+} from '@domain/userdata';
 import type { BackupFile, UserDataSnapshot } from '@domain/userdata';
 import type { AppPorts, SerialRunner } from './context';
 
@@ -158,12 +163,14 @@ export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataU
 
         const current = await ports.settings.get();
         const backupAt = latestInstant(snapshot.settings.lastBackupAt, result.exportedAt);
-        // Réglage propre à cet appareil : on garde celui d'ici.
+        // Réglage propre à cet appareil : on garde celui d'ici, jamais celui du fichier.
         const { persistenceGranted } = current;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { persistenceGranted: _otherDevice, ...importedSettings } = snapshot.settings;
         const toImport: UserDataSnapshot = {
           ...snapshot,
           settings: {
-            ...snapshot.settings,
+            ...importedSettings,
             ...(backupAt === undefined ? {} : { lastBackupAt: backupAt }),
             ...(persistenceGranted === undefined ? {} : { persistenceGranted }),
           },
@@ -180,7 +187,16 @@ export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataU
         };
       }),
 
-    wipeAllData: () => serial(() => ports.userData.clearAll()),
+    wipeAllData: () =>
+      serial(async () => {
+        // Réglage propre à l'appareil (le navigateur garde sa décision) : conservé, comme
+        // à l'import, pour que « tout effacer » puis réimporter rende le même état.
+        const { persistenceGranted } = await ports.settings.get();
+        await ports.userData.clearAll();
+        if (persistenceGranted !== undefined) {
+          await ports.settings.save({ ...DEFAULT_SETTINGS, persistenceGranted });
+        }
+      }),
 
     getBackupReminder: () =>
       serial(async () => {
