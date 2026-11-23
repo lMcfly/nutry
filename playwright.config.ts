@@ -1,0 +1,40 @@
+import { existsSync } from 'node:fs';
+import { defineConfig, devices } from '@playwright/test';
+
+const PORT = 4173;
+const BASE_PATH = '/nutry/';
+
+/**
+ * Chromium préinstallé localement (révision différente de celle attendue par
+ * @playwright/test). En CI, `npx playwright install chromium` suffit et ce
+ * chemin n'existe pas : Playwright prend alors son navigateur par défaut.
+ */
+const LOCAL_CHROMIUM = process.env['PW_CHROMIUM_PATH'] ?? '/opt/pw-browsers/chromium';
+const executablePath = existsSync(LOCAL_CHROMIUM) ? LOCAL_CHROMIUM : undefined;
+
+export default defineConfig({
+  testDir: './e2e',
+  fullyParallel: true,
+  forbidOnly: !!process.env['CI'],
+  retries: process.env['CI'] ? 2 : 0,
+  reporter: process.env['CI'] ? 'github' : 'list',
+  use: {
+    baseURL: `http://localhost:${PORT}${BASE_PATH}`,
+    trace: 'on-first-retry',
+  },
+  projects: [
+    {
+      name: 'mobile-chromium',
+      use: {
+        ...devices['Pixel 7'],
+        ...(executablePath ? { launchOptions: { executablePath } } : {}),
+      },
+    },
+  ],
+  webServer: {
+    command: `npm run build && npm run preview -- --port ${PORT} --strictPort`,
+    url: `http://localhost:${PORT}${BASE_PATH}`,
+    reuseExistingServer: !process.env['CI'],
+    timeout: 120_000,
+  },
+});
