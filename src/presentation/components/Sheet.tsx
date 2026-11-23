@@ -114,6 +114,7 @@ export function Sheet({
   }, [open, initialFocusRef]);
 
   const onPointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
     dragStart.current = event.clientY;
   }, []);
 

@@ -27,7 +27,7 @@ import { Swipeable } from '../components/Swipeable';
 import type { SwipeDirection } from '../components/Swipeable';
 import { useToast } from '../components/Toast';
 import { Nutry } from '../features/companion/Nutry';
-import { useCelebrationCheck } from '../features/companion/Celebration';
+import { useCelebrationCheck, useCompanionRefresh } from '../features/companion/Celebration';
 import { useCompanion } from '../features/companion/useCompanion';
 import { BALANCE_EMOJIS, BALANCE_TONES } from '../features/plate/balanceTones';
 import { BackupReminder } from '../features/data/BackupReminder';
@@ -71,6 +71,7 @@ export function WeekPage() {
   } = deps;
   const toast = useToast();
   const checkCelebration = useCelebrationCheck();
+  const { refresh: refreshCompanion } = useCompanionRefresh();
   const { companion } = useCompanion();
   const [origin, setOrigin] = useState<PlanOrigin | undefined>();
   const [replacing, setReplacing] = useState<PlannedMeal | undefined>();
@@ -121,6 +122,7 @@ export function WeekPage() {
         if (verdict === 'down') setReasonFor(meal);
         else checkCelebration();
       }
+      refreshCompanion();
       reload();
     });
   };
@@ -143,6 +145,7 @@ export function WeekPage() {
           },
         });
       }
+      refreshCompanion();
       reload();
     });
   };

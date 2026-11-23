@@ -5,6 +5,8 @@ import { afterEach } from 'vitest';
 // jsdom n'implémente pas le défilement.
 Element.prototype.scrollIntoView = () => undefined;
 window.scrollTo = () => undefined;
+// ...ni la capture de pointeur.
+Element.prototype.setPointerCapture = () => undefined;
 
 afterEach(() => {
   cleanup();

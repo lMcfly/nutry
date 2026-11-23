@@ -83,7 +83,7 @@ export function ProgressPage() {
                   ? `Record : ${plural(companion.best, 'jour')}`
                   : 'Un petit geste par jour, et ça démarre.'}
               </p>
-              <p className={`${styles.small} ${styles.clamp}`}>{progress.summary.message}</p>
+              <p className={styles.small}>{progress.summary.message}</p>
             </div>
           </section>
 

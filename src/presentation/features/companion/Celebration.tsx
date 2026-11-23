@@ -20,6 +20,10 @@ import styles from './Celebration.module.css';
 type Check = () => void;
 
 const CelebrationContext = createContext<Check>(() => undefined);
+const RefreshContext = createContext<{ readonly version: number; readonly refresh: Check }>({
+  version: 0,
+  refresh: () => undefined,
+});
 
 /**
  * À appeler après un geste (quiz répondu, repas noté, article coché) : vérifie si Nutry a
@@ -28,6 +32,15 @@ const CelebrationContext = createContext<Check>(() => undefined);
 // eslint-disable-next-line react-refresh/only-export-components -- hook couplé au provider
 export function useCelebrationCheck(): Check {
   return useContext(CelebrationContext);
+}
+
+/**
+ * Compteur de gestes (`version`) pour recharger la vue de Nutry (humeur, série) après un
+ * geste, et `refresh` pour le déclencher sans ouvrir de célébration. Sans provider : sans effet.
+ */
+// eslint-disable-next-line react-refresh/only-export-components -- hook couplé au provider
+export function useCompanionRefresh(): { readonly version: number; readonly refresh: Check } {
+  return useContext(RefreshContext);
 }
 
 /** Confettis sobres : positions et couleurs fixes (pas d'aléa), animés par CSS. */
@@ -51,6 +64,10 @@ export function CelebrationProvider({ children }: CelebrationProviderProps) {
   const [view, setView] = useState<CompanionView | undefined>();
   const openRef = useRef(false);
   const mounted = useRef(true);
+  const [version, setVersion] = useState(0);
+  const refresh = useCallback<Check>(() => {
+    setVersion((v) => v + 1);
+  }, []);
 
   useEffect(() => {
     mounted.current = true;
@@ -60,6 +77,7 @@ export function CelebrationProvider({ children }: CelebrationProviderProps) {
   }, []);
 
   const check = useCallback<Check>(() => {
+    refresh();
     if (openRef.current) return;
     void getCompanion().then(
       (companion) => {
@@ -71,7 +89,7 @@ export function CelebrationProvider({ children }: CelebrationProviderProps) {
       },
       () => undefined,
     );
-  }, [getCompanion]);
+  }, [getCompanion, refresh]);
 
   useEffect(() => {
     check();
@@ -91,12 +109,12 @@ export function CelebrationProvider({ children }: CelebrationProviderProps) {
       });
   }, [acknowledgeUnlocks]);
 
-  const value = useMemo(() => check, [check]);
+  const refreshValue = useMemo(() => ({ version, refresh }), [version, refresh]);
   const items: readonly CompanionItem[] = view?.newlyUnlocked ?? [];
 
   return (
-    <CelebrationContext.Provider value={value}>
-      {children}
+    <CelebrationContext.Provider value={check}>
+      <RefreshContext.Provider value={refreshValue}>{children}</RefreshContext.Provider>
       <Sheet
         open={view !== undefined}
         variant="dialog"

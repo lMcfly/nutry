@@ -18,7 +18,7 @@ import type {
 import { useDependencies } from '../../app/dependencies';
 import { Button } from '../../components/Button';
 import { SegmentedTabs } from '../../components/SegmentedTabs';
-import { panelId } from '../../components/tabIds';
+import { panelId, tabId } from '../../components/tabIds';
 import { Sheet } from '../../components/Sheet';
 import { useToast } from '../../components/Toast';
 import { plural } from '../../i18n/labels';
@@ -88,7 +88,7 @@ export function CustomizeSheet({ open, companion, onClose, onSaved }: CustomizeS
   }, [open, companion.look]);
 
   const unlockedIds = new Set(companion.unlocked.map((item) => item.id));
-  const isUnlocked = (item: CompanionItem) => item.unlockAt === 0 || unlockedIds.has(item.id);
+  const isUnlocked = (item: CompanionItem) => unlockedIds.has(item.id);
 
   const setAccessory = (slot: AccessorySlot, item: Accessory | undefined) => {
     const next: Partial<Record<AccessorySlot, AccessoryId>> = {};
@@ -149,7 +149,7 @@ export function CustomizeSheet({ open, companion, onClose, onSaved }: CustomizeS
         <div
           role="tabpanel"
           id={panelId('nutry', tab)}
-          aria-labelledby={`nutry-tab-${tab}`}
+          aria-labelledby={tabId('nutry', tab)}
           className={styles.panel}
         >
           {tab === 'couleur' && (

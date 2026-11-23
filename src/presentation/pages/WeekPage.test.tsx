@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { Recipe } from '@domain/recipe';
 import { FIXTURE_RECIPES } from '@domain/testing/fixtures';
 import { DISLIKED_TOAST, REPLACE_NOW_LABEL, WeekPage } from './WeekPage';
+import { CelebrationProvider } from '../features/companion/Celebration';
 import { TEST_PROFILE, renderScreen } from '../testing/renderApp';
 
 /** La grande carte du repas sélectionné (une seule à la fois). */
@@ -188,6 +189,20 @@ describe('<WeekPage />', () => {
     await user.click(within(meal).getByRole('button', { name: 'J’ai aimé' }));
     await waitFor(() => {
       expect(ports.state.ratings.size).toBe(0);
+    });
+  });
+
+  it('après un 👍, Nutry passe à « joyeux » sans recharger la page', async () => {
+    const { user } = renderScreen(
+      <CelebrationProvider>
+        <WeekPage />
+      </CelebrationProvider>,
+    );
+    const meal = await currentMeal();
+    expect(await screen.findByRole('img', { name: /il est content/ })).toBeVisible();
+    await user.click(within(meal).getByRole('button', { name: 'J’ai aimé' }));
+    await waitFor(() => {
+      expect(screen.getAllByRole('img', { name: /il est joyeux/ }).length).toBeGreaterThan(0);
     });
   });
 

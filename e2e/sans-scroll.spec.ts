@@ -98,3 +98,87 @@ for (const viewport of VIEWPORTS) {
     });
   });
 }
+
+/** L'élément, une fois amené à l'écran (défilement interne si besoin), est visible et dans la fenêtre. */
+async function expectReachable(locator: ReturnType<Page['locator']>): Promise<void> {
+  await locator.scrollIntoViewIfNeeded();
+  await expect(locator).toBeVisible();
+  // `poll` : laisse finir l'animation d'entrée de la feuille avant de mesurer.
+  await expect
+    .poll(
+      () =>
+        locator.evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          return r.top >= -1 && r.bottom <= window.innerHeight + 1;
+        }),
+      { message: 'élément hors de la fenêtre après défilement' },
+    )
+    .toBe(true);
+}
+
+test.describe('Texte zoomé, clavier ouvert, explication dépliée', () => {
+  test('texte à 130 % : « Voir la recette » et les tuiles de Progrès restent atteignables', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.goto('./');
+    await completeOnboarding(page);
+    await page.evaluate(() => {
+      document.documentElement.style.fontSize = '130%';
+    });
+    await expectReachable(page.getByRole('link', { name: 'Voir la recette' }));
+
+    await page.getByRole('link', { name: 'Progrès' }).click();
+    await expect(page.getByRole('heading', { name: 'Mes progrès', level: 1 })).toBeVisible();
+    await expect(page.getByRole('meter')).toHaveCount(4);
+    for (const meter of await page.getByRole('meter').all()) await expectReachable(meter);
+    await expectReachable(page.getByRole('button', { name: 'Noter ma mesure' }));
+  });
+
+  test('clavier ouvert (360 × 340) : Courses, Progrès et Profil gardent champ et validation à portée', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 360, height: 340 });
+    await page.goto('./');
+    await completeOnboarding(page);
+
+    await page.getByRole('link', { name: 'Courses' }).click();
+    await page.getByRole('button', { name: 'Ajouter un article' }).click();
+    const add = page.getByRole('dialog', { name: 'Ajouter un article' });
+    await add.getByLabel('Article').fill('Pommes');
+    await expectReachable(add.getByLabel('Article'));
+    await expectReachable(add.getByRole('button', { name: 'Ajouter', exact: true }));
+    await page.keyboard.press('Escape');
+
+    await page.getByRole('link', { name: 'Progrès' }).click();
+    await page.getByRole('button', { name: 'Noter ma mesure' }).click();
+    const measure = page.getByRole('dialog').last();
+    await measure.getByLabel('Tour de taille').fill('80');
+    await expectReachable(measure.getByLabel('Tour de taille'));
+    await expectReachable(measure.getByRole('button', { name: 'Enregistrer' }));
+    await page.keyboard.press('Escape');
+
+    await page.getByRole('link', { name: 'Profil' }).click();
+    await page.getByRole('button', { name: 'Goûts' }).click();
+    const gouts = page.getByRole('dialog', { name: 'Goûts' });
+    await expectReachable(
+      gouts.getByRole('button', { name: /Réponses enregistrées|Enregistrer mes réponses/ }),
+    );
+    await expectReachable(gouts.getByRole('button', { name: 'Fermer' }));
+  });
+
+  test('« Pourquoi ce plat ? » déplié (360 × 640) : pas de scroll de page', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.goto('./');
+    await completeOnboarding(page);
+    await page.getByRole('button', { name: /Pourquoi ce plat/ }).click();
+    await expect(page.getByRole('button', { name: /Pourquoi ce plat/ })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+    const fit = await measure(page);
+    expect(fit.scrollHeight, JSON.stringify(fit)).toBeLessThanOrEqual(fit.innerHeight + 1);
+    expect(fit.tabBarBottom, JSON.stringify(fit)).toBeLessThanOrEqual(fit.innerHeight + 1);
+    await expectReachable(page.getByRole('link', { name: 'Voir la recette' }));
+  });
+});
