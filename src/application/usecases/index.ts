@@ -56,8 +56,14 @@ export type {
   ImportCounts,
   ImportFailure,
   ImportResult,
+  WipeResult,
 } from './data';
-export { IMPORT_MAX_LENGTH, IMPORT_MESSAGES, PASSPHRASE_MIN_LENGTH } from './data';
+export {
+  IMPORT_MAX_LENGTH,
+  IMPORT_MESSAGES,
+  PASSPHRASE_MIN_LENGTH,
+  STORAGE_FAILURE_MESSAGES,
+} from './data';
 export type { FridgeResult } from './fridge';
 export type { MealAlternative, PlanHistory, PlanOrigin, PlanResult, PlanView } from './plan';
 export type {

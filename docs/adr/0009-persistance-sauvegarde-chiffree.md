@@ -24,7 +24,7 @@ navigateur n'évince les données. Le cœur (domain, application) reste sans bib
   `SettingsRepository`, `Cipher`, `StoragePersistence`, `FileSaver`, `BackupValidator`
   (validation des imports, implémentée en Zod dans l'infrastructure), `remove` sur les avis
   et les progrès, `QuizStateRepository` séparé de la banque de questions, `Clock.today()`
-  (jour **local**, pas UTC).
+  et `Clock.dayOf(instant)` (jours **locaux**, pas UTC).
 
 ### Cas d'usage
 
@@ -66,12 +66,21 @@ navigateur n'évince les données. Le cœur (domain, application) reste sans bib
   un fichier altéré donnent la même erreur claire. Aucune phrase n'est stockée.
 - **Import = donnée non fiable** : taille ≤ 5 Mo, `JSON.parse` protégé, schéma Zod borné
   (longueurs, listes, vocabulaires fermés dérivés du domain, dates valides, doublons),
-  clés inconnues ignorées, puis `validateProfile` (domain). L'alignement des schémas Zod
+  clés inconnues ignorées ; instants en UTC (`Z`) uniquement ; rien de daté après
+  `exportedAt` + 1 jour ; repas d'un menu à identifiants uniques et `date` = lundi +
+  `dayIndex` ; puis `validateProfile` (domain, bornes de plausibilité : âge 10–120,
+  taille 100–250 cm, poids 25–350 kg, tour de taille 40–200 cm, foyer 1–12, temps par
+  repas 5–240 min). L'alignement des schémas Zod
   sur les types du domain est vérifié **à la compilation**. Les formats antérieurs passent
   par `SNAPSHOT_MIGRATIONS` (version n → n + 1) ; une version future est refusée avec un
   message dédié. Le remplacement est atomique ; en cas d'échec rien ne change. Le réglage
   propre à l'appareil (`persistenceGranted`) est conservé : jamais repris du fichier, et
   gardé par « Tout effacer » (export → effacer → import rend le même état).
+- **Échecs de stockage** (quota, IndexedDB indisponible, validateur non chargé…) : jamais
+  d'exception vers l'UI. `importData` rend `{ status: 'failed', message }` (données
+  intactes : transaction unique), `exportData` aussi (rien n'est noté), `wipeAllData`
+  rend `{ status: 'wiped' }` ou `{ status: 'failed', message }` (rien d'effacé). Les
+  messages sont doux et prêts à afficher.
 - Zod et les schémas sont chargés à la demande (import dynamique), comme les catalogues.
 
 ### Rappel de sauvegarde et stockage persistant
@@ -79,6 +88,8 @@ navigateur n'évince les données. Le cœur (domain, application) reste sans bib
 - Rappel doux si la dernière sauvegarde (ou, à défaut, la fin de l'onboarding) date de
   30 jours ou plus et qu'aucun rappel n'a été montré depuis 30 jours ; jamais sans profil.
   Montré, il reste visible le jour même (appel idempotent), puis se tait 30 jours.
+  Tous les jours comparés sont **locaux** : `Clock.today()` et `Clock.dayOf(instant)`
+  pour les instants enregistrés en UTC (jamais `slice(0, 10)` d'un instant).
 - `requestPersistentStorage` (`navigator.storage.persist()`, repli `false`) est appelé
   par l'UI **à la fin de l'onboarding**, dans le gestionnaire du clic (jamais au premier
   chargement) ; la réponse est retenue dans les réglages.

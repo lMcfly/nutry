@@ -6,4 +6,6 @@ export interface Clock {
   now(): Date;
   /** Jour calendaire LOCAL de l'appareil (`AAAA-MM-JJ`), pas le jour UTC. */
   today(): IsoDate;
+  /** Jour calendaire LOCAL de l'appareil pour un instant donné (même fuseau que `today`). */
+  dayOf(instant: Date): IsoDate;
 }

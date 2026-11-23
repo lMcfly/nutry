@@ -42,10 +42,16 @@ import type {
   UserSettings,
 } from '@domain/userdata';
 
-/** Horloge réglable : `today` est la partie date de l'instant (UTC). */
+/**
+ * Horloge réglable. Les jours locaux sont ceux d'un fuseau à décalage fixe
+ * (`utcOffsetMinutes`, 0 par défaut : `today` est alors la partie date de l'instant UTC).
+ */
 export class FixedClock implements Clock {
   private instant: string;
-  constructor(instant = '2026-11-23T10:00:00.000Z') {
+  constructor(
+    instant = '2026-11-23T10:00:00.000Z',
+    private readonly utcOffsetMinutes = 0,
+  ) {
     this.instant = instant;
   }
   set(instant: string): void {
@@ -55,7 +61,10 @@ export class FixedClock implements Clock {
     return new Date(this.instant);
   }
   today(): IsoDate {
-    return this.instant.slice(0, 10);
+    return this.dayOf(this.now());
+  }
+  dayOf(instant: Date): IsoDate {
+    return new Date(instant.getTime() + this.utcOffsetMinutes * 60_000).toISOString().slice(0, 10);
   }
 }
 

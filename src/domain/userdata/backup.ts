@@ -5,8 +5,6 @@ import type { UserSettings } from './userdata.types';
 /** Rappel doux : pas de sauvegarde depuis 30 jours, et pas de rappel depuis 30 jours. */
 export const BACKUP_REMINDER_DAYS = 30;
 
-const dayOf = (instant: IsoDateTime): IsoDate => instant.slice(0, 10);
-
 /** Plus récent de deux instants ISO (comparables comme des chaînes). */
 export function latestInstant(
   a: IsoDateTime | undefined,
@@ -22,17 +20,20 @@ export function latestInstant(
  * - la dernière sauvegarde (ou, à défaut, la fin de l'onboarding) date de 30 jours ou plus ;
  * - le rappel n'a pas été montré depuis 30 jours. S'il a été montré aujourd'hui, il reste
  *   visible toute la journée (appel idempotent, sans surprise si l'écran se recharge).
+ * Les jours comparés sont tous LOCAUX : `today` et `localDay` (jour local d'un instant,
+ * fourni par le port Clock), jamais le jour UTC d'un instant.
  */
 export function isBackupReminderDue(input: {
   readonly hasProfile: boolean;
   readonly settings: UserSettings;
   readonly today: IsoDate;
+  readonly localDay: (instant: IsoDateTime) => IsoDate;
 }): boolean {
-  const { settings, today } = input;
+  const { settings, today, localDay } = input;
   if (!input.hasProfile) return false;
   const reference = latestInstant(settings.lastBackupAt, settings.profileCreatedAt);
   if (reference === undefined) return false;
-  if (daysBetween(dayOf(reference), today) < BACKUP_REMINDER_DAYS) return false;
+  if (daysBetween(localDay(reference), today) < BACKUP_REMINDER_DAYS) return false;
   const reminded = settings.lastBackupReminderOn;
   if (reminded === undefined || reminded === today) return true;
   return daysBetween(reminded, today) >= BACKUP_REMINDER_DAYS;
