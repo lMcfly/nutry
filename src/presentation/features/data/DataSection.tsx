@@ -36,8 +36,13 @@ function readFile(file: File): Promise<string> {
   });
 }
 
+interface DataSectionProps {
+  /** Dans une feuille qui porte déjà le titre : ni carte ni titre visible. */
+  readonly bare?: boolean;
+}
+
 /** « Mes données » : sauvegarde (claire ou chiffrée), restauration, effacement. */
-export function DataSection() {
+export function DataSection({ bare = false }: DataSectionProps) {
   const { exportData, importData, wipeAllData, getSettings } = useDependencies();
   const { setProfileStatus } = useAppState();
   const navigate = useNavigate();
@@ -141,9 +146,9 @@ export function DataSection() {
     void navigate('/bienvenue', { replace: true });
   };
 
-  return (
-    <Card as="section" id="mes-donnees" aria-labelledby="data-title" className={styles.card}>
-      <h2 id="data-title">
+  const body = (
+    <>
+      <h2 id="data-title" className={bare ? 'visually-hidden' : undefined}>
         <span aria-hidden="true">💾 </span>Mes données
       </h2>
       <p className={styles.intro}>
@@ -363,6 +368,18 @@ export function DataSection() {
           }}
         />
       </Sheet>
+    </>
+  );
+  const rootProps = {
+    id: 'mes-donnees',
+    'aria-labelledby': 'data-title',
+    className: styles.card,
+  };
+  return bare ? (
+    <section {...rootProps}>{body}</section>
+  ) : (
+    <Card as="section" {...rootProps}>
+      {body}
     </Card>
   );
 }

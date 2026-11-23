@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { renderApp, TEST_PROFILE } from '../../testing/renderApp';
 
@@ -20,8 +20,21 @@ describe('carte quiz', () => {
     expect(within(dialog).getByText(/Série : 1 bonne réponse/)).toBeInTheDocument();
     expect(ports.state.quiz.streak).toBe(1);
 
+    // Nutry pose la question dans une petite bulle.
+    expect(within(dialog).getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
+
+    // Premier geste du jour : la série démarre et Nutry gagne sa première feuille. La
+    // célébration passe devant la question ; Échap ferme d'abord celle du dessus.
+    const celebration = await screen.findByRole('dialog', { name: 'Bravo !' });
+    expect(within(celebration).getByText(/Nutry a gagné la feuille sur la tête/)).toBeVisible();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog', { name: 'Bravo !' })).toBeNull();
+    expect(screen.getByRole('dialog', { name: /La question du moment/ })).toBeVisible();
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
+    await waitFor(() => {
+      expect(ports.state.companion.acknowledgedBest).toBe(1);
+    });
 
     // Changement d'onglet : pas de nouvelle carte.
     await user.click(screen.getByRole('link', { name: 'Courses' }));

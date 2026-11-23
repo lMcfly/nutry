@@ -2,9 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDependencies } from '../app/dependencies';
 import { useAppState } from '../app/appState';
+import { COMPANION_MESSAGES, DEFAULT_LOOK } from '@domain/companion';
 import { Button } from '../components/Button';
 import { APP_NAME } from '../components/Page';
+import { ScrollArea } from '../components/ScrollArea';
 import { useToast } from '../components/Toast';
+import { Nutry } from '../features/companion/Nutry';
 import {
   AboutSection,
   GoalSection,
@@ -84,12 +87,11 @@ export function OnboardingPage() {
   }, []);
 
   useEffect(() => {
-    // Nouvel écran : on remonte et on annonce son titre.
+    // Nouvel écran : on annonce son titre (la zone défilante est remontée par sa clé).
     if (firstRender.current) {
       firstRender.current = false;
       return;
     }
-    window.scrollTo({ top: 0 });
     headingRef.current?.focus();
   }, [step]);
 
@@ -158,7 +160,11 @@ export function OnboardingPage() {
           />
         </div>
         <p className={styles.stepCount}>
-          Étape {step + 1} sur {STEPS.length}
+          {step + 1}/{STEPS.length}
+          <span className="visually-hidden">
+            {' '}
+            Étape {step + 1} sur {STEPS.length}
+          </span>
         </p>
       </div>
 
@@ -171,25 +177,42 @@ export function OnboardingPage() {
         }}
       >
         <header className={styles.header}>
-          <span className={styles.emoji} aria-hidden="true">
-            {current.emoji}
-          </span>
-          <h1 ref={headingRef} tabIndex={-1}>
-            {current.title}
-          </h1>
-          <p className={styles.intro}>{current.intro}</p>
+          {step === 0 ? (
+            <Nutry look={DEFAULT_LOOK} mood="joyeux" size="m" />
+          ) : (
+            <span className={styles.emoji} aria-hidden="true">
+              {current.emoji}
+            </span>
+          )}
+          <div className={styles.headerText}>
+            <h1 ref={headingRef} tabIndex={-1} className={styles.title}>
+              {current.title}
+            </h1>
+            <p className={styles.intro}>
+              {step === 0 ? COMPANION_MESSAGES.welcome : current.intro}
+            </p>
+            {step === 0 && <p className={styles.introSub}>{current.intro}</p>}
+          </div>
         </header>
 
-        {step === 0 && (
-          <AboutSection
-            draft={draft}
-            onChange={update}
-            issues={showIssues ? { ...savedIssues, ...issues } : {}}
-          />
-        )}
-        {step === 1 && <GoalSection draft={draft} onChange={update} health={health} />}
-        {step === 2 && <TastesSection draft={draft} onChange={update} />}
-        {step === 3 && <OrganisationSection draft={draft} onChange={update} />}
+        <ScrollArea key={step} label={current.title} className={styles.body}>
+          {step === 0 && (
+            <AboutSection
+              draft={draft}
+              onChange={update}
+              issues={showIssues ? { ...savedIssues, ...issues } : {}}
+            />
+          )}
+          {step === 1 && <GoalSection draft={draft} onChange={update} health={health} />}
+          {step === 2 && <TastesSection draft={draft} onChange={update} />}
+          {step === 3 && <OrganisationSection draft={draft} onChange={update} />}
+          {step === 0 && (
+            <p className={styles.privacy}>
+              <span aria-hidden="true">🔒 </span>
+              Aucun compte, aucun serveur. <Link to="/confidentialite">Confidentialité</Link>
+            </p>
+          )}
+        </ScrollArea>
 
         <div className={styles.actions}>
           {step > 0 && (
@@ -217,12 +240,6 @@ export function OnboardingPage() {
             {isLast ? (saving ? 'Je prépare ton menu…' : 'Voir mon menu') : 'Continuer'}
           </Button>
         </div>
-        {step === 0 && (
-          <p className={styles.privacy}>
-            <span aria-hidden="true">🔒 </span>
-            Aucun compte, aucun serveur. <Link to="/confidentialite">Confidentialité</Link>
-          </p>
-        )}
       </form>
     </div>
   );

@@ -4,24 +4,72 @@ import { MEDICAL_DISCLAIMER } from '@domain/profile';
 import { ProfilePage, SAVE_FAILED_MESSAGE } from './ProfilePage';
 import { TEST_PROFILE, createTestUseCases, renderScreen } from '../testing/renderApp';
 
+type User = ReturnType<typeof renderScreen>['user'];
+
+/** Ouvre la feuille plein écran d'une tuile (Moi, Goûts, Apparence…). */
+async function openTile(user: User, name: string | RegExp): Promise<HTMLElement> {
+  await user.click(await screen.findByRole('button', { name }));
+  return screen.findByRole('dialog', { name });
+}
+
 describe('<ProfilePage />', () => {
-  it('affiche le bandeau médical, modifie et enregistre les réponses', async () => {
+  it('Nutry en grand, tuiles, bandeau médical : modifie et enregistre les réponses', async () => {
     const { user, ports } = renderScreen(<ProfilePage />);
     expect(await screen.findByText(MEDICAL_DISCLAIMER)).toBeVisible();
-    const save = screen.getByRole('button', { name: /Réponses enregistrées/ });
-    expect(save).toBeDisabled();
+    expect(await screen.findByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
+    expect(screen.getByRole('button', { name: /Personnaliser/ })).toBeVisible();
+    for (const tile of [
+      'Moi',
+      'Objectif et alimentation',
+      'Goûts',
+      'Organisation',
+      'Apparence et suivi',
+      'Mes données',
+      'Confidentialité',
+    ]) {
+      expect(screen.getByRole('button', { name: tile })).toBeVisible();
+    }
 
-    await user.click(screen.getByText(/Goûts/, { selector: 'summary' }));
-    const dislikes = screen.getByRole('group', { name: /Je n’aime pas/ });
+    const sheet = await openTile(user, 'Goûts');
+    const save = within(sheet).getByRole('button', { name: /Réponses enregistrées/ });
+    expect(save).toBeDisabled();
+    const dislikes = within(sheet).getByRole('group', { name: /Je n’aime pas/ });
     await user.click(within(dislikes).getByRole('checkbox', { name: /Champignons/ }));
-    await user.click(screen.getByRole('button', { name: 'Enregistrer mes réponses' }));
+    await user.click(within(sheet).getByRole('button', { name: 'Enregistrer mes réponses' }));
     expect(await screen.findByText(/C’est enregistré/)).toBeInTheDocument();
     expect(ports.state.profile?.dislikes).toEqual(['champignons']);
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('fermer une feuille sans enregistrer abandonne les changements', async () => {
+    const { user, ports } = renderScreen(<ProfilePage />);
+    const sheet = await openTile(user, 'Goûts');
+    await user.click(
+      within(within(sheet).getByRole('group', { name: /Je n’aime pas/ })).getByRole('checkbox', {
+        name: /Champignons/,
+      }),
+    );
+    await user.click(within(sheet).getByRole('button', { name: 'Fermer' }));
+    const again = await openTile(user, 'Goûts');
+    expect(
+      within(within(again).getByRole('group', { name: /Je n’aime pas/ })).getByRole('checkbox', {
+        name: /Champignons/,
+      }),
+    ).not.toBeChecked();
+    expect(ports.state.profile?.dislikes).toEqual([]);
+  });
+
+  it('Nutry : humeur, série et prochain déblocage', async () => {
+    renderScreen(<ProfilePage />);
+    expect(await screen.findByText('Content')).toBeVisible();
+    expect(screen.getByText(/Pas de série en cours/)).toBeVisible();
+    expect(screen.getByText('Encore 1 jour pour la feuille sur la tête !')).toBeVisible();
   });
 
   it('change le thème sur <html data-theme>', async () => {
     const { user, ports } = renderScreen(<ProfilePage />);
-    await user.click(await screen.findByRole('radio', { name: 'Sombre' }));
+    const sheet = await openTile(user, 'Apparence et suivi');
+    await user.click(within(sheet).getByRole('radio', { name: 'Sombre' }));
     expect(document.documentElement.dataset['theme']).toBe('dark');
     await waitFor(() => {
       expect(ports.state.settings.theme).toBe('dark');
@@ -36,12 +84,13 @@ describe('<ProfilePage />', () => {
       /condition de santé particulière, ton alimentation/,
     );
     expect(messages[0]).toBeVisible();
-    await user.click(screen.getByText(/Objectif, régime/, { selector: 'summary' }));
-    expect(screen.getByRole('radio', { name: /Perdre en douceur/ })).toBeDisabled();
+    const sheet = await openTile(user, 'Objectif et alimentation');
+    expect(within(sheet).getByRole('radio', { name: /Perdre en douceur/ })).toBeDisabled();
   });
 
   it('montre le détail énergétique seulement sur demande', async () => {
-    renderScreen(<ProfilePage />);
+    const { user } = renderScreen(<ProfilePage />);
+    await openTile(user, 'Moi');
     const summary = await screen.findByText(/Mon détail énergétique/);
     const details = summary.closest('details');
     expect(details).not.toHaveAttribute('open');
@@ -54,7 +103,7 @@ describe('<ProfilePage />', () => {
     renderScreen(<ProfilePage />, { existing: { ports, useCases: pending } });
     expect(screen.getByText(MEDICAL_DISCLAIMER)).toBeVisible();
     expect(screen.getByTestId('profile-skeleton')).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: /Mes données/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Mes données' })).toBeNull();
   });
 
   it('erreur de chargement : bandeau médical, message doux et « Mes données »', async () => {
@@ -63,7 +112,7 @@ describe('<ProfilePage />', () => {
     renderScreen(<ProfilePage />, { existing: { ports, useCases: failing } });
     expect(await screen.findByText(/Ton profil n’a pas pu être chargé/)).toBeVisible();
     expect(screen.getByText(MEDICAL_DISCLAIMER)).toBeVisible();
-    expect(screen.getByRole('heading', { name: /Mes données/ })).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Mes données' })).toBeVisible();
     expect(screen.queryByTestId('profile-skeleton')).toBeNull();
   });
 
@@ -71,26 +120,26 @@ describe('<ProfilePage />', () => {
     const { ports, useCases } = createTestUseCases({ profile: TEST_PROFILE });
     const failing = { ...useCases, saveProfile: () => Promise.reject(new Error('quota')) };
     const { user } = renderScreen(<ProfilePage />, { existing: { ports, useCases: failing } });
-    await user.click(await screen.findByText(/Goûts/, { selector: 'summary' }));
-    const dislikes = screen.getByRole('group', { name: /Je n’aime pas/ });
+    const sheet = await openTile(user, 'Goûts');
+    const dislikes = within(sheet).getByRole('group', { name: /Je n’aime pas/ });
     await user.click(within(dislikes).getByRole('checkbox', { name: /Champignons/ }));
-    await user.click(screen.getByRole('button', { name: 'Enregistrer mes réponses' }));
+    await user.click(within(sheet).getByRole('button', { name: 'Enregistrer mes réponses' }));
     expect(await screen.findByText(SAVE_FAILED_MESSAGE)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Enregistrer mes réponses' })).toBeEnabled();
+    expect(within(sheet).getByRole('button', { name: 'Enregistrer mes réponses' })).toBeEnabled();
   });
 
   it('l’objectif retenu par l’application remplace « perdre » pour un profil protégé', async () => {
     const { user, ports } = renderScreen(<ProfilePage />, {
       profile: { ...TEST_PROFILE, age: 16, goal: 'perdre-en-douceur' },
     });
-    await user.click(await screen.findByText(/Goûts/, { selector: 'summary' }));
-    const dislikes = screen.getByRole('group', { name: /Je n’aime pas/ });
+    const tastes = await openTile(user, 'Goûts');
+    const dislikes = within(tastes).getByRole('group', { name: /Je n’aime pas/ });
     await user.click(within(dislikes).getByRole('checkbox', { name: /Champignons/ }));
-    await user.click(screen.getByRole('button', { name: 'Enregistrer mes réponses' }));
+    await user.click(within(tastes).getByRole('button', { name: 'Enregistrer mes réponses' }));
     await waitFor(() => {
       expect(ports.state.profile?.goal).toBe('reequilibrer');
     });
-    await user.click(screen.getByText(/Objectif, régime/, { selector: 'summary' }));
-    expect(screen.getByRole('radio', { name: /Rééquilibrer/ })).toBeChecked();
+    const goal = await openTile(user, 'Objectif et alimentation');
+    expect(within(goal).getByRole('radio', { name: /Rééquilibrer/ })).toBeChecked();
   });
 });

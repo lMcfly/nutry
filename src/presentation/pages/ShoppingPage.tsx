@@ -12,9 +12,15 @@ import { EmptyState } from '../components/EmptyState';
 import { Field, SelectField } from '../components/Field';
 import { Notice } from '../components/Notice';
 import { Page } from '../components/Page';
+import { RoundIconButton } from '../components/RoundIconButton';
+import { ScrollArea } from '../components/ScrollArea';
+import { SegmentedTabs } from '../components/SegmentedTabs';
+import { panelId, tabId } from '../components/tabIds';
+import { Sheet } from '../components/Sheet';
 import { useToast } from '../components/Toast';
+import { useCelebrationCheck } from '../features/companion/Celebration';
 import { useAsync } from '../hooks/useAsync';
-import { AISLE_LABELS, SECTION_EMOJIS, SECTION_TITLES } from '../i18n/labels';
+import { AISLE_LABELS, SECTION_EMOJIS, SECTION_SHORT_LABELS, SECTION_TITLES } from '../i18n/labels';
 import styles from './ShoppingPage.module.css';
 
 function itemText(item: ShoppingItem): string {
@@ -42,9 +48,12 @@ export function ShoppingPage() {
     shareShoppingList,
   } = useDependencies();
   const toast = useToast();
+  const checkCelebration = useCelebrationCheck();
   const [label, setLabel] = useState('');
   const [aisle, setAisle] = useState<Aisle | ''>('');
   const [resetSeen, setResetSeen] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [activeKey, setActiveKey] = useState<string | undefined>();
   /** Écritures en cours : la liste est annoncée « occupée » tant qu'elles ne sont pas enregistrées. */
   const [pending, setPending] = useState(0);
 
@@ -86,19 +95,33 @@ export function ShoppingPage() {
 
   const view: ShoppingView | undefined =
     state.status === 'ready' && state.data.status === 'ready' ? state.data : undefined;
-  const items = view?.list.sections.flatMap((s) => s.items) ?? [];
-  const remaining = items.filter((i) => !i.checked).length;
-  const anyChecked = items.some((i) => i.checked);
+  const sections = view?.list.sections ?? [];
+  const items = sections.flatMap((s) => s.items);
+  const inBasket = items.filter((i) => i.checked).length;
+  const anyChecked = inBasket > 0;
+  const active = sections.find((s) => s.key === activeKey) ?? sections[0];
 
   return (
     <Page
       title="Mes courses"
       subtitle={
         view
-          ? remaining === 0 && items.length > 0
+          ? items.length > 0 && inBasket === items.length
             ? 'Tout est dans le panier, bravo !'
-            : `${remaining} article${remaining > 1 ? 's' : ''} à acheter`
+            : `${inBasket}/${items.length} dans le panier`
           : 'Rangées par rayon'
+      }
+      actions={
+        view && (
+          <RoundIconButton
+            icon="＋"
+            label="Ajouter un article"
+            tone="primary"
+            onClick={() => {
+              setAdding(true);
+            }}
+          />
+        )
       }
     >
       {view && (
@@ -145,98 +168,140 @@ export function ShoppingPage() {
         </EmptyState>
       )}
 
-      <div data-testid="shopping-list" aria-busy={pending > 0}>
-        {view?.list.sections.map((section) => (
-          <Card as="section" key={section.key} aria-labelledby={`rayon-${section.key}`}>
-            <h2 id={`rayon-${section.key}`} className={styles.sectionTitle}>
-              <span aria-hidden="true">{SECTION_EMOJIS[section.key]} </span>
-              {SECTION_TITLES[section.key]}
-            </h2>
-            <ul className={styles.items}>
-              {section.items.map((item) => (
-                <li key={item.key} className={styles.item}>
-                  <label className={`${styles.check} ${item.checked ? styles.checked : ''}`}>
-                    <input
-                      type="checkbox"
-                      className={styles.box}
-                      checked={item.checked}
-                      onChange={() => {
-                        toggleOptimistically(item.key);
-                        void apply(toggleShoppingItem(item.key));
-                      }}
-                    />
-                    <span className={styles.name}>{itemParts(item).name}</span>
-                    {itemParts(item).amount !== undefined && (
-                      <span className={styles.qty}>{itemParts(item).amount}</span>
-                    )}
-                  </label>
-                  {item.manual && (
-                    <button
-                      type="button"
-                      className={styles.remove}
-                      aria-label={`Supprimer ${itemText(item)}`}
-                      onClick={() => {
-                        void apply(removeShoppingItem(item.key.replace(/^manuel:/, '')));
-                      }}
-                    >
-                      🗑
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </Card>
-        ))}
-      </div>
+      {view && active && (
+        <>
+          <SegmentedTabs
+            idPrefix="rayon"
+            label="Rayons"
+            variant="chips"
+            value={active.key}
+            onChange={setActiveKey}
+            tabs={sections.map((section) => {
+              const left = section.items.filter((i) => !i.checked).length;
+              return {
+                id: section.key,
+                ariaLabel: `${SECTION_SHORT_LABELS[section.key]}, ${left} à acheter sur ${section.items.length}`,
+                label: (
+                  <>
+                    <span aria-hidden="true">{SECTION_EMOJIS[section.key]}</span>
+                    {SECTION_SHORT_LABELS[section.key]}
+                    <span className={styles.count} aria-hidden="true">
+                      {left}
+                    </span>
+                  </>
+                ),
+              };
+            })}
+          />
+          <div
+            data-testid="shopping-list"
+            aria-busy={pending > 0}
+            className={styles.panel}
+            role="tabpanel"
+            id={panelId('rayon', active.key)}
+            aria-labelledby={tabId('rayon', active.key)}
+          >
+            <Card as="section" className={styles.card} aria-labelledby={`rayon-${active.key}`}>
+              <h2 id={`rayon-${active.key}`} className={styles.sectionTitle}>
+                <span aria-hidden="true">{SECTION_EMOJIS[active.key]} </span>
+                {SECTION_TITLES[active.key]}
+              </h2>
+              <ScrollArea
+                label={`Articles : ${SECTION_TITLES[active.key]}`}
+                className={styles.scroll}
+              >
+                <ul className={styles.items}>
+                  {active.items.map((item) => (
+                    <li key={item.key} className={styles.item}>
+                      <label className={`${styles.check} ${item.checked ? styles.checked : ''}`}>
+                        <input
+                          type="checkbox"
+                          className={styles.box}
+                          checked={item.checked}
+                          onChange={() => {
+                            const checking = !item.checked;
+                            toggleOptimistically(item.key);
+                            void apply(toggleShoppingItem(item.key)).then(() => {
+                              if (checking) checkCelebration();
+                            });
+                          }}
+                        />
+                        <span className={styles.name}>{itemParts(item).name}</span>
+                        {itemParts(item).amount !== undefined && (
+                          <span className={styles.qty}>{itemParts(item).amount}</span>
+                        )}
+                      </label>
+                      {item.manual && (
+                        <button
+                          type="button"
+                          className={styles.remove}
+                          aria-label={`Supprimer ${itemText(item)}`}
+                          onClick={() => {
+                            void apply(removeShoppingItem(item.key.replace(/^manuel:/, '')));
+                          }}
+                        >
+                          🗑
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </ScrollArea>
+            </Card>
+          </div>
+        </>
+      )}
 
-      {view && (
-        <Card as="section" tone="sunken" aria-labelledby="ajout-title">
-          <h2 id="ajout-title" className={styles.sectionTitle}>
-            <span aria-hidden="true">➕ </span>Ajouter un article
-          </h2>
-          <form
-            className={styles.addForm}
-            onSubmit={(event) => {
-              event.preventDefault();
-              const text = label.trim();
-              if (!text) return;
-              void apply(addShoppingItem({ label: text, ...(aisle === '' ? {} : { aisle }) })).then(
-                () => {
-                  toast.show(`« ${text} » ajouté.`, 'success');
-                },
-              );
-              setLabel('');
+      <Sheet
+        open={adding}
+        title="Ajouter un article"
+        onClose={() => {
+          setAdding(false);
+        }}
+      >
+        <form
+          className={styles.addForm}
+          onSubmit={(event) => {
+            event.preventDefault();
+            const text = label.trim();
+            if (!text) return;
+            void apply(addShoppingItem({ label: text, ...(aisle === '' ? {} : { aisle }) })).then(
+              () => {
+                toast.show(`« ${text} » ajouté.`, 'success');
+              },
+            );
+            setLabel('');
+            setAdding(false);
+          }}
+        >
+          <Field
+            label="Article"
+            placeholder="Ex. café, éponges…"
+            value={label}
+            maxLength={MANUAL_ITEM_MAX_LENGTH}
+            onChange={(e) => {
+              setLabel(e.target.value);
+            }}
+          />
+          <SelectField
+            label="Rayon"
+            value={aisle}
+            onChange={(e) => {
+              setAisle(e.target.value as Aisle | '');
             }}
           >
-            <Field
-              label="Article"
-              placeholder="Ex. café, éponges…"
-              value={label}
-              maxLength={MANUAL_ITEM_MAX_LENGTH}
-              onChange={(e) => {
-                setLabel(e.target.value);
-              }}
-            />
-            <SelectField
-              label="Rayon"
-              value={aisle}
-              onChange={(e) => {
-                setAisle(e.target.value as Aisle | '');
-              }}
-            >
-              <option value="">Divers</option>
-              {AISLES.map((a) => (
-                <option key={a} value={a}>
-                  {AISLE_LABELS[a]}
-                </option>
-              ))}
-            </SelectField>
-            <Button type="submit" disabled={label.trim() === ''}>
-              Ajouter
-            </Button>
-          </form>
-        </Card>
-      )}
+            <option value="">Divers</option>
+            {AISLES.map((a) => (
+              <option key={a} value={a}>
+                {AISLE_LABELS[a]}
+              </option>
+            ))}
+          </SelectField>
+          <Button type="submit" disabled={label.trim() === ''}>
+            Ajouter
+          </Button>
+        </form>
+      </Sheet>
     </Page>
   );
 }

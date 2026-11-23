@@ -1,13 +1,52 @@
 .toolbar {
   display: flex;
+  flex: none;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin-top: calc(-1 * var(--space-2));
+}
+
+.count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  padding: 0 0.3rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+}
+
+[aria-selected='true'] > .count {
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding-right: var(--space-2);
+  border-radius: var(--radius-xl);
 }
 
 .sectionTitle {
-  margin-bottom: var(--space-2);
+  flex: none;
+  margin-bottom: var(--space-1);
   font-size: var(--font-size-md);
+}
+
+.scroll {
+  flex: 1;
+  padding-right: var(--space-2);
 }
 
 .items {
@@ -32,7 +71,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  min-height: var(--touch-min);
+  min-height: var(--touch-small);
   padding: var(--space-2) 0;
   cursor: pointer;
 }

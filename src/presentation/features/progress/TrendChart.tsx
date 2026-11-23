@@ -7,6 +7,8 @@ interface TrendChartProps {
   readonly title: string;
   readonly unit: string;
   readonly points: readonly TrendPoint[];
+  /** Mini-courbe d'une tuile : plus basse, sans légende. */
+  readonly compact?: boolean;
 }
 
 const WIDTH = 320;
@@ -17,7 +19,7 @@ const PAD = { top: 16, right: 16, bottom: 28, left: 40 };
  * Courbe de tendance lissée en SVG inline, accessible : titre, description et
  * tableau des valeurs masqué visuellement.
  */
-export function TrendChart({ title, unit, points }: TrendChartProps) {
+export function TrendChart({ title, unit, points, compact = false }: TrendChartProps) {
   const titleId = useId();
   const descId = useId();
   if (points.length === 0) return null;
@@ -44,7 +46,7 @@ export function TrendChart({ title, unit, points }: TrendChartProps) {
       : '';
 
   return (
-    <figure className={styles.figure}>
+    <figure className={`${styles.figure} ${compact ? styles.compact : ''}`}>
       <svg
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         className={styles.svg}

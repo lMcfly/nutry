@@ -1,10 +1,75 @@
-.cardTitle {
-  margin-bottom: var(--space-2);
+.streak,
+.tile {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.streak {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.streakText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tileHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.tileTitle {
+  font-size: var(--font-size-md);
+  font-weight: 800;
+}
+
+.tileActions {
+  display: flex;
+}
+
+.gauges {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-4);
+}
+
+.clamp {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.links {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
 }
 
 .small {
-  margin-bottom: var(--space-2);
+  color: var(--color-text-muted);
   font-size: var(--font-size-sm);
+  line-height: 1.3;
+}
+
+.measure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .form {
@@ -23,15 +88,6 @@
   color: var(--color-danger);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-}
-
-.charts {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.entries {
-  margin-top: var(--space-3);
 }
 
 .entries summary,
@@ -64,13 +120,13 @@
   cursor: pointer;
 }
 
-.links {
+.recipeLinks {
   display: flex;
   flex-direction: column;
   list-style: none;
 }
 
-.links a {
+.recipeLinks a {
   display: flex;
   align-items: center;
   min-height: 44px;

@@ -1,15 +1,22 @@
-import { useCallback, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { useDependencies } from '../app/dependencies';
 import { Badge } from '../components/Badge';
-import { Button, ButtonLink } from '../components/Button';
-import { Card } from '../components/Card';
+import { ButtonLink } from '../components/Button';
 import { EmptyState } from '../components/EmptyState';
 import { Notice } from '../components/Notice';
 import { Page } from '../components/Page';
+import { RoundIconButton } from '../components/RoundIconButton';
+import { ScrollArea } from '../components/ScrollArea';
+import { SegmentedTabs } from '../components/SegmentedTabs';
+import { panelId, tabId } from '../components/tabIds';
 import { useToast } from '../components/Toast';
+import { useCelebrationCheck } from '../features/companion/Celebration';
+import { PlateGauges } from '../features/plate/PlateGauges';
 import { BREAD_SUGGESTION } from '../features/recipe/suggestions';
 import { useAsync } from '../hooks/useAsync';
+import { usePageTitle } from '../hooks/usePageTitle';
+import { DishIllustration } from '../illustrations/DishIllustration';
 import {
   ALLERGEN_LABELS,
   CIQUAL_CITATION,
@@ -26,15 +33,28 @@ import styles from './RecipePage.module.css';
 export const PROCESSED_PRODUCTS_NOTICE =
   'Produits transformés (jambon, pain, sauces…) : vérifie l’étiquette.';
 
+type RecipeTab = 'ingredients' | 'etapes' | 'infos';
+
+const RECIPE_TABS = [
+  { id: 'ingredients', label: 'Ingrédients' },
+  { id: 'etapes', label: 'Étapes' },
+  { id: 'infos', label: 'Infos' },
+] as const;
+
 export function RecipePage() {
   const { id = '' } = useParams();
   const { getRecipeView, rateMeal } = useDependencies();
   const toast = useToast();
+  const checkCelebration = useCelebrationCheck();
   const [saving, setSaving] = useState(false);
+  const [tab, setTab] = useState<RecipeTab>('ingredients');
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const load = useCallback(() => getRecipeView(id), [id, getRecipeView]);
 
   const { state, reload } = useAsync(load);
+  const view = state.status === 'ready' ? state.data : undefined;
+  usePageTitle(view?.recipe.name ?? 'Recette', headingRef);
 
   if (state.status !== 'ready') {
     return (
@@ -44,7 +64,6 @@ export function RecipePage() {
     );
   }
 
-  const view = state.data;
   if (!view) {
     return (
       <Page title="Recette introuvable" back={{ to: '/semaine', label: 'Ma semaine' }}>
@@ -68,6 +87,7 @@ export function RecipePage() {
     try {
       await rateMeal({ weekStart: meal.weekStart, mealId: meal.mealId, verdict: 'up' });
       toast.show('Ajoutée à tes favoris 💚', 'success');
+      checkCelebration();
       reload();
     } finally {
       setSaving(false);
@@ -77,7 +97,30 @@ export function RecipePage() {
   const n = recipe.nutritionPerServing;
 
   return (
-    <Page title={recipe.name} back={{ to: '/semaine', label: 'Ma semaine' }}>
+    <div className={styles.recipe}>
+      <div className={styles.hero}>
+        <DishIllustration recipe={recipe} className={styles.art} />
+        <Link to="/semaine" className={styles.back} aria-label="Retour : Ma semaine">
+          <span aria-hidden="true">←</span>
+        </Link>
+        {meal && (
+          <RoundIconButton
+            className={styles.favorite}
+            icon={liked ? '💚' : '👍'}
+            label={liked ? 'Dans tes favoris' : 'Ajouter aux favoris'}
+            tone={liked ? 'accent' : 'plain'}
+            aria-pressed={liked}
+            disabled={liked || saving}
+            onClick={() => {
+              void addFavorite();
+            }}
+          />
+        )}
+      </div>
+
+      <h1 ref={headingRef} tabIndex={-1} className={styles.title}>
+        {recipe.name}
+      </h1>
       <div className={styles.badges}>
         <Badge tone="primary">
           <span aria-hidden="true">{LEVEL_EMOJIS[recipe.level]}</span>
@@ -89,96 +132,110 @@ export function RecipePage() {
         </Badge>
         <Badge>{PROTEIN_LABELS[recipe.mainProtein]}</Badge>
       </div>
-      <p className={styles.levelHint}>
-        {LEVEL_HINTS[recipe.level]} Préparation {formatMinutes(recipe.prepMinutes)}
-        {recipe.cookMinutes > 0
-          ? `, cuisson ${formatMinutes(recipe.cookMinutes)}`
-          : ', sans cuisson'}
-        .
-      </p>
 
-      {view.suggestsBread && (
-        <Notice tone="accent" emoji="🌾">
-          {BREAD_SUGGESTION}
-        </Notice>
-      )}
+      <PlateGauges plate={recipe.plateBalance} />
 
-      {meal ? (
-        <Button
-          variant={liked ? 'secondary' : 'primary'}
-          icon={liked ? '💚' : '👍'}
-          aria-pressed={liked}
-          disabled={liked || saving}
-          onClick={() => {
-            void addFavorite();
-          }}
+      <SegmentedTabs
+        idPrefix="recette"
+        label="Sections de la recette"
+        tabs={RECIPE_TABS}
+        value={tab}
+        onChange={setTab}
+      />
+
+      <div
+        role="tabpanel"
+        id={panelId('recette', tab)}
+        aria-labelledby={tabId('recette', tab)}
+        className={styles.panel}
+      >
+        <ScrollArea
+          label={RECIPE_TABS.find((t) => t.id === tab)?.label ?? 'Recette'}
+          className={styles.scroll}
         >
-          {liked ? 'Dans tes favoris' : 'Ajouter aux favoris'}
-        </Button>
-      ) : null}
-
-      <Card as="section" aria-labelledby="ingredients-title">
-        <h2 id="ingredients-title">Ingrédients</h2>
-        <p className={styles.servings}>
-          Pour {plural(view.householdSize, 'personne')}
-          {view.batches > 1 ? ', restes du lendemain compris' : ''}
-        </p>
-        <ul className={styles.ingredients}>
-          {view.ingredients.map((line) => (
-            <li key={line.key}>
-              <span className={styles.qty}>{line.amount}</span>
-              <span>{line.label}</span>
-            </li>
-          ))}
-        </ul>
-      </Card>
-
-      <Card as="section" aria-labelledby="steps-title">
-        <h2 id="steps-title">Étapes</h2>
-        <ol className={styles.steps}>
-          {recipe.steps.map((step) => (
-            <li key={step}>{step}</li>
-          ))}
-        </ol>
-      </Card>
-
-      <Card as="section" tone="sunken" aria-labelledby="allergens-title">
-        <h2 id="allergens-title">Allergènes</h2>
-        <p className={styles.allergens}>
-          {recipe.allergens.length === 0
-            ? 'Aucun des 14 allergènes réglementaires.'
-            : recipe.allergens.map((a) => ALLERGEN_LABELS[a]).join(', ')}
-        </p>
-        <p className={styles.small}>
-          <span aria-hidden="true">🏷️ </span>
-          {PROCESSED_PRODUCTS_NOTICE}
-        </p>
-        {recipe.diets.length > 0 && (
-          <p className={styles.small}>
-            Convient : {recipe.diets.map((d) => DIET_LABELS[d].toLowerCase()).join(', ')}.
-          </p>
-        )}
-      </Card>
-
-      <details className={styles.details}>
-        <summary>Détail nutritionnel (optionnel)</summary>
-        <p className={styles.small}>Par portion, à titre indicatif :</p>
-        <dl className={styles.nutrition}>
-          <dt>Énergie</dt>
-          <dd>{n.kcal} kcal</dd>
-          <dt>Protéines</dt>
-          <dd>{n.proteinG.toLocaleString('fr-FR')} g</dd>
-          <dt>Glucides</dt>
-          <dd>{n.carbsG.toLocaleString('fr-FR')} g</dd>
-          <dt>Lipides</dt>
-          <dd>{n.fatG.toLocaleString('fr-FR')} g</dd>
-          <dt>Fibres</dt>
-          <dd>{n.fiberG.toLocaleString('fr-FR')} g</dd>
-        </dl>
-        <p className={styles.small}>
-          Source : « {CIQUAL_CITATION} » (calcul à partir des ingrédients).
-        </p>
-      </details>
-    </Page>
+          {tab === 'ingredients' && (
+            <section aria-labelledby="ingredients-title">
+              <h2 id="ingredients-title" className="visually-hidden">
+                Ingrédients
+              </h2>
+              <p className={styles.servings}>
+                Pour {plural(view.householdSize, 'personne')}
+                {view.batches > 1 ? ', restes du lendemain compris' : ''}
+              </p>
+              <ul className={styles.ingredients}>
+                {view.ingredients.map((line) => (
+                  <li key={line.key}>
+                    <span className={styles.qty}>{line.amount}</span>
+                    <span>{line.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          {tab === 'etapes' && (
+            <section aria-labelledby="steps-title">
+              <h2 id="steps-title" className="visually-hidden">
+                Étapes
+              </h2>
+              <ol className={styles.steps}>
+                {recipe.steps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+            </section>
+          )}
+          {tab === 'infos' && (
+            <section aria-labelledby="allergens-title" className={styles.infos}>
+              <h2 id="allergens-title">Allergènes</h2>
+              <p className={styles.allergens}>
+                {recipe.allergens.length === 0
+                  ? 'Aucun des 14 allergènes réglementaires.'
+                  : recipe.allergens.map((a) => ALLERGEN_LABELS[a]).join(', ')}
+              </p>
+              <p className={styles.small}>
+                <span aria-hidden="true">🏷️ </span>
+                {PROCESSED_PRODUCTS_NOTICE}
+              </p>
+              {recipe.diets.length > 0 && (
+                <p className={styles.small}>
+                  Convient : {recipe.diets.map((d) => DIET_LABELS[d].toLowerCase()).join(', ')}.
+                </p>
+              )}
+              <p className={styles.small}>
+                {LEVEL_HINTS[recipe.level]} Préparation {formatMinutes(recipe.prepMinutes)}
+                {recipe.cookMinutes > 0
+                  ? `, cuisson ${formatMinutes(recipe.cookMinutes)}`
+                  : ', sans cuisson'}
+                .
+              </p>
+              {view.suggestsBread && (
+                <Notice tone="accent" emoji="🌾">
+                  {BREAD_SUGGESTION}
+                </Notice>
+              )}
+              <details className={styles.details}>
+                <summary>Détail nutritionnel (optionnel)</summary>
+                <p className={styles.small}>Par portion, à titre indicatif :</p>
+                <dl className={styles.nutrition}>
+                  <dt>Énergie</dt>
+                  <dd>{n.kcal} kcal</dd>
+                  <dt>Protéines</dt>
+                  <dd>{n.proteinG.toLocaleString('fr-FR')} g</dd>
+                  <dt>Glucides</dt>
+                  <dd>{n.carbsG.toLocaleString('fr-FR')} g</dd>
+                  <dt>Lipides</dt>
+                  <dd>{n.fatG.toLocaleString('fr-FR')} g</dd>
+                  <dt>Fibres</dt>
+                  <dd>{n.fiberG.toLocaleString('fr-FR')} g</dd>
+                </dl>
+                <p className={styles.small}>
+                  Source : « {CIQUAL_CITATION} » (calcul à partir des ingrédients).
+                </p>
+              </details>
+            </section>
+          )}
+        </ScrollArea>
+      </div>
+    </div>
   );
 }

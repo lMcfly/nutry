@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { renderApp, TEST_PROFILE } from '../testing/renderApp';
 import { resetPageFocusForTests } from '../components/Page';
@@ -51,9 +51,10 @@ describe('<App />', () => {
     await user.click(screen.getByRole('button', { name: 'Voir mon menu' }));
 
     expect(await screen.findByRole('heading', { name: 'Ma semaine' })).toBeVisible();
-    await waitFor(() => {
-      expect(screen.getAllByTestId('meal')).toHaveLength(14);
-    });
+    // Un seul repas à l'écran (la grande carte), les 7 jours dans le bandeau.
+    expect(await screen.findByTestId('meal')).toBeVisible();
+    expect(screen.getAllByRole('tab', { name: /novembre/ })).toHaveLength(7);
+    expect(ports.state.plans.size).toBe(1);
     expect(screen.getByRole('navigation', { name: 'Navigation principale' })).toHaveTextContent(
       /Semaine.*Courses.*Profil.*Progrès/,
     );
@@ -69,6 +70,24 @@ describe('<App />', () => {
     // Stockage persistant demandé à la fin de l'onboarding.
     expect(ports.state.settings.persistenceGranted).toBe(true);
     expect(document.title).toBe('Ma semaine · Nutry');
+  });
+
+  it('à l’étape 1, Nutry accueille la personne', async () => {
+    renderApp();
+    await screen.findByRole('heading', { name: 'Faisons connaissance' });
+    expect(screen.getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
+    expect(screen.getByText(/Salut, moi c’est Nutry/)).toBeVisible();
+  });
+
+  it('un geste fait gagner un accessoire : célébration, puis acquittement', async () => {
+    const { user, ports } = renderApp({ profile: TEST_PROFILE });
+    await screen.findByTestId('meal');
+    await user.click(screen.getByRole('button', { name: 'J’ai aimé' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Bravo !' });
+    expect(within(dialog).getByText(/Nutry a gagné la feuille sur la tête !/)).toBeVisible();
+    await user.click(within(dialog).getByRole('button', { name: 'Génial !' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(ports.state.companion.acknowledgedBest).toBe(1);
   });
 
   it('navigue entre les onglets, titre et focus suivent la route', async () => {

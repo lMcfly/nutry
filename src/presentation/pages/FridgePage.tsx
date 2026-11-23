@@ -60,6 +60,7 @@ export function FridgePage() {
       title="Frigo vide"
       subtitle="Coche ce que tu as, je te dis quoi cuisiner."
       back={{ to: '/semaine', label: 'Ma semaine' }}
+      scroll
     >
       <form
         role="search"

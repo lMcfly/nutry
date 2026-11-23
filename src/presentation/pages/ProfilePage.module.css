@@ -1,78 +1,76 @@
 .disclaimer {
-  margin-top: calc(-1 * var(--space-3));
-  padding: var(--space-2) var(--space-3);
+  flex: none;
+  padding: var(--space-1) var(--space-3);
   border-left: 3px solid var(--color-primary);
   border-radius: var(--radius-sm);
-  background: var(--color-surface-alt);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
   color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
 }
 
 .messages {
   display: flex;
+  flex: none;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-.form {
+.hero {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.details {
-  padding: 0 var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-}
-
-.details summary {
-  display: flex;
+  flex: none;
   align-items: center;
-  min-height: var(--touch-min);
-  padding: var(--space-2) 0;
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
+  gap: var(--space-3);
+  min-height: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
 }
 
-.details[open] {
-  padding-bottom: var(--space-4);
-}
-
-.sectionBody {
-  padding-top: var(--space-3);
-}
-
-.saveBar {
-  position: sticky;
-  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
-  z-index: 1;
-  padding: var(--space-2) 0;
-  background: var(--color-bg);
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.small {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
-
-.energy {
+.heroNutry {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--space-1) var(--space-4);
-  margin: var(--space-3) 0 0;
+  flex: none;
+  place-items: center;
+  --nutry-size: 6rem;
 }
 
-.energy dd {
-  margin: 0;
+.heroText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.message {
+  font-size: var(--font-size-xs);
+  line-height: 1.3;
+}
+
+.streak {
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
+}
+
+.next {
+  color: var(--color-on-accent-soft);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+.tiles {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.wide {
+  grid-column: 1 / -1;
 }
 
 .skeleton {
@@ -81,25 +79,78 @@
   gap: var(--space-3);
 }
 
-/* Hauteur proche de celle des sections repliées du formulaire. */
 .skeletonBlock {
-  min-height: calc(var(--touch-min) + var(--space-4));
+  height: 6rem;
   border-radius: var(--radius-lg);
   background: var(--color-surface-alt);
-}
-
-.skeleton .skeletonBlock:first-child {
-  min-height: 20rem;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .skeletonBlock {
-    animation: pulse 1.6s ease-in-out infinite;
-  }
+  animation: pulse 1.4s ease-in-out infinite;
 }
 
 @keyframes pulse {
   50% {
-    opacity: 0.55;
+    opacity: 0.5;
+  }
+}
+
+.appearance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.details {
+  margin-top: var(--space-4);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.details summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.details[open] {
+  padding-bottom: var(--space-4);
+}
+
+.small {
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.energy {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+}
+
+.energy dd {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+/* Écrans hauts (Pixel 7) : on respire, Nutry en plus grand et des tuiles plus généreuses. */
+@media (min-height: 760px) {
+  .heroNutry {
+    --nutry-size: 10rem;
+  }
+
+  .hero {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .tiles {
+    gap: var(--space-3);
+  }
+
+  .tiles > a,
+  .tiles > button {
+    min-height: 4.25rem;
   }
 }

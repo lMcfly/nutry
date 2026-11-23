@@ -7,24 +7,35 @@ const record = (ports: ReturnType<typeof renderScreen>['ports']) =>
   [...ports.state.shopping.values()][0];
 
 describe('<ShoppingPage />', () => {
-  it('groupe par rayon dans l’ordre du magasin', async () => {
-    renderScreen(<ShoppingPage />);
-    await screen.findByRole('heading', { name: /Fruits et légumes/ });
-    const titles = screen
-      .getAllByRole('heading', { level: 2 })
-      .map((h) => h.textContent)
-      .filter((t) => !t.includes('Ajouter'));
-    expect(titles[0]).toMatch(/Fruits et légumes/);
-    expect(titles.findIndex((t) => t.includes('Épicerie'))).toBeGreaterThan(0);
+  it('un onglet par rayon, dans l’ordre du magasin, avec le compteur à acheter', async () => {
+    const { user } = renderScreen(<ShoppingPage />);
+    const tabs = await screen.findAllByRole('tab');
+    expect(tabs[0]).toHaveAccessibleName(/^Fruits et légumes, \d+ à acheter sur \d+/);
+    expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
+    const epicerie = tabs.findIndex((t) => t.getAttribute('aria-label')?.startsWith('Épicerie'));
+    expect(epicerie).toBeGreaterThan(0);
+    // Un seul rayon à l'écran : la liste du rayon actif, dans sa carte.
+    expect(screen.getByRole('heading', { level: 2, name: /Fruits et légumes/ })).toBeVisible();
+    expect(screen.queryByRole('heading', { level: 2, name: /Épicerie/ })).toBeNull();
+    await user.click(tabs[epicerie] as HTMLElement);
+    expect(screen.getByRole('heading', { level: 2, name: /Épicerie/ })).toBeVisible();
+    expect(screen.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', tabs[epicerie]?.id);
+  });
+
+  it('affiche « n/total dans le panier » et le met à jour', async () => {
+    const { user } = renderScreen(<ShoppingPage />);
+    expect(await screen.findByText(/^0\/\d+ dans le panier$/)).toBeVisible();
+    const list = screen.getByTestId('shopping-list');
+    const first = within(list).getAllByRole('checkbox')[0];
+    if (!first) throw new Error('aucun article');
+    await user.click(first);
+    expect(await screen.findByText(/^1\/\d+ dans le panier$/)).toBeVisible();
   });
 
   it('coche un article, ajoute et supprime un article manuel, décoche tout', async () => {
     const { user, ports } = renderScreen(<ShoppingPage />);
-    const section = (await screen.findByRole('heading', { name: /Fruits et légumes/ })).closest(
-      'section',
-    );
-    if (!section) throw new Error('section introuvable');
-    const first = within(section).getAllByRole('checkbox')[0];
+    const list = await screen.findByTestId('shopping-list');
+    const first = within(list).getAllByRole('checkbox')[0];
     if (!first) throw new Error('aucun article');
     await user.click(first);
     await waitFor(() => {
@@ -32,20 +43,29 @@ describe('<ShoppingPage />', () => {
     });
     expect(record(ports)?.state.checkedKeys).toHaveLength(1);
 
-    await user.type(screen.getByLabelText('Article'), 'Café moulu');
-    await user.selectOptions(screen.getByLabelText('Rayon'), 'epicerie');
-    await user.click(screen.getByRole('button', { name: 'Ajouter' }));
-    expect(await screen.findByRole('checkbox', { name: 'Café moulu' })).toBeInTheDocument();
+    // Ajout manuel dans une feuille.
+    await user.click(screen.getByRole('button', { name: 'Ajouter un article' }));
+    const sheet = await screen.findByRole('dialog', { name: 'Ajouter un article' });
+    await user.type(within(sheet).getByLabelText('Article'), 'Café moulu');
+    await user.selectOptions(within(sheet).getByLabelText('Rayon'), 'epicerie');
+    await user.click(within(sheet).getByRole('button', { name: 'Ajouter' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
     expect(record(ports)?.state.manualItems[0]).toMatchObject({
       label: 'Café moulu',
       aisle: 'epicerie',
     });
+    await user.click(await screen.findByRole('tab', { name: /^Épicerie/ }));
+    expect(await screen.findByRole('checkbox', { name: 'Café moulu' })).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Tout décocher' }));
+    await user.click(screen.getByRole('tab', { name: /^Fruits et légumes/ }));
     await waitFor(() => {
-      expect(first).not.toBeChecked();
+      expect(
+        within(screen.getByTestId('shopping-list')).getAllByRole('checkbox')[0],
+      ).not.toBeChecked();
     });
 
+    await user.click(screen.getByRole('tab', { name: /^Épicerie/ }));
     await user.click(screen.getByRole('button', { name: 'Supprimer Café moulu' }));
     await waitFor(() => {
       expect(screen.queryByRole('checkbox', { name: 'Café moulu' })).toBeNull();

@@ -1,65 +1,79 @@
 .loading {
+  padding: var(--space-6) 0;
   color: var(--color-text-muted);
   text-align: center;
-  padding: var(--space-6) 0;
 }
 
-.days {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
+.nutryLink {
+  display: block;
+  border-radius: var(--radius-lg);
+  line-height: 0;
 }
 
-.day {
+.mealRow {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.dayTitle {
-  display: flex;
+  flex: none;
   align-items: center;
   gap: var(--space-2);
-  font-size: var(--font-size-lg);
 }
 
-.today .dayTitle {
-  color: var(--color-primary);
+.mealRow > [role='tablist'] {
+  flex: 1;
 }
 
-.todayBadge {
-  padding: 0.125rem var(--space-2);
-  border-radius: var(--radius-pill);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-size: var(--font-size-xs);
+.panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
 }
 
-.meals {
+.swipe {
+  flex: 1;
+}
+
+.shortcuts {
+  display: flex;
+  flex: none;
+  justify-content: space-around;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+}
+
+.dialogText {
+  color: var(--color-text-muted);
+}
+
+.gauges {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
-.sectionTitle {
-  margin-bottom: var(--space-1);
+.balance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
-.sectionIntro {
-  margin-bottom: var(--space-3);
-  font-size: var(--font-size-sm);
+.batch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .batchGroup {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .batchTitle {
   font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
 }
 
 .batchHint {
@@ -67,37 +81,25 @@
   font-size: var(--font-size-sm);
 }
 
-.batchTask {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--touch-min);
-  padding-inline: var(--space-2);
-  font-weight: var(--font-weight-bold);
-}
-
 .batchList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
+  margin-top: var(--space-2);
   list-style: none;
 }
 
 .batchList li {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-1);
+  flex-direction: column;
+  gap: 2px;
+}
+
+.batchTask {
+  font-weight: var(--font-weight-medium);
 }
 
 .batchMeals {
-  font-size: var(--font-size-sm);
-}
-
-.gauges {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.dialogText {
   color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
 }

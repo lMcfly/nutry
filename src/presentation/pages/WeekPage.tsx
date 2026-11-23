@@ -1,21 +1,50 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { PlanOrigin, PlanView } from '@application/usecases';
-import type { BalanceGauge, BatchPrepGroup, DayIndex, PlannedMeal } from '@domain/mealplan';
+import { MEAL_SLOTS } from '@domain/mealplan';
+import type {
+  BalanceGauge,
+  BatchPrepGroup,
+  DayIndex,
+  MealSlot,
+  PlannedMeal,
+} from '@domain/mealplan';
+import { RATING_REASONS } from '@domain/preferences';
 import type { RatingReason, RatingVerdict } from '@domain/preferences';
 import { useDependencies } from '../app/dependencies';
 import { Button, ButtonLink } from '../components/Button';
-import { Card } from '../components/Card';
+import { DayStrip } from '../components/DayStrip';
 import { EmptyState } from '../components/EmptyState';
 import { Gauge } from '../components/Gauge';
+import { RadioGroup } from '../components/Choice';
 import { Notice } from '../components/Notice';
 import { Page } from '../components/Page';
+import { RoundIconButton, RoundIconLink } from '../components/RoundIconButton';
+import { SegmentedTabs } from '../components/SegmentedTabs';
+import { panelId, tabId } from '../components/tabIds';
 import { Sheet } from '../components/Sheet';
+import { Swipeable } from '../components/Swipeable';
+import type { SwipeDirection } from '../components/Swipeable';
 import { useToast } from '../components/Toast';
+import { Nutry } from '../features/companion/Nutry';
+import { useCelebrationCheck } from '../features/companion/Celebration';
+import { useCompanion } from '../features/companion/useCompanion';
+import { BALANCE_EMOJIS, BALANCE_TONES } from '../features/plate/balanceTones';
 import { BackupReminder } from '../features/data/BackupReminder';
 import { MealCard } from '../features/week/MealCard';
 import { ReplaceSheet } from '../features/week/ReplaceSheet';
 import { useAsync } from '../hooks/useAsync';
-import { formatDayLong, formatDayShort } from '../i18n/labels';
+import {
+  DAY_LABELS,
+  DAY_SHORT_LABELS,
+  RATING_REASON_LABELS,
+  SLOT_EMOJIS,
+  SLOT_LABELS,
+  SLOT_SHORT_LABELS,
+  formatDayLong,
+  formatDayOfMonth,
+  formatDayShort,
+} from '../i18n/labels';
 import styles from './WeekPage.module.css';
 
 export const DISLIKED_TOAST = 'Compris : ce plat ne reviendra plus dans tes prochains menus.';
@@ -27,12 +56,7 @@ interface WeekData {
   readonly batch: readonly BatchPrepGroup[];
 }
 
-const GAUGE_EMOJIS: Readonly<Record<BalanceGauge['key'], string>> = {
-  vegetables: '🥦',
-  legumes: '🫘',
-  fish: '🐟',
-  wholeGrains: '🌾',
-};
+const slotRank = (slot: MealSlot): number => MEAL_SLOTS.indexOf(slot);
 
 export function WeekPage() {
   const deps = useDependencies();
@@ -46,9 +70,14 @@ export function WeekPage() {
     removeRating,
   } = deps;
   const toast = useToast();
+  const checkCelebration = useCelebrationCheck();
+  const { companion } = useCompanion();
   const [origin, setOrigin] = useState<PlanOrigin | undefined>();
   const [replacing, setReplacing] = useState<PlannedMeal | undefined>();
+  const [reasonFor, setReasonFor] = useState<PlannedMeal | undefined>();
   const [confirmNew, setConfirmNew] = useState(false);
+  const [showBatch, setShowBatch] = useState(false);
+  const [showBalance, setShowBalance] = useState(false);
   const [busy, setBusy] = useState(false);
   const [hideRegenerated, setHideRegenerated] = useState(false);
 
@@ -87,12 +116,22 @@ export function WeekPage() {
             : 'Merci, on en tiendra compte pour la suite.',
           'success',
         );
+        // 👎 : on propose (sans insister) d'en dire la raison ; la célébration éventuelle
+        // attend que cette petite fenêtre soit refermée (`closeReasons`).
+        if (verdict === 'down') setReasonFor(meal);
+        else checkCelebration();
       }
       reload();
     });
   };
 
-  const onReason = (view: PlanView) => (meal: PlannedMeal, reason: RatingReason) => {
+  const closeReasons = () => {
+    setReasonFor(undefined);
+    checkCelebration();
+  };
+
+  const onReason = (view: PlanView, meal: PlannedMeal, reason: RatingReason) => {
+    closeReasons();
     void run(async () => {
       await rateMeal({ weekStart: view.plan.weekStart, mealId: meal.id, verdict: 'down', reason });
       if (reason === 'pas-aime') {
@@ -132,6 +171,8 @@ export function WeekPage() {
   };
 
   const data = state.status === 'ready' ? state.data : undefined;
+  const reasonView = data?.view;
+  const reasonRating = reasonFor && reasonView ? reasonView.ratings[reasonFor.id] : undefined;
 
   return (
     <Page
@@ -140,27 +181,21 @@ export function WeekPage() {
         data ? `Semaine du ${formatDayShort(data.view.plan.weekStart)}` : 'Ton menu, en douceur'
       }
       actions={
-        data ? (
-          <Button
-            variant="secondary"
-            small
-            icon="✨"
-            disabled={busy}
-            onClick={() => {
-              setConfirmNew(true);
-            }}
-          >
-            Nouveau menu
-          </Button>
-        ) : undefined
+        <>
+          <BackupReminder />
+          {companion && (
+            <Link
+              to="/profil"
+              className={styles.nutryLink}
+              aria-label="Nutry, mon petit compagnon"
+              title={companion.message}
+            >
+              <Nutry look={companion.look} mood={companion.mood} size="s" />
+            </Link>
+          )}
+        </>
       }
     >
-      <ButtonLink to="/frigo" variant="accent" block icon="🧊">
-        Frigo vide ? Cuisine avec ce que tu as
-      </ButtonLink>
-
-      <BackupReminder />
-
       {state.status === 'loading' && (
         <p role="status" className={styles.loading}>
           Je prépare ton menu…
@@ -186,7 +221,15 @@ export function WeekPage() {
           busy={busy}
           onReplace={setReplacing}
           onRate={onRate(data.view)}
-          onReason={onReason(data.view)}
+          onNewMenu={() => {
+            setConfirmNew(true);
+          }}
+          onShowBatch={() => {
+            setShowBatch(true);
+          }}
+          onShowBalance={() => {
+            setShowBalance(true);
+          }}
         />
       )}
 
@@ -198,6 +241,31 @@ export function WeekPage() {
         }}
         onChoose={onChoose}
       />
+
+      <Sheet
+        open={reasonFor !== undefined}
+        variant="dialog"
+        title="Une raison ?"
+        description="C’est facultatif, mais ça m’aide à mieux choisir la suite."
+        onClose={closeReasons}
+        footer={
+          <Button variant="ghost" onClick={closeReasons}>
+            Passer
+          </Button>
+        }
+      >
+        {reasonFor && reasonView && (
+          <RadioGroup
+            legend="Une raison ? (facultatif)"
+            hideLegend
+            options={RATING_REASONS.map((r) => ({ value: r, label: RATING_REASON_LABELS[r] }))}
+            value={reasonRating?.reason}
+            onChange={(reason) => {
+              onReason(reasonView, reasonFor, reason);
+            }}
+          />
+        )}
+      </Sheet>
 
       <Sheet
         open={confirmNew}
@@ -226,6 +294,28 @@ export function WeekPage() {
           <span aria-hidden="true">🌱 </span>Tes 👍 et 👎 orientent les nouvelles idées.
         </p>
       </Sheet>
+
+      <Sheet
+        open={showBatch && (data?.batch.length ?? 0) > 0}
+        title="Cuisiner en avance le dimanche"
+        description="Une heure ou deux le dimanche, et les soirs de semaine vont plus vite."
+        onClose={() => {
+          setShowBatch(false);
+        }}
+      >
+        {data && <BatchContent batch={data.batch} />}
+      </Sheet>
+
+      <Sheet
+        open={showBalance}
+        title="L’équilibre de ta semaine"
+        description="De la variété, sans rien compter."
+        onClose={() => {
+          setShowBalance(false);
+        }}
+      >
+        {data && <BalanceContent data={data} />}
+      </Sheet>
     </Page>
   );
 }
@@ -236,26 +326,83 @@ interface WeekContentProps {
   readonly busy: boolean;
   readonly onReplace: (meal: PlannedMeal) => void;
   readonly onRate: (meal: PlannedMeal, verdict: RatingVerdict) => void;
-  readonly onReason: (meal: PlannedMeal, reason: RatingReason) => void;
+  readonly onNewMenu: () => void;
+  readonly onShowBatch: () => void;
+  readonly onShowBalance: () => void;
 }
 
-function WeekContent({ data, origin, busy, onReplace, onRate, onReason }: WeekContentProps) {
-  const { view, balance, batch } = data;
+function WeekContent({
+  data,
+  origin,
+  busy,
+  onReplace,
+  onRate,
+  onNewMenu,
+  onShowBatch,
+  onShowBalance,
+}: WeekContentProps) {
+  const { view, batch } = data;
   const { today: getToday } = useDependencies();
-  const meals = view.plan.meals;
-  const byId = new Map(meals.map((m) => [m.id, m]));
-  const leftoverBySource = new Map(
-    meals.filter((m) => m.leftoverOf !== undefined).map((m) => [m.leftoverOf ?? '', m]),
-  );
-  const days = new Map<DayIndex, PlannedMeal[]>();
-  for (const meal of meals) {
-    const list = days.get(meal.dayIndex) ?? [];
-    list.push(meal);
-    days.set(meal.dayIndex, list);
-  }
-  const relaxed = meals.some((m) => m.relaxed.length > 0);
-  const notices = view.plan.notices;
   const today = getToday();
+
+  /** Tous les repas dans l'ordre de la semaine : le glissement les parcourt de proche en proche. */
+  const ordered = useMemo(
+    () =>
+      [...view.plan.meals].sort(
+        (a, b) => a.dayIndex - b.dayIndex || slotRank(a.slot) - slotRank(b.slot),
+      ),
+    [view.plan.meals],
+  );
+  const byId = useMemo(() => new Map(ordered.map((m) => [m.id, m])), [ordered]);
+  const leftoverBySource = useMemo(
+    () =>
+      new Map(
+        ordered.filter((m) => m.leftoverOf !== undefined).map((m) => [m.leftoverOf ?? '', m]),
+      ),
+    [ordered],
+  );
+  const days = useMemo(() => {
+    const seen = new Map<number, string>();
+    for (const meal of ordered) if (!seen.has(meal.dayIndex)) seen.set(meal.dayIndex, meal.date);
+    return [...seen.entries()].map(([dayIndex, date]) => ({ dayIndex, date }));
+  }, [ordered]);
+
+  const initialId = useMemo(
+    () => (ordered.find((m) => m.date === today) ?? ordered[0])?.id,
+    [ordered, today],
+  );
+  const [selectedId, setSelectedId] = useState<string | undefined>(initialId);
+  const [direction, setDirection] = useState<SwipeDirection>('next');
+
+  const index = Math.max(
+    0,
+    ordered.findIndex((m) => m.id === selectedId),
+  );
+  const meal = ordered[index];
+  if (!meal) return null;
+
+  const goTo = (id: string, dir?: SwipeDirection) => {
+    const target = ordered.findIndex((m) => m.id === id);
+    if (target < 0) return;
+    setDirection(dir ?? (target >= index ? 'next' : 'prev'));
+    setSelectedId(id);
+  };
+  const step = (dir: SwipeDirection) => {
+    const target = ordered[index + (dir === 'next' ? 1 : -1)];
+    if (target) goTo(target.id, dir);
+  };
+  const pickDay = (dayIndex: number) => {
+    const sameDay = ordered.filter((m) => m.dayIndex === dayIndex);
+    const target = sameDay.find((m) => m.slot === meal.slot) ?? sameDay[0];
+    if (target) goTo(target.id);
+  };
+  const pickSlot = (slot: MealSlot) => {
+    const target = ordered.find((m) => m.dayIndex === meal.dayIndex && m.slot === slot);
+    if (target) goTo(target.id);
+  };
+
+  const dayMeals = ordered.filter((m) => m.dayIndex === meal.dayIndex);
+  const dayLabel = `${formatDayLong(meal.date)}${meal.date === today ? ', aujourd’hui' : ''}`;
 
   return (
     <>
@@ -264,6 +411,175 @@ function WeekContent({ data, origin, busy, onReplace, onRate, onReason }: WeekCo
           Ton profil a changé : on t’a préparé un menu qui lui correspond.
         </Notice>
       )}
+
+      <DayStrip
+        idPrefix="jour"
+        value={String(meal.dayIndex)}
+        onChange={(id) => {
+          pickDay(Number(id));
+        }}
+        days={days.map(({ dayIndex, date }) => ({
+          id: String(dayIndex),
+          weekday: DAY_SHORT_LABELS[dayIndex as DayIndex],
+          dayOfMonth: formatDayOfMonth(date),
+          ariaLabel: `${formatDayLong(date)}${date === today ? ', aujourd’hui' : ''}`,
+          isToday: date === today,
+        }))}
+      />
+
+      <div className={styles.mealRow}>
+        <RoundIconButton
+          icon="‹"
+          label="Repas précédent"
+          tone="soft"
+          disabled={index === 0}
+          onClick={() => {
+            step('prev');
+          }}
+        />
+        <SegmentedTabs
+          idPrefix="repas"
+          label={`Repas de ${DAY_LABELS[meal.dayIndex].toLowerCase()}`}
+          value={meal.slot}
+          onChange={pickSlot}
+          tabs={dayMeals.map((m) => ({
+            id: m.slot,
+            ariaLabel: SLOT_LABELS[m.slot],
+            label: (
+              <>
+                <span aria-hidden="true">{SLOT_EMOJIS[m.slot]}</span> {SLOT_SHORT_LABELS[m.slot]}
+              </>
+            ),
+          }))}
+        />
+        <RoundIconButton
+          icon="›"
+          label="Repas suivant"
+          tone="soft"
+          disabled={index === ordered.length - 1}
+          onClick={() => {
+            step('next');
+          }}
+        />
+      </div>
+
+      <p className="visually-hidden" aria-live="polite">
+        {dayLabel}, {SLOT_LABELS[meal.slot].toLowerCase()}
+      </p>
+
+      <div
+        role="tabpanel"
+        id={panelId('repas', meal.slot)}
+        aria-labelledby={tabId('repas', meal.slot)}
+        className={styles.panel}
+      >
+        <Swipeable className={styles.swipe} itemKey={meal.id} direction={direction} onSwipe={step}>
+          <MealCard
+            meal={meal}
+            recipe={view.recipes[meal.recipeId]}
+            explanation={view.explanations[meal.id]}
+            rating={view.ratings[meal.id]}
+            leftoverSource={meal.leftoverOf ? byId.get(meal.leftoverOf) : undefined}
+            feedsLeftover={leftoverBySource.get(meal.id)}
+            busy={busy}
+            onReplace={onReplace}
+            onRate={onRate}
+            onGoTo={(id) => {
+              goTo(id);
+            }}
+          />
+        </Swipeable>
+      </div>
+
+      <nav className={styles.shortcuts} aria-label="Raccourcis">
+        <RoundIconLink
+          to="/frigo"
+          icon="🧊"
+          caption="Frigo"
+          label="Frigo vide : cuisiner avec ce que tu as"
+          tone="accent"
+        />
+        {batch.length > 0 && (
+          <RoundIconButton
+            icon="🥘"
+            caption="Dimanche"
+            label="Cuisiner en avance le dimanche"
+            tone="accent"
+            onClick={onShowBatch}
+          />
+        )}
+        <RoundIconButton
+          icon="🌈"
+          caption="Équilibre"
+          label="Équilibre de la semaine"
+          tone="accent"
+          onClick={onShowBalance}
+        />
+        <RoundIconButton
+          icon="✨"
+          caption="Nouveau"
+          label="Nouveau menu"
+          tone="accent"
+          disabled={busy}
+          onClick={onNewMenu}
+        />
+      </nav>
+    </>
+  );
+}
+
+function BatchContent({ batch }: { readonly batch: readonly BatchPrepGroup[] }) {
+  return (
+    <div className={styles.batch}>
+      {batch.map((group) => (
+        <section
+          key={group.kind}
+          className={styles.batchGroup}
+          aria-labelledby={`batch-${group.kind}`}
+        >
+          <h3 id={`batch-${group.kind}`} className={styles.batchTitle}>
+            {group.title}
+          </h3>
+          <p className={styles.batchHint}>{group.hint}</p>
+          <ul className={styles.batchList}>
+            {group.tasks.map((task) => (
+              <li key={task.label}>
+                {group.kind === 'plat-entier' && task.recipeIds[0] ? (
+                  <ButtonLink to={`/recette/${task.recipeIds[0]}`} variant="ghost" small>
+                    {task.label}
+                  </ButtonLink>
+                ) : (
+                  <span className={styles.batchTask}>{task.label}</span>
+                )}
+                <span className={styles.batchMeals}>pour {task.mealLabels.join(', ')}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function BalanceContent({ data }: { readonly data: WeekData }) {
+  const { view, balance } = data;
+  const meals = view.plan.meals;
+  const relaxed = meals.some((m) => m.relaxed.length > 0);
+  const notices = view.plan.notices;
+  return (
+    <div className={styles.balance}>
+      <div className={styles.gauges}>
+        {balance.map((g) => (
+          <Gauge
+            key={g.key}
+            label={g.label}
+            count={g.count}
+            target={g.target}
+            emoji={BALANCE_EMOJIS[g.key]}
+            tone={BALANCE_TONES[g.key]}
+          />
+        ))}
+      </div>
       {notices.map((n) => (
         <Notice key={n.code} tone="info" emoji="💡">
           {n.message}
@@ -275,99 +591,6 @@ function WeekContent({ data, origin, busy, onReplace, onRate, onReason }: WeekCo
           d’idées qui cochent toutes les cases.
         </Notice>
       )}
-
-      <div className={styles.days}>
-        {[...days.entries()].map(([dayIndex, dayMeals]) => {
-          const date = dayMeals[0]?.date ?? '';
-          const isToday = date === today;
-          return (
-            <section
-              key={dayIndex}
-              className={`${styles.day} ${isToday ? styles.today : ''}`}
-              aria-labelledby={`jour-${dayIndex}`}
-            >
-              <h2 id={`jour-${dayIndex}`} className={styles.dayTitle}>
-                {formatDayLong(date)}
-                {isToday && <span className={styles.todayBadge}>Aujourd’hui</span>}
-              </h2>
-              <div className={styles.meals}>
-                {dayMeals.map((meal) => (
-                  <MealCard
-                    key={meal.id}
-                    meal={meal}
-                    recipe={view.recipes[meal.recipeId]}
-                    explanation={view.explanations[meal.id]}
-                    rating={view.ratings[meal.id]}
-                    leftoverSource={meal.leftoverOf ? byId.get(meal.leftoverOf) : undefined}
-                    feedsLeftover={leftoverBySource.get(meal.id)}
-                    busy={busy}
-                    onReplace={onReplace}
-                    onRate={onRate}
-                    onReason={onReason}
-                  />
-                ))}
-              </div>
-            </section>
-          );
-        })}
-      </div>
-
-      {batch.length > 0 && (
-        <Card as="section" tone="soft" aria-labelledby="batch-title">
-          <h2 id="batch-title" className={styles.sectionTitle}>
-            <span aria-hidden="true">🥘 </span>Cuisiner en avance le dimanche
-          </h2>
-          <p className={styles.sectionIntro}>
-            Une heure ou deux le dimanche, et les soirs de semaine vont plus vite :
-          </p>
-          {batch.map((group) => (
-            <section
-              key={group.kind}
-              className={styles.batchGroup}
-              aria-labelledby={`batch-${group.kind}`}
-            >
-              <h3 id={`batch-${group.kind}`} className={styles.batchTitle}>
-                {group.title}
-              </h3>
-              <p className={styles.batchHint}>{group.hint}</p>
-              <ul className={styles.batchList}>
-                {group.tasks.map((task) => (
-                  <li key={task.label}>
-                    {group.kind === 'plat-entier' && task.recipeIds[0] ? (
-                      <ButtonLink to={`/recette/${task.recipeIds[0]}`} variant="ghost" small>
-                        {task.label}
-                      </ButtonLink>
-                    ) : (
-                      <span className={styles.batchTask}>{task.label}</span>
-                    )}
-                    <span className={styles.batchMeals}>pour {task.mealLabels.join(', ')}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </Card>
-      )}
-
-      {balance.length > 0 && (
-        <Card as="section" aria-labelledby="balance-title">
-          <h2 id="balance-title" className={styles.sectionTitle}>
-            <span aria-hidden="true">🌈 </span>L’équilibre de ta semaine
-          </h2>
-          <p className={styles.sectionIntro}>De la variété, sans rien compter.</p>
-          <div className={styles.gauges}>
-            {balance.map((g) => (
-              <Gauge
-                key={g.key}
-                label={g.label}
-                count={g.count}
-                target={g.target}
-                emoji={GAUGE_EMOJIS[g.key]}
-              />
-            ))}
-          </div>
-        </Card>
-      )}
-    </>
+    </div>
   );
 }

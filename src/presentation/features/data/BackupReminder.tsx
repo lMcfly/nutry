@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useDependencies } from '../../app/dependencies';
-import { ButtonLink } from '../../components/Button';
-import { Notice } from '../../components/Notice';
+import { RoundIconLink } from '../../components/RoundIconButton';
 
-/** Carte douce, fermable, quand une sauvegarde serait bienvenue (`getBackupReminder`). */
+/**
+ * Petite pastille ronde quand une sauvegarde serait bienvenue (`getBackupReminder`) : elle
+ * mène à « Mes données ». Une fois touchée, elle ne revient pas avant le prochain lancement.
+ */
 export function BackupReminder() {
   const { getBackupReminder, dismissBackupReminder } = useDependencies();
   const [due, setDue] = useState(false);
@@ -21,24 +23,15 @@ export function BackupReminder() {
   if (!due) return null;
 
   return (
-    <Notice
-      tone="info"
-      emoji="💾"
-      title="Et si tu faisais une sauvegarde ?"
-      dismissLabel="Masquer le rappel de sauvegarde"
-      onDismiss={() => {
-        setDue(false);
-        // Une fois masqué, le rappel ne revient pas avant le prochain lancement.
+    <RoundIconLink
+      to="/profil#mes-donnees"
+      icon="💾"
+      dot
+      label="Sauvegarde conseillée : sauvegarder mes données"
+      onClick={() => {
         dismissBackupReminder();
+        setDue(false);
       }}
-      action={
-        <ButtonLink to="/profil#mes-donnees" small variant="secondary">
-          Sauvegarder mes données
-        </ButtonLink>
-      }
-    >
-      Tes données ne vivent que sur ce téléphone : une copie te met à l’abri d’un changement
-      d’appareil.
-    </Notice>
+    />
   );
 }

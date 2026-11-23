@@ -31,8 +31,24 @@ describe('<RecipePage />', () => {
       existing,
     });
     expect(await screen.findByRole('heading', { name: recipe.name, level: 1 })).toBeVisible();
+    // Trois jauges d'assiette et trois onglets : Ingrédients, Étapes, Infos.
+    expect(screen.getAllByRole('meter')).toHaveLength(3);
+    expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual([
+      'Ingrédients',
+      'Étapes',
+      'Infos',
+    ]);
     expect(screen.getByText(/Pour 2 personnes/)).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Étapes' })).toBeVisible();
+    expect(screen.getByRole('tab', { name: 'Ingrédients' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    await user.click(screen.getByRole('tab', { name: 'Étapes' }));
+    expect(screen.getByRole('list').querySelectorAll('li').length).toBe(recipe.steps.length);
+
+    await user.click(screen.getByRole('tab', { name: 'Infos' }));
+    expect(screen.getByRole('heading', { name: 'Allergènes' })).toBeVisible();
     expect(screen.getByText(PROCESSED_PRODUCTS_NOTICE, { exact: false })).toBeVisible();
     const details = screen.getByText('Détail nutritionnel (optionnel)').closest('details');
     expect(details).not.toHaveAttribute('open');

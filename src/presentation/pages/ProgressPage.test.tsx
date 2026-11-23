@@ -3,24 +3,46 @@ import { describe, expect, it } from 'vitest';
 import { ProgressPage } from './ProgressPage';
 import { TEST_PROFILE, createTestUseCases, renderScreen } from '../testing/renderApp';
 
+type User = ReturnType<typeof renderScreen>['user'];
+
+/** Ouvre la feuille de saisie (« Noter ma mesure »). */
+async function openMeasureSheet(user: User): Promise<HTMLElement> {
+  await user.click(await screen.findByRole('button', { name: 'Noter ma mesure' }));
+  return screen.findByRole('dialog', { name: 'Ma mesure de la semaine' });
+}
+
 describe('<ProgressPage />', () => {
+  it('tableau de bord sur un écran : série et Nutry, équilibre, suivi, accès aux sheets', async () => {
+    renderScreen(<ProgressPage />);
+    expect(await screen.findByRole('heading', { name: /Ta série/ })).toBeVisible();
+    expect(screen.getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
+    expect(screen.getByRole('heading', { name: /L’équilibre de ta semaine/ })).toBeVisible();
+    expect(screen.getAllByRole('meter')).toHaveLength(4);
+    expect(screen.getByRole('button', { name: /Favoris/ })).toBeVisible();
+    expect(screen.getByRole('button', { name: /Historique/ })).toBeVisible();
+  });
+
   it('saisie hebdomadaire, courbe accessible et suppression', async () => {
     const existing = createTestUseCases({ profile: TEST_PROFILE });
     existing.ports.state.progress.set('2026-11-09', { date: '2026-11-09', weightKg: 63 });
     existing.ports.state.progress.set('2026-11-16', { date: '2026-11-16', weightKg: 62.4 });
     const { user, ports } = renderScreen(<ProgressPage />, { existing });
-    const weight = await screen.findByLabelText('Poids');
-    await user.type(weight, '62,1');
-    await user.click(screen.getByRole('button', { name: 'Enregistrer' }));
+    const sheet = await openMeasureSheet(user);
+    await user.type(within(sheet).getByLabelText('Poids'), '62,1');
+    await user.click(within(sheet).getByRole('button', { name: 'Enregistrer' }));
     expect(await screen.findByText(/bravo pour ta régularité/)).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).toBeNull();
     expect(ports.state.progress.get('2026-11-23')?.weightKg).toBe(62.1);
 
     const chart = await screen.findByRole('img', { name: 'Poids, tendance lissée' });
     expect(chart).toHaveAccessibleDescription(/3 mesures/);
     expect(screen.getByRole('table', { hidden: true })).toBeInTheDocument();
 
-    await user.click(screen.getByText(/Mes mesures/));
-    await user.click(screen.getByRole('button', { name: /Supprimer la mesure du 9 novembre/ }));
+    const again = await openMeasureSheet(user);
+    await user.click(within(again).getByText(/Mes mesures/));
+    await user.click(
+      within(again).getByRole('button', { name: /Supprimer la mesure du 9 novembre/ }),
+    );
     await waitFor(() => {
       expect(ports.state.progress.has('2026-11-09')).toBe(false);
     });
@@ -31,8 +53,9 @@ describe('<ProgressPage />', () => {
     existing.ports.clock.set('2026-11-25T10:00:00.000Z');
     existing.ports.state.progress.set('2026-11-24', { date: '2026-11-24', waistCm: 80 });
     const { user } = renderScreen(<ProgressPage />, { existing });
-    await user.type(await screen.findByLabelText('Tour de taille'), '79');
-    await user.click(screen.getByRole('button', { name: 'Enregistrer' }));
+    const sheet = await openMeasureSheet(user);
+    await user.type(within(sheet).getByLabelText('Tour de taille'), '79');
+    await user.click(within(sheet).getByRole('button', { name: 'Enregistrer' }));
     expect(await screen.findByText('Mesure de la semaine mise à jour.')).toBeInTheDocument();
   });
 
@@ -44,12 +67,16 @@ describe('<ProgressPage />', () => {
       'section',
     );
     expect(card).toHaveTextContent(/on mise sur le plaisir de manger varié et sur ton énergie/);
-    expect(screen.queryByLabelText('Poids')).toBeNull();
-    expect(screen.getByLabelText('Tour de taille')).toBeInTheDocument();
+    const before = await openMeasureSheet(user);
+    expect(within(before).queryByLabelText('Poids')).toBeNull();
+    expect(within(before).getByLabelText('Tour de taille')).toBeInTheDocument();
+    await user.click(within(before).getByRole('button', { name: 'Fermer' }));
     await user.click(
       within(card as HTMLElement).getByRole('button', { name: 'Activer le suivi du poids' }),
     );
-    expect(await screen.findByLabelText('Poids')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /Ta tendance/ })).toBeVisible();
+    const after = await openMeasureSheet(user);
+    expect(within(after).getByLabelText('Poids')).toBeInTheDocument();
     expect(ports.state.settings.weightTracking).toBe(true);
   });
 
@@ -62,7 +89,9 @@ describe('<ProgressPage />', () => {
   ] as const)(
     'profil protégé (%s) : suivi masqué, carte douce sans jugement',
     async (_label, overrides) => {
-      renderScreen(<ProgressPage />, { profile: { ...TEST_PROFILE, ...overrides } });
+      const { user } = renderScreen(<ProgressPage />, {
+        profile: { ...TEST_PROFILE, ...overrides },
+      });
       const card = (await screen.findByRole('heading', { name: /Suivi du poids/ })).closest(
         'section',
       ) as HTMLElement;
@@ -70,14 +99,17 @@ describe('<ProgressPage />', () => {
       expect(card.textContent).not.toMatch(
         /IMC|risque|maigre|insuffisan|danger|santé|médecin|en pause|y tiens vraiment/i,
       );
-      expect(screen.queryByLabelText('Poids')).toBeNull();
+      const sheet = await openMeasureSheet(user);
+      expect(within(sheet).queryByLabelText('Poids')).toBeNull();
     },
   );
 
   it('profil standard : poids proposé, pas de carte de suivi désactivé', async () => {
     const existing = createTestUseCases({ profile: TEST_PROFILE });
-    renderScreen(<ProgressPage />, { existing });
-    expect(await screen.findByLabelText('Poids')).toBeInTheDocument();
+    const { user } = renderScreen(<ProgressPage />, { existing });
+    const sheet = await openMeasureSheet(user);
+    expect(within(sheet).getByLabelText('Poids')).toBeInTheDocument();
+    await user.click(within(sheet).getByRole('button', { name: 'Fermer' }));
     expect(screen.queryByRole('heading', { name: /Suivi du poids/ })).toBeNull();
   });
 
@@ -104,11 +136,13 @@ describe('<ProgressPage />', () => {
     });
     const { user } = renderScreen(<ProgressPage />, { existing });
     const name = plan.recipes[meal.recipeId]?.name ?? '';
-    const favorites = (
-      await screen.findByRole('heading', { name: /Mes recettes favorites/ })
-    ).closest('section');
-    expect(within(favorites as HTMLElement).getByRole('link', { name })).toBeInTheDocument();
-    await user.click(screen.getByText(/Semaine du 23 novembre 2026/));
-    expect(screen.getAllByRole('link', { name }).length).toBeGreaterThan(1);
+    await user.click(await screen.findByRole('button', { name: /Favoris/ }));
+    const favorites = await screen.findByRole('dialog', { name: 'Mes recettes favorites' });
+    expect(within(favorites).getByRole('link', { name })).toBeInTheDocument();
+    await user.click(within(favorites).getByRole('button', { name: 'Fermer' }));
+    await user.click(screen.getByRole('button', { name: /Historique/ }));
+    const history = await screen.findByRole('dialog', { name: 'Mes menus passés' });
+    await user.click(within(history).getByText(/Semaine du 23 novembre 2026/));
+    expect(within(history).getAllByRole('link', { name }).length).toBeGreaterThan(0);
   });
 });

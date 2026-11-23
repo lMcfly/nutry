@@ -4,6 +4,9 @@ import { useDependencies } from '../../app/dependencies';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { Sheet } from '../../components/Sheet';
+import { useCelebrationCheck } from '../companion/Celebration';
+import { Nutry } from '../companion/Nutry';
+import { useCompanion } from '../companion/useCompanion';
 import { QUIZ_CATEGORY_LABELS, plural } from '../../i18n/labels';
 import styles from './QuizCard.module.css';
 
@@ -16,6 +19,8 @@ const LETTERS = ['A', 'B', 'C', 'D'] as const;
  */
 export function QuizCard() {
   const { getQuiz, answerQuiz, claimQuizForSession } = useDependencies();
+  const checkCelebration = useCelebrationCheck();
+  const { companion } = useCompanion();
   const [quiz, setQuiz] = useState<QuizView | undefined>();
   const [answer, setAnswer] = useState<QuizAnswerView | undefined>();
   const [open, setOpen] = useState(false);
@@ -47,7 +52,10 @@ export function QuizCard() {
     setPending(true);
     try {
       const result = await answerQuiz({ questionId: quiz.questionId, answerIndex: index });
-      if (result) setAnswer(result);
+      if (result) {
+        setAnswer(result);
+        checkCelebration();
+      }
     } finally {
       setPending(false);
     }
@@ -76,8 +84,13 @@ export function QuizCard() {
       }
     >
       <div className={styles.quiz}>
-        <Badge tone="accent">{QUIZ_CATEGORY_LABELS[quiz.category]}</Badge>
-        <p className={styles.question}>{quiz.question}</p>
+        <div className={styles.ask}>
+          {companion && <Nutry look={companion.look} mood={companion.mood} size="s" />}
+          <div className={styles.bubble}>
+            <Badge tone="accent">{QUIZ_CATEGORY_LABELS[quiz.category]}</Badge>
+            <p className={styles.question}>{quiz.question}</p>
+          </div>
+        </div>
         <ul className={styles.choices}>
           {quiz.choices.map((choice, index) => {
             const isCorrect = answer?.correctIndex === index;

@@ -54,3 +54,11 @@
   border-radius: 50%;
   background: var(--color-accent);
 }
+
+.compact .svg {
+  max-height: 5.25rem;
+}
+
+.compact .caption {
+  display: none;
+}

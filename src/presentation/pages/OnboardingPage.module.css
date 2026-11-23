@@ -1,22 +1,27 @@
+/* Chaque étape tient sur un écran : en-tête, zone défilante dans la carte, actions en bas. */
 .onboarding {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-2);
+  min-height: 0;
 }
 
 .top {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  flex: none;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .brand {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
+  font-size: var(--font-size-md);
+  font-weight: 800;
+  color: var(--color-accent);
 }
 
 .progress {
+  flex: 1;
   height: 0.5rem;
   border-radius: var(--radius-pill);
   background: var(--color-surface-alt);
@@ -33,40 +38,76 @@
 .stepCount {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
 }
 
 .form {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-2);
+  min-height: 0;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
 }
 
 .header {
   display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.headerText {
+  display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .emoji {
-  font-size: 2.5rem;
-  line-height: 1.2;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  font-size: 1.6rem;
 }
 
 .intro {
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  line-height: 1.3;
+}
+
+.introSub {
   color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.body {
+  flex: 1;
+  padding: var(--space-1) var(--space-2) var(--space-2) 0;
 }
 
 .actions {
-  position: sticky;
-  bottom: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex: none;
   align-items: center;
   gap: var(--space-2);
-  margin: 0 calc(-1 * var(--space-4));
-  padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-border);
-  background: var(--color-bg);
+  padding-top: var(--space-2);
+  padding-right: var(--space-1);
 }
 
 .spacer {
@@ -74,6 +115,7 @@
 }
 
 .privacy {
+  margin-top: var(--space-3);
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   text-align: center;

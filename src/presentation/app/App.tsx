@@ -6,6 +6,7 @@ import type { ProfileStatus } from './appState';
 import { TabBar } from '../components/TabBar';
 import type { Tab } from '../components/TabBar';
 import { ToastProvider } from '../components/Toast';
+import { CelebrationProvider } from '../features/companion/Celebration';
 import { QuizCard } from '../features/quiz/QuizCard';
 import { applyTheme } from '../hooks/theme';
 import { ShoppingPage } from '../pages/ShoppingPage';
@@ -84,54 +85,54 @@ function Shell() {
   const state = useMemo(() => ({ profileStatus, setProfileStatus }), [profileStatus]);
   const ready = profileStatus === 'ready';
 
+  const shell = (
+    <div className={styles.shell}>
+      <a
+        href="#contenu"
+        className={styles.skip}
+        onClick={(event) => {
+          // HashRouter : on ne touche pas au hash, on déplace seulement le focus.
+          event.preventDefault();
+          focusMain();
+        }}
+      >
+        Aller au contenu
+      </a>
+      <main id="contenu" tabIndex={-1} className={`${styles.main} ${ready ? styles.withTabs : ''}`}>
+        {profileStatus === 'loading' ? (
+          <Loading />
+        ) : ready ? (
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/semaine" replace />} />
+              <Route path="/semaine" element={<WeekPage />} />
+              <Route path="/courses" element={<ShoppingPage />} />
+              <Route path="/profil" element={<ProfilePage />} />
+              <Route path="/progres" element={<ProgressPage />} />
+              <Route path="/frigo" element={<FridgePage />} />
+              <Route path="/recette/:id" element={<RecipePage />} />
+              <Route path="/confidentialite" element={<PrivacyPage />} />
+              <Route path="*" element={<Navigate to="/semaine" replace />} />
+            </Routes>
+          </Suspense>
+        ) : (
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/bienvenue" element={<OnboardingPage />} />
+              <Route path="/confidentialite" element={<PrivacyPage />} />
+              <Route path="*" element={<Navigate to="/bienvenue" replace />} />
+            </Routes>
+          </Suspense>
+        )}
+      </main>
+      {ready && <TabBar tabs={TABS} />}
+      {ready && <QuizCard />}
+    </div>
+  );
+
   return (
     <AppStateContext.Provider value={state}>
-      <div className={styles.shell}>
-        <a
-          href="#contenu"
-          className={styles.skip}
-          onClick={(event) => {
-            // HashRouter : on ne touche pas au hash, on déplace seulement le focus.
-            event.preventDefault();
-            focusMain();
-          }}
-        >
-          Aller au contenu
-        </a>
-        <main
-          id="contenu"
-          tabIndex={-1}
-          className={`${styles.main} ${ready ? styles.withTabs : ''}`}
-        >
-          {profileStatus === 'loading' ? (
-            <Loading />
-          ) : ready ? (
-            <Suspense fallback={<Loading />}>
-              <Routes>
-                <Route path="/" element={<Navigate to="/semaine" replace />} />
-                <Route path="/semaine" element={<WeekPage />} />
-                <Route path="/courses" element={<ShoppingPage />} />
-                <Route path="/profil" element={<ProfilePage />} />
-                <Route path="/progres" element={<ProgressPage />} />
-                <Route path="/frigo" element={<FridgePage />} />
-                <Route path="/recette/:id" element={<RecipePage />} />
-                <Route path="/confidentialite" element={<PrivacyPage />} />
-                <Route path="*" element={<Navigate to="/semaine" replace />} />
-              </Routes>
-            </Suspense>
-          ) : (
-            <Suspense fallback={<Loading />}>
-              <Routes>
-                <Route path="/bienvenue" element={<OnboardingPage />} />
-                <Route path="/confidentialite" element={<PrivacyPage />} />
-                <Route path="*" element={<Navigate to="/bienvenue" replace />} />
-              </Routes>
-            </Suspense>
-          )}
-        </main>
-        {ready && <TabBar tabs={TABS} />}
-        {ready && <QuizCard />}
-      </div>
+      {ready ? <CelebrationProvider>{shell}</CelebrationProvider> : shell}
     </AppStateContext.Provider>
   );
 }
