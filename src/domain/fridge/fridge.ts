@@ -1,4 +1,5 @@
 import { containsTerm } from '../shared';
+import { findProduce } from '../season';
 import { BASIC_INGREDIENTS, filterCompatibleRecipes, isBasicIngredient } from '../recipe';
 import type { DietaryConstraints, Recipe, RecipeIngredient } from '../recipe';
 
@@ -20,11 +21,17 @@ export interface FridgeInput {
   readonly limit?: number;
 }
 
-/** Vrai si l'ingrédient correspond à l'un des aliments disponibles (dans un sens ou l'autre). */
+/**
+ * Vrai si l'ingrédient correspond à l'un des aliments disponibles (dans un sens ou l'autre),
+ * sauf s'ils désignent deux produits différents du calendrier (« pommes » ≠ « pommes de terre »).
+ */
 function isAvailable(ingredient: RecipeIngredient, available: readonly string[]): boolean {
-  return available.some(
-    (a) => containsTerm(ingredient.name, a) || containsTerm(a, ingredient.name),
-  );
+  const produce = findProduce(ingredient.name);
+  return available.some((a) => {
+    if (!containsTerm(ingredient.name, a) && !containsTerm(a, ingredient.name)) return false;
+    const other = findProduce(a);
+    return !produce || !other || produce.name === other.name;
+  });
 }
 
 /**
