@@ -1,12 +1,10 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { screen, waitFor, within } from '@testing-library/react';
+import { Route, Routes } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { FIXTURE_RECIPES } from '@domain/testing/fixtures';
 import { FridgePage } from './FridgePage';
 import { CIQUAL_CITATION, PrivacyPage } from './PrivacyPage';
 import { PROCESSED_PRODUCTS_NOTICE, RecipePage } from './RecipePage';
-import { DependenciesProvider } from '../app/dependencies';
-import { ToastProvider } from '../components/Toast';
 import { TEST_PROFILE, createTestUseCases, renderScreen } from '../testing/renderApp';
 
 function recipeRoute() {
@@ -45,18 +43,16 @@ describe('<RecipePage />', () => {
     expect(await screen.findByRole('button', { name: /Dans tes favoris/ })).toBeDisabled();
   });
 
-  it('recette venue du frigo vide (état de navigation)', async () => {
-    const recipe = FIXTURE_RECIPES[1];
-    if (!recipe) throw new Error('fixture');
+  it('recette hors menu (frigo vide, lien profond, rechargement) : trouvée par getRecipe', async () => {
     const existing = createTestUseCases({ profile: TEST_PROFILE });
-    render(
-      <DependenciesProvider value={existing.useCases}>
-        <MemoryRouter initialEntries={[{ pathname: `/recette/${recipe.id}`, state: { recipe } }]}>
-          <ToastProvider>{recipeRoute()}</ToastProvider>
-        </MemoryRouter>
-      </DependenciesProvider>,
-    );
-    expect(await screen.findByRole('heading', { name: recipe.name, level: 1 })).toBeVisible();
+    const plan = await existing.useCases.getCurrentPlan();
+    if (plan.status !== 'ready') throw new Error('pas de menu');
+    const outside = FIXTURE_RECIPES.find((r) => plan.recipes[r.id] === undefined);
+    if (!outside) throw new Error('toutes les fixtures sont au menu');
+    renderScreen(recipeRoute(), { route: `/recette/${outside.id}`, existing });
+    expect(await screen.findByRole('heading', { name: outside.name, level: 1 })).toBeVisible();
+    // Hors menu : pas de bouton favori (il s'appuie sur un repas noté).
+    expect(screen.queryByRole('button', { name: /favoris/ })).toBeNull();
   });
 
   it('recette inconnue : message doux', async () => {

@@ -31,12 +31,6 @@ const GAUGE_EMOJIS: Readonly<Record<BalanceGauge['key'], string>> = {
   wholeGrains: '🌾',
 };
 
-/** Date du jour (locale) au format ISO, pour repérer « aujourd'hui ». */
-function localToday(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
 export function WeekPage() {
   const deps = useDependencies();
   const {
@@ -235,6 +229,7 @@ interface WeekContentProps {
 
 function WeekContent({ data, origin, busy, onReplace, onRate, onReason }: WeekContentProps) {
   const { view, balance, batch } = data;
+  const { today: getToday } = useDependencies();
   const meals = view.plan.meals;
   const byId = new Map(meals.map((m) => [m.id, m]));
   const leftoverBySource = new Map(
@@ -248,7 +243,7 @@ function WeekContent({ data, origin, busy, onReplace, onRate, onReason }: WeekCo
   }
   const relaxed = meals.some((m) => m.relaxed.length > 0);
   const notices = view.plan.notices;
-  const today = localToday();
+  const today = getToday();
 
   return (
     <>

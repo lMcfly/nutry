@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import type { PlanView } from '@application/usecases';
 import { scaleRecipeForHousehold } from '@domain/profile';
 import type { Recipe } from '@domain/recipe';
 import { totalMinutes } from '@domain/recipe';
-import { formatQuantity, roundForShopping } from '@domain/shopping';
+import { formatIngredient, roundForRecipe } from '@domain/shopping';
 import { useDependencies } from '../app/dependencies';
 import { Badge } from '../components/Badge';
 import { Button, ButtonLink } from '../components/Button';
@@ -35,29 +35,18 @@ interface RecipeData {
   readonly plan: PlanView | undefined;
 }
 
-/** Recette transmise par l'écran précédent (frigo vide), via l'état de navigation. */
-function recipeFromState(state: unknown, id: string): Recipe | undefined {
-  if (typeof state !== 'object' || state === null || !('recipe' in state)) return undefined;
-  const recipe = (state as { recipe?: Recipe }).recipe;
-  return recipe?.id === id ? recipe : undefined;
-}
-
 export function RecipePage() {
   const { id = '' } = useParams();
-  const location = useLocation();
-  const { getCurrentPlan, getPlanHistory, getFavorites, rateMeal } = useDependencies();
+  const { getCurrentPlan, getRecipe, rateMeal } = useDependencies();
   const toast = useToast();
   const [saving, setSaving] = useState(false);
-  const navState: unknown = location.state;
 
   const load = useCallback(async (): Promise<RecipeData> => {
     const result = await getCurrentPlan();
     const plan = result.status === 'ready' ? result : undefined;
-    let recipe = plan?.recipes[id] ?? recipeFromState(navState, id);
-    if (!recipe) recipe = (await getPlanHistory()).recipes[id];
-    if (!recipe) recipe = (await getFavorites()).find((r) => r.id === id);
+    const recipe = plan?.recipes[id] ?? (await getRecipe(id));
     return { recipe, plan };
-  }, [id, navState, getCurrentPlan, getPlanHistory, getFavorites]);
+  }, [id, getCurrentPlan, getRecipe]);
 
   const { state, reload } = useAsync(load);
 
@@ -158,11 +147,12 @@ export function RecipePage() {
         </p>
         <ul className={styles.ingredients}>
           {ingredients.map((ingredient) => {
-            const q = roundForShopping(ingredient.quantity, ingredient.unit);
+            const q = roundForRecipe(ingredient.quantity, ingredient.unit);
+            const shown = formatIngredient(ingredient.name, q.quantity, q.unit);
             return (
               <li key={`${ingredient.name}-${ingredient.unit}`}>
-                <span className={styles.qty}>{formatQuantity(q.quantity, q.unit)}</span>
-                <span>{ingredient.name}</span>
+                <span className={styles.qty}>{shown.amount}</span>
+                <span>{shown.label}</span>
               </li>
             );
           })}

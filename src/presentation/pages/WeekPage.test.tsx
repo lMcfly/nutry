@@ -19,6 +19,8 @@ describe('<WeekPage />', () => {
     renderScreen(<WeekPage />);
     await firstMeal();
     expect(screen.getAllByTestId('meal')).toHaveLength(14);
+    // « Aujourd'hui » vient de l'horloge injectée (lundi 23 novembre dans les tests).
+    expect(screen.getByRole('heading', { name: /Lundi 23 novembre.*Aujourd’hui/ })).toBeVisible();
     expect(screen.getByRole('link', { name: /Frigo vide/ })).toHaveAttribute('href', '/frigo');
     expect(screen.getByRole('heading', { name: /L’équilibre de ta semaine/ })).toBeVisible();
     expect(screen.getAllByRole('meter')).toHaveLength(4);

@@ -4,7 +4,7 @@ import type { ShoppingResult, ShoppingView } from '@application/usecases';
 import { AISLES } from '@domain/recipe';
 import type { Aisle } from '@domain/recipe';
 import type { ShoppingItem } from '@domain/shopping';
-import { formatQuantity } from '@domain/shopping';
+import { formatIngredient, formatIngredientText } from '@domain/shopping';
 import { useDependencies } from '../app/dependencies';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
@@ -19,8 +19,17 @@ import styles from './ShoppingPage.module.css';
 
 function itemText(item: ShoppingItem): string {
   return item.quantity !== undefined && item.unit !== undefined
-    ? `${item.name} — ${formatQuantity(item.quantity, item.unit)}`
+    ? formatIngredientText(item.name, item.quantity, item.unit)
     : item.name;
+}
+
+/** Nom et quantité affichés : « 2 concombres » d'un bloc, sinon « ail … 7 gousses ». */
+function itemParts(item: ShoppingItem): { name: string; amount?: string } {
+  if (item.quantity === undefined || item.unit === undefined) return { name: item.name };
+  const shown = formatIngredient(item.name, item.quantity, item.unit);
+  return shown.amountFirst
+    ? { name: `${shown.amount} ${shown.label}` }
+    : { name: shown.label, amount: shown.amount };
 }
 
 export function ShoppingPage() {
@@ -149,9 +158,9 @@ export function ShoppingPage() {
                       void apply(toggleShoppingItem(item.key));
                     }}
                   />
-                  <span className={styles.name}>{item.name}</span>
-                  {item.quantity !== undefined && item.unit !== undefined && (
-                    <span className={styles.qty}>{formatQuantity(item.quantity, item.unit)}</span>
+                  <span className={styles.name}>{itemParts(item).name}</span>
+                  {itemParts(item).amount !== undefined && (
+                    <span className={styles.qty}>{itemParts(item).amount}</span>
                   )}
                 </label>
                 {item.manual && (

@@ -1,3 +1,5 @@
+import { createCatalogUseCases } from './catalog';
+import type { CatalogUseCases } from './catalog';
 import { createSerialRunner } from './context';
 import type { AppPorts } from './context';
 import { createDataUseCases } from './data';
@@ -28,7 +30,8 @@ export type UseCases = ProfileUseCases &
   QuizUseCases &
   ProgressUseCases &
   SettingsUseCases &
-  DataUseCases;
+  DataUseCases &
+  CatalogUseCases;
 
 /**
  * Fabrique les cas d'usage à partir des ports (injection par paramètres, sans framework).
@@ -46,6 +49,7 @@ export function createUseCases(ports: AppPorts): UseCases {
     ...createProgressUseCases(ports, serial),
     ...createSettingsUseCases(ports, serial),
     ...createDataUseCases(ports, serial),
+    ...createCatalogUseCases(ports),
   };
 }
 

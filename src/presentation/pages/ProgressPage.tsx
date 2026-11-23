@@ -23,11 +23,6 @@ interface ProgressData {
   readonly favorites: readonly Recipe[];
 }
 
-function localToday(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
 export function ProgressPage() {
   const { getProgressSummary, getPlanHistory, getFavorites } = useDependencies();
   const load = useCallback(async (): Promise<ProgressData> => {
@@ -62,13 +57,13 @@ function MeasuresSection({
   readonly progress: ProgressView;
   readonly onChange: () => void;
 }) {
-  const { logProgress, removeProgress, setWeightTracking } = useDependencies();
+  const { logProgress, removeProgress, setWeightTracking, today: getToday } = useDependencies();
   const toast = useToast();
   const [weight, setWeight] = useState('');
   const [waist, setWaist] = useState('');
   const [message, setMessage] = useState<string | undefined>();
   const tracking = progress.weightTracking;
-  const today = localToday();
+  const today = getToday();
   const thisWeek = startOfWeek(today);
   const alreadyThisWeek = progress.entries.find((e) => startOfWeek(e.date) === thisWeek);
   const { summary } = progress;
