@@ -1,14 +1,20 @@
+/* Carte du repas : épurée, centrée, toute la surface mène à la recette. */
 .card {
+  position: relative;
   display: flex;
-  flex: 1;
+  flex: 0 1 auto;
   flex-direction: column;
-  gap: var(--space-2);
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
   min-height: 0;
-  padding: var(--space-3);
+  margin-block: auto;
+  padding: var(--space-5) var(--space-4);
   overflow-y: auto;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   background: var(--color-surface);
-  box-shadow: var(--shadow-md);
+  text-align: center;
   scrollbar-width: thin;
 }
 
@@ -16,120 +22,109 @@
   flex: none;
 }
 
-.top {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: var(--space-2);
-  min-height: 0;
-}
-
-.illustration {
-  flex: 1 1 5rem;
-  min-height: 3.75rem;
-  max-height: 14rem;
-}
-
-.headline {
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  gap: var(--space-2);
-  min-width: 0;
-}
-
-/* Écrans bas (360 × 640) : illustration à gauche du nom, pour que tout tienne sans défiler. */
-@media (max-height: 760px) {
-  .top {
-    flex: none;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .illustration {
-    flex: 0 0 36%;
-    height: 5.5rem;
-    min-height: 0;
-    max-height: none;
-  }
-
-  .headline {
-    flex: 1;
-    gap: var(--space-1);
-  }
-
-  .title {
-    font-size: var(--font-size-md);
-    -webkit-line-clamp: 3;
-  }
-}
-
 .art {
-  display: block;
+  width: clamp(9rem, 56%, 17rem);
+  border-radius: var(--radius-lg);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
   width: 100%;
-  height: 100%;
+  min-width: 0;
 }
 
 .title {
   display: -webkit-box;
+  max-width: 24rem;
   overflow: hidden;
   font-size: var(--font-size-lg);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  line-height: 1.3;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
 }
 
+/* Lien étiré : toute la carte est cliquable ; les boutons passent au-dessus. */
 .titleLink {
   color: inherit;
   text-decoration: none;
 }
 
-.badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
+.titleLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
 }
 
-.leftoverPill {
+.titleLink:focus-visible {
+  outline: none;
+}
+
+.titleLink:focus-visible::after {
+  outline: 3px solid var(--color-focus);
+  outline-offset: -3px;
+}
+
+.meta {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.leftover,
+.why,
+.actions {
+  position: relative;
+  z-index: 1;
+}
+
+.leftover {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   max-width: 100%;
+  min-height: 1.75rem;
+  padding: 0;
   overflow: hidden;
-  padding: 0.125rem var(--space-2);
   border: 0;
-  border-radius: var(--radius-pill);
-  background: var(--color-warning-soft);
-  color: var(--color-warning);
+  background: transparent;
+  color: var(--color-text-muted);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.5;
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
 }
 
+.leftover:hover {
+  color: var(--color-text);
+}
+
 .bread {
-  color: var(--color-on-primary-soft);
+  color: var(--color-text-muted);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
 }
 
 .why {
   display: block;
   width: 100%;
-  padding: var(--space-2) var(--space-3);
+  max-width: 26rem;
+  padding: var(--space-1) var(--space-2);
   border: 0;
-  border-radius: var(--radius-md);
-  background: var(--color-accent-soft);
-  color: var(--color-on-accent-soft);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
   font-size: var(--font-size-xs);
-  line-height: 1.35;
-  text-align: left;
+  line-height: 1.5;
+  text-align: center;
   cursor: pointer;
 }
 
 .whyLabel {
-  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
 }
 
 .clamp {
@@ -142,8 +137,9 @@
 .actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
-  margin-top: auto;
+  margin-top: var(--space-1);
 }
 
 .rating {
@@ -151,7 +147,76 @@
   gap: var(--space-2);
 }
 
-.seeRecipe {
-  flex: 1;
-  margin-left: auto;
+/* Écrans bas : on resserre pour que tout tienne sans défiler. */
+@media (max-height: 760px) {
+  .card {
+    gap: var(--space-2);
+  }
+
+  .art {
+    width: clamp(7rem, 38%, 11rem);
+  }
+
+  .title {
+    font-size: var(--font-size-md);
+    -webkit-line-clamp: 2;
+  }
+
+  .text {
+    gap: var(--space-1);
+  }
+}
+
+/* Tablette : illustration plus grande, texte plus aéré. */
+@media (min-width: 768px) and (min-height: 540px) {
+  .art {
+    width: clamp(12rem, 52%, 22rem);
+  }
+
+  .title {
+    max-width: 32rem;
+    font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
+  }
+
+  .why {
+    max-width: 32rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Paysage et ordinateur : illustration à gauche, texte à droite. */
+@media (min-width: 1000px) and (min-height: 540px) {
+  .card {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    text-align: left;
+  }
+
+  .art {
+    flex: 0 0 min(44%, 24rem);
+    width: min(44%, 24rem);
+  }
+
+  .text {
+    align-items: flex-start;
+    flex: 1;
+    gap: var(--space-3);
+  }
+
+  .title {
+    max-width: none;
+    font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
+  }
+
+  .why {
+    padding-left: 0;
+    text-align: left;
+  }
+
+  .actions {
+    justify-content: flex-start;
+    margin-left: calc(-1 * var(--space-2));
+  }
 }

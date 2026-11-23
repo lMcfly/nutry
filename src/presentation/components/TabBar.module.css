@@ -1,16 +1,17 @@
 .tabbar {
   flex: none;
   z-index: var(--z-tabbar);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-top: 1px solid var(--color-border);
   background: var(--color-surface);
-  box-shadow: 0 -6px 18px rgb(30 60 40 / 8%);
+  padding-right: env(safe-area-inset-right);
   padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
 }
 
 .list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  max-width: var(--content-max);
+  max-width: 32rem;
   margin: 0 auto;
   list-style: none;
 }
@@ -20,36 +21,68 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1px;
+  gap: 2px;
   min-height: var(--tabbar-height);
   padding: var(--space-1);
   color: var(--color-text-muted);
-  font-size: var(--font-size-xs);
+  font-size: 0.75rem;
   font-weight: var(--font-weight-medium);
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
-.emoji {
+.icon {
   display: grid;
   place-items: center;
-  width: 3.25rem;
-  height: 1.85rem;
-  border-radius: var(--radius-pill);
-  font-size: 1.2rem;
-  line-height: 1;
-  transition: background-color var(--duration-fast) var(--ease-out);
 }
 
 .active {
   color: var(--color-primary);
-  font-weight: var(--font-weight-bold);
-}
-
-.active .emoji {
-  background: var(--color-primary-soft);
 }
 
 .label {
   line-height: 1.2;
+}
+
+/* Rail latéral : tablette, ordinateur et téléphone en paysage. */
+@media (min-width: 768px) and (min-height: 540px),
+  (orientation: landscape) and (max-height: 539px) {
+  .tabbar {
+    order: -1;
+    width: calc(var(--rail-width) + env(safe-area-inset-left));
+    height: 100dvh;
+    border-top: 0;
+    border-right: 1px solid var(--color-border);
+    padding-bottom: 0;
+    overflow-y: auto;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-width: none;
+    padding: var(--space-5) var(--space-2);
+  }
+
+  .tab {
+    min-height: 4rem;
+    border-radius: var(--radius-md);
+  }
+
+  .active {
+    background: var(--color-primary-soft);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 539px) {
+  .list {
+    gap: var(--space-1);
+    padding-top: max(var(--space-2), env(safe-area-inset-top));
+  }
+
+  .tab {
+    min-height: 3.25rem;
+  }
 }

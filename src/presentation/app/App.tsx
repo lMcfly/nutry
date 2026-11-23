@@ -5,6 +5,7 @@ import { AppStateContext } from './appState';
 import type { ProfileStatus } from './appState';
 import { TabBar } from '../components/TabBar';
 import type { Tab } from '../components/TabBar';
+import { BasketIcon, HomeIcon, PersonIcon, TrendIcon } from '../components/icons';
 import { ToastProvider } from '../components/Toast';
 import { CelebrationProvider } from '../features/companion/Celebration';
 import { QuizCard } from '../features/quiz/QuizCard';
@@ -38,17 +39,17 @@ const PrivacyPage = lazy(() =>
 );
 
 const TABS: readonly Tab[] = [
-  { to: '/semaine', label: 'Semaine', emoji: '🥗' },
-  { to: '/courses', label: 'Courses', emoji: '🧺' },
-  { to: '/profil', label: 'Profil', emoji: '🙂' },
-  { to: '/progres', label: 'Progrès', emoji: '🌱' },
+  { to: '/semaine', label: 'Semaine', icon: <HomeIcon /> },
+  { to: '/courses', label: 'Courses', icon: <BasketIcon /> },
+  { to: '/profil', label: 'Profil', icon: <PersonIcon /> },
+  { to: '/progres', label: 'Progrès', icon: <TrendIcon /> },
 ];
 
 /** Attente sobre et annoncée (chargement initial ou d'un écran). */
 function Loading() {
   return (
     <p className={styles.loading} role="status">
-      <span aria-hidden="true">🥕</span> Un instant…
+      Un instant…
     </p>
   );
 }
@@ -98,7 +99,7 @@ function Shell() {
       >
         Aller au contenu
       </a>
-      <main id="contenu" tabIndex={-1} className={`${styles.main} ${ready ? styles.withTabs : ''}`}>
+      <main id="contenu" tabIndex={-1} className={styles.main}>
         {profileStatus === 'loading' ? (
           <Loading />
         ) : ready ? (

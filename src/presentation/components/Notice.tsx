@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react';
+import { CloseIcon } from './icons';
 import styles from './Notice.module.css';
 
 export type NoticeTone = 'info' | 'success' | 'warning' | 'danger' | 'accent';
 
 interface NoticeProps {
   readonly tone?: NoticeTone;
-  readonly emoji?: string;
+  /** Pictogramme décoratif (icône au trait ou emoji de contenu). */
+  readonly emoji?: ReactNode;
   readonly title?: ReactNode;
   readonly children?: ReactNode;
   /** Bouton de fermeture (✕) ; le libellé sert aux lecteurs d'écran. */
@@ -51,7 +53,7 @@ export function Notice({
           aria-label={dismissLabel}
           onClick={onDismiss}
         >
-          ✕
+          <CloseIcon size={18} />
         </button>
       )}
     </div>

@@ -5,18 +5,10 @@ import type { PlannedMeal } from '@domain/mealplan';
 import type { Recipe } from '@domain/recipe';
 import { suggestsBread, totalMinutes } from '@domain/recipe';
 import type { RatingRecord } from '@domain/userdata';
-import { Badge } from '../../components/Badge';
-import { ButtonLink } from '../../components/Button';
+import { RecycleIcon, SwapIcon, ThumbDownIcon, ThumbUpIcon } from '../../components/icons';
 import { RoundIconButton } from '../../components/RoundIconButton';
-import {
-  DAY_LABELS,
-  LEVEL_EMOJIS,
-  LEVEL_LABELS,
-  SLOT_LABELS,
-  formatMinutes,
-} from '../../i18n/labels';
-import { DishIllustration } from '../../illustrations/DishIllustration';
-import { PlateGauges } from '../plate/PlateGauges';
+import { DAY_LABELS, LEVEL_LABELS, SLOT_LABELS, formatMinutes } from '../../i18n/labels';
+import { DishImage } from '../../illustrations/DishImage';
 import { BREAD_SUGGESTION } from '../recipe/suggestions';
 import styles from './MealCard.module.css';
 
@@ -42,8 +34,9 @@ function shortMealLabel(meal: PlannedMeal): string {
 }
 
 /**
- * La grande carte du repas sélectionné : illustration, nom, badges, « Pourquoi ce plat ? »,
- * jauges d'assiette et actions rondes (remplacer, 👍, 👎, voir la recette).
+ * La carte du repas sélectionné : illustration, nom, une ligne de méta, « Pourquoi ce plat ? »
+ * et trois petites actions au trait (j'ai aimé, pas pour moi, remplacer). Toute la carte est un
+ * lien vers la recette (lien étiré sur le nom) ; les jauges d'assiette sont dans la recette.
  */
 export function MealCard({
   meal,
@@ -69,115 +62,106 @@ export function MealCard({
       data-testid="meal"
       data-meal-id={meal.id}
     >
-      <div className={styles.top}>
-        <div className={styles.illustration}>
-          <DishIllustration recipe={recipe} className={styles.art} />
-        </div>
-        <div className={styles.headline}>
-          <h2 id={titleId} className={styles.title}>
-            {recipe ? (
-              <Link to={`/recette/${recipe.id}`} className={styles.titleLink}>
-                {name}
-              </Link>
-            ) : (
-              name
-            )}
-          </h2>
+      <DishImage recipe={recipe} ratio="4 / 3" priority className={styles.art} />
 
-          {recipe && (
-            <div className={styles.badges}>
-              <Badge tone="primary">
-                <span aria-hidden="true">{LEVEL_EMOJIS[recipe.level]}</span>
-                {LEVEL_LABELS[recipe.level]}
-              </Badge>
-              <Badge>
-                <span aria-hidden="true">⏱</span>
-                {meal.isLeftover ? 'À réchauffer' : formatMinutes(totalMinutes(recipe))}
-              </Badge>
-              {meal.isLeftover && leftoverSource && (
-                <button
-                  type="button"
-                  className={styles.leftoverPill}
-                  onClick={() => {
-                    onGoTo(leftoverSource.id);
-                  }}
-                >
-                  <span aria-hidden="true">♻️ </span>
-                  Restes du {shortMealLabel(leftoverSource)}
-                </button>
-              )}
-              {!meal.isLeftover && feedsLeftover && (
-                <button
-                  type="button"
-                  className={styles.leftoverPill}
-                  onClick={() => {
-                    onGoTo(feedsLeftover.id);
-                  }}
-                >
-                  <span aria-hidden="true">♻️ </span>
-                  Restes pour le {shortMealLabel(feedsLeftover)}
-                </button>
-              )}
-            </div>
+      <div className={styles.text}>
+        <h2 id={titleId} className={styles.title}>
+          {recipe ? (
+            <Link
+              to={`/recette/${recipe.id}`}
+              className={styles.titleLink}
+              aria-label={`Voir la recette : ${name}`}
+            >
+              {name}
+            </Link>
+          ) : (
+            name
           )}
-        </div>
-      </div>
+        </h2>
 
-      {recipe && suggestsBread(recipe) && <p className={styles.bread}>{BREAD_SUGGESTION}</p>}
-
-      {explanation !== undefined && (
-        <button
-          type="button"
-          className={styles.why}
-          aria-expanded={whyOpen}
-          onClick={() => {
-            setWhyOpen((open) => !open);
-          }}
-        >
-          <span className={whyOpen ? undefined : styles.clamp}>
-            <span className={styles.whyLabel}>Pourquoi ce plat ?</span> {explanation}
-          </span>
-        </button>
-      )}
-
-      {recipe && <PlateGauges plate={recipe.plateBalance} />}
-
-      <div className={styles.actions}>
-        <RoundIconButton
-          icon="🔁"
-          label={`Remplacer ${name}`}
-          disabled={busy}
-          onClick={() => {
-            onReplace(meal);
-          }}
-        />
-        <div className={styles.rating} role="group" aria-label={`Ton avis sur ${name}`}>
-          <RoundIconButton
-            icon="👍"
-            label="J’ai aimé"
-            tone={verdict === 'up' ? 'accent' : 'plain'}
-            aria-pressed={verdict === 'up'}
-            disabled={busy}
-            onClick={() => {
-              onRate(meal, 'up');
-            }}
-          />
-          <RoundIconButton
-            icon="👎"
-            label="Pas pour moi"
-            tone={verdict === 'down' ? 'primary' : 'plain'}
-            aria-pressed={verdict === 'down'}
-            disabled={busy}
-            onClick={() => {
-              onRate(meal, 'down');
-            }}
-          />
-        </div>
         {recipe && (
-          <ButtonLink to={`/recette/${recipe.id}`} small className={styles.seeRecipe}>
-            Voir la recette
-          </ButtonLink>
+          <p className={styles.meta}>
+            {LEVEL_LABELS[recipe.level]}
+            <span aria-hidden="true"> · </span>
+            <span className="visually-hidden">, </span>
+            {meal.isLeftover ? 'À réchauffer' : formatMinutes(totalMinutes(recipe))}
+          </p>
         )}
+
+        {recipe && meal.isLeftover && leftoverSource && (
+          <button
+            type="button"
+            className={styles.leftover}
+            onClick={() => {
+              onGoTo(leftoverSource.id);
+            }}
+          >
+            <RecycleIcon size={16} />
+            Restes du {shortMealLabel(leftoverSource)}
+          </button>
+        )}
+        {recipe && !meal.isLeftover && feedsLeftover && (
+          <button
+            type="button"
+            className={styles.leftover}
+            onClick={() => {
+              onGoTo(feedsLeftover.id);
+            }}
+          >
+            <RecycleIcon size={16} />
+            Restes pour le {shortMealLabel(feedsLeftover)}
+          </button>
+        )}
+
+        {recipe && suggestsBread(recipe) && <p className={styles.bread}>{BREAD_SUGGESTION}</p>}
+
+        {explanation !== undefined && (
+          <button
+            type="button"
+            className={styles.why}
+            aria-expanded={whyOpen}
+            onClick={() => {
+              setWhyOpen((open) => !open);
+            }}
+          >
+            <span className={whyOpen ? undefined : styles.clamp}>
+              <span className={styles.whyLabel}>Pourquoi ce plat ?</span> {explanation}
+            </span>
+          </button>
+        )}
+
+        <div className={styles.actions}>
+          <div className={styles.rating} role="group" aria-label={`Ton avis sur ${name}`}>
+            <RoundIconButton
+              icon={<ThumbUpIcon />}
+              label="J’ai aimé"
+              tone={verdict === 'up' ? 'accent' : 'plain'}
+              aria-pressed={verdict === 'up'}
+              disabled={busy}
+              onClick={() => {
+                onRate(meal, 'up');
+              }}
+            />
+            <RoundIconButton
+              icon={<ThumbDownIcon />}
+              label="Pas pour moi"
+              tone={verdict === 'down' ? 'accent' : 'plain'}
+              aria-pressed={verdict === 'down'}
+              disabled={busy}
+              onClick={() => {
+                onRate(meal, 'down');
+              }}
+            />
+          </div>
+          <RoundIconButton
+            icon={<SwapIcon />}
+            label={`Remplacer ${name}`}
+            disabled={busy}
+            onClick={() => {
+              onReplace(meal);
+            }}
+          />
+        </div>
       </div>
     </article>
   );

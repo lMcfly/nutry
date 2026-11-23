@@ -23,13 +23,15 @@ test('captures Semaine, Courses, Profil et Recette', async ({ page }) => {
   await page.goto('./');
   await completeOnboarding(page);
   await expect(page.getByTestId('meal')).toHaveCount(1);
-  // Le dîner du jour (illustration et jauges d'assiette).
+  // Le dîner du jour.
   await page.getByRole('tab', { name: 'Dîner' }).click();
-  await expect(page.getByTestId('meal').getByRole('meter')).toHaveCount(3);
   await page.waitForTimeout(400);
   await page.screenshot({ path: 'docs/captures/semaine.png' });
 
-  await page.getByTestId('meal').getByRole('link', { name: 'Voir la recette' }).click();
+  await page
+    .getByTestId('meal')
+    .getByRole('link', { name: /^Voir la recette/ })
+    .click();
   await expect(page.getByRole('tab', { name: 'Ingrédients' })).toBeVisible();
   await page.waitForTimeout(400);
   await page.screenshot({ path: 'docs/captures/recette.png' });
@@ -53,4 +55,19 @@ test('captures Semaine, Courses, Profil et Recette', async ({ page }) => {
   // Laisse le toast « Nutry a changé de look ! » disparaître.
   await page.waitForTimeout(4600);
   await page.screenshot({ path: 'docs/captures/profil.png' });
+});
+
+test('captures tablette (iPad) et ordinateur (1440 × 900) : Semaine', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 820, height: 1180 });
+  await page.goto('./');
+  await completeOnboarding(page);
+  await expect(page.getByTestId('meal')).toHaveCount(1);
+  await page.getByRole('tab', { name: 'Dîner' }).click();
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/tablette.png' });
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/ordinateur.png' });
 });

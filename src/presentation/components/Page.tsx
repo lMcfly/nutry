@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { ArrowLeftIcon } from './icons';
 import { ScrollArea } from './ScrollArea';
 import styles from './Page.module.css';
 
@@ -20,6 +21,8 @@ interface PageProps {
   readonly actions?: ReactNode;
   /** Le contenu défile à l'intérieur de la page (écrans secondaires uniquement). */
   readonly scroll?: boolean;
+  /** Largeur de lecture réduite et centrée (écrans de texte ou de formulaire). */
+  readonly narrow?: boolean;
   readonly children: ReactNode;
 }
 
@@ -35,17 +38,18 @@ export function Page({
   back,
   actions,
   scroll = false,
+  narrow = false,
   children,
 }: PageProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   usePageTitle(title, headingRef);
 
   return (
-    <div className={styles.page}>
+    <div className={narrow ? `${styles.page} ${styles.narrow}` : styles.page}>
       <header className={styles.header}>
         {back && (
           <Link to={back.to} className={styles.back} aria-label={`Retour : ${back.label}`}>
-            <span aria-hidden="true">←</span>
+            <ArrowLeftIcon />
           </Link>
         )}
         <div className={styles.titles}>

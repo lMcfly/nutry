@@ -8,6 +8,16 @@ import { formatIngredient, formatIngredientText } from '@domain/shopping';
 import { useDependencies } from '../app/dependencies';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
+import {
+  BasketIcon,
+  CheckIcon,
+  MoreIcon,
+  PlusIcon,
+  RecycleIcon,
+  ShareIcon,
+  TrashIcon,
+} from '../components/icons';
+import { ListGroup, ListRow } from '../components/ListRow';
 import { EmptyState } from '../components/EmptyState';
 import { Field, SelectField } from '../components/Field';
 import { Notice } from '../components/Notice';
@@ -20,7 +30,7 @@ import { Sheet } from '../components/Sheet';
 import { useToast } from '../components/Toast';
 import { useCelebrationCheck } from '../features/companion/Celebration';
 import { useAsync } from '../hooks/useAsync';
-import { AISLE_LABELS, SECTION_EMOJIS, SECTION_SHORT_LABELS, SECTION_TITLES } from '../i18n/labels';
+import { AISLE_LABELS, SECTION_SHORT_LABELS, SECTION_TITLES } from '../i18n/labels';
 import styles from './ShoppingPage.module.css';
 
 function itemText(item: ShoppingItem): string {
@@ -53,6 +63,7 @@ export function ShoppingPage() {
   const [aisle, setAisle] = useState<Aisle | ''>('');
   const [resetSeen, setResetSeen] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [menu, setMenu] = useState(false);
   const [activeKey, setActiveKey] = useState<string | undefined>();
   /** Écritures en cours : la liste est annoncée « occupée » tant qu'elles ne sont pas enregistrées. */
   const [pending, setPending] = useState(0);
@@ -108,149 +119,169 @@ export function ShoppingPage() {
         view
           ? items.length > 0 && inBasket === items.length
             ? 'Tout est dans le panier, bravo !'
-            : `${inBasket}/${items.length} dans le panier`
+            : `${inBasket} sur ${items.length}`
           : 'Rangées par rayon'
       }
       actions={
         view && (
           <RoundIconButton
-            icon="＋"
+            icon={<MoreIcon />}
+            label="Plus d’options"
+            onClick={() => {
+              setMenu(true);
+            }}
+          />
+        )
+      }
+    >
+      <div className={styles.root}>
+        {view?.reset && !resetSeen && (
+          <Notice
+            tone="info"
+            emoji={<RecycleIcon size={20} />}
+            live
+            onDismiss={() => {
+              setResetSeen(true);
+            }}
+          >
+            Ton menu a changé : j’ai décoché les ingrédients. Tes ajouts sont toujours là.
+          </Notice>
+        )}
+
+        {state.status === 'loading' && <p role="status">Un instant…</p>}
+        {state.status === 'ready' && !view && (
+          <EmptyState emoji={<BasketIcon size={28} />} title="Pas encore de liste">
+            Ta liste se remplit toute seule avec ton menu.
+          </EmptyState>
+        )}
+
+        {view && active && (
+          <>
+            <div className={styles.layout}>
+              <SegmentedTabs
+                idPrefix="rayon"
+                className={styles.rayons}
+                label="Rayons"
+                variant="chips"
+                value={active.key}
+                onChange={setActiveKey}
+                tabs={sections.map((section) => {
+                  const left = section.items.filter((i) => !i.checked).length;
+                  return {
+                    id: section.key,
+                    ariaLabel: `${SECTION_SHORT_LABELS[section.key]}, ${left} à acheter sur ${section.items.length}`,
+                    label: (
+                      <>
+                        {SECTION_SHORT_LABELS[section.key]}
+                        <span className={styles.count} aria-hidden="true">
+                          {left}
+                        </span>
+                      </>
+                    ),
+                  };
+                })}
+              />
+              <div
+                data-testid="shopping-list"
+                aria-busy={pending > 0}
+                className={styles.panel}
+                role="tabpanel"
+                id={panelId('rayon', active.key)}
+                aria-labelledby={tabId('rayon', active.key)}
+              >
+                <Card as="section" className={styles.card} aria-labelledby={`rayon-${active.key}`}>
+                  <h2 id={`rayon-${active.key}`} className={styles.sectionTitle}>
+                    {SECTION_TITLES[active.key]}
+                  </h2>
+                  <ScrollArea
+                    label={`Articles : ${SECTION_TITLES[active.key]}`}
+                    className={styles.scroll}
+                  >
+                    <ul className={styles.items}>
+                      {active.items.map((item) => (
+                        <li key={item.key} className={styles.item}>
+                          <label
+                            className={`${styles.check} ${item.checked ? styles.checked : ''}`}
+                          >
+                            <input
+                              type="checkbox"
+                              className={styles.box}
+                              checked={item.checked}
+                              onChange={() => {
+                                const checking = !item.checked;
+                                toggleOptimistically(item.key);
+                                void apply(toggleShoppingItem(item.key)).then(() => {
+                                  if (checking) checkCelebration();
+                                });
+                              }}
+                            />
+                            <span className={styles.name}>{itemParts(item).name}</span>
+                            {itemParts(item).amount !== undefined && (
+                              <span className={styles.qty}>{itemParts(item).amount}</span>
+                            )}
+                          </label>
+                          {item.manual && (
+                            <button
+                              type="button"
+                              className={styles.remove}
+                              aria-label={`Supprimer ${itemText(item)}`}
+                              onClick={() => {
+                                void apply(removeShoppingItem(item.key.replace(/^manuel:/, '')));
+                              }}
+                            >
+                              <TrashIcon size={20} />
+                            </button>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </ScrollArea>
+                </Card>
+              </div>
+            </div>
+          </>
+        )}
+
+        {view && (
+          <RoundIconButton
+            className={styles.fab}
+            icon={<PlusIcon />}
             label="Ajouter un article"
             tone="primary"
             onClick={() => {
               setAdding(true);
             }}
           />
-        )
-      }
-    >
-      {view && (
-        <div className={styles.toolbar}>
-          <Button
-            small
-            icon="📤"
+        )}
+      </div>
+
+      <Sheet
+        open={menu}
+        title="Ma liste"
+        onClose={() => {
+          setMenu(false);
+        }}
+      >
+        <ListGroup label="Options de la liste">
+          <ListRow
+            icon={<ShareIcon />}
+            title="Partager"
             onClick={() => {
+              setMenu(false);
               void share();
             }}
-          >
-            Partager
-          </Button>
-          <Button
-            small
-            variant="secondary"
+          />
+          <ListRow
+            icon={<CheckIcon />}
+            title="Tout décocher"
             disabled={!anyChecked}
             onClick={() => {
+              setMenu(false);
               void apply(uncheckAllShoppingItems());
             }}
-          >
-            Tout décocher
-          </Button>
-        </div>
-      )}
-
-      {view?.reset && !resetSeen && (
-        <Notice
-          tone="info"
-          emoji="🔄"
-          live
-          onDismiss={() => {
-            setResetSeen(true);
-          }}
-        >
-          Ton menu a changé : j’ai décoché les ingrédients. Tes ajouts sont toujours là.
-        </Notice>
-      )}
-
-      {state.status === 'loading' && <p role="status">Un instant…</p>}
-      {state.status === 'ready' && !view && (
-        <EmptyState emoji="🧺" title="Pas encore de liste">
-          Ta liste se remplit toute seule avec ton menu.
-        </EmptyState>
-      )}
-
-      {view && active && (
-        <>
-          <SegmentedTabs
-            idPrefix="rayon"
-            label="Rayons"
-            variant="chips"
-            value={active.key}
-            onChange={setActiveKey}
-            tabs={sections.map((section) => {
-              const left = section.items.filter((i) => !i.checked).length;
-              return {
-                id: section.key,
-                ariaLabel: `${SECTION_SHORT_LABELS[section.key]}, ${left} à acheter sur ${section.items.length}`,
-                label: (
-                  <>
-                    <span aria-hidden="true">{SECTION_EMOJIS[section.key]}</span>
-                    {SECTION_SHORT_LABELS[section.key]}
-                    <span className={styles.count} aria-hidden="true">
-                      {left}
-                    </span>
-                  </>
-                ),
-              };
-            })}
           />
-          <div
-            data-testid="shopping-list"
-            aria-busy={pending > 0}
-            className={styles.panel}
-            role="tabpanel"
-            id={panelId('rayon', active.key)}
-            aria-labelledby={tabId('rayon', active.key)}
-          >
-            <Card as="section" className={styles.card} aria-labelledby={`rayon-${active.key}`}>
-              <h2 id={`rayon-${active.key}`} className={styles.sectionTitle}>
-                <span aria-hidden="true">{SECTION_EMOJIS[active.key]} </span>
-                {SECTION_TITLES[active.key]}
-              </h2>
-              <ScrollArea
-                label={`Articles : ${SECTION_TITLES[active.key]}`}
-                className={styles.scroll}
-              >
-                <ul className={styles.items}>
-                  {active.items.map((item) => (
-                    <li key={item.key} className={styles.item}>
-                      <label className={`${styles.check} ${item.checked ? styles.checked : ''}`}>
-                        <input
-                          type="checkbox"
-                          className={styles.box}
-                          checked={item.checked}
-                          onChange={() => {
-                            const checking = !item.checked;
-                            toggleOptimistically(item.key);
-                            void apply(toggleShoppingItem(item.key)).then(() => {
-                              if (checking) checkCelebration();
-                            });
-                          }}
-                        />
-                        <span className={styles.name}>{itemParts(item).name}</span>
-                        {itemParts(item).amount !== undefined && (
-                          <span className={styles.qty}>{itemParts(item).amount}</span>
-                        )}
-                      </label>
-                      {item.manual && (
-                        <button
-                          type="button"
-                          className={styles.remove}
-                          aria-label={`Supprimer ${itemText(item)}`}
-                          onClick={() => {
-                            void apply(removeShoppingItem(item.key.replace(/^manuel:/, '')));
-                          }}
-                        >
-                          🗑
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </ScrollArea>
-            </Card>
-          </div>
-        </>
-      )}
+        </ListGroup>
+      </Sheet>
 
       <Sheet
         open={adding}

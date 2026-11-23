@@ -65,3 +65,12 @@
     transform: translateY(0.5rem);
   }
 }
+
+/* Rail latéral : plus de barre en bas, le toast se centre dans la zone de contenu. */
+@media (min-width: 768px) and (min-height: 540px),
+  (orientation: landscape) and (max-height: 539px) {
+  .region {
+    bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+    left: calc(50% + var(--rail-width) / 2);
+  }
+}

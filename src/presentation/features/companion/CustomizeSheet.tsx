@@ -24,6 +24,7 @@ import { useToast } from '../../components/Toast';
 import { plural } from '../../i18n/labels';
 import { Nutry } from './Nutry';
 import styles from './CustomizeSheet.module.css';
+import { LockIcon } from '../../components/icons';
 
 type CustomizeTab = 'couleur' | 'yeux' | 'accessoires';
 
@@ -61,7 +62,7 @@ function Choice({ item, selected, unlocked, onPick }: ChoiceProps) {
         }}
       >
         <span className={styles.choiceEmoji} aria-hidden="true">
-          {unlocked ? item.emoji : '🔒'}
+          {unlocked ? item.emoji : <LockIcon size={20} />}
         </span>
         <span className={styles.choiceLabel}>{item.label}</span>
         {!unlocked && (

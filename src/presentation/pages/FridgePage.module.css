@@ -36,17 +36,23 @@
 .chip {
   min-height: 44px;
   padding: var(--space-2) var(--space-4);
-  border: 1.5px solid var(--color-border-strong);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-pill);
   background: var(--color-surface);
   color: var(--color-text);
   cursor: pointer;
 }
 
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
 .chipOn {
   border-color: var(--color-primary);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
   font-weight: var(--font-weight-medium);
 }
 
@@ -72,7 +78,7 @@
   min-height: 44px;
   padding: var(--space-2) 0;
   color: var(--color-text);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
 }
 
 .resultBadges {

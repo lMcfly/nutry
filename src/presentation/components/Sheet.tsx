@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useRef } from 'react';
 import type { PointerEvent as ReactPointerEvent, ReactNode, RefObject } from 'react';
 import { createPortal } from 'react-dom';
+import { CloseIcon } from './icons';
 import styles from './Sheet.module.css';
 
 const FOCUSABLE =
@@ -178,7 +179,7 @@ export function Sheet({
               onClose();
             }}
           >
-            ✕
+            <CloseIcon size={20} />
           </button>
         </div>
         {description !== undefined && (

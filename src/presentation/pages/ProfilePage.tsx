@@ -2,18 +2,29 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { ProfileView, WeightTrackingStatus } from '@application/usecases';
-import { COMPANION_MOOD_LABELS } from '@domain/companion';
 import { MEDICAL_DISCLAIMER } from '@domain/profile';
 import { THEMES } from '@domain/userdata';
 import type { Theme } from '@domain/userdata';
 import { useDependencies } from '../app/dependencies';
-import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { RadioGroup } from '../components/Choice';
 import { Notice } from '../components/Notice';
 import { Page } from '../components/Page';
 import { Sheet } from '../components/Sheet';
-import { Tile } from '../components/Tile';
+import {
+  CalendarIcon,
+  DatabaseIcon,
+  FlameIcon,
+  HeartIcon,
+  InfoIcon,
+  LockIcon,
+  PaletteIcon,
+  PersonIcon,
+  SettingsIcon,
+  SmileIcon,
+  TargetIcon,
+} from '../components/icons';
+import { ListGroup, ListRow } from '../components/ListRow';
 import { useToast } from '../components/Toast';
 import { Toggle } from '../components/Toggle';
 import { CustomizeSheet } from '../features/companion/CustomizeSheet';
@@ -80,10 +91,6 @@ export function ProfilePage() {
   return (
     <Page title="Mon profil">
       {/* Bandeau permanent (PROMPT §3.2) : affiché même pendant le chargement ou en erreur. */}
-      <p className={styles.disclaimer} role="note">
-        <span aria-hidden="true">🩺 </span>
-        {MEDICAL_DISCLAIMER}
-      </p>
       {state.status === 'loading' && (
         <>
           <p role="status" className="visually-hidden">
@@ -98,7 +105,7 @@ export function ProfilePage() {
       )}
       {state.status === 'error' && (
         <>
-          <Notice tone="danger" emoji="😕">
+          <Notice tone="danger" emoji={<InfoIcon size={20} />}>
             Ton profil n’a pas pu être chargé.{' '}
             <Button variant="ghost" small onClick={reload}>
               Réessayer
@@ -122,6 +129,9 @@ export function ProfilePage() {
           }}
         />
       )}
+      <p className={styles.disclaimer} role="note">
+        {MEDICAL_DISCLAIMER}
+      </p>
     </Page>
   );
 }
@@ -137,39 +147,39 @@ function ProfileTiles({ view, onOpen }: TilesProps) {
   const open = onOpen ?? setFallbackSheet;
   return (
     <>
-      <div className={styles.tiles}>
+      <ListGroup className={styles.list} label="Réglages">
         {view && (
           <>
-            <Tile
-              emoji="👋"
+            <ListRow
+              icon={<PersonIcon />}
               title="Moi"
               onClick={() => {
                 open('moi');
               }}
             />
-            <Tile
-              emoji="🎯"
+            <ListRow
+              icon={<TargetIcon />}
               title="Objectif et alimentation"
               onClick={() => {
                 open('objectif');
               }}
             />
-            <Tile
-              emoji="😋"
+            <ListRow
+              icon={<SmileIcon />}
               title="Goûts"
               onClick={() => {
                 open('gouts');
               }}
             />
-            <Tile
-              emoji="🗓️"
+            <ListRow
+              icon={<CalendarIcon />}
               title="Organisation"
               onClick={() => {
                 open('organisation');
               }}
             />
-            <Tile
-              emoji="🎨"
+            <ListRow
+              icon={<SettingsIcon />}
               title="Apparence et suivi"
               onClick={() => {
                 open('apparence');
@@ -177,22 +187,21 @@ function ProfileTiles({ view, onOpen }: TilesProps) {
             />
           </>
         )}
-        <Tile
-          emoji="💾"
+        <ListRow
+          icon={<DatabaseIcon />}
           title="Mes données"
           onClick={() => {
             open('donnees');
           }}
         />
-        <Tile
-          emoji="🔒"
+        <ListRow
+          icon={<LockIcon />}
           title="Confidentialité"
-          className={styles.wide}
           onClick={() => {
             open('confidentialite');
           }}
         />
-      </div>
+      </ListGroup>
       {onOpen === undefined && (
         <>
           <Sheet
@@ -386,49 +395,49 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
       {shownHealth.messages.length > 0 && (
         <div className={styles.messages}>
           {shownHealth.messages.map((m) => (
-            <Notice key={m.code} tone="accent" emoji="💛">
+            <Notice key={m.code} tone="accent" emoji={<HeartIcon size={20} />}>
               {m.text}
             </Notice>
           ))}
         </div>
       )}
 
-      {companion && (
-        <section className={styles.hero} aria-label="Nutry">
-          <div className={styles.heroNutry}>
-            <Nutry look={companion.look} mood={companion.mood} size="l" />
-          </div>
-          <div className={styles.heroText}>
-            <span className={styles.mood}>
-              <Badge tone="primary">{COMPANION_MOOD_LABELS[companion.mood]}</Badge>
-            </span>
-            <p className={styles.message}>{companion.message}</p>
-            <p className={styles.streak}>
-              <span aria-hidden="true">🔥 </span>
-              {companion.streak > 0
-                ? `${plural(companion.streak, 'jour')} de suite`
-                : 'Pas de série en cours'}
-              {companion.best > 0 && ` · record : ${companion.best}`}
-            </p>
-            <p className={styles.next}>
-              {companion.nextUnlock
-                ? `Encore ${plural(companion.nextUnlock.inDays, 'jour')} pour ${unlockPhrase(companion.nextUnlock.item)} !`
-                : 'Tu as tout débloqué, bravo !'}
-            </p>
-            <Button
-              small
-              icon="🎨"
-              onClick={() => {
-                setCustomizing(true);
-              }}
-            >
-              Personnaliser
-            </Button>
-          </div>
-        </section>
-      )}
+      <div className={styles.layout}>
+        {companion && (
+          <section className={styles.hero} aria-label="Nutry">
+            <div className={styles.heroNutry}>
+              <Nutry look={companion.look} mood={companion.mood} size="l" />
+            </div>
+            <div className={styles.heroText}>
+              <p className={styles.message}>{companion.message}</p>
+              <p className={styles.streak}>
+                <FlameIcon size={20} />
+                {companion.streak > 0
+                  ? `${plural(companion.streak, 'jour')} de suite`
+                  : 'Pas de série en cours'}
+                {companion.best > 0 && ` · record : ${companion.best}`}
+              </p>
+              <p className={styles.next}>
+                {companion.nextUnlock
+                  ? `Encore ${plural(companion.nextUnlock.inDays, 'jour')} pour ${unlockPhrase(companion.nextUnlock.item)} !`
+                  : 'Tu as tout débloqué, bravo !'}
+              </p>
+              <Button
+                small
+                variant="ghost"
+                icon={<PaletteIcon size={20} />}
+                onClick={() => {
+                  setCustomizing(true);
+                }}
+              >
+                Personnaliser
+              </Button>
+            </div>
+          </section>
+        )}
 
-      <ProfileTiles view={view} onOpen={setSheet} />
+        <ProfileTiles view={view} onOpen={setSheet} />
+      </div>
 
       <Sheet
         open={sheet !== undefined}

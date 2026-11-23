@@ -19,9 +19,13 @@ app, fonctionne **hors ligne** et garde **toutes tes données sur ton appareil**
 | --------------------------------------------------- | ----------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
 | ![Le menu de la semaine](docs/captures/semaine.png) | ![Une recette](docs/captures/recette.png) | ![La liste de courses par rayon](docs/captures/courses.png) | ![Le profil, avec Nutry](docs/captures/profil.png) | ![L'accueil en quelques questions](docs/captures/onboarding.png) |
 
-Chaque écran principal tient dans la hauteur du téléphone, **sans défilement de page** : seules
-les longues listes (un rayon, les étapes d'une recette) défilent à l'intérieur de leur carte.
-Sur la Semaine, on glisse du doigt (ou on touche les boutons ‹ ›) pour passer au repas suivant.
+Une interface épurée : une information principale par écran, un seul accent vert sauge, des
+pictogrammes au trait ; les options secondaires sont dans le menu « ⋯ ». Chaque écran principal
+tient dans la hauteur de l'appareil, **sans défilement de page** : seules les longues listes (un
+rayon, les étapes d'une recette) défilent à l'intérieur de leur carte. Sur la Semaine, on glisse du
+doigt (ou on touche les chevrons) pour passer au repas suivant. Sur tablette et ordinateur, la
+barre d'onglets devient un rail latéral et les écrans passent sur deux colonnes
+(`docs/captures/tablette.png`, `docs/captures/ordinateur.png`).
 
 ## Fonctionnalités
 

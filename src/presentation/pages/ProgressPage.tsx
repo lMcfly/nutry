@@ -12,7 +12,18 @@ import { Gauge } from '../components/Gauge';
 import { Notice } from '../components/Notice';
 import { Page } from '../components/Page';
 import { Sheet } from '../components/Sheet';
-import { Tile } from '../components/Tile';
+import {
+  BookIcon,
+  CalendarIcon,
+  FlameIcon,
+  HeartIcon,
+  InfoIcon,
+  ScaleIcon,
+  TrashIcon,
+  TrendIcon,
+  ThumbUpIcon,
+} from '../components/icons';
+import { ListGroup, ListRow } from '../components/ListRow';
 import { useToast } from '../components/Toast';
 import { Nutry } from '../features/companion/Nutry';
 import { useCompanion } from '../features/companion/useCompanion';
@@ -29,7 +40,7 @@ interface ProgressData {
   readonly balance: readonly BalanceGauge[];
 }
 
-type SheetId = 'mesure' | 'favoris' | 'historique';
+type SheetId = 'mesure' | 'favoris' | 'historique' | 'equilibre';
 
 export function ProgressPage() {
   const { getProgressSummary, getPlanHistory, getFavorites, getWeekBalance } = useDependencies();
@@ -58,10 +69,14 @@ export function ProgressPage() {
         : undefined;
 
   return (
-    <Page title="Mes progrès" subtitle="La régularité compte plus que les chiffres.">
+    <Page title="Mes progrès">
       {state.status === 'loading' && <p role="status">Un instant…</p>}
       {state.status === 'error' && (
-        <Notice tone="danger" emoji="😕" title="Tes progrès n’ont pas pu se charger">
+        <Notice
+          tone="danger"
+          emoji={<InfoIcon size={20} />}
+          title="Tes progrès n’ont pas pu se charger"
+        >
           <Button small variant="secondary" onClick={reload}>
             Réessayer
           </Button>
@@ -69,28 +84,106 @@ export function ProgressPage() {
       )}
       {data && progress && tracking && (
         <>
-          <section className={styles.streak} aria-labelledby="streak-title">
-            {companion && <Nutry look={companion.look} mood={companion.mood} size="s" />}
-            <div className={styles.streakText}>
-              <h2 id="streak-title" className={styles.tileTitle}>
-                <span aria-hidden="true">🔥 </span>
-                {companion && companion.streak > 0
-                  ? `${plural(companion.streak, 'jour')} de suite`
-                  : 'Ta série'}
-              </h2>
-              <p className={styles.small}>
-                {companion && companion.best > 0
-                  ? `Record : ${plural(companion.best, 'jour')}`
-                  : 'Un petit geste par jour, et ça démarre.'}
-              </p>
-              <p className={styles.small}>{progress.summary.message}</p>
-            </div>
-          </section>
+          <div className={styles.layout}>
+            <div className={styles.column}>
+              <section className={styles.streak} aria-labelledby="streak-title">
+                {companion && <Nutry look={companion.look} mood={companion.mood} size="m" />}
+                <div className={styles.streakText}>
+                  <h2 id="streak-title" className={styles.streakTitle}>
+                    <FlameIcon size={22} />
+                    {companion && companion.streak > 0
+                      ? `${plural(companion.streak, 'jour')} de suite`
+                      : 'Ta série'}
+                  </h2>
+                  <p className={styles.small}>
+                    {companion && companion.best > 0
+                      ? `Record : ${plural(companion.best, 'jour')}`
+                      : 'Un petit geste par jour, et ça démarre.'}
+                  </p>
+                  <p className={styles.small}>{progress.summary.message}</p>
+                </div>
+              </section>
 
-          <section className={styles.tile} aria-labelledby="balance-title">
-            <h2 id="balance-title" className={styles.tileTitle}>
-              <span aria-hidden="true">🌈 </span>L’équilibre de ta semaine
-            </h2>
+              <section className={styles.tile} aria-labelledby="weight-title">
+                <div className={styles.tileHead}>
+                  <h2 id="weight-title" className={styles.tileTitle}>
+                    {tracking.enabled ? <TrendIcon size={20} /> : <ScaleIcon size={20} />}
+                    {tracking.enabled ? 'Ta tendance' : 'Suivi du poids'}
+                  </h2>
+                  <Button
+                    small
+                    variant="ghost"
+                    onClick={() => {
+                      setSheet('mesure');
+                    }}
+                  >
+                    Noter ma mesure
+                  </Button>
+                </div>
+                {tracking.enabled ? (
+                  trend ? (
+                    <TrendChart {...trend} compact />
+                  ) : (
+                    <p className={styles.small}>Ta courbe apparaîtra après ta première mesure.</p>
+                  )
+                ) : (
+                  <>
+                    <p className={styles.small}>
+                      {tracking.enabledByDefault
+                        ? 'Le suivi du poids est en pause. Tu peux le réactiver quand tu veux : une mesure par semaine au plus, pour voir une tendance, jamais pour juger.'
+                        : 'Ici, on mise sur le plaisir de manger varié et sur ton énergie, sans suivre le poids. Si tu as envie de le suivre, tu peux l’activer quand tu veux : une mesure par semaine au plus.'}
+                    </p>
+                    <div className={styles.tileActions}>
+                      <Button
+                        small
+                        variant="ghost"
+                        onClick={() => {
+                          void setWeightTracking(true).then(reload);
+                        }}
+                      >
+                        Activer le suivi du poids
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </section>
+            </div>
+
+            <ListGroup className={styles.links} label="Mes repères">
+              <ListRow
+                icon={<CalendarIcon />}
+                title="L’équilibre de ta semaine"
+                onClick={() => {
+                  setSheet('equilibre');
+                }}
+              />
+              <ListRow
+                icon={<HeartIcon />}
+                title="Favoris"
+                hint={plural(data.favorites.length, 'recette')}
+                onClick={() => {
+                  setSheet('favoris');
+                }}
+              />
+              <ListRow
+                icon={<BookIcon />}
+                title="Historique"
+                hint={plural(data.history.plans.length, 'menu passé', 'menus passés')}
+                onClick={() => {
+                  setSheet('historique');
+                }}
+              />
+            </ListGroup>
+          </div>
+
+          <Sheet
+            open={sheet === 'equilibre'}
+            title="L’équilibre de ta semaine"
+            description="De la variété, sans rien compter."
+            onClose={() => {
+              setSheet(undefined);
+            }}
+          >
             <div className={styles.gauges}>
               {data.balance.map((g) => (
                 <Gauge
@@ -102,70 +195,7 @@ export function ProgressPage() {
                 />
               ))}
             </div>
-          </section>
-
-          <section className={styles.tile} aria-labelledby="weight-title">
-            <div className={styles.tileHead}>
-              <h2 id="weight-title" className={styles.tileTitle}>
-                <span aria-hidden="true">{tracking.enabled ? '📈 ' : '⚖️ '}</span>
-                {tracking.enabled ? 'Ta tendance' : 'Suivi du poids'}
-              </h2>
-              <Button
-                small
-                variant="secondary"
-                onClick={() => {
-                  setSheet('mesure');
-                }}
-              >
-                Noter ma mesure
-              </Button>
-            </div>
-            {tracking.enabled ? (
-              trend ? (
-                <TrendChart {...trend} compact />
-              ) : (
-                <p className={styles.small}>Ta courbe apparaîtra après ta première mesure.</p>
-              )
-            ) : (
-              <>
-                <p className={styles.small}>
-                  {tracking.enabledByDefault
-                    ? 'Le suivi du poids est en pause. Tu peux le réactiver quand tu veux : une mesure par semaine au plus, pour voir une tendance, jamais pour juger.'
-                    : 'Ici, on mise sur le plaisir de manger varié et sur ton énergie, sans suivre le poids. Si tu as envie de le suivre, tu peux l’activer quand tu veux : une mesure par semaine au plus.'}
-                </p>
-                <div className={styles.tileActions}>
-                  <Button
-                    small
-                    variant="ghost"
-                    onClick={() => {
-                      void setWeightTracking(true).then(reload);
-                    }}
-                  >
-                    Activer le suivi du poids
-                  </Button>
-                </div>
-              </>
-            )}
-          </section>
-
-          <div className={styles.links}>
-            <Tile
-              emoji="💚"
-              title="Favoris"
-              hint={plural(data.favorites.length, 'recette')}
-              onClick={() => {
-                setSheet('favoris');
-              }}
-            />
-            <Tile
-              emoji="📚"
-              title="Historique"
-              hint={plural(data.history.plans.length, 'menu passé', 'menus passés')}
-              onClick={() => {
-                setSheet('historique');
-              }}
-            />
-          </div>
+          </Sheet>
 
           <Sheet
             open={sheet === 'mesure'}
@@ -261,7 +291,7 @@ function MeasureForm({
         }}
       >
         {alreadyThisWeek && (
-          <Notice tone="success" emoji="✅">
+          <Notice tone="success" emoji={<InfoIcon size={20} />}>
             Déjà noté cette semaine ({formatDayShort(alreadyThisWeek.date)}). Une nouvelle saisie
             met à jour la mesure de la semaine.
           </Notice>
@@ -322,7 +352,7 @@ function MeasureForm({
                     });
                   }}
                 >
-                  🗑
+                  <TrashIcon size={20} />
                 </button>
               </li>
             ))}
@@ -335,8 +365,8 @@ function MeasureForm({
 
 function FavoritesList({ favorites }: { readonly favorites: readonly Recipe[] }) {
   return favorites.length === 0 ? (
-    <EmptyState emoji="👍" title="Pas encore de favori" level={3}>
-      Un 👍 sur un plat de ton menu, et il arrive ici.
+    <EmptyState emoji={<ThumbUpIcon size={28} />} title="Pas encore de favori" level={3}>
+      Un « j’ai aimé » sur un plat de ton menu, et il arrive ici.
     </EmptyState>
   ) : (
     <ul className={styles.recipeLinks}>

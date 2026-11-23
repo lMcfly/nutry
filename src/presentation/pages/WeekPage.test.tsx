@@ -11,11 +11,17 @@ async function currentMeal() {
   return screen.findByTestId('meal');
 }
 
+/** Ouvre le menu « ⋯ » de la semaine (Frigo vide, équilibre, nouveau menu…). */
+async function openMenu(user: ReturnType<typeof renderScreen>['user']) {
+  await user.click(await screen.findByRole('button', { name: 'Plus d’options' }));
+  return screen.findByRole('dialog', { name: 'Cette semaine' });
+}
+
 const mealId = (el: HTMLElement) => el.getAttribute('data-meal-id');
 
 describe('<WeekPage />', () => {
-  it('affiche le repas du jour, ses jauges d’assiette et les accès rapides', async () => {
-    renderScreen(<WeekPage />);
+  it('affiche le repas du jour, épuré, et les accès rapides dans le menu', async () => {
+    const { user } = renderScreen(<WeekPage />);
     const meal = await currentMeal();
     // Une seule grande carte ; le bandeau des 7 jours, aujourd'hui (lundi 23) sélectionné.
     expect(screen.getAllByTestId('meal')).toHaveLength(1);
@@ -28,22 +34,26 @@ describe('<WeekPage />', () => {
     // Onglets repas du jour : déjeuner sélectionné, dîner disponible.
     expect(screen.getByRole('tab', { name: 'Déjeuner' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByRole('tab', { name: 'Dîner' })).toBeVisible();
-    // Jauges d'assiette (légumes, protéines, féculents), jamais de calories.
-    expect(within(meal).getAllByRole('meter')).toHaveLength(3);
-    expect(within(meal).getByRole('meter', { name: 'Légumes' })).toBeVisible();
+    // Carte épurée : pas de jauges (elles sont dans la recette), toute la carte mène à la recette.
+    expect(within(meal).queryAllByRole('meter')).toHaveLength(0);
     expect(within(meal).getByText(/Pourquoi ce plat \?/)).toBeVisible();
-    expect(within(meal).getByRole('link', { name: 'Voir la recette' })).toHaveAttribute(
+    expect(within(meal).getByRole('link', { name: /^Voir la recette/ })).toHaveAttribute(
       'href',
       expect.stringMatching(/^\/recette\//),
     );
-    expect(screen.getByRole('link', { name: /Frigo vide/ })).toHaveAttribute('href', '/frigo');
+    const menu = await openMenu(user);
+    expect(within(menu).getByRole('link', { name: /Frigo vide/ })).toHaveAttribute(
+      'href',
+      '/frigo',
+    );
     expect(document.body.textContent).not.toMatch(/kcal/);
   });
 
   it('l’équilibre de la semaine s’ouvre dans une feuille avec ses 4 jauges', async () => {
     const { user } = renderScreen(<WeekPage />);
     await currentMeal();
-    await user.click(screen.getByRole('button', { name: 'Équilibre de la semaine' }));
+    const menu = await openMenu(user);
+    await user.click(within(menu).getByRole('button', { name: 'Équilibre de la semaine' }));
     const sheet = await screen.findByRole('dialog', { name: 'L’équilibre de ta semaine' });
     expect(within(sheet).getAllByRole('meter')).toHaveLength(4);
   });
@@ -142,7 +152,8 @@ describe('<WeekPage />', () => {
       });
     });
 
-    await user.click(screen.getByRole('button', { name: /Nouveau menu/ }));
+    const menu = await openMenu(user);
+    await user.click(within(menu).getByRole('button', { name: /Nouveau menu/ }));
     const confirm = await screen.findByRole('alertdialog', { name: 'Un nouveau menu ?' });
     await user.click(within(confirm).getByRole('button', { name: 'Oui, on change' }));
     expect(await screen.findByText('Ton nouveau menu est prêt.')).toBeInTheDocument();
@@ -211,7 +222,8 @@ describe('<WeekPage />', () => {
       profile: { ...TEST_PROFILE, batchCooking: true },
     });
     await currentMeal();
-    await user.click(screen.getByRole('button', { name: 'Cuisiner en avance le dimanche' }));
+    const menu = await openMenu(user);
+    await user.click(within(menu).getByRole('button', { name: 'Cuisiner en avance le dimanche' }));
     const batch = await screen.findByRole('dialog', { name: 'Cuisiner en avance le dimanche' });
     // Préparations groupées par famille, chacune avec ses repas.
     expect(within(batch).getAllByRole('heading', { level: 3 }).length).toBeGreaterThan(0);
@@ -234,10 +246,14 @@ describe('<WeekPage />', () => {
     }
   });
 
-  it('sans batch cooking, pas de raccourci « dimanche »', async () => {
-    renderScreen(<WeekPage />);
+  it('sans batch cooking, pas de ligne « dimanche » dans le menu', async () => {
+    const { user } = renderScreen(<WeekPage />);
     await currentMeal();
-    expect(screen.queryByRole('button', { name: 'Cuisiner en avance le dimanche' })).toBeNull();
+    const menu = await openMenu(user);
+    expect(within(menu).getByRole('link', { name: /Frigo vide/ })).toBeVisible();
+    expect(
+      within(menu).queryByRole('button', { name: 'Cuisiner en avance le dimanche' }),
+    ).toBeNull();
   });
 
   it('suggère du pain complet pour les recettes étiquetées', async () => {

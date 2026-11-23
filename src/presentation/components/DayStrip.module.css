@@ -1,17 +1,15 @@
 .weekday {
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
 }
 
 .number {
   font-size: var(--font-size-md);
-  font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.2;
 }
 
 .dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: transparent;
 }

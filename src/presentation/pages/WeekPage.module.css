@@ -10,11 +10,26 @@
   line-height: 0;
 }
 
+.layout {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+.side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
 .mealRow {
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .mealRow > [role='tablist'] {
@@ -32,12 +47,60 @@
   flex: 1;
 }
 
-.shortcuts {
-  display: flex;
-  flex: none;
-  justify-content: space-around;
-  gap: var(--space-2);
-  padding: 0 var(--space-2);
+/* Tablette en portrait : bandeau de jours en haut, grande carte dessous. */
+@media (min-width: 768px) and (min-height: 540px) {
+  .layout {
+    gap: var(--space-5);
+  }
+
+  .side {
+    gap: var(--space-3);
+  }
+}
+
+/* Paysage et ordinateur : la semaine à gauche (jours, repas), la carte du repas à droite. */
+@media (min-width: 1000px) and (min-height: 540px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+    gap: var(--space-6);
+  }
+
+  .side {
+    gap: var(--space-4);
+  }
+
+  .side .days {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .side .days [role='tab'] {
+    flex: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-3);
+    min-height: 2.75rem;
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .side .days [role='tab'] > :first-child {
+    min-width: 2.25rem;
+  }
+
+  .mealRow {
+    justify-content: space-between;
+  }
+}
+
+/* Téléphone en paysage : la carte garde une hauteur de lecture, la coque défile. */
+@media (orientation: landscape) and (max-height: 539px) {
+  .layout {
+    min-height: 24rem;
+  }
 }
 
 .dialogText {
@@ -67,9 +130,9 @@
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
 }
 
 .batchTitle {

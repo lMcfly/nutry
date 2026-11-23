@@ -13,11 +13,15 @@ async function openMeasureSheet(user: User): Promise<HTMLElement> {
 
 describe('<ProgressPage />', () => {
   it('tableau de bord sur un écran : série et Nutry, équilibre, suivi, accès aux sheets', async () => {
-    renderScreen(<ProgressPage />);
+    const { user } = renderScreen(<ProgressPage />);
     expect(await screen.findByRole('heading', { name: /Ta série/ })).toBeVisible();
     expect(screen.getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
-    expect(screen.getByRole('heading', { name: /L’équilibre de ta semaine/ })).toBeVisible();
-    expect(screen.getAllByRole('meter')).toHaveLength(4);
+    // L'équilibre est une ligne qui ouvre une feuille (pas de jauges sur l'écran).
+    expect(screen.queryAllByRole('meter')).toHaveLength(0);
+    await user.click(screen.getByRole('button', { name: /L’équilibre de ta semaine/ }));
+    const sheet = await screen.findByRole('dialog', { name: 'L’équilibre de ta semaine' });
+    expect(within(sheet).getAllByRole('meter')).toHaveLength(4);
+    await user.click(within(sheet).getByRole('button', { name: 'Fermer' }));
     expect(screen.getByRole('button', { name: /Favoris/ })).toBeVisible();
     expect(screen.getByRole('button', { name: /Historique/ })).toBeVisible();
   });

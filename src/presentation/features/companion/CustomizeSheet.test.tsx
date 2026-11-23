@@ -59,7 +59,7 @@ describe('Personnaliser Nutry', () => {
     await user.click(within(sheet).getByRole('tab', { name: 'Accessoires' }));
     const toque = within(sheet).getByRole('button', { name: /Toque de chef/ });
     expect(toque).toHaveAttribute('aria-disabled', 'true');
-    expect(toque).toHaveTextContent('🔒');
+    expect(toque.querySelector('svg')).not.toBeNull();
     expect(toque).toHaveTextContent('à 7 jours de série');
     const glasses = within(sheet).getByRole('button', { name: /Lunettes rondes/ });
     expect(glasses).toHaveAttribute('aria-disabled', 'false');

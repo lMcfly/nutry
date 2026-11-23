@@ -6,7 +6,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-text-muted);
   text-decoration: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -14,7 +14,7 @@
 
 .wrap:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .wrap:active:not(:disabled) .round {
@@ -32,48 +32,50 @@
   width: var(--touch-small);
   height: var(--touch-small);
   border-radius: 50%;
-  font-size: 1.3rem;
   line-height: 1;
   transition:
     transform var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out);
 }
 
-.plain {
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-}
-
-.soft {
+.wrap:hover:not(:disabled) .round {
   background: var(--color-surface-alt);
 }
 
-.primary {
+.plain {
+  color: var(--color-text-muted);
+}
+
+.soft {
+  color: var(--color-text-muted);
+}
+
+.primary,
+.wrap:hover:not(:disabled) .primary {
   background: var(--color-primary);
-  box-shadow: var(--shadow-md);
   color: var(--color-on-primary);
 }
 
-.accent {
-  background: var(--color-accent-soft);
-  color: var(--color-on-accent-soft);
+.accent,
+.wrap:hover:not(:disabled) .accent {
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
 }
 
 .caption {
   color: var(--color-text-muted);
   font-size: 0.75rem;
-  font-weight: var(--font-weight-medium);
   line-height: 1.1;
   white-space: nowrap;
 }
 
 .dot {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 0.6rem;
-  height: 0.6rem;
-  border: 2px solid var(--color-surface);
+  top: 9px;
+  right: 9px;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 2px solid var(--color-bg);
   border-radius: 50%;
-  background: var(--color-primary);
+  background: var(--color-accent);
 }

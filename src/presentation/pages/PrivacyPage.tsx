@@ -8,6 +8,7 @@ export function PrivacyPage() {
 
   return (
     <Page
+      narrow
       title="Confidentialité"
       subtitle="Tes données t’appartiennent."
       scroll

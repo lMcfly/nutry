@@ -2,25 +2,37 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
   min-height: 0;
+}
+
+.left,
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.left {
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+.right {
+  flex: 1 1 0;
+  min-height: 9rem;
 }
 
 .hero {
   position: relative;
-  flex: 1 1 5rem;
-  min-height: 4rem;
-  max-height: 14rem;
-  border-radius: var(--radius-xl);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
+  flex: 0 1 auto;
+  min-height: 0;
 }
 
-.art {
-  display: block;
-  width: 100%;
-  height: 100%;
+.heroImage {
+  max-height: 30dvh;
+  border-radius: var(--radius-xl);
 }
 
 .back {
@@ -31,11 +43,10 @@
   place-items: center;
   width: var(--touch-small);
   height: var(--touch-small);
+  border: 1px solid var(--color-border);
   border-radius: 50%;
   background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
   color: var(--color-text);
-  font-size: var(--font-size-lg);
   text-decoration: none;
 }
 
@@ -43,47 +54,33 @@
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
+  border-radius: 50%;
+  background: var(--color-surface);
 }
 
 .title {
-  flex: none;
   display: -webkit-box;
+  flex: none;
   overflow: hidden;
-  font-size: var(--font-size-md);
-  font-weight: 800;
-  line-height: 1.2;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  line-height: 1.3;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
-.badges {
-  display: flex;
+.meta {
   flex: none;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-}
-
-.recipe > * {
-  flex-shrink: 0;
-}
-
-.recipe > .hero {
-  flex-shrink: 1;
-}
-
-.recipe > .panel {
-  flex-shrink: 1;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }
 
 .panel {
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-height: 8rem;
-  padding: var(--space-3) var(--space-2) var(--space-3) var(--space-4);
-  border-radius: var(--radius-xl);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-md);
+  min-height: 0;
+  padding: var(--space-3) var(--space-1) 0 0;
 }
 
 .scroll {
@@ -94,7 +91,12 @@
 .infos {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
+}
+
+.sub {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-md);
 }
 
 .servings {
@@ -123,19 +125,20 @@
 .qty {
   flex: none;
   min-width: 6rem;
-  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
 }
 
 .steps {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
   padding-left: var(--space-5);
+  line-height: 1.6;
 }
 
 .steps li::marker {
   color: var(--color-primary);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
 }
 
 .allergens {
@@ -143,12 +146,13 @@
 }
 
 .small {
+  color: var(--color-text-muted);
   font-size: var(--font-size-sm);
 }
 
 .details {
   padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   background: var(--color-surface-alt);
 }
 
@@ -156,7 +160,7 @@
   display: flex;
   align-items: center;
   min-height: 44px;
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
 }
 
@@ -169,5 +173,44 @@
 
 .nutrition dd {
   margin: 0;
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Tablette et ordinateur : illustration et titre à gauche, onglets à droite. */
+@media (min-width: 768px) and (min-height: 540px) {
+  .recipe {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .left {
+    gap: var(--space-3);
+    align-self: start;
+  }
+
+  .heroImage {
+    max-height: none;
+  }
+
+  .title {
+    font-size: clamp(1.375rem, 1rem + 1vw, 2rem);
+    -webkit-line-clamp: 3;
+  }
+
+  .meta {
+    font-size: var(--font-size-md);
+  }
+
+  .panel {
+    padding-right: 0;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 539px) {
+  .recipe {
+    flex: none;
+    min-height: 30rem;
+  }
 }

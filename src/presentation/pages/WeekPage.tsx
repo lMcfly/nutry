@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { PlanOrigin, PlanView } from '@application/usecases';
 import { MEAL_SLOTS } from '@domain/mealplan';
 import type {
@@ -19,7 +19,21 @@ import { Gauge } from '../components/Gauge';
 import { RadioGroup } from '../components/Choice';
 import { Notice } from '../components/Notice';
 import { Page } from '../components/Page';
-import { RoundIconButton, RoundIconLink } from '../components/RoundIconButton';
+import {
+  BulbIcon,
+  CalendarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DatabaseIcon,
+  FridgeIcon,
+  HomeIcon,
+  InfoIcon,
+  MoreIcon,
+  PotIcon,
+  SparkleIcon,
+} from '../components/icons';
+import { ListGroup, ListRow } from '../components/ListRow';
+import { RoundIconButton } from '../components/RoundIconButton';
 import { SegmentedTabs } from '../components/SegmentedTabs';
 import { panelId, tabId } from '../components/tabIds';
 import { Sheet } from '../components/Sheet';
@@ -30,7 +44,7 @@ import { Nutry } from '../features/companion/Nutry';
 import { useCelebrationCheck, useCompanionRefresh } from '../features/companion/Celebration';
 import { useCompanion } from '../features/companion/useCompanion';
 import { BALANCE_EMOJIS, BALANCE_TONES } from '../features/plate/balanceTones';
-import { BackupReminder } from '../features/data/BackupReminder';
+import { useBackupReminder } from '../features/data/useBackupReminder';
 import { MealCard } from '../features/week/MealCard';
 import { ReplaceSheet } from '../features/week/ReplaceSheet';
 import { useAsync } from '../hooks/useAsync';
@@ -38,12 +52,10 @@ import {
   DAY_LABELS,
   DAY_SHORT_LABELS,
   RATING_REASON_LABELS,
-  SLOT_EMOJIS,
   SLOT_LABELS,
   SLOT_SHORT_LABELS,
   formatDayLong,
   formatDayOfMonth,
-  formatDayShort,
 } from '../i18n/labels';
 import styles from './WeekPage.module.css';
 
@@ -79,6 +91,9 @@ export function WeekPage() {
   const [confirmNew, setConfirmNew] = useState(false);
   const [showBatch, setShowBatch] = useState(false);
   const [showBalance, setShowBalance] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
+  const backup = useBackupReminder();
   const [busy, setBusy] = useState(false);
   const [hideRegenerated, setHideRegenerated] = useState(false);
 
@@ -181,11 +196,12 @@ export function WeekPage() {
     <Page
       title="Ma semaine"
       subtitle={
-        data ? `Semaine du ${formatDayShort(data.view.plan.weekStart)}` : 'Ton menu, en douceur'
+        <>
+          Bonjour <span aria-hidden="true">👋</span>
+        </>
       }
       actions={
         <>
-          <BackupReminder />
           {companion && (
             <Link
               to="/profil"
@@ -196,6 +212,16 @@ export function WeekPage() {
               <Nutry look={companion.look} mood={companion.mood} size="s" />
             </Link>
           )}
+          {data && (
+            <RoundIconButton
+              icon={<MoreIcon />}
+              label="Plus d’options"
+              dot={backup.due}
+              onClick={() => {
+                setShowMenu(true);
+              }}
+            />
+          )}
         </>
       }
     >
@@ -205,14 +231,14 @@ export function WeekPage() {
         </p>
       )}
       {state.status === 'error' && (
-        <Notice tone="danger" emoji="😕" title="Le menu n’a pas pu se charger">
+        <Notice tone="danger" emoji={<InfoIcon size={20} />} title="Le menu n’a pas pu se charger">
           <Button small variant="secondary" onClick={reload}>
             Réessayer
           </Button>
         </Notice>
       )}
       {state.status === 'ready' && !data && (
-        <EmptyState emoji="🥗" title="Pas encore de menu">
+        <EmptyState emoji={<HomeIcon size={28} />} title="Pas encore de menu">
           Complète ton profil pour recevoir ton menu de la semaine.
         </EmptyState>
       )}
@@ -224,17 +250,65 @@ export function WeekPage() {
           busy={busy}
           onReplace={setReplacing}
           onRate={onRate(data.view)}
-          onNewMenu={() => {
-            setConfirmNew(true);
-          }}
-          onShowBatch={() => {
-            setShowBatch(true);
-          }}
-          onShowBalance={() => {
-            setShowBalance(true);
-          }}
         />
       )}
+
+      <Sheet
+        open={showMenu}
+        title="Cette semaine"
+        onClose={() => {
+          setShowMenu(false);
+        }}
+      >
+        <ListGroup label="Options de la semaine">
+          <ListRow
+            to="/frigo"
+            icon={<FridgeIcon />}
+            title="Frigo vide"
+            ariaLabel="Frigo vide : cuisiner avec ce que tu as"
+          />
+          <ListRow
+            icon={<CalendarIcon />}
+            title="Équilibre de la semaine"
+            onClick={() => {
+              setShowMenu(false);
+              setShowBalance(true);
+            }}
+          />
+          {(data?.batch.length ?? 0) > 0 && (
+            <ListRow
+              icon={<PotIcon />}
+              title="Cuisiner en avance le dimanche"
+              onClick={() => {
+                setShowMenu(false);
+                setShowBatch(true);
+              }}
+            />
+          )}
+          <ListRow
+            icon={<SparkleIcon />}
+            title="Nouveau menu"
+            disabled={busy}
+            onClick={() => {
+              setShowMenu(false);
+              setConfirmNew(true);
+            }}
+          />
+          {backup.due && (
+            <ListRow
+              icon={<DatabaseIcon />}
+              title="Sauvegarder mes données"
+              ariaLabel="Sauvegarde conseillée : sauvegarder mes données"
+              dot
+              onClick={() => {
+                backup.dismiss();
+                setShowMenu(false);
+                void navigate('/profil#mes-donnees');
+              }}
+            />
+          )}
+        </ListGroup>
+      </Sheet>
 
       <ReplaceSheet
         meal={replacing}
@@ -294,7 +368,7 @@ export function WeekPage() {
         }
       >
         <p className={styles.dialogText}>
-          <span aria-hidden="true">🌱 </span>Tes 👍 et 👎 orientent les nouvelles idées.
+          Tes avis (j’ai aimé, pas pour moi) orientent les nouvelles idées.
         </p>
       </Sheet>
 
@@ -329,22 +403,10 @@ interface WeekContentProps {
   readonly busy: boolean;
   readonly onReplace: (meal: PlannedMeal) => void;
   readonly onRate: (meal: PlannedMeal, verdict: RatingVerdict) => void;
-  readonly onNewMenu: () => void;
-  readonly onShowBatch: () => void;
-  readonly onShowBalance: () => void;
 }
 
-function WeekContent({
-  data,
-  origin,
-  busy,
-  onReplace,
-  onRate,
-  onNewMenu,
-  onShowBatch,
-  onShowBalance,
-}: WeekContentProps) {
-  const { view, batch } = data;
+function WeekContent({ data, origin, busy, onReplace, onRate }: WeekContentProps) {
+  const { view } = data;
   const { today: getToday } = useDependencies();
   const today = getToday();
 
@@ -410,123 +472,93 @@ function WeekContent({
   return (
     <>
       {origin === 'regenerated' && (
-        <Notice tone="success" emoji="🔄" live>
+        <Notice tone="success" emoji={<SparkleIcon size={20} />} live>
           Ton profil a changé : on t’a préparé un menu qui lui correspond.
         </Notice>
       )}
 
-      <DayStrip
-        idPrefix="jour"
-        value={String(meal.dayIndex)}
-        onChange={(id) => {
-          pickDay(Number(id));
-        }}
-        days={days.map(({ dayIndex, date }) => ({
-          id: String(dayIndex),
-          weekday: DAY_SHORT_LABELS[dayIndex as DayIndex],
-          dayOfMonth: formatDayOfMonth(date),
-          ariaLabel: `${formatDayLong(date)}${date === today ? ', aujourd’hui' : ''}`,
-          isToday: date === today,
-        }))}
-      />
-
-      <div className={styles.mealRow}>
-        <RoundIconButton
-          icon="‹"
-          label="Repas précédent"
-          tone="soft"
-          disabled={index === 0}
-          onClick={() => {
-            step('prev');
-          }}
-        />
-        <SegmentedTabs
-          idPrefix="repas"
-          label={`Repas de ${DAY_LABELS[meal.dayIndex].toLowerCase()}`}
-          value={meal.slot}
-          onChange={pickSlot}
-          tabs={dayMeals.map((m) => ({
-            id: m.slot,
-            ariaLabel: SLOT_LABELS[m.slot],
-            label: (
-              <>
-                <span aria-hidden="true">{SLOT_EMOJIS[m.slot]}</span> {SLOT_SHORT_LABELS[m.slot]}
-              </>
-            ),
-          }))}
-        />
-        <RoundIconButton
-          icon="›"
-          label="Repas suivant"
-          tone="soft"
-          disabled={index === ordered.length - 1}
-          onClick={() => {
-            step('next');
-          }}
-        />
-      </div>
-
-      <p className="visually-hidden" aria-live="polite">
-        {dayLabel}, {SLOT_LABELS[meal.slot].toLowerCase()}
-      </p>
-
-      <div
-        role="tabpanel"
-        id={panelId('repas', meal.slot)}
-        aria-labelledby={tabId('repas', meal.slot)}
-        className={styles.panel}
-      >
-        <Swipeable className={styles.swipe} itemKey={meal.id} direction={direction} onSwipe={step}>
-          <MealCard
-            meal={meal}
-            recipe={view.recipes[meal.recipeId]}
-            explanation={view.explanations[meal.id]}
-            rating={view.ratings[meal.id]}
-            leftoverSource={meal.leftoverOf ? byId.get(meal.leftoverOf) : undefined}
-            feedsLeftover={leftoverBySource.get(meal.id)}
-            busy={busy}
-            onReplace={onReplace}
-            onRate={onRate}
-            onGoTo={(id) => {
-              goTo(id);
+      <div className={styles.layout}>
+        <div className={styles.side}>
+          <DayStrip
+            idPrefix="jour"
+            className={styles.days}
+            value={String(meal.dayIndex)}
+            onChange={(id) => {
+              pickDay(Number(id));
             }}
+            days={days.map(({ dayIndex, date }) => ({
+              id: String(dayIndex),
+              weekday: DAY_SHORT_LABELS[dayIndex as DayIndex],
+              dayOfMonth: formatDayOfMonth(date),
+              ariaLabel: `${formatDayLong(date)}${date === today ? ', aujourd’hui' : ''}`,
+              isToday: date === today,
+            }))}
           />
-        </Swipeable>
-      </div>
 
-      <nav className={styles.shortcuts} aria-label="Raccourcis">
-        <RoundIconLink
-          to="/frigo"
-          icon="🧊"
-          caption="Frigo"
-          label="Frigo vide : cuisiner avec ce que tu as"
-          tone="accent"
-        />
-        {batch.length > 0 && (
-          <RoundIconButton
-            icon="🥘"
-            caption="Dimanche"
-            label="Cuisiner en avance le dimanche"
-            tone="accent"
-            onClick={onShowBatch}
-          />
-        )}
-        <RoundIconButton
-          icon="🌈"
-          caption="Équilibre"
-          label="Équilibre de la semaine"
-          tone="accent"
-          onClick={onShowBalance}
-        />
-        <RoundIconButton
-          icon="✨"
-          caption="Nouveau"
-          label="Nouveau menu"
-          tone="accent"
-          disabled={busy}
-          onClick={onNewMenu}
-        />
-      </nav>
+          <div className={styles.mealRow}>
+            <RoundIconButton
+              icon={<ChevronLeftIcon size={22} />}
+              label="Repas précédent"
+              disabled={index === 0}
+              onClick={() => {
+                step('prev');
+              }}
+            />
+            <SegmentedTabs
+              idPrefix="repas"
+              label={`Repas de ${DAY_LABELS[meal.dayIndex].toLowerCase()}`}
+              value={meal.slot}
+              onChange={pickSlot}
+              tabs={dayMeals.map((m) => ({
+                id: m.slot,
+                ariaLabel: SLOT_LABELS[m.slot],
+                label: SLOT_SHORT_LABELS[m.slot],
+              }))}
+            />
+            <RoundIconButton
+              icon={<ChevronRightIcon size={22} />}
+              label="Repas suivant"
+              disabled={index === ordered.length - 1}
+              onClick={() => {
+                step('next');
+              }}
+            />
+          </div>
+        </div>
+
+        <p className="visually-hidden" aria-live="polite">
+          {dayLabel}, {SLOT_LABELS[meal.slot].toLowerCase()}
+        </p>
+
+        <div
+          role="tabpanel"
+          id={panelId('repas', meal.slot)}
+          aria-labelledby={tabId('repas', meal.slot)}
+          className={styles.panel}
+        >
+          <Swipeable
+            className={styles.swipe}
+            itemKey={meal.id}
+            direction={direction}
+            onSwipe={step}
+          >
+            <MealCard
+              meal={meal}
+              recipe={view.recipes[meal.recipeId]}
+              explanation={view.explanations[meal.id]}
+              rating={view.ratings[meal.id]}
+              leftoverSource={meal.leftoverOf ? byId.get(meal.leftoverOf) : undefined}
+              feedsLeftover={leftoverBySource.get(meal.id)}
+              busy={busy}
+              onReplace={onReplace}
+              onRate={onRate}
+              onGoTo={(id) => {
+                goTo(id);
+              }}
+            />
+          </Swipeable>
+        </div>
+      </div>
     </>
   );
 }
@@ -584,12 +616,12 @@ function BalanceContent({ data }: { readonly data: WeekData }) {
         ))}
       </div>
       {notices.map((n) => (
-        <Notice key={n.code} tone="info" emoji="💡">
+        <Notice key={n.code} tone="info" emoji={<BulbIcon size={20} />}>
           {n.message}
         </Notice>
       ))}
       {relaxed && !notices.some((n) => n.code === 'contraintes-assouplies') && (
-        <Notice tone="info" emoji="💡">
+        <Notice tone="info" emoji={<BulbIcon size={20} />}>
           Quelques repas sortent un peu de tes critères (niveau, temps ou variété) : on manquait
           d’idées qui cochent toutes les cases.
         </Notice>

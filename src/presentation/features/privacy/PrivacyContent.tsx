@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import type { ReactNode } from 'react';
 import { MEDICAL_DISCLAIMER } from '@domain/profile';
 import { useDependencies } from '../../app/dependencies';
 import { useAppState } from '../../app/appState';
@@ -7,35 +8,43 @@ import { Card } from '../../components/Card';
 import { useAsync } from '../../hooks/useAsync';
 import { CIQUAL_CITATION } from '../../i18n/labels';
 import styles from './PrivacyContent.module.css';
+import {
+  CheckIcon,
+  GlobeIcon,
+  LockIcon,
+  PaletteIcon,
+  PersonIcon,
+  ShieldIcon,
+} from '../../components/icons';
 
-const PROMISES: readonly { emoji: string; title: string; text: string }[] = [
+const PROMISES: readonly { icon: ReactNode; title: string; text: string }[] = [
   {
-    emoji: '📱',
+    icon: <LockIcon size={22} />,
     title: 'Tout reste sur ton appareil',
     text: 'Ton profil, tes menus, tes avis et tes mesures sont enregistrés uniquement dans ce navigateur.',
   },
   {
-    emoji: '🙅',
+    icon: <PersonIcon size={22} />,
     title: 'Aucun compte',
     text: 'Pas d’e-mail, pas de mot de passe, pas d’inscription.',
   },
   {
-    emoji: '🛰️',
+    icon: <ShieldIcon size={22} />,
     title: 'Aucun serveur',
     text: 'Aucune donnée personnelle n’est envoyée : l’app fonctionne même hors ligne.',
   },
   {
-    emoji: '🌐',
+    icon: <GlobeIcon size={22} />,
     title: 'Hébergée par GitHub Pages',
     text: 'Les fichiers de l’app sont servis par GitHub Pages. Comme pour tout site, GitHub voit ton adresse IP quand ils sont téléchargés, mais aucune donnée personnelle ne lui est envoyée.',
   },
   {
-    emoji: '🎨',
+    icon: <PaletteIcon size={22} />,
     title: 'Ton thème, mémorisé dans le navigateur',
     text: 'Le thème choisi (et quelques repères de session, comme la question du quiz de cette ouverture) est gardé dans ce navigateur pour un affichage immédiat. « Tout effacer » le supprime aussi.',
   },
   {
-    emoji: '🍪',
+    icon: <CheckIcon size={22} />,
     title: 'Aucun traceur',
     text: 'Ni publicité, ni mesure d’audience, ni cookie tiers.',
   },
@@ -54,9 +63,7 @@ export function PrivacyContent() {
       <ul className={styles.promises}>
         {PROMISES.map((p) => (
           <Card as="li" key={p.title} className={styles.promise}>
-            <span className={styles.emoji} aria-hidden="true">
-              {p.emoji}
-            </span>
+            <span className={styles.icon}>{p.icon}</span>
             <div>
               <h2 className={styles.title}>{p.title}</h2>
               <p className={styles.text}>{p.text}</p>
@@ -68,8 +75,8 @@ export function PrivacyContent() {
       {state.status === 'ready' && (
         <p className={styles.text}>
           {state.data
-            ? '✅ Ton navigateur a accepté de conserver durablement tes données.'
-            : 'ℹ️ Ton navigateur peut effacer ces données s’il manque de place : pense à faire une sauvegarde de temps en temps.'}
+            ? 'Ton navigateur a accepté de conserver durablement tes données.'
+            : 'Ton navigateur peut effacer ces données s’il manque de place : pense à faire une sauvegarde de temps en temps.'}
         </p>
       )}
 

@@ -6,7 +6,7 @@
 }
 
 .label {
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
 }
 
 .hint {
@@ -24,7 +24,7 @@
   width: 100%;
   min-height: var(--touch-min);
   padding: var(--space-2) var(--space-3);
-  border: 1.5px solid var(--color-border-strong);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
   background: var(--color-surface);
   color: var(--color-text);

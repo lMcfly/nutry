@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import styles from './Gauge.module.css';
 
 export type GaugeTone = 'default' | 'veg' | 'protein' | 'starch' | 'fish';
@@ -6,7 +7,7 @@ interface GaugeProps {
   readonly label: string;
   readonly count: number;
   readonly target: number;
-  readonly emoji?: string;
+  readonly emoji?: ReactNode;
   /** Couleur de la catégorie (légumes vert, protéines corail, féculents ambre, poisson bleu). */
   readonly tone?: GaugeTone;
   /** Texte visible à droite (sinon « count/target »). */
@@ -30,7 +31,7 @@ export function Gauge({
 }: GaugeProps) {
   const ratio = target > 0 ? Math.min(1, count / target) : 0;
   const reached = count >= target;
-  const shown = valueLabel ?? `${reached ? '✓ ' : ''}${count}/${target}`;
+  const shown = valueLabel ?? `${count}/${target}`;
   return (
     <div className={`${styles.gauge} ${inline ? styles.inline : ''}`}>
       <span className={styles.label}>

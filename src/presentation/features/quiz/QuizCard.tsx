@@ -9,6 +9,7 @@ import { Nutry } from '../companion/Nutry';
 import { useCompanion } from '../companion/useCompanion';
 import { QUIZ_CATEGORY_LABELS, plural } from '../../i18n/labels';
 import styles from './QuizCard.module.css';
+import { BulbIcon, FlameIcon, LeafIcon, SparkleIcon } from '../../components/icons';
 
 const LETTERS = ['A', 'B', 'C', 'D'] as const;
 
@@ -71,7 +72,8 @@ export function QuizCard() {
       onClose={close}
       title={
         <>
-          <span aria-hidden="true">💡 </span>La question du moment
+          <BulbIcon size={20} />
+          La question du moment
         </>
       }
       closeLabel="Fermer la question du moment"
@@ -130,12 +132,12 @@ export function QuizCard() {
           {answer && (
             <div id="quiz-result" className={styles.result}>
               <p className={styles.verdict}>
-                <span aria-hidden="true">{answer.correct ? '🎉 ' : '🌱 '}</span>
+                {answer.correct ? <SparkleIcon size={20} /> : <LeafIcon size={20} />}
                 {answer.message}
               </p>
               <p>{answer.explanation}</p>
               <p className={styles.streak}>
-                <span aria-hidden="true">🔥 </span>
+                <FlameIcon size={18} />
                 {answer.streak > 0
                   ? `Série : ${plural(answer.streak, 'bonne réponse', 'bonnes réponses')}`
                   : 'Nouvelle série à la prochaine question !'}

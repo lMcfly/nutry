@@ -3,6 +3,13 @@ import { describe, expect, it } from 'vitest';
 import { ShoppingPage } from './ShoppingPage';
 import { renderScreen } from '../testing/renderApp';
 
+/** Ouvre le menu « ⋯ » de la liste puis choisit une ligne (Partager, Tout décocher). */
+async function fromMenu(user: ReturnType<typeof renderScreen>['user'], name: string | RegExp) {
+  await user.click(await screen.findByRole('button', { name: 'Plus d’options' }));
+  const menu = await screen.findByRole('dialog', { name: 'Ma liste' });
+  await user.click(within(menu).getByRole('button', { name }));
+}
+
 const record = (ports: ReturnType<typeof renderScreen>['ports']) =>
   [...ports.state.shopping.values()][0];
 
@@ -22,14 +29,14 @@ describe('<ShoppingPage />', () => {
     expect(screen.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', tabs[epicerie]?.id);
   });
 
-  it('affiche « n/total dans le panier » et le met à jour', async () => {
+  it('affiche « « n sur total » » et le met à jour', async () => {
     const { user } = renderScreen(<ShoppingPage />);
-    expect(await screen.findByText(/^0\/\d+ dans le panier$/)).toBeVisible();
+    expect(await screen.findByText(/^0 sur \d+$/)).toBeVisible();
     const list = screen.getByTestId('shopping-list');
     const first = within(list).getAllByRole('checkbox')[0];
     if (!first) throw new Error('aucun article');
     await user.click(first);
-    expect(await screen.findByText(/^1\/\d+ dans le panier$/)).toBeVisible();
+    expect(await screen.findByText(/^1 sur \d+$/)).toBeVisible();
   });
 
   it('coche un article, ajoute et supprime un article manuel, décoche tout', async () => {
@@ -57,7 +64,7 @@ describe('<ShoppingPage />', () => {
     await user.click(await screen.findByRole('tab', { name: /^Épicerie/ }));
     expect(await screen.findByRole('checkbox', { name: 'Café moulu' })).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Tout décocher' }));
+    await fromMenu(user, 'Tout décocher');
     await user.click(screen.getByRole('tab', { name: /^Fruits et légumes/ }));
     await waitFor(() => {
       expect(
@@ -74,14 +81,14 @@ describe('<ShoppingPage />', () => {
 
   it('partage, sinon copie avec un message', async () => {
     const { user, ports } = renderScreen(<ShoppingPage />, { shareResult: 'copied' });
-    await user.click(await screen.findByRole('button', { name: /Partager/ }));
+    await fromMenu(user, /Partager/);
     expect(await screen.findByText(/Liste copiée/)).toBeInTheDocument();
     expect(ports.sharer.shared[0]).toMatch(/Ma liste de courses Nutry/);
   });
 
   it('partage annulé : aucun message d’erreur', async () => {
     const { user, ports } = renderScreen(<ShoppingPage />, { shareResult: 'cancelled' });
-    await user.click(await screen.findByRole('button', { name: /Partager/ }));
+    await fromMenu(user, /Partager/);
     await waitFor(() => {
       expect(ports.sharer.shared).toHaveLength(1);
     });
@@ -91,7 +98,7 @@ describe('<ShoppingPage />', () => {
 
   it('partage impossible : message d’erreur', async () => {
     const { user } = renderScreen(<ShoppingPage />, { shareResult: 'failed' });
-    await user.click(await screen.findByRole('button', { name: /Partager/ }));
+    await fromMenu(user, /Partager/);
     expect(await screen.findByText(/partage n’a pas fonctionné/)).toBeInTheDocument();
   });
 });

@@ -77,3 +77,58 @@ illustrations plates, jauges colorées) et ne veut **pas de calories mises en av
   et une règle dans `match.ts` (le test vérifie la couverture des 15 familles).
 - Si une nouvelle carte dépasse la hauteur d'un petit écran, `sans-scroll.spec.ts` échoue :
   réduire le contenu ou le faire défiler dans sa carte.
+
+## Épure et adaptation à l'appareil (révision du 2026-11-23)
+
+Retour de l'utilisateur : « beaucoup trop chargé, ça ne donne pas envie » puis « la mise en page
+n'est pas adaptée à l'appareil ». Les décisions ci-dessus sur la coque (pas de scroll de page,
+feuilles, onglets ARIA) restent ; le **rendu** change. Cette section remplace les choix de
+couleur, de densité et de pictogrammes de la première version.
+
+### Principes d'épure
+
+- **Une information principale et une à trois actions par écran.** Le reste passe dans un menu
+  « ⋯ » (feuille) ou dans l'écran de détail. Rien n'est supprimé : Frigo vide, équilibre,
+  cuisiner en avance, nouveau menu et rappel de sauvegarde sont dans le menu de la Semaine ;
+  Partager et Tout décocher dans celui des Courses.
+- **Une seule couleur d'accent : le vert sauge** (`--color-primary`), réservé à l'élément actif
+  et à l'action principale. Le corail (`--color-accent`) n'est qu'un léger complément (flamme de
+  la série, pastille d'attention). Fond crème `#f8f7f3`, surfaces blanches, filets de 1 px à la
+  place des ombres, titres en 600, pas de majuscules. Thème sombre dérivé des mêmes rôles.
+  `contrast.test.ts` reste la référence (AA texte, 3:1 composants et jauges).
+- **Pictogrammes au trait** (`components/icons/`, SVG 24 px, trait 1,75, `currentColor`, décoratifs)
+  à la place des emojis d'interface. Les emojis ne subsistent que dans le contenu (accessoires de
+  Nutry, familles d'aliments de l'équilibre, « Bonjour 👋 »).
+- **Composants** : `ListRow` / `ListGroup` (lignes de réglages façon iOS, remplacent `Tile`),
+  onglets de texte soulignés (repas, sections de recette), rayons en pastilles douces, bandeau de
+  jours sans cartes, cases de courses rondes et fines, bouton + flottant, `DishImage`.
+- **Carte du repas** : toute la carte est un lien (lien étiré sur le nom, nom accessible « Voir la
+  recette : … ») ; illustration, nom, « Simple · 17 min », « Pourquoi ce plat ? » sur une ligne et
+  trois actions au trait. Les jauges d'assiette sont dans l'onglet Infos de la recette ;
+  l'équilibre de la semaine s'ouvre depuis le menu ou depuis Progrès.
+- **`DishImage`** prépare les vraies photos : `src` facultative et texte alternatif, repli sur
+  l'illustration si elle manque ou ne charge pas (hors ligne), `object-fit: cover`, ratio fixe
+  (4/3 sur la carte, 16/10 en tête de recette), `loading="lazy"` sauf l'image principale, même
+  origine (CSP `img-src 'self'` inchangée). Aucune URL de photo n'est encore fournie.
+
+### Points de rupture
+
+| Format                        | Condition                                         | Navigation             | Mise en page                                                                                                                                                       |
+| ----------------------------- | ------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Téléphone portrait (≤ 767 px) | défaut                                            | barre d'onglets en bas | une colonne, pas de scroll de page                                                                                                                                 |
+| Téléphone paysage             | `orientation: landscape` et hauteur ≤ 539 px      | rail compact           | `main` défile, chaque écran garde une hauteur de lecture                                                                                                           |
+| Tablette portrait             | ≥ 768 px et hauteur ≥ 540 px                      | rail latéral           | une colonne plus large (contenu ≤ 64 rem), feuilles en dialogue centré, réglages en panneau à droite                                                               |
+| Tablette paysage, ordinateur  | ≥ 1000 px (profil, recette, progrès : dès 768 px) | rail latéral           | deux colonnes : Semaine (jours à gauche, carte à droite), Courses (rayons / liste), Recette (illustration / onglets), Profil (Nutry / réglages) ; contenu ≤ 74 rem |
+
+Tailles fluides (`clamp()` pour le titre, les marges, Nutry et les illustrations), unités en `rem`
+(le texte suit la taille système), `viewport-fit=cover` et `env(safe-area-inset-*)` sur la barre,
+le rail et la coque. Le rail est un `order: -1` du même `<nav>` : même ordre de lecture et de
+tabulation partout.
+
+### Vérifications
+
+`e2e/sans-scroll.spec.ts` mesure, du 360 × 640 à 1440 × 900 (iPhone SE et 15, Pixel 7, iPad en
+portrait et en paysage) : pas de scroll de page, rien de coupé dans `<main>`, aucun débordement
+horizontal, navigation entièrement visible, et au moins 60 px de réserve sous Profil et Progrès
+en 360 × 640. `e2e/responsive.spec.ts` ajoute axe (sans violation sérieuse) sur tablette et
+ordinateur. Captures : `docs/captures/` (dont `tablette.png` et `ordinateur.png`).

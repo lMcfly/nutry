@@ -22,14 +22,14 @@ test('parcours principal : onboarding → menu → remplacement → courses → 
   console.log(`Durée de l'onboarding : ${onboardingMs} ms`);
   expect(onboardingMs).toBeLessThan(120_000);
 
-  // Semaine : une grande carte (le repas du jour), 7 jours dans le bandeau, 3 jauges d'assiette.
+  // Semaine : une grande carte (le repas du jour), 7 jours dans le bandeau, carte épurée sans jauge.
   const first = page.getByTestId('meal');
   await expect(first).toHaveCount(1);
   await expect(dayTabs(page)).toHaveCount(7);
   await expect(dayTabs(page).and(page.locator('[aria-selected="true"]'))).toHaveAccessibleName(
     /aujourd’hui/,
   );
-  await expect(first.getByRole('meter')).toHaveCount(3);
+  await expect(first.getByRole('meter')).toHaveCount(0);
   // 14 repas dans la semaine (déjeuner + dîner, sans petit-déjeuner), parcourus de proche en proche.
   expect(await collectWeekNames(page)).toHaveLength(14);
   await page.getByRole('tab', { name: /aujourd’hui/ }).click();
@@ -58,7 +58,7 @@ test('parcours principal : onboarding → menu → remplacement → courses → 
   const itemName = await fruits.locator('label').first().innerText();
   await item.check();
   await expect(item).toBeChecked();
-  await expect(page.getByText(/^1\/\d+ dans le panier$/)).toBeVisible();
+  await expect(page.getByText(/^1 sur \d+$/)).toBeVisible();
   // Premier geste du jour : Nutry gagne sa première feuille.
   await dismissCelebration(page);
   // La case réagit tout de suite : on attend que l'écriture soit enregistrée avant de recharger.
@@ -111,13 +111,17 @@ test('accessibilité : aucune violation axe sérieuse sur les écrans principaux
   report['semaine'] = await seriousViolations(page);
 
   // Feuilles de la Semaine : équilibre, puis fenêtre « Nouveau menu ».
+  await page.getByRole('button', { name: 'Plus d’options' }).click();
   await page.getByRole('button', { name: 'Équilibre de la semaine' }).click();
   await expect(page.getByRole('dialog', { name: 'L’équilibre de ta semaine' })).toBeVisible();
   report['semaine-equilibre'] = await seriousViolations(page);
   await page.keyboard.press('Escape');
 
   // Une recette : onglets Ingrédients, Étapes, Infos.
-  await page.getByTestId('meal').getByRole('link', { name: 'Voir la recette' }).click();
+  await page
+    .getByTestId('meal')
+    .getByRole('link', { name: /^Voir la recette/ })
+    .click();
   await expect(page.getByRole('tab', { name: 'Ingrédients' })).toBeVisible();
   report['recette'] = await seriousViolations(page);
   await page.getByRole('tab', { name: 'Étapes' }).click();

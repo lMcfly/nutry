@@ -20,6 +20,7 @@ test('👎 « pas aimé » puis « Nouveau menu » : le plat n’est plus dans l
   // Premier geste du jour : Nutry gagne sa première feuille.
   await dismissCelebration(page);
 
+  await page.getByRole('button', { name: 'Plus d’options' }).click();
   await page.getByRole('button', { name: 'Nouveau menu' }).click();
   const confirm = page.getByRole('alertdialog', { name: 'Un nouveau menu ?' });
   await confirm.getByRole('button', { name: 'Oui, on change' }).click();

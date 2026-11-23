@@ -11,9 +11,15 @@
   align-items: flex-start;
 }
 
-.emoji {
-  font-size: 1.75rem;
-  line-height: 1.2;
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
 }
 
 .title {

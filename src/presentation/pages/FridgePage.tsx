@@ -6,6 +6,7 @@ import { normalizeText } from '@domain/shared';
 import { useDependencies } from '../app/dependencies';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
+import { CloseIcon, FridgeIcon, SearchIcon } from '../components/icons';
 import { EmptyState } from '../components/EmptyState';
 import { Field } from '../components/Field';
 import { Page } from '../components/Page';
@@ -57,6 +58,7 @@ export function FridgePage() {
 
   return (
     <Page
+      narrow
       title="Frigo vide"
       subtitle="Coche ce que tu as, je te dis quoi cuisiner."
       back={{ to: '/semaine', label: 'Ma semaine' }}
@@ -113,7 +115,7 @@ export function FridgePage() {
                     toggle(i);
                   }}
                 >
-                  {i} <span aria-hidden="true">✕</span>
+                  {i} <CloseIcon size={16} />
                 </button>
               </li>
             ))}
@@ -151,14 +153,14 @@ export function FridgePage() {
 
       <section aria-labelledby="ideas-title" className={styles.block} aria-live="polite">
         <h2 id="ideas-title" className={styles.blockTitle}>
-          <span aria-hidden="true">🍳 </span>Idées de recettes
+          Idées de recettes
         </h2>
         {results === undefined ? (
-          <EmptyState emoji="🧊" title="Ton frigo, ton menu" level={3}>
+          <EmptyState emoji={<FridgeIcon size={28} />} title="Ton frigo, ton menu" level={3}>
             Touche au moins un ingrédient pour voir des idées.
           </EmptyState>
         ) : results.length === 0 ? (
-          <EmptyState emoji="🤔" title="Pas encore d’idée" level={3}>
+          <EmptyState emoji={<SearchIcon size={28} />} title="Pas encore d’idée" level={3}>
             Ajoute un ou deux ingrédients de plus.
           </EmptyState>
         ) : (

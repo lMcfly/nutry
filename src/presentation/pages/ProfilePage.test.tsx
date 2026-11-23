@@ -61,7 +61,7 @@ describe('<ProfilePage />', () => {
 
   it('Nutry : humeur, série et prochain déblocage', async () => {
     renderScreen(<ProfilePage />);
-    expect(await screen.findByText('Content')).toBeVisible();
+    expect(await screen.findByRole('img', { name: /il est content/ })).toBeVisible();
     expect(screen.getByText(/Pas de série en cours/)).toBeVisible();
     expect(screen.getByText('Encore 1 jour pour la feuille sur la tête !')).toBeVisible();
   });

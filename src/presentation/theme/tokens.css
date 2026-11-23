@@ -1,8 +1,8 @@
 /*
- * Jetons de design Nutry (ADR 0004, refonte ADR 0013) : une identité fraîche et appétissante.
- * Fond vert très pâle, cartes blanches très arrondies, accent corail (primaire), vert
- * feuille (accent), couleurs de jauges par catégorie. Typographie système (aucune police
- * externe : hors ligne et confidentialité).
+ * Jetons de design Nutry (ADR 0004, refonte ADR 0013, section « épure »). Fond crème,
+ * surfaces blanches, un seul accent vert sauge (primaire) réservé à l'action principale et
+ * à l'élément actif, corail très doux en complément (accent), jauges discrètes par
+ * catégorie. Typographie système (aucune police externe : hors ligne et confidentialité).
  *
  * Les couleurs sont vérifiées WCAG AA par `contrast.test.ts` (paires texte/fond, jauges) :
  * toute modification doit garder ce test vert. Les jetons sombres sont dupliqués dans
@@ -13,37 +13,37 @@
   color-scheme: light;
 
   /* Couleurs — thème clair */
-  --color-bg: #eef6ee;
+  --color-bg: #f8f7f3;
   --color-surface: #ffffff;
-  --color-surface-alt: #e2eee3;
-  --color-text: #1f2a22;
-  --color-text-muted: #485a4d;
-  --color-border: #d3e3d5;
-  --color-border-strong: #6f8574;
-  --color-primary: #bd3d1b;
-  --color-primary-hover: #a43417;
+  --color-surface-alt: #f0f1ea;
+  --color-text: #2a2f2b;
+  --color-text-muted: #5f6761;
+  --color-border: #e9e8e1;
+  --color-border-strong: #858c86;
+  --color-primary: #44725a;
+  --color-primary-hover: #385f49;
   --color-on-primary: #ffffff;
-  --color-primary-soft: #fde8df;
-  --color-on-primary-soft: #8f2e12;
-  --color-accent: #2b7a4b;
+  --color-primary-soft: #e8f0ea;
+  --color-on-primary-soft: #2f5742;
+  --color-accent: #a24a2b;
   --color-on-accent: #ffffff;
-  --color-accent-soft: #d9eddb;
-  --color-on-accent-soft: #1d5a37;
-  --color-success: #256b40;
-  --color-success-soft: #dcefdd;
+  --color-accent-soft: #fbece5;
+  --color-on-accent-soft: #8a3d22;
+  --color-success: #2f6b47;
+  --color-success-soft: #e6f0e8;
   --color-warning: #7a5200;
-  --color-warning-soft: #fbefd5;
+  --color-warning-soft: #faf1dc;
   --color-danger: #a8312a;
   --color-on-danger: #ffffff;
-  --color-danger-soft: #fbe5e2;
+  --color-danger-soft: #fbe9e6;
   --color-focus: #2c5f8a;
-  --color-backdrop: rgb(24 40 28 / 45%);
+  --color-backdrop: rgb(32 40 34 / 38%);
 
   /* Jauges : une couleur par catégorie (légumes, protéines, féculents, poisson) */
-  --gauge-veg: #2f8a52;
-  --gauge-protein: #d9482a;
-  --gauge-starch: #b36f00;
-  --gauge-fish: #2f77b0;
+  --gauge-veg: #4a8a63;
+  --gauge-protein: #c2694a;
+  --gauge-starch: #a97d1f;
+  --gauge-fish: #4a82ae;
 
   /* Espacements (base 4 px) */
   --space-1: 0.25rem;
@@ -55,34 +55,37 @@
   --space-7: 3rem;
 
   /* Rayons : très arrondis */
-  --radius-sm: 0.625rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
   --radius-pill: 999px;
 
   /* Ombres */
-  --shadow-sm: 0 1px 2px rgb(30 60 40 / 8%);
-  --shadow-md: 0 6px 18px rgb(30 60 40 / 10%);
-  --shadow-lg: 0 14px 36px rgb(30 60 40 / 20%);
+  --shadow-sm: 0 1px 2px rgb(40 50 40 / 4%);
+  --shadow-md: 0 2px 14px rgb(40 50 40 / 5%);
+  --shadow-lg: 0 14px 36px rgb(40 50 40 / 16%);
 
   /* Typographie (système) */
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-size-xs: 0.8125rem;
   --font-size-sm: 0.9375rem;
-  --font-size-md: 1.0625rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: 1.875rem;
-  --line-height: 1.45;
-  --font-weight-medium: 550;
-  --font-weight-bold: 700;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: clamp(1.25rem, 1.05rem + 0.9vw, 1.625rem);
+  --font-size-2xl: 1.75rem;
+  --line-height: 1.55;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
 
   /* Tactile */
   --touch-min: 48px;
   --touch-small: 44px;
   --content-max: 40rem;
-  --tabbar-height: 3.75rem;
+  --sheet-max: 40rem;
+  --rail-width: 5.5rem;
+  --gutter: clamp(1rem, 4.5vw, 2rem);
+  --tabbar-height: 3.5rem;
 
   /* Plans */
   --z-tabbar: 10;
@@ -98,24 +101,24 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --color-bg: #101812;
-    --color-surface: #1a251d;
-    --color-surface-alt: #243228;
-    --color-text: #e8f1e8;
-    --color-text-muted: #b4c4b6;
-    --color-border: #2f3f33;
-    --color-border-strong: #7f9484;
-    --color-primary: #f08a6a;
-    --color-primary-hover: #f5a287;
-    --color-on-primary: #2b0f06;
-    --color-primary-soft: #3d2219;
-    --color-on-primary-soft: #f8c3b0;
-    --color-accent: #8fd0a2;
-    --color-on-accent: #0f2416;
-    --color-accent-soft: #213a29;
-    --color-on-accent-soft: #c5e8d0;
-    --color-success: #8fd0a2;
-    --color-success-soft: #213a29;
+    --color-bg: #121613;
+    --color-surface: #1b211c;
+    --color-surface-alt: #252c26;
+    --color-text: #e9ece6;
+    --color-text-muted: #aab2aa;
+    --color-border: #2b332c;
+    --color-border-strong: #7d867e;
+    --color-primary: #8cc4a0;
+    --color-primary-hover: #a3d2b3;
+    --color-on-primary: #0f2417;
+    --color-primary-soft: #223328;
+    --color-on-primary-soft: #c4e3cf;
+    --color-accent: #eba088;
+    --color-on-accent: #2b0f06;
+    --color-accent-soft: #3a2820;
+    --color-on-accent-soft: #f6c7b6;
+    --color-success: #8cc4a0;
+    --color-success-soft: #223328;
     --color-warning: #f0c36d;
     --color-warning-soft: #3a2f17;
     --color-danger: #f2a39b;
@@ -123,36 +126,36 @@
     --color-danger-soft: #3d2220;
     --color-focus: #8cc3f0;
     --color-backdrop: rgb(0 0 0 / 60%);
-    --gauge-veg: #5fbf82;
-    --gauge-protein: #f08a6a;
-    --gauge-starch: #f0b84a;
-    --gauge-fish: #6fb2e6;
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
-    --shadow-md: 0 4px 14px rgb(0 0 0 / 35%);
+    --gauge-veg: #6fbf8b;
+    --gauge-protein: #eb9a7e;
+    --gauge-starch: #e3b95c;
+    --gauge-fish: #78b5e6;
+    --shadow-sm: none;
+    --shadow-md: none;
     --shadow-lg: 0 12px 32px rgb(0 0 0 / 50%);
   }
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --color-bg: #101812;
-  --color-surface: #1a251d;
-  --color-surface-alt: #243228;
-  --color-text: #e8f1e8;
-  --color-text-muted: #b4c4b6;
-  --color-border: #2f3f33;
-  --color-border-strong: #7f9484;
-  --color-primary: #f08a6a;
-  --color-primary-hover: #f5a287;
-  --color-on-primary: #2b0f06;
-  --color-primary-soft: #3d2219;
-  --color-on-primary-soft: #f8c3b0;
-  --color-accent: #8fd0a2;
-  --color-on-accent: #0f2416;
-  --color-accent-soft: #213a29;
-  --color-on-accent-soft: #c5e8d0;
-  --color-success: #8fd0a2;
-  --color-success-soft: #213a29;
+  --color-bg: #121613;
+  --color-surface: #1b211c;
+  --color-surface-alt: #252c26;
+  --color-text: #e9ece6;
+  --color-text-muted: #aab2aa;
+  --color-border: #2b332c;
+  --color-border-strong: #7d867e;
+  --color-primary: #8cc4a0;
+  --color-primary-hover: #a3d2b3;
+  --color-on-primary: #0f2417;
+  --color-primary-soft: #223328;
+  --color-on-primary-soft: #c4e3cf;
+  --color-accent: #eba088;
+  --color-on-accent: #2b0f06;
+  --color-accent-soft: #3a2820;
+  --color-on-accent-soft: #f6c7b6;
+  --color-success: #8cc4a0;
+  --color-success-soft: #223328;
   --color-warning: #f0c36d;
   --color-warning-soft: #3a2f17;
   --color-danger: #f2a39b;
@@ -160,17 +163,40 @@
   --color-danger-soft: #3d2220;
   --color-focus: #8cc3f0;
   --color-backdrop: rgb(0 0 0 / 60%);
-  --gauge-veg: #5fbf82;
-  --gauge-protein: #f08a6a;
-  --gauge-starch: #f0b84a;
-  --gauge-fish: #6fb2e6;
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
-  --shadow-md: 0 4px 14px rgb(0 0 0 / 35%);
+  --gauge-veg: #6fbf8b;
+  --gauge-protein: #eb9a7e;
+  --gauge-starch: #e3b95c;
+  --gauge-fish: #78b5e6;
+  --shadow-sm: none;
+  --shadow-md: none;
   --shadow-lg: 0 12px 32px rgb(0 0 0 / 50%);
 }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
     color-scheme: light;
+  }
+}
+
+/* Tablette et ordinateur : le contenu garde une largeur confortable, la navigation passe en rail. */
+@media (min-width: 768px) and (min-height: 540px) {
+  :root {
+    --content-max: 64rem;
+    --sheet-max: 34rem;
+  }
+}
+
+@media (min-width: 1100px) and (min-height: 540px) {
+  :root {
+    --content-max: 74rem;
+    --rail-width: 6.25rem;
+  }
+}
+
+/* Téléphone en paysage : rail compact, le contenu défile à l'intérieur de la coque. */
+@media (orientation: landscape) and (max-height: 539px) {
+  :root {
+    --content-max: 56rem;
+    --rail-width: 4.5rem;
   }
 }

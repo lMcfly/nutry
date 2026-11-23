@@ -1,9 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDependencies } from '../app/dependencies';
 import { useAppState } from '../app/appState';
 import { COMPANION_MESSAGES, DEFAULT_LOOK } from '@domain/companion';
 import { Button } from '../components/Button';
+import {
+  CalendarIcon,
+  LeafIcon,
+  LockIcon,
+  PersonIcon,
+  SmileIcon,
+  TargetIcon,
+} from '../components/icons';
 import { APP_NAME } from '../components/Page';
 import { ScrollArea } from '../components/ScrollArea';
 import { useToast } from '../components/Toast';
@@ -26,7 +35,7 @@ import styles from './OnboardingPage.module.css';
 interface Step {
   readonly title: string;
   readonly intro: string;
-  readonly emoji: string;
+  readonly icon: ReactNode;
   /** Écran facultatif : bouton « Passer ». */
   readonly optional: boolean;
 }
@@ -34,7 +43,7 @@ interface Step {
 const FIRST_STEP: Step = {
   title: 'Faisons connaissance',
   intro: 'Pour ajuster tes portions. Tout reste sur ton téléphone.',
-  emoji: '👋',
+  icon: <PersonIcon size={26} />,
   optional: false,
 };
 
@@ -43,19 +52,19 @@ const STEPS: readonly Step[] = [
   {
     title: 'Ton objectif',
     intro: 'Et ce que tu ne manges pas.',
-    emoji: '🎯',
+    icon: <TargetIcon size={26} />,
     optional: true,
   },
   {
     title: 'Tes goûts',
     intro: 'Touche ce que tu adores… et ce que tu évites.',
-    emoji: '😋',
+    icon: <SmileIcon size={26} />,
     optional: true,
   },
   {
     title: 'Ton organisation',
     intro: 'Pour un menu qui tient dans ta semaine.',
-    emoji: '🗓️',
+    icon: <CalendarIcon size={26} />,
     optional: true,
   },
 ];
@@ -143,7 +152,8 @@ export function OnboardingPage() {
     <div className={styles.onboarding}>
       <div className={styles.top}>
         <p className={styles.brand}>
-          <span aria-hidden="true">🌿</span> {APP_NAME}
+          <LeafIcon size={18} />
+          {APP_NAME}
         </p>
         <div
           className={styles.progress}
@@ -180,9 +190,7 @@ export function OnboardingPage() {
           {step === 0 ? (
             <Nutry look={DEFAULT_LOOK} mood="joyeux" size="m" />
           ) : (
-            <span className={styles.emoji} aria-hidden="true">
-              {current.emoji}
-            </span>
+            <span className={styles.icon}>{current.icon}</span>
           )}
           <div className={styles.headerText}>
             <h1 ref={headingRef} tabIndex={-1} className={styles.title}>
@@ -208,7 +216,7 @@ export function OnboardingPage() {
           {step === 3 && <OrganisationSection draft={draft} onChange={update} />}
           {step === 0 && (
             <p className={styles.privacy}>
-              <span aria-hidden="true">🔒 </span>
+              <LockIcon size={16} />
               Aucun compte, aucun serveur. <Link to="/confidentialite">Confidentialité</Link>
             </p>
           )}

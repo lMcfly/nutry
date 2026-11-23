@@ -13,6 +13,7 @@ import { useToast } from '../../components/Toast';
 import { Toggle } from '../../components/Toggle';
 import { applyTheme } from '../../hooks/theme';
 import styles from './DataSection.module.css';
+import { DownloadIcon, InfoIcon, TrashIcon, UploadIcon } from '../../components/icons';
 
 type ImportError = Exclude<ImportResult, { readonly status: 'imported' }>;
 
@@ -149,7 +150,7 @@ export function DataSection({ bare = false }: DataSectionProps) {
   const body = (
     <>
       <h2 id="data-title" className={bare ? 'visually-hidden' : undefined}>
-        <span aria-hidden="true">💾 </span>Mes données
+        Mes données
       </h2>
       <p className={styles.intro}>
         Elles restent sur ce téléphone. Une sauvegarde te permet de les retrouver ailleurs.
@@ -179,14 +180,14 @@ export function DataSection({ bare = false }: DataSectionProps) {
                 setPassphrase(e.target.value);
               }}
             />
-            <Notice tone="warning" emoji="⚠️">
+            <Notice tone="warning" emoji={<InfoIcon size={20} />}>
               {FORGOTTEN_PASSPHRASE_WARNING}
             </Notice>
           </>
         )}
         {!encrypt && exportError && <p className={styles.error}>{exportError}</p>}
         <Button
-          icon="⬇️"
+          icon={<DownloadIcon size={20} />}
           disabled={exporting}
           onClick={() => {
             void doExport();
@@ -227,7 +228,7 @@ export function DataSection({ bare = false }: DataSectionProps) {
         />
         <Button
           variant="secondary"
-          icon="⬆️"
+          icon={<UploadIcon size={20} />}
           onClick={() => {
             fileInput.current?.click();
           }}
@@ -250,7 +251,7 @@ export function DataSection({ bare = false }: DataSectionProps) {
         </p>
         <Button
           variant="danger"
-          icon="🗑"
+          icon={<TrashIcon size={20} />}
           onClick={() => {
             setWipeWord('');
             setWipeOpen(true);
@@ -307,7 +308,7 @@ export function DataSection({ bare = false }: DataSectionProps) {
           )}
           {importError && (
             <div role="alert">
-              <Notice tone="danger" emoji="😕">
+              <Notice tone="danger" emoji={<InfoIcon size={20} />}>
                 {importError.message}
                 {importError.errors && importError.errors.length > 0 && (
                   <details className={styles.errors}>

@@ -7,7 +7,8 @@ import { Gauge } from './Gauge';
 import { RoundIconButton, RoundIconLink } from './RoundIconButton';
 import { SegmentedTabs } from './SegmentedTabs';
 import { Swipeable } from './Swipeable';
-import { Tile } from './Tile';
+import { ListGroup, ListRow } from './ListRow';
+import { PersonIcon } from './icons';
 import { panelId, tabId } from './tabIds';
 
 const TABS = [
@@ -165,7 +166,7 @@ describe('<Gauge /> colorée', () => {
   });
 });
 
-describe('<RoundIconButton /> et <Tile />', () => {
+describe('<RoundIconButton /> et <ListRow />', () => {
   it('bouton rond : nom accessible explicite, picto décoratif, légende masquée aux lecteurs', async () => {
     const onClick = vi.fn();
     const user = userEvent.setup();
@@ -183,12 +184,14 @@ describe('<RoundIconButton /> et <Tile />', () => {
     expect(onClick).toHaveBeenCalledOnce();
   });
 
-  it('lien rond et tuile', () => {
+  it('lien rond et lignes de réglages', () => {
     render(
       <MemoryRouter>
         <RoundIconLink to="/frigo" icon="🧊" label="Frigo vide" />
-        <Tile emoji="🎯" title="Objectif" to="/x" />
-        <Tile emoji="🔒" title="Confidentialité" onClick={() => undefined} />
+        <ListGroup>
+          <ListRow icon={<PersonIcon />} title="Objectif" to="/x" />
+          <ListRow icon={<PersonIcon />} title="Confidentialité" onClick={() => undefined} />
+        </ListGroup>
       </MemoryRouter>,
     );
     expect(screen.getByRole('link', { name: 'Frigo vide' })).toHaveAttribute('href', '/frigo');

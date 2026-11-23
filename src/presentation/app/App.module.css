@@ -1,4 +1,8 @@
-/* Coque d'app : l'écran tient dans la hauteur du téléphone, la page ne défile jamais. */
+/*
+ * Coque d'app : l'écran tient dans la hauteur de l'appareil, la page ne défile jamais
+ * (sauf téléphone en paysage, où `main` défile). Téléphone portrait : barre d'onglets en
+ * bas ; tablette, ordinateur et paysage : rail de navigation à gauche.
+ */
 .shell {
   display: flex;
   flex-direction: column;
@@ -31,7 +35,10 @@
   max-width: var(--content-max);
   min-height: 0;
   margin: 0 auto;
-  padding: var(--space-2) var(--space-4) var(--space-2);
+  padding: max(var(--space-3), env(safe-area-inset-top))
+    max(var(--gutter), env(safe-area-inset-right)) var(--space-2)
+    max(var(--gutter), env(safe-area-inset-left));
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -39,12 +46,25 @@
   outline: none;
 }
 
-.withTabs {
-  padding-bottom: var(--space-2);
-}
-
 .loading {
   padding: var(--space-7) 0;
   color: var(--color-text-muted);
   text-align: center;
+}
+
+@media (min-width: 768px) and (min-height: 540px) {
+  .shell {
+    flex-direction: row;
+  }
+
+  .main {
+    padding-top: max(var(--space-5), env(safe-area-inset-top));
+    padding-bottom: var(--space-5);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 539px) {
+  .shell {
+    flex-direction: row;
+  }
 }

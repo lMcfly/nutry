@@ -21,15 +21,17 @@ interface DayStripProps {
   readonly onChange: (id: string) => void;
   readonly idPrefix: string;
   readonly label?: string;
+  readonly className?: string | undefined;
 }
 
-/** Bandeau des jours de la semaine : pastilles « Lun 23 », jour choisi en couleur pleine. */
+/** Bandeau des jours de la semaine : pastilles « Lun 23 », jour choisi en pastille douce. */
 export function DayStrip({
   days,
   value,
   onChange,
   idPrefix,
   label = 'Jours de la semaine',
+  className,
 }: DayStripProps) {
   const tabs: TabItem<string>[] = days.map((day) => ({
     id: day.id,
@@ -50,6 +52,7 @@ export function DayStrip({
       onChange={onChange}
       idPrefix={idPrefix}
       variant="days"
+      className={className}
       controlsPanel={false}
     />
   );

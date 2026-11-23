@@ -31,6 +31,7 @@ import {
 import { DIET_BASES, DIET_EXTRAS, PLAUSIBLE_RANGES, lossBlockedReason } from './draft';
 import type { AboutIssues, ProfileDraft } from './draft';
 import styles from './ProfileSections.module.css';
+import { HeartIcon, InfoIcon } from '../../components/icons';
 
 export const ALLERGEN_TRACES_NOTICE =
   'Les traces (« peut contenir ») ne sont pas prises en compte : vérifie toujours les étiquettes.';
@@ -192,7 +193,7 @@ export function GoalSection({ draft, onChange, health }: GoalSectionProps) {
           }}
         />
         {reason !== undefined && (
-          <Notice tone="accent" emoji="💛">
+          <Notice tone="accent" emoji={<HeartIcon size={20} />}>
             {reason}
           </Notice>
         )}
@@ -227,7 +228,7 @@ export function GoalSection({ draft, onChange, health }: GoalSectionProps) {
             onChange({ allergens });
           }}
         />
-        <Notice tone="warning" emoji="🏷️">
+        <Notice tone="warning" emoji={<InfoIcon size={20} />}>
           {ALLERGEN_TRACES_NOTICE}
         </Notice>
       </div>
@@ -247,7 +248,7 @@ export function TastesSection({ draft, onChange }: SectionProps) {
   return (
     <div className={styles.section}>
       <ChipGroup
-        legend="J’adore 😋"
+        legend="J’adore"
         hint="On te les proposera plus souvent."
         options={FOOD_OPTIONS}
         selected={draft.likes}
@@ -256,7 +257,7 @@ export function TastesSection({ draft, onChange }: SectionProps) {
         }}
       />
       <ChipGroup
-        legend="Je n’aime pas 🙅"
+        legend="Je n’aime pas"
         hint="Tu ne les verras plus dans ton menu."
         options={FOOD_OPTIONS}
         selected={draft.dislikes}

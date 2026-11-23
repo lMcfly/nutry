@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import styles from './EmptyState.module.css';
 
 interface EmptyStateProps {
-  readonly emoji: string;
+  readonly emoji: ReactNode;
   readonly title: string;
   readonly children?: ReactNode;
   readonly action?: ReactNode;

@@ -1,10 +1,12 @@
+import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './TabBar.module.css';
 
 export interface Tab {
   readonly to: string;
   readonly label: string;
-  readonly emoji: string;
+  /** Pictogramme au trait (décoratif). */
+  readonly icon: ReactNode;
 }
 
 interface TabBarProps {
@@ -24,9 +26,7 @@ export function TabBar({ tabs }: TabBarProps) {
                 isActive ? `${styles.tab} ${styles.active}` : styles.tab
               }
             >
-              <span className={styles.emoji} aria-hidden="true">
-                {tab.emoji}
-              </span>
+              <span className={styles.icon}>{tab.icon}</span>
               <span className={styles.label}>{tab.label}</span>
             </NavLink>
           </li>
