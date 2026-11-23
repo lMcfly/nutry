@@ -51,6 +51,15 @@ describe('profil', () => {
     expect(view?.energyDetail.waistToHeightRatio).toBeCloseTo(70 / 165);
   });
 
+  it('normalise l’objectif « perdre » d’un profil protégé à l’enregistrement', async () => {
+    const { uc, ports } = setup();
+    const result = await uc.saveProfile(makeProfile({ age: 16, goal: 'perdre-en-douceur' }));
+    expect(result.status === 'saved' && result.view.profile.goal).toBe('reequilibrer');
+    expect(ports.state.profile?.goal).toBe('reequilibrer');
+    const adult = await uc.saveProfile(makeProfile({ goal: 'perdre-en-douceur' }));
+    expect(adult.status === 'saved' && adult.view.profile.goal).toBe('perdre-en-douceur');
+  });
+
   it('prévisualise un profil en cours de saisie', () => {
     const { uc } = setup();
     expect(uc.previewProfile(makeProfile({ householdSize: 0 })).health).toBeUndefined();

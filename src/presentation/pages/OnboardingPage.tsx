@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDependencies } from '../app/dependencies';
-import { markQuizShownThisSession, useAppState } from '../app/appState';
+import { useAppState } from '../app/appState';
 import { Button } from '../components/Button';
 import { APP_NAME } from '../components/Page';
 import { useToast } from '../components/Toast';
@@ -15,7 +15,6 @@ import {
   DEFAULT_DRAFT,
   aboutIssues,
   draftToProfile,
-  withAllowedGoal,
   aboutIssuesFrom,
 } from '../features/profile/draft';
 import type { AboutIssues, ProfileDraft } from '../features/profile/draft';
@@ -59,8 +58,13 @@ const STEPS: readonly Step[] = [
 ];
 
 export function OnboardingPage() {
-  const { previewProfile, saveProfile, requestPersistentStorage, getCurrentPlan } =
-    useDependencies();
+  const {
+    previewProfile,
+    saveProfile,
+    requestPersistentStorage,
+    getCurrentPlan,
+    markDailyQuizShown,
+  } = useDependencies();
   const { setProfileStatus } = useAppState();
   const navigate = useNavigate();
   const toast = useToast();
@@ -106,7 +110,7 @@ export function OnboardingPage() {
     }
     setSaving(true);
     try {
-      const result = await saveProfile(withAllowedGoal(profile, health?.lossAllowed ?? true));
+      const result = await saveProfile(profile);
       if (result.status === 'invalid') {
         setSavedIssues(aboutIssuesFrom(result.issues));
         setShowIssues(true);
@@ -117,7 +121,7 @@ export function OnboardingPage() {
       if (result.firstProfile) void requestPersistentStorage();
       await getCurrentPlan();
       // La question du jour attendra la prochaine ouverture : place au menu.
-      markQuizShownThisSession();
+      markDailyQuizShown();
       setProfileStatus('ready');
       navigate('/semaine', { replace: true });
     } catch {

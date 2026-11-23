@@ -17,7 +17,6 @@ import { BASE_PROFILE, FIXTURE_RECIPES } from '@domain/testing/fixtures';
 import { App } from '../app/App';
 import { AppStateContext } from '../app/appState';
 import type { ProfileStatus } from '../app/appState';
-import { markQuizShownThisSession, resetQuizSession } from '../app/appState';
 import { DependenciesProvider } from '../app/dependencies';
 import { ToastProvider } from '../components/Toast';
 
@@ -80,8 +79,7 @@ export function createTestUseCases(options: SetupOptions = {}): {
 export function renderApp(options: SetupOptions = {}): Setup {
   const { ports, useCases } = createTestUseCases(options);
   window.location.hash = options.route ?? '';
-  resetQuizSession();
-  if (!options.quiz) markQuizShownThisSession();
+  if (!options.quiz) useCases.markDailyQuizShown();
   const user = userEvent.setup();
   render(
     <DependenciesProvider value={useCases}>

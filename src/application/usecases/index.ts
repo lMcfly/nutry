@@ -1,6 +1,6 @@
 import { createCatalogUseCases } from './catalog';
 import type { CatalogUseCases } from './catalog';
-import { createSerialRunner } from './context';
+import { createSerialRunner, memoryDeviceStorage } from './context';
 import type { AppPorts } from './context';
 import { createDataUseCases } from './data';
 import type { DataUseCases } from './data';
@@ -37,8 +37,9 @@ export type UseCases = ProfileUseCases &
  * Fabrique les cas d'usage à partir des ports (injection par paramètres, sans framework).
  * Les écritures sont sérialisées par un verrou commun.
  */
-export function createUseCases(ports: AppPorts): UseCases {
+export function createUseCases(appPorts: AppPorts): UseCases {
   const serial = createSerialRunner();
+  const ports = { ...appPorts, device: appPorts.device ?? memoryDeviceStorage() };
   return {
     ...createProfileUseCases(ports, serial),
     ...createPlanUseCases(ports, serial),

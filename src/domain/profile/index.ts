@@ -25,6 +25,7 @@ export {
   assessEnergy,
   isWeightTrackingEnabledByDefault,
   lowBmiThreshold,
+  normalizeGoal,
 } from './guards';
 export { isPregnancyRelevant } from '../recipe';
 export type { EnergyAssessment, HealthMessage, HealthMessageCode } from './guards';

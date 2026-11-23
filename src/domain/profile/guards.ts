@@ -141,3 +141,17 @@ export function assessEnergy(profile: Profile): EnergyAssessment {
     messages,
   };
 }
+
+/**
+ * Objectif effectivement retenu : « perdre en douceur » redevient « rééquilibrer » quand
+ * les garde-fous l'interdisent (`perteAutorisee` faux). Appliqué à l'enregistrement et à
+ * l'import : aucun profil protégé ne garde un objectif de perte.
+ */
+export function normalizeGoal(
+  profile: Profile,
+  assessment: Pick<EnergyAssessment, 'perteAutorisee'> = assessEnergy(profile),
+): Profile {
+  return !assessment.perteAutorisee && profile.goal === 'perdre-en-douceur'
+    ? { ...profile, goal: 'reequilibrer' }
+    : profile;
+}

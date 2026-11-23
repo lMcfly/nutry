@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { DailyQuizView, QuizAnswerView } from '@application/usecases';
 import { useDependencies } from '../../app/dependencies';
-import { markQuizShownThisSession, wasQuizShownThisSession } from '../../app/appState';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { Sheet } from '../../components/Sheet';
@@ -15,7 +14,7 @@ const LETTERS = ['A', 'B', 'C', 'D'] as const;
  * navigateur (pas à chaque changement d'onglet). Fermable par ✕, Échap ou glissement.
  */
 export function DailyQuiz() {
-  const { getDailyQuiz, answerQuiz } = useDependencies();
+  const { getDailyQuiz, answerQuiz, claimDailyQuizForSession } = useDependencies();
   const [quiz, setQuiz] = useState<DailyQuizView | undefined>();
   const [answer, setAnswer] = useState<QuizAnswerView | undefined>();
   const [open, setOpen] = useState(false);
@@ -31,15 +30,14 @@ export function DailyQuiz() {
 
   useEffect(() => {
     // Marqué avant la réponse : le double effet du mode strict ne la redemande pas.
-    if (wasQuizShownThisSession()) return;
-    markQuizShownThisSession();
+    if (!claimDailyQuizForSession()) return;
     void getDailyQuiz().then((view) => {
       if (!mounted.current || !view) return;
       setQuiz(view);
       setAnswer(view.answer);
       setOpen(true);
     });
-  }, [getDailyQuiz]);
+  }, [getDailyQuiz, claimDailyQuizForSession]);
 
   if (!quiz) return null;
 

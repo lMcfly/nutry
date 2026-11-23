@@ -24,7 +24,6 @@ import {
   aboutIssues,
   draftFromProfile,
   draftToProfile,
-  withAllowedGoal,
   aboutIssuesFrom,
 } from '../features/profile/draft';
 import type { AboutIssues, ProfileDraft } from '../features/profile/draft';
@@ -128,7 +127,7 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
     }
     setSaving(true);
     try {
-      const result = await saveProfile(withAllowedGoal(profile, health?.lossAllowed ?? true));
+      const result = await saveProfile(profile);
       if (result.status === 'invalid') {
         setSavedIssues(aboutIssuesFrom(result.issues));
         setShowIssues(true);

@@ -69,6 +69,7 @@ describe('import', () => {
       counts: { profile: true, plans: 1, ratings: 0, progress: 1 },
     });
     expect(target.ports.state.profile).toEqual(source.ports.state.profile);
+    expect(target.uc.cachedTheme()).toBe('system');
     expect(target.ports.state.settings).toMatchObject({
       theme: 'system',
       lastBackupAt: '2026-11-23T10:00:00.000Z',
@@ -123,6 +124,16 @@ describe('import', () => {
     expect(result.status === 'invalid' && result.errors?.[0]).toMatch(/householdSize/);
   });
 
+  it('ramène l’objectif « perdre » à « rééquilibrer » pour un profil protégé importé', async () => {
+    const { uc, ports } = await setup();
+    await uc.exportData();
+    const file = JSON.parse(lastFile(ports).content) as Record<string, unknown>;
+    const minor = makeProfile({ age: 16, goal: 'perdre-en-douceur' });
+    const result = await uc.importData({ content: JSON.stringify({ ...file, profile: minor }) });
+    expect(result.status).toBe('imported');
+    expect(ports.state.profile?.goal).toBe('reequilibrer');
+  });
+
   it('un menu importé incompatible est régénéré à l’affichage', async () => {
     const { uc, ports } = await setup();
     await uc.exportData();
@@ -142,6 +153,32 @@ describe('effacement et rappel de sauvegarde', () => {
     expect(ports.state.plans.size).toBe(0);
     expect(ports.state.progress.size).toBe(0);
     await expect(uc.getProfile()).resolves.toBeUndefined();
+  });
+
+  it('efface aussi les valeurs gardées sur l’appareil (thème, session)', async () => {
+    const { uc, ports } = await setup();
+    await uc.setTheme('dark');
+    uc.markDailyQuizShown();
+    await uc.wipeAllData();
+    expect(ports.device.values.local.size).toBe(0);
+    expect(ports.device.values.session.size).toBe(0);
+    expect(uc.cachedTheme()).toBeUndefined();
+  });
+
+  it('un effacement raté ne touche pas aux valeurs de l’appareil', async () => {
+    const { uc, ports } = await setup();
+    await uc.setTheme('dark');
+    ports.userData.clearAll = () => Promise.reject(new Error('quota'));
+    await expect(uc.wipeAllData()).resolves.toMatchObject({ status: 'failed' });
+    expect(uc.cachedTheme()).toBe('dark');
+  });
+
+  it('le rappel masqué se tait jusqu’à la prochaine session', async () => {
+    const { uc, ports } = await setup();
+    ports.clock.set('2026-12-23T09:00:00.000Z');
+    uc.dismissBackupReminder();
+    await expect(uc.getBackupReminder()).resolves.toEqual({ due: false });
+    expect(ports.state.settings.lastBackupReminderOn).toBeUndefined();
   });
 
   it('jamais sans profil', async () => {

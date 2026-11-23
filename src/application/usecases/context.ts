@@ -2,6 +2,7 @@ import type {
   BackupValidator,
   Cipher,
   Clock,
+  DeviceStorage,
   FileSaver,
   PlanRepository,
   ProfileRepository,
@@ -43,6 +44,31 @@ export interface AppPorts {
   readonly backupValidator: BackupValidator;
   readonly persistence: StoragePersistence;
   readonly fileSaver: FileSaver;
+  /**
+   * Stockage d'appareil (thème mis en cache, drapeaux de session). Facultatif : sans lui,
+   * repli en mémoire (valable jusqu'au rechargement de la page).
+   */
+  readonly device?: DeviceStorage;
+}
+
+/** Ports complétés par `createUseCases` (stockage d'appareil toujours présent). */
+export interface ResolvedPorts extends AppPorts {
+  readonly device: DeviceStorage;
+}
+
+/** Stockage d'appareil en mémoire : repli quand aucun adaptateur n'est fourni. */
+export function memoryDeviceStorage(): DeviceStorage {
+  const values = { local: new Map<string, string>(), session: new Map<string, string>() };
+  return {
+    get: (scope, key) => values[scope].get(key),
+    set: (scope, key, value) => {
+      values[scope].set(key, value);
+    },
+    clear: () => {
+      values.local.clear();
+      values.session.clear();
+    },
+  };
 }
 
 /** Résultat d'un cas d'usage qui demande un profil, avant l'onboarding. */

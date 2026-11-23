@@ -7,7 +7,7 @@ import { TabBar } from '../components/TabBar';
 import type { Tab } from '../components/TabBar';
 import { ToastProvider } from '../components/Toast';
 import { DailyQuiz } from '../features/quiz/DailyQuiz';
-import { applyTheme, cachedTheme } from '../hooks/theme';
+import { applyTheme } from '../hooks/theme';
 import { ShoppingPage } from '../pages/ShoppingPage';
 import { WeekPage } from '../pages/WeekPage';
 import styles from './App.module.css';
@@ -58,7 +58,7 @@ function focusMain() {
 }
 
 function Shell() {
-  const { getProfile, getSettings } = useDependencies();
+  const { getProfile, getSettings, cachedTheme } = useDependencies();
   const [profileStatus, setProfileStatus] = useState<ProfileStatus>('loading');
 
   useEffect(() => {
@@ -79,7 +79,7 @@ function Shell() {
     return () => {
       active = false;
     };
-  }, [getProfile, getSettings]);
+  }, [getProfile, getSettings, cachedTheme]);
 
   const state = useMemo(() => ({ profileStatus, setProfileStatus }), [profileStatus]);
   const ready = profileStatus === 'ready';

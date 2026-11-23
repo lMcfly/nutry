@@ -11,6 +11,25 @@ describe('réglages', () => {
     await expect(uc.getSettings()).resolves.toEqual({ theme: 'dark' });
   });
 
+  it('garde une copie du thème sur l’appareil', async () => {
+    const ports = createInMemoryPorts();
+    const uc = createUseCases(ports);
+    expect(uc.cachedTheme()).toBeUndefined();
+    await uc.setTheme('dark');
+    expect(uc.cachedTheme()).toBe('dark');
+    ports.device.set('local', 'theme', 'violet');
+    expect(uc.cachedTheme()).toBeUndefined();
+  });
+
+  it('montre la question du jour une fois par session', () => {
+    const uc = createUseCases(createInMemoryPorts());
+    expect(uc.claimDailyQuizForSession()).toBe(true);
+    expect(uc.claimDailyQuizForSession()).toBe(false);
+    const other = createUseCases(createInMemoryPorts());
+    other.markDailyQuizShown();
+    expect(other.claimDailyQuizForSession()).toBe(false);
+  });
+
   it('demande le stockage persistant et retient la réponse', async () => {
     const ports = createInMemoryPorts({ grantPersistence: true });
     const uc = createUseCases(ports);

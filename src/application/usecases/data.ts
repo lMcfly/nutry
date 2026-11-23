@@ -1,4 +1,4 @@
-import { validateProfile } from '@domain/profile';
+import { normalizeGoal, validateProfile } from '@domain/profile';
 import type { IsoDateTime } from '@domain/shared';
 import {
   DEFAULT_SETTINGS,
@@ -7,7 +7,8 @@ import {
   latestInstant,
 } from '@domain/userdata';
 import type { BackupFile, UserDataSnapshot } from '@domain/userdata';
-import type { AppPorts, SerialRunner } from './context';
+import type { ResolvedPorts, SerialRunner } from './context';
+import { DEVICE_KEYS } from './settings';
 
 /** Longueur minimale d'une phrase secrète d'export. */
 export const PASSPHRASE_MIN_LENGTH = 8;
@@ -98,10 +99,18 @@ export interface DataUseCases {
     readonly content: string;
     readonly passphrase?: string;
   }) => Promise<ImportResult>;
-  /** « Tout effacer » (à confirmer côté UI). */
+  /**
+   * « Tout effacer » (à confirmer côté UI) : la base ET les valeurs gardées par Nutry dans
+   * le stockage du navigateur (thème, drapeaux de session).
+   */
   readonly wipeAllData: () => Promise<WipeResult>;
-  /** Rappel doux de sauvegarde ; le montrer le note pour 30 jours. */
+  /**
+   * Rappel doux de sauvegarde ; le montrer le note pour 30 jours. Toujours `due: false`
+   * une fois masqué dans la session (`dismissBackupReminder`).
+   */
   readonly getBackupReminder: () => Promise<BackupReminder>;
+  /** Masque le rappel jusqu'au prochain lancement de l'app (session de navigateur). */
+  readonly dismissBackupReminder: () => void;
 }
 
 const failure = (status: ImportFailure, errors?: readonly string[]): ImportResult => ({
@@ -118,7 +127,7 @@ function parseJson(text: string): { ok: true; value: unknown } | { ok: false } {
   }
 }
 
-export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataUseCases {
+export function createDataUseCases(ports: ResolvedPorts, serial: SerialRunner): DataUseCases {
   /** Produit et remet le fichier de sauvegarde ; lève si le stockage échoue. */
   async function saveBackup(exportedAt: string, passphrase: string | undefined): Promise<string> {
     const snapshot = await ports.userData.exportAll();
@@ -185,6 +194,8 @@ export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataU
     const { persistenceGranted: _otherDevice, ...importedSettings } = snapshot.settings;
     const toImport: UserDataSnapshot = {
       ...snapshot,
+      // Mêmes garde-fous qu'à l'enregistrement : pas d'objectif de perte pour un profil protégé.
+      ...(snapshot.profile ? { profile: normalizeGoal(snapshot.profile) } : {}),
       settings: {
         ...importedSettings,
         ...(backupAt === undefined ? {} : { lastBackupAt: backupAt }),
@@ -192,6 +203,8 @@ export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataU
       },
     };
     await ports.userData.importAll(toImport);
+    // Copie du thème sur l'appareil, alignée sur la sauvegarde restaurée.
+    ports.device.set('local', DEVICE_KEYS.theme, toImport.settings.theme);
     return {
       status: 'imported',
       counts: {
@@ -251,6 +264,7 @@ export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataU
         } catch {
           return { status: 'failed', message: STORAGE_FAILURE_MESSAGES.wipe };
         }
+        ports.device.clear();
         if (persistenceGranted !== undefined) {
           try {
             await ports.settings.save({ ...DEFAULT_SETTINGS, persistenceGranted });
@@ -263,6 +277,9 @@ export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataU
 
     getBackupReminder: () =>
       serial(async () => {
+        if (ports.device.get('session', DEVICE_KEYS.backupReminderDismissed) === '1') {
+          return { due: false };
+        }
         const [profile, settings] = await Promise.all([ports.profiles.get(), ports.settings.get()]);
         const today = ports.clock.today();
         const due = isBackupReminderDue({
@@ -279,5 +296,9 @@ export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataU
           ...(settings.lastBackupAt === undefined ? {} : { lastBackupAt: settings.lastBackupAt }),
         };
       }),
+
+    dismissBackupReminder() {
+      ports.device.set('session', DEVICE_KEYS.backupReminderDismissed, '1');
+    },
   };
 }
