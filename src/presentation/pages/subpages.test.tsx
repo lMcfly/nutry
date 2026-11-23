@@ -3,7 +3,9 @@ import { Route, Routes } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { FIXTURE_RECIPES } from '@domain/testing/fixtures';
 import { FridgePage } from './FridgePage';
-import { CIQUAL_CITATION, PrivacyPage } from './PrivacyPage';
+import { PrivacyPage } from './PrivacyPage';
+import { CIQUAL_CITATION } from '../i18n/labels';
+import { MEDICAL_DISCLAIMER } from '@domain/profile';
 import { PROCESSED_PRODUCTS_NOTICE, RecipePage } from './RecipePage';
 import { TEST_PROFILE, createTestUseCases, renderScreen } from '../testing/renderApp';
 
@@ -88,6 +90,10 @@ describe('<PrivacyPage />', () => {
     renderScreen(<PrivacyPage />);
     expect(screen.getByRole('heading', { name: 'Tout reste sur ton appareil' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Aucun traceur' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Hébergée par GitHub Pages' })).toBeVisible();
+    expect(screen.getByText(/GitHub voit ton adresse IP/)).toBeVisible();
+    expect(screen.getByText(/thème choisi .* est gardé dans ce navigateur/)).toBeVisible();
+    expect(screen.getByText(MEDICAL_DISCLAIMER)).toBeVisible();
     expect(screen.getByText(new RegExp(CIQUAL_CITATION))).toBeVisible();
     expect(screen.getByRole('link', { name: 'Licence Ouverte' })).toBeVisible();
     expect(screen.getByRole('link', { name: /Exporter ou tout effacer/ })).toHaveAttribute(

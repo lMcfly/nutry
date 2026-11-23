@@ -1,14 +1,13 @@
 import { useCallback } from 'react';
+import { MEDICAL_DISCLAIMER } from '@domain/profile';
 import { useDependencies } from '../app/dependencies';
 import { useAppState } from '../app/appState';
 import { ButtonLink } from '../components/Button';
 import { Card } from '../components/Card';
 import { Page } from '../components/Page';
 import { useAsync } from '../hooks/useAsync';
+import { CIQUAL_CITATION } from '../i18n/labels';
 import styles from './PrivacyPage.module.css';
-
-export const CIQUAL_CITATION =
-  'Anses. 2025. Table de composition nutritionnelle des aliments Ciqual';
 
 const PROMISES: readonly { emoji: string; title: string; text: string }[] = [
   {
@@ -24,7 +23,17 @@ const PROMISES: readonly { emoji: string; title: string; text: string }[] = [
   {
     emoji: '🛰️',
     title: 'Aucun serveur',
-    text: 'Aucune donnée n’est envoyée : l’app fonctionne même hors ligne.',
+    text: 'Aucune donnée personnelle n’est envoyée : l’app fonctionne même hors ligne.',
+  },
+  {
+    emoji: '🌐',
+    title: 'Hébergée par GitHub Pages',
+    text: 'Les fichiers de l’app sont servis par GitHub Pages. Comme pour tout site, GitHub voit ton adresse IP quand ils sont téléchargés, mais aucune donnée personnelle ne lui est envoyée.',
+  },
+  {
+    emoji: '🎨',
+    title: 'Ton thème, mémorisé dans le navigateur',
+    text: 'Le thème choisi (et quelques repères de session, comme la question du jour déjà vue) est gardé dans ce navigateur pour un affichage immédiat. « Tout effacer » le supprime aussi.',
   },
   {
     emoji: '🍪',
@@ -101,9 +110,7 @@ export function PrivacyPage() {
           </a>
           .
         </p>
-        <p className={styles.text}>
-          Nutry ne remplace pas l’avis d’un médecin ou d’un diététicien.
-        </p>
+        <p className={styles.text}>{MEDICAL_DISCLAIMER}</p>
       </Card>
     </Page>
   );

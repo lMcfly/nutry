@@ -108,7 +108,8 @@ describe('Mes données', () => {
   });
 
   it('tout effacer demande une confirmation forte', async () => {
-    const { user, ports, statuses } = renderScreen(<DataSection />);
+    const { user, ports, statuses, useCases } = renderScreen(<DataSection />);
+    await useCases.setTheme('dark');
     await user.click(screen.getByRole('button', { name: /Tout effacer/ }));
     const dialog = await screen.findByRole('alertdialog', { name: 'Tout effacer ?' });
     const confirm = within(dialog).getByRole('button', { name: 'Effacer définitivement' });
@@ -120,5 +121,7 @@ describe('Mes données', () => {
       expect(statuses).toEqual(['none']);
     });
     expect(ports.state.profile).toBeUndefined();
+    // Les valeurs gardées par Nutry dans le navigateur (thème…) sont effacées aussi.
+    expect(ports.device.values.local.size).toBe(0);
   });
 });

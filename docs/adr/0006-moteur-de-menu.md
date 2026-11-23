@@ -68,8 +68,12 @@ batch…) alimentent `explainMeal` (« De saison, saumon au menu comme tu aimes,
   évitées en dernier.
 - `applyReplacement` : les restes suivent le plat remplacé ; un repas « restes » remplacé redevient
   cuisiné.
-- Batch cooking : `buildBatchCookingPlan` liste les recettes `batch` cuisinées dans la semaine et
-  les repas concernés (« mardi – dîner »).
+- Batch cooking (« Cuisiner en avance le dimanche ») : `buildBatchCookingPlan` renvoie des
+  préparations groupées, chacune avec ses repas (« mardi – dîner ») : plats `batch` cuisinés en
+  entier (tous les jours) ; pour les autres repas du lundi au vendredi (hors restes et
+  petit-déjeuner), céréales et légumineuses sèches à cuire (`COOK_AHEAD_TERMS`, hors conserves),
+  légumes fermes à laver et couper (`FIRM_VEGETABLE_TERMS`), sauces, vinaigrettes et marinades
+  repérées dans les étapes (`sauceToPrepare`).
 
 ### Apprentissage (`domain/preferences/weights.ts`)
 

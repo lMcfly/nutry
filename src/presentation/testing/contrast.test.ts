@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import tokensCss from './tokens.css?raw';
+import tokensCss from '../theme/tokens.css?raw';
 import { contrastRatio, parseCustomProperties, parseHex } from './contrast';
 
 /** Contenu du premier bloc `{ … }` qui suit `selector`. */
