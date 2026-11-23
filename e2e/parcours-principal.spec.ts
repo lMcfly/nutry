@@ -74,6 +74,11 @@ test('fonctionne hors ligne après une première visite', async ({ page, context
   await expect(page.getByTestId('meal')).toHaveCount(14);
   await page.getByRole('link', { name: 'Courses' }).click();
   await expect(page.getByRole('heading', { name: 'Mes courses', level: 1 })).toBeVisible();
+  // Écrans chargés à la demande : leurs morceaux sont précachés.
+  await page.getByRole('link', { name: 'Profil' }).click();
+  await expect(page.getByRole('heading', { name: 'Mon profil', level: 1 })).toBeVisible();
+  await page.getByRole('link', { name: 'Progrès' }).click();
+  await expect(page.getByRole('heading', { name: 'Mes progrès', level: 1 })).toBeVisible();
   await context.setOffline(false);
 });
 

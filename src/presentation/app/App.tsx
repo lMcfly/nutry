@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { useDependencies } from './dependencies';
 import { AppStateContext } from './appState';
@@ -8,15 +8,33 @@ import type { Tab } from '../components/TabBar';
 import { ToastProvider } from '../components/Toast';
 import { DailyQuiz } from '../features/quiz/DailyQuiz';
 import { applyTheme, cachedTheme } from '../hooks/theme';
-import { FridgePage } from '../pages/FridgePage';
-import { OnboardingPage } from '../pages/OnboardingPage';
-import { PrivacyPage } from '../pages/PrivacyPage';
-import { ProfilePage } from '../pages/ProfilePage';
-import { ProgressPage } from '../pages/ProgressPage';
-import { RecipePage } from '../pages/RecipePage';
 import { ShoppingPage } from '../pages/ShoppingPage';
 import { WeekPage } from '../pages/WeekPage';
 import styles from './App.module.css';
+
+/*
+ * Découpage par route : Semaine et Courses (les plus utilisés) sont dans le paquet
+ * initial ; les autres écrans se chargent à la demande (et sont précachés pour le
+ * hors-ligne par le service worker).
+ */
+const OnboardingPage = lazy(() =>
+  import('../pages/OnboardingPage').then((m) => ({ default: m.OnboardingPage })),
+);
+const ProfilePage = lazy(() =>
+  import('../pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+);
+const ProgressPage = lazy(() =>
+  import('../pages/ProgressPage').then((m) => ({ default: m.ProgressPage })),
+);
+const FridgePage = lazy(() =>
+  import('../pages/FridgePage').then((m) => ({ default: m.FridgePage })),
+);
+const RecipePage = lazy(() =>
+  import('../pages/RecipePage').then((m) => ({ default: m.RecipePage })),
+);
+const PrivacyPage = lazy(() =>
+  import('../pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
+);
 
 const TABS: readonly Tab[] = [
   { to: '/semaine', label: 'Semaine', emoji: '🥗' },
@@ -24,6 +42,15 @@ const TABS: readonly Tab[] = [
   { to: '/profil', label: 'Profil', emoji: '🙂' },
   { to: '/progres', label: 'Progrès', emoji: '🌱' },
 ];
+
+/** Attente sobre et annoncée (chargement initial ou d'un écran). */
+function Loading() {
+  return (
+    <p className={styles.loading} role="status">
+      <span aria-hidden="true">🥕</span> Un instant…
+    </p>
+  );
+}
 
 function focusMain() {
   const main = document.getElementById('contenu');
@@ -77,27 +104,29 @@ function Shell() {
           className={`${styles.main} ${ready ? styles.withTabs : ''}`}
         >
           {profileStatus === 'loading' ? (
-            <p className={styles.loading} role="status">
-              <span aria-hidden="true">🥕</span> Un instant…
-            </p>
+            <Loading />
           ) : ready ? (
-            <Routes>
-              <Route path="/" element={<Navigate to="/semaine" replace />} />
-              <Route path="/semaine" element={<WeekPage />} />
-              <Route path="/courses" element={<ShoppingPage />} />
-              <Route path="/profil" element={<ProfilePage />} />
-              <Route path="/progres" element={<ProgressPage />} />
-              <Route path="/frigo" element={<FridgePage />} />
-              <Route path="/recette/:id" element={<RecipePage />} />
-              <Route path="/confidentialite" element={<PrivacyPage />} />
-              <Route path="*" element={<Navigate to="/semaine" replace />} />
-            </Routes>
+            <Suspense fallback={<Loading />}>
+              <Routes>
+                <Route path="/" element={<Navigate to="/semaine" replace />} />
+                <Route path="/semaine" element={<WeekPage />} />
+                <Route path="/courses" element={<ShoppingPage />} />
+                <Route path="/profil" element={<ProfilePage />} />
+                <Route path="/progres" element={<ProgressPage />} />
+                <Route path="/frigo" element={<FridgePage />} />
+                <Route path="/recette/:id" element={<RecipePage />} />
+                <Route path="/confidentialite" element={<PrivacyPage />} />
+                <Route path="*" element={<Navigate to="/semaine" replace />} />
+              </Routes>
+            </Suspense>
           ) : (
-            <Routes>
-              <Route path="/bienvenue" element={<OnboardingPage />} />
-              <Route path="/confidentialite" element={<PrivacyPage />} />
-              <Route path="*" element={<Navigate to="/bienvenue" replace />} />
-            </Routes>
+            <Suspense fallback={<Loading />}>
+              <Routes>
+                <Route path="/bienvenue" element={<OnboardingPage />} />
+                <Route path="/confidentialite" element={<PrivacyPage />} />
+                <Route path="*" element={<Navigate to="/bienvenue" replace />} />
+              </Routes>
+            </Suspense>
           )}
         </main>
         {ready && <TabBar tabs={TABS} />}

@@ -11,17 +11,6 @@ import { ZodBackupValidator } from '@infrastructure/backup/ZodBackupValidator';
 import { JsonQuizRepository, JsonRecipeRepository } from '@infrastructure/catalog/JsonCatalog';
 import { SystemClock } from '@infrastructure/clock/SystemClock';
 import { WebCryptoCipher } from '@infrastructure/crypto/WebCryptoCipher';
-import { NutryDatabase } from '@infrastructure/db/NutryDatabase';
-import {
-  DexiePlanRepository,
-  DexieProfileRepository,
-  DexieProgressRepository,
-  DexieQuizStateRepository,
-  DexieRatingRepository,
-  DexieSettingsRepository,
-  DexieShoppingRepository,
-  DexieUserDataStore,
-} from '@infrastructure/db/repositories';
 import {
   DownloadFileSaver,
   browserDownloadEnvironment,
@@ -34,19 +23,53 @@ import { DependenciesProvider } from '@presentation/app/dependencies';
 import '@presentation/theme/tokens.css';
 import '@presentation/theme/global.css';
 
-const db = new NutryDatabase();
+/**
+ * Base IndexedDB (Dexie) chargée à la demande : elle sort du paquet initial et se
+ * télécharge en parallèle du premier rendu. Chaque dépôt est un mandataire dont les
+ * méthodes (toutes asynchrones, voir les ports) attendent le vrai dépôt.
+ */
+async function importRepositories() {
+  const [{ NutryDatabase }, repositories] = await Promise.all([
+    import('@infrastructure/db/NutryDatabase'),
+    import('@infrastructure/db/repositories'),
+  ]);
+  return { ...repositories, db: new NutryDatabase() };
+}
+let repositoriesLoading: ReturnType<typeof importRepositories> | undefined;
+const loadRepositories = () => (repositoriesLoading ??= importRepositories());
+
+type Repositories = Awaited<ReturnType<typeof loadRepositories>>;
+
+/** Mandataire asynchrone d'un port : chaque appel attend l'adaptateur réel. */
+function lazyPort<T extends object>(create: (r: Repositories) => T): T {
+  let instance: Promise<T> | undefined;
+  const get = () => (instance ??= loadRepositories().then(create));
+  return new Proxy({} as T, {
+    get(_target, property) {
+      // Pas un « thenable » : `await port` ne doit pas appeler `then`.
+      if (property === 'then') return undefined;
+      return (...args: unknown[]) =>
+        get().then((port) => {
+          const method = (port as Record<PropertyKey, unknown>)[property];
+          if (typeof method !== 'function')
+            throw new TypeError(`Méthode inconnue : ${String(property)}`);
+          return (method as (...a: unknown[]) => unknown).apply(port, args);
+        });
+    },
+  });
+}
 
 const ports: AppPorts = {
   clock: new SystemClock(),
   random: new MathRandomSource(),
-  profiles: new DexieProfileRepository(db),
-  plans: new DexiePlanRepository(db),
-  ratings: new DexieRatingRepository(db),
-  progress: new DexieProgressRepository(db),
-  quizState: new DexieQuizStateRepository(db),
-  shopping: new DexieShoppingRepository(db),
-  settings: new DexieSettingsRepository(db),
-  userData: new DexieUserDataStore(db),
+  profiles: lazyPort((r) => new r.DexieProfileRepository(r.db)),
+  plans: lazyPort((r) => new r.DexiePlanRepository(r.db)),
+  ratings: lazyPort((r) => new r.DexieRatingRepository(r.db)),
+  progress: lazyPort((r) => new r.DexieProgressRepository(r.db)),
+  quizState: lazyPort((r) => new r.DexieQuizStateRepository(r.db)),
+  shopping: lazyPort((r) => new r.DexieShoppingRepository(r.db)),
+  settings: lazyPort((r) => new r.DexieSettingsRepository(r.db)),
+  userData: lazyPort((r) => new r.DexieUserDataStore(r.db)),
   // Catalogues chargés à la demande (import dynamique) : rien de plus au premier rendu.
   recipes: new JsonRecipeRepository(),
   quizBank: new JsonQuizRepository(),
