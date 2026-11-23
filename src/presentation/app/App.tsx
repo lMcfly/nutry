@@ -138,7 +138,7 @@ function Shell() {
 
 export function App() {
   return (
-    <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <HashRouter>
       <ToastProvider>
         <Shell />
       </ToastProvider>

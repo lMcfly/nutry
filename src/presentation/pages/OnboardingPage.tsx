@@ -119,7 +119,7 @@ export function OnboardingPage() {
       // La question du jour attendra la prochaine ouverture : place au menu.
       markQuizShownThisSession();
       setProfileStatus('ready');
-      navigate('/semaine', { replace: true });
+      void navigate('/semaine', { replace: true });
     } catch {
       toast.show('Oups, l’enregistrement n’a pas fonctionné. Réessaie.', 'error');
     } finally {
