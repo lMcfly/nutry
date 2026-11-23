@@ -23,3 +23,5 @@ supplémentaire.
 - Phase 1 : jetons minimaux ; l'agent ui-ux les complète en phase 5 (contrastes AA, tailles
   tactiles ≥ 48 px).
 - Les composants n'utilisent jamais de couleur en dur : toujours une variable.
+- Refonte visuelle (ADR 0013) : nouvelle palette (fond vert pâle, accent corail, jauges par
+  catégorie), rayons plus arrondis, coque d'app sans défilement de page.

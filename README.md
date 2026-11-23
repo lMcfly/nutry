@@ -15,9 +15,13 @@ app, fonctionne **hors ligne** et garde **toutes tes données sur ton appareil**
 
 ## Captures
 
-| Ma semaine                                          | Liste de courses                                            | Premiers pas                                                     |
-| --------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------- |
-| ![Le menu de la semaine](docs/captures/semaine.png) | ![La liste de courses par rayon](docs/captures/courses.png) | ![L'accueil en quelques questions](docs/captures/onboarding.png) |
+| Ma semaine                                          | Une recette                               | Courses par rayon                                           | Profil et Nutry                                    | Premiers pas                                                     |
+| --------------------------------------------------- | ----------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------- |
+| ![Le menu de la semaine](docs/captures/semaine.png) | ![Une recette](docs/captures/recette.png) | ![La liste de courses par rayon](docs/captures/courses.png) | ![Le profil, avec Nutry](docs/captures/profil.png) | ![L'accueil en quelques questions](docs/captures/onboarding.png) |
+
+Chaque écran principal tient dans la hauteur du téléphone, **sans défilement de page** : seules
+les longues listes (un rayon, les étapes d'une recette) défilent à l'intérieur de leur carte.
+Sur la Semaine, on glisse du doigt (ou on touche les boutons ‹ ›) pour passer au repas suivant.
 
 ## Fonctionnalités
 
@@ -40,8 +44,35 @@ app, fonctionne **hors ligne** et garde **toutes tes données sur ton appareil**
   avec une tendance lissée qui valorise la régularité. Le poids n'est pas proposé par défaut
   aux profils à protéger (mineurs, grossesse, condition de santé, poids bas), qui peuvent
   l'activer eux-mêmes.
+- **Ton Nutry** : un petit compagnon qui récompense la régularité (voir ci-dessous).
 - **Thème clair et sombre**, interface mobile d'abord, gros boutons, quatre onglets :
   Semaine, Courses, Profil, Progrès.
+
+## Ton Nutry
+
+Nutry est une petite boule douce qui t'accueille, pose la question du moment, et grandit avec
+ta régularité. Elle ne culpabilise jamais : si tu t'absentes, elle fait la sieste, et ton
+record comme tes accessoires restent à toi.
+
+- **Un geste par jour** fait vivre la série : répondre à la question du moment, noter un repas
+  (👍 ou 👎) ou cocher un article de courses. Ouvrir l'app ne compte pas.
+- **Humeurs** : joyeux (geste aujourd'hui), content (geste hier) ou à la sieste (série
+  interrompue). Jamais triste.
+- **Déblocages sur ton record**, jamais sur la série en cours, donc rien ne se perd :
+  la feuille sur la tête dès 1 jour, les lunettes rondes à 3, la toque de chef à 7,
+  l'écharpe à 10, le tablier à 14, le bonnet à 21 et la couronne de fruits à 30 ; les teintes
+  spéciales Aurore à 5 jours, Cosmos à 15 et Arc-en-ciel à 45. Six teintes et cinq styles
+  d'yeux sont là dès le départ.
+- **Personnaliser** : depuis le Profil, une feuille plein écran montre un aperçu en direct et
+  trois onglets (Couleur, Yeux, Accessoires) ; ce qui n'est pas encore débloqué est grisé avec
+  un cadenas et « à N jours de série ».
+- **Célébration** : quand Nutry gagne quelque chose, une petite fenêtre festive le fête
+  (confettis sobres, coupés si ton téléphone réduit les animations).
+
+Tout le dessin est en SVG (aucune image externe) et les animations légères (flottement,
+clignement, petit rebond) respectent `prefers-reduced-motion`. Les choix de conception sont
+dans [ADR 0012](docs/adr/0012-compagnon-nutry-et-serie.md) (règles) et
+[ADR 0013](docs/adr/0013-refonte-visuelle-sans-scroll.md) (interface).
 
 Le catalogue compte 88 recettes et 464 questions de quiz, toutes en français.
 
