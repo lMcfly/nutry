@@ -80,3 +80,22 @@ export const AISLES = [
   'surgeles',
 ] as const;
 export type Aisle = (typeof AISLES)[number];
+
+/**
+ * Étiquettes de recette reconnues par le moteur de menu :
+ * - `batch` : se prépare à l'avance pendant la session du dimanche ;
+ * - `restes` : cuisiné au dîner, peut alimenter le déjeuner du lendemain ;
+ * - `petit-dejeuner` : proposé uniquement au petit-déjeuner ;
+ * - les autres sont informatives (affichage, filtres de l'UI).
+ */
+export const RECIPE_TAGS = [
+  'batch',
+  'restes',
+  'monde',
+  'sans-cuisson',
+  'petit-dejeuner',
+  'rapide',
+  'four',
+  'plat-unique',
+] as const;
+export type RecipeTag = (typeof RECIPE_TAGS)[number];

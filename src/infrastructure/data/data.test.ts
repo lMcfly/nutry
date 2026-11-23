@@ -30,6 +30,25 @@ describe('schémas Zod', () => {
     expect(recipeSchema.safeParse({ ...validRecipe, plateBalance }).success).toBe(false);
   });
 
+  it('rejette une étiquette hors du vocabulaire', () => {
+    expect(recipeSchema.safeParse({ ...validRecipe, tags: ['inconnue'] }).success).toBe(false);
+  });
+
+  it('rejette une recette végane contenant un allergène animal (cohérence domain)', () => {
+    const result = recipeSchema.safeParse({
+      ...validRecipe,
+      diets: ['omnivore', 'flexitarien', 'vegetarien', 'vegan'],
+      allergens: ['lait'],
+    });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual(['diets']);
+  });
+
+  it('rejette une recette sans gluten contenant du gluten', () => {
+    const invalid = { ...validRecipe, diets: ['omnivore', 'sans-gluten'], allergens: ['gluten'] };
+    expect(recipeSchema.safeParse(invalid).success).toBe(false);
+  });
+
   it('rejette les identifiants en double', () => {
     expect(recipesFileSchema.safeParse([validRecipe, validRecipe]).success).toBe(false);
   });

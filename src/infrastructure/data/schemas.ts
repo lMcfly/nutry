@@ -6,7 +6,9 @@ import {
   DIETS,
   LEVELS,
   PROTEIN_TYPES,
+  RECIPE_TAGS,
   UNITS,
+  checkDietConsistency,
   type Recipe,
 } from '@domain/recipe';
 import { SEASONS } from '@domain/season';
@@ -69,9 +71,15 @@ export const recipeSchema: z.ZodType<Recipe> = z
     steps: z.array(nonEmptyText).min(1),
     plateBalance: plateBalanceSchema,
     nutritionPerServing: nutritionSchema,
-    tags: z.array(nonEmptyText),
+    tags: uniqueList(z.enum(RECIPE_TAGS)),
   })
-  .strict();
+  .strict()
+  .superRefine((recipe, ctx) => {
+    // Cohérence régime ↔ allergènes / protéine / ingrédients (règles du domain).
+    for (const issue of checkDietConsistency(recipe)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['diets'], message: issue.message });
+    }
+  });
 
 const choice = nonEmptyText;
 

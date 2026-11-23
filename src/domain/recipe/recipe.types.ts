@@ -1,5 +1,13 @@
 import type { Season } from '../season';
-import type { Aisle, Allergen, Diet, Level, ProteinType, Unit } from './recipe.constants';
+import type {
+  Aisle,
+  Allergen,
+  Diet,
+  Level,
+  ProteinType,
+  RecipeTag,
+  Unit,
+} from './recipe.constants';
 
 export interface RecipeIngredient {
   readonly name: string;
@@ -41,6 +49,6 @@ export interface Recipe {
   readonly steps: readonly string[];
   readonly plateBalance: PlateBalance;
   readonly nutritionPerServing: NutritionPerServing;
-  /** Étiquettes libres : "batch", "restes", "monde", "sans cuisson"… */
-  readonly tags: readonly string[];
+  /** Étiquettes du vocabulaire `RECIPE_TAGS` (batch, restes, petit-dejeuner…). */
+  readonly tags: readonly RecipeTag[];
 }
