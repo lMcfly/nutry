@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { completeOnboarding } from './helpers';
 
 test('👎 « pas aimé » puis « Nouveau menu » : le plat n’est plus dans la semaine', async ({
