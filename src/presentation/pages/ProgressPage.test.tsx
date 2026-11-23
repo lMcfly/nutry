@@ -26,6 +26,16 @@ describe('<ProgressPage />', () => {
     });
   });
 
+  it('une 2e saisie dans la semaine met à jour la mesure de la semaine', async () => {
+    const existing = createTestUseCases({ profile: TEST_PROFILE });
+    existing.ports.clock.set('2026-11-25T10:00:00.000Z');
+    existing.ports.state.progress.set('2026-11-24', { date: '2026-11-24', waistCm: 80 });
+    const { user } = renderScreen(<ProgressPage />, { existing });
+    await user.type(await screen.findByLabelText('Tour de taille'), '79');
+    await user.click(screen.getByRole('button', { name: 'Enregistrer' }));
+    expect(await screen.findByText('Mesure de la semaine mise à jour.')).toBeInTheDocument();
+  });
+
   it('suivi du poids désactivé par défaut : formulation douce et activation', async () => {
     const { user, ports } = renderScreen(<ProgressPage />, {
       profile: { ...TEST_PROFILE, age: 16 },

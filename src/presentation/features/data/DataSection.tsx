@@ -74,6 +74,10 @@ export function DataSection() {
         setExportError(result.message);
         return;
       }
+      if (result.status === 'failed') {
+        toast.show(result.message, 'error');
+        return;
+      }
       setPassphrase('');
       toast.show(`Sauvegarde enregistrée : ${result.fileName}`, 'success');
     } catch {
@@ -125,8 +129,12 @@ export function DataSection() {
   };
 
   const doWipe = async () => {
-    await wipeAllData();
+    const result = await wipeAllData();
     setWipeOpen(false);
+    if (result.status === 'failed') {
+      toast.show(result.message, 'error');
+      return;
+    }
     applyTheme('system');
     toast.show('Tout est effacé. À bientôt !');
     setProfileStatus('none');

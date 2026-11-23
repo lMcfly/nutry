@@ -1,5 +1,6 @@
 import type { HealthSummary } from '@application/usecases';
-import type { ActivityLevel, Goal, Profile, Sex } from '@domain/profile';
+import { PROFILE_BOUNDS } from '@domain/profile';
+import type { ActivityLevel, Goal, Profile, ProfileIssue, Sex } from '@domain/profile';
 import type { Allergen, Diet, Level } from '@domain/recipe';
 
 /** Régime principal (choix unique) ; « sans gluten / sans lactose » se cumulent. */
@@ -61,17 +62,14 @@ export const DEFAULT_DRAFT: ProfileDraft = {
 export type AboutField = 'age' | 'sex' | 'heightCm' | 'weightKg' | 'waistCm';
 export type AboutIssues = Partial<Record<AboutField, string>>;
 
-/**
- * Plages de saisie plausibles : elles attrapent une faute de frappe (« 1,75 » pour
- * la taille en cm), ce ne sont pas des bornes médicales.
- */
+/** Bornes de saisie : celles du domain (`PROFILE_BOUNDS`), validées par `saveProfile`. */
 export const PLAUSIBLE_RANGES: Readonly<
   Record<Exclude<AboutField, 'sex'>, readonly [number, number]>
 > = {
-  age: [10, 120],
-  heightCm: [100, 250],
-  weightKg: [20, 350],
-  waistCm: [40, 250],
+  age: [PROFILE_BOUNDS.age.min, PROFILE_BOUNDS.age.max],
+  heightCm: [PROFILE_BOUNDS.heightCm.min, PROFILE_BOUNDS.heightCm.max],
+  weightKg: [PROFILE_BOUNDS.weightKg.min, PROFILE_BOUNDS.weightKg.max],
+  waistCm: [PROFILE_BOUNDS.waistCm.min, PROFILE_BOUNDS.waistCm.max],
 };
 
 const UNITS: Readonly<Record<Exclude<AboutField, 'sex'>, string>> = {
@@ -201,4 +199,13 @@ export function withAllowedGoal(profile: Profile, lossAllowed: boolean): Profile
 export function lossBlockedReason(health: HealthSummary): string | undefined {
   if (health.lossAllowed) return undefined;
   return health.messages.find((m) => m.code !== 'tour-de-taille')?.text;
+}
+
+/** Erreurs renvoyées par `saveProfile` (bornes du domain), rattachées aux champs de « Toi ». */
+export function aboutIssuesFrom(issues: readonly ProfileIssue[]): AboutIssues {
+  const result: Record<string, string> = {};
+  for (const issue of issues) {
+    if (issue.field in PLAUSIBLE_RANGES) result[issue.field] = issue.message;
+  }
+  return result;
 }

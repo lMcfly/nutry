@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import type { Recipe, RecipeTag } from '@domain/recipe';
+import type { Recipe } from '@domain/recipe';
 import { FIXTURE_RECIPES } from '@domain/testing/fixtures';
 import { WeekPage } from './WeekPage';
 import { TEST_PROFILE, renderScreen } from '../testing/renderApp';
@@ -109,7 +109,7 @@ describe('<WeekPage />', () => {
   it('suggère du pain complet pour les recettes étiquetées', async () => {
     const recipes: Recipe[] = FIXTURE_RECIPES.map((r) => ({
       ...r,
-      tags: [...r.tags, 'accompagner-pain' as RecipeTag],
+      tags: [...r.tags, 'accompagner-pain' as const],
     }));
     renderScreen(<WeekPage />, { recipes });
     await firstMeal();

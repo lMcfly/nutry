@@ -25,8 +25,9 @@ import {
   draftFromProfile,
   draftToProfile,
   withAllowedGoal,
+  aboutIssuesFrom,
 } from '../features/profile/draft';
-import type { ProfileDraft } from '../features/profile/draft';
+import type { AboutIssues, ProfileDraft } from '../features/profile/draft';
 import { applyTheme } from '../hooks/theme';
 import { useAsync } from '../hooks/useAsync';
 import { THEME_LABELS, formatDecimal } from '../i18n/labels';
@@ -104,6 +105,7 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showIssues, setShowIssues] = useState(false);
+  const [savedIssues, setSavedIssues] = useState<AboutIssues>({});
 
   const issues = useMemo(() => aboutIssues(draft), [draft]);
   const profile = useMemo(() => draftToProfile(draft), [draft]);
@@ -128,6 +130,7 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
     try {
       const result = await saveProfile(withAllowedGoal(profile, health?.lossAllowed ?? true));
       if (result.status === 'invalid') {
+        setSavedIssues(aboutIssuesFrom(result.issues));
         setShowIssues(true);
         toast.show('Certaines réponses sont à vérifier.', 'error');
         return;
@@ -162,7 +165,11 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
         }}
       >
         <EditableSection title="Toi" emoji="👋" open>
-          <AboutSection draft={draft} onChange={update} issues={showIssues ? issues : {}} />
+          <AboutSection
+            draft={draft}
+            onChange={update}
+            issues={showIssues ? { ...savedIssues, ...issues } : {}}
+          />
         </EditableSection>
         <EditableSection title="Objectif, régime et allergies" emoji="🎯">
           <GoalSection draft={draft} onChange={update} health={health} />

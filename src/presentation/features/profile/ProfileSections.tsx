@@ -28,7 +28,7 @@ import {
   formatMinutes,
   plural,
 } from '../../i18n/labels';
-import { DIET_BASES, DIET_EXTRAS, lossBlockedReason } from './draft';
+import { DIET_BASES, DIET_EXTRAS, PLAUSIBLE_RANGES, lossBlockedReason } from './draft';
 import type { AboutIssues, ProfileDraft } from './draft';
 import styles from './ProfileSections.module.css';
 
@@ -53,6 +53,8 @@ export function AboutSection({ draft, onChange, issues }: AboutSectionProps) {
       <div className={styles.grid2}>
         <Field
           label="Âge"
+          min={PLAUSIBLE_RANGES.age[0]}
+          max={PLAUSIBLE_RANGES.age[1]}
           inputMode="numeric"
           autoComplete="off"
           suffix="ans"
@@ -64,6 +66,8 @@ export function AboutSection({ draft, onChange, issues }: AboutSectionProps) {
         />
         <Field
           label="Taille"
+          min={PLAUSIBLE_RANGES.heightCm[0]}
+          max={PLAUSIBLE_RANGES.heightCm[1]}
           inputMode="numeric"
           autoComplete="off"
           suffix="cm"
@@ -75,6 +79,8 @@ export function AboutSection({ draft, onChange, issues }: AboutSectionProps) {
         />
         <Field
           label="Poids"
+          min={PLAUSIBLE_RANGES.weightKg[0]}
+          max={PLAUSIBLE_RANGES.weightKg[1]}
           inputMode="decimal"
           autoComplete="off"
           suffix="kg"
@@ -86,6 +92,8 @@ export function AboutSection({ draft, onChange, issues }: AboutSectionProps) {
         />
         <Field
           label="Tour de taille"
+          min={PLAUSIBLE_RANGES.waistCm[0]}
+          max={PLAUSIBLE_RANGES.waistCm[1]}
           hint="Facultatif"
           inputMode="decimal"
           autoComplete="off"

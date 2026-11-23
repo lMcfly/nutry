@@ -85,11 +85,13 @@ function MeasuresSection({
       ...(weightKg === undefined ? {} : { weightKg }),
       ...(waistCm === undefined ? {} : { waistCm }),
     });
-    if (check.status === 'nouvelle' || check.status === 'correction') {
+    if (check.status === 'created' || check.status === 'updated') {
       setWeight('');
       setWaist('');
       toast.show(
-        check.status === 'nouvelle' ? 'C’est noté, bravo pour ta régularité !' : 'Mesure corrigée.',
+        check.status === 'created'
+          ? 'C’est noté, bravo pour ta régularité !'
+          : 'Mesure de la semaine mise à jour.',
         'success',
       );
       onChange();
@@ -141,53 +143,48 @@ function MeasuresSection({
         <h2 id="measure-title" className={styles.cardTitle}>
           <span aria-hidden="true">📏 </span>Ma mesure de la semaine
         </h2>
-        {alreadyThisWeek && alreadyThisWeek.date !== today ? (
-          <Notice tone="success" emoji="✅">
-            Déjà noté cette semaine ({formatDayShort(alreadyThisWeek.date)}). Rendez-vous lundi !
-          </Notice>
-        ) : (
-          <form
-            className={styles.form}
-            onSubmit={(event) => {
-              event.preventDefault();
-              void submit();
-            }}
-          >
-            {alreadyThisWeek && (
-              <p className={styles.small}>
-                Tu as déjà noté une mesure aujourd’hui : tu peux la corriger.
-              </p>
-            )}
-            <div className={styles.fields}>
-              {tracking.enabled && (
-                <Field
-                  label="Poids"
-                  inputMode="decimal"
-                  suffix="kg"
-                  value={weight}
-                  onChange={(e) => {
-                    setWeight(e.target.value);
-                  }}
-                />
-              )}
+        <form
+          className={styles.form}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submit();
+          }}
+        >
+          {alreadyThisWeek && (
+            <Notice tone="success" emoji="✅">
+              Déjà noté cette semaine ({formatDayShort(alreadyThisWeek.date)}). Une nouvelle saisie
+              met à jour la mesure de la semaine.
+            </Notice>
+          )}
+          <div className={styles.fields}>
+            {tracking.enabled && (
               <Field
-                label="Tour de taille"
+                label="Poids"
                 inputMode="decimal"
-                suffix="cm"
-                value={waist}
+                suffix="kg"
+                value={weight}
                 onChange={(e) => {
-                  setWaist(e.target.value);
+                  setWeight(e.target.value);
                 }}
               />
-            </div>
-            {message && (
-              <p className={styles.error} role="alert">
-                {message}
-              </p>
             )}
-            <Button type="submit">Enregistrer</Button>
-          </form>
-        )}
+            <Field
+              label="Tour de taille"
+              inputMode="decimal"
+              suffix="cm"
+              value={waist}
+              onChange={(e) => {
+                setWaist(e.target.value);
+              }}
+            />
+          </div>
+          {message && (
+            <p className={styles.error} role="alert">
+              {message}
+            </p>
+          )}
+          <Button type="submit">Enregistrer</Button>
+        </form>
       </Card>
 
       {(progress.weightTrend.length > 0 || progress.waistTrend.length > 0) && (

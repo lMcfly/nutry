@@ -16,6 +16,7 @@ import {
   aboutIssues,
   draftToProfile,
   withAllowedGoal,
+  aboutIssuesFrom,
 } from '../features/profile/draft';
 import type { AboutIssues, ProfileDraft } from '../features/profile/draft';
 import styles from './OnboardingPage.module.css';
@@ -66,6 +67,7 @@ export function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<ProfileDraft>(DEFAULT_DRAFT);
   const [showIssues, setShowIssues] = useState(false);
+  const [savedIssues, setSavedIssues] = useState<AboutIssues>({});
   const [saving, setSaving] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
@@ -106,6 +108,7 @@ export function OnboardingPage() {
     try {
       const result = await saveProfile(withAllowedGoal(profile, health?.lossAllowed ?? true));
       if (result.status === 'invalid') {
+        setSavedIssues(aboutIssuesFrom(result.issues));
         setShowIssues(true);
         setStep(0);
         return;
@@ -179,7 +182,11 @@ export function OnboardingPage() {
         </header>
 
         {step === 0 && (
-          <AboutSection draft={draft} onChange={update} issues={showIssues ? issues : {}} />
+          <AboutSection
+            draft={draft}
+            onChange={update}
+            issues={showIssues ? { ...savedIssues, ...issues } : {}}
+          />
         )}
         {step === 1 && <GoalSection draft={draft} onChange={update} health={health} />}
         {step === 2 && <TastesSection draft={draft} onChange={update} />}
