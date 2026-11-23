@@ -48,6 +48,21 @@ export function ShoppingPage() {
     }
   };
 
+  /** La case réagit tout de suite ; la réponse du cas d'usage fait foi ensuite. */
+  const toggleOptimistically = (key: string) => {
+    if (state.status !== 'ready' || state.data.status !== 'ready') return;
+    const current = state.data;
+    setData({
+      ...current,
+      list: {
+        sections: current.list.sections.map((section) => ({
+          ...section,
+          items: section.items.map((i) => (i.key === key ? { ...i, checked: !i.checked } : i)),
+        })),
+      },
+    });
+  };
+
   const share = async () => {
     const result = await shareShoppingList();
     if (result === 'copied') toast.show('Liste copiée : colle-la où tu veux.', 'success');
@@ -130,6 +145,7 @@ export function ShoppingPage() {
                     className={styles.box}
                     checked={item.checked}
                     onChange={() => {
+                      toggleOptimistically(item.key);
                       void apply(toggleShoppingItem(item.key));
                     }}
                   />
