@@ -1,8 +1,9 @@
 import type { IsoDate } from '@domain/shared';
-import type { ShoppingState } from '@domain/shopping';
+import type { ShoppingRecord } from '@domain/userdata';
 
 /** Persistance des cases cochées et des articles manuels, par semaine. */
 export interface ShoppingRepository {
-  getState(weekStart: IsoDate): Promise<ShoppingState | undefined>;
-  saveState(weekStart: IsoDate, state: ShoppingState): Promise<void>;
+  get(weekStart: IsoDate): Promise<ShoppingRecord | undefined>;
+  /** Ajoute ou remplace l'état de la semaine `record.weekStart`. */
+  save(record: ShoppingRecord): Promise<void>;
 }

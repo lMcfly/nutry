@@ -1,10 +1,16 @@
+export type { BackupParseResult, BackupValidator } from './BackupValidator';
+export type { Cipher, EncryptedPayload } from './Cipher';
 export type { Clock } from './Clock';
+export type { FileSaver, FileToSave } from './FileSaver';
 export type { PlanRepository } from './PlanRepository';
 export type { ProfileRepository } from './ProfileRepository';
 export type { ProgressRepository } from './ProgressRepository';
-export type { QuizRepository } from './QuizRepository';
+export type { QuizRepository, QuizStateRepository } from './QuizRepository';
 export type { RandomSource } from './RandomSource';
 export type { RatingRepository } from './RatingRepository';
 export type { RecipeRepository } from './RecipeRepository';
+export type { SettingsRepository } from './SettingsRepository';
 export type { ShareResult, Sharer } from './Sharer';
 export type { ShoppingRepository } from './ShoppingRepository';
+export type { StoragePersistence } from './StoragePersistence';
+export type { UserDataStore } from './UserDataStore';

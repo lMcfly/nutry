@@ -1,30 +1,36 @@
 import { render, screen } from '@testing-library/react';
+import { useEffect, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { DependenciesProvider, useDependencies, type AppDependencies } from './dependencies';
+import { createInMemoryPorts } from '@application/testing';
+import { createUseCases } from '@application/usecases';
+import { DependenciesProvider, useDependencies } from './dependencies';
 
-function Today() {
-  const { clock } = useDependencies();
-  return <p>{clock.now().getFullYear()}</p>;
+function Theme() {
+  const { getSettings } = useDependencies();
+  const [theme, setTheme] = useState('…');
+  useEffect(() => {
+    void getSettings().then((s) => {
+      setTheme(s.theme);
+    });
+  }, [getSettings]);
+  return <p>{theme}</p>;
 }
 
 describe('DependenciesProvider', () => {
-  it('fournit les dépendances injectées', () => {
-    const deps: AppDependencies = {
-      clock: { now: () => new Date('2026-11-23T10:00:00Z') },
-      sharer: { share: () => Promise.resolve('copied') },
-    };
+  it('fournit les cas d’usage injectés', async () => {
+    const useCases = createUseCases(createInMemoryPorts());
     render(
-      <DependenciesProvider value={deps}>
-        <Today />
+      <DependenciesProvider value={useCases}>
+        <Theme />
       </DependenciesProvider>,
     );
-    expect(screen.getByText('2026')).toBeInTheDocument();
+    expect(await screen.findByText('system')).toBeInTheDocument();
   });
 
   it('signale clairement un provider manquant', () => {
     // React journalise l'erreur attendue : on la rend silencieuse.
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    expect(() => render(<Today />)).toThrow(/DependenciesProvider/);
+    expect(() => render(<Theme />)).toThrow(/DependenciesProvider/);
     consoleError.mockRestore();
   });
 });
