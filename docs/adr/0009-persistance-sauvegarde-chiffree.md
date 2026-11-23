@@ -1,4 +1,4 @@
-# ADR 0008 — Persistance, migrations, sauvegarde chiffrée et rappel
+# ADR 0009 — Persistance, migrations, sauvegarde chiffrée et rappel
 
 - Statut : accepté
 - Date : 2026-11-23

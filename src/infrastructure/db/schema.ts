@@ -1,7 +1,7 @@
 import type { Transaction } from 'dexie';
 
 /**
- * Schéma versionné de la base IndexedDB `nutry` (voir docs/adr/0008).
+ * Schéma versionné de la base IndexedDB `nutry` (voir docs/adr/0009).
  *
  * AJOUTER UNE MIGRATION
  * 1. Ne jamais modifier une version déjà publiée : ajouter une entrée à la fin de

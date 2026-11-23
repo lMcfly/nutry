@@ -23,6 +23,6 @@ IndexedDB via **Dexie 4**, encapsulé dans `src/infrastructure/db/` derrière le
 
 - Les tests d'infrastructure IndexedDB utilisent `fake-indexeddb` (ajouté en phase 4).
 - Chaque évolution du schéma Dexie passe par une nouvelle entrée de `DB_VERSIONS`
-  (`src/infrastructure/db/schema.ts`) avec migration : voir ADR 0008.
+  (`src/infrastructure/db/schema.ts`) avec migration : voir ADR 0009.
 - Les catalogues JSON sont chargés par import dynamique (morceau séparé du bundle) et
   validés par Zod au premier usage.

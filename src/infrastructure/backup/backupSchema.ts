@@ -107,8 +107,9 @@ const SCORE_KEYS = [
   'hasard',
 ] as const satisfies readonly ScoreComponentKey[];
 const RELAXED = [
-  'variete-proteine',
   'niveau',
+  'evitee',
+  'variete-proteine',
   'doublon',
   'temps',
 ] as const satisfies readonly RelaxedConstraint[];
