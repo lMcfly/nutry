@@ -8,7 +8,7 @@ de comptage de calories mis en avant, et aucune donnée qui quitte l'appareil**.
 
 ## Prérequis
 
-- **Node.js 22** (20 minimum) et npm ;
+- **Node.js 22.12** ou plus récent (exigé par Vitest 5) et npm ;
 - Git ;
 - pour les tests de bout en bout : `npx playwright install chromium` (une fois).
 

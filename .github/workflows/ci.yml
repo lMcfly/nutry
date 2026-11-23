@@ -1,15 +1,21 @@
 name: CI
 
+# Vérifications sur toutes les branches et PR ; sur `main`, le déploiement GitHub Pages
+# part à la fin, seulement si TOUTES les vérifications sont vertes (job `deploy`).
 on:
   push:
     branches: ['**']
   pull_request:
+  # Relance manuelle (Actions → CI → Run workflow) ; depuis `main`, elle redéploie.
+  workflow_dispatch:
 
-# Un nouveau push annule les vérifications encore en cours sur la même branche ou PR.
+# Un nouveau push annule les vérifications encore en cours sur la même branche ou PR,
+# sauf sur `main` : chaque commit de `main` va jusqu'au déploiement.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
+# Lecture seule par défaut : seul le job `deploy` reçoit pages/id-token.
 permissions:
   contents: read
 
@@ -23,9 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -35,16 +43,26 @@ jobs:
       - run: npm run typecheck
       - run: npm run format:check
       - run: npm run test:coverage
+      # `base: '/nutry/'` est fixé dans vite.config.ts : https://<compte>.github.io/nutry/
       - run: npm run build
+
+      # Le dist/ vérifié ci-dessus est celui qui sera publié (aucun second build).
+      - name: Artefact GitHub Pages
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
 
   e2e:
     name: Tests de bout en bout (Playwright)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -59,10 +77,31 @@ jobs:
 
       - name: Rapport Playwright
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rapport-playwright
           path: |
             playwright-report/
             test-results/
           retention-days: 14
+
+  deploy:
+    name: Déploiement GitHub Pages
+    # `needs` : ne part que si les deux jobs de vérification ont réussi.
+    needs: [verifier, e2e]
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Un seul déploiement à la fois ; celui en cours va jusqu'au bout.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

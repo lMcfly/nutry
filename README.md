@@ -1,7 +1,6 @@
 # Nutry — bien manger, en douceur
 
-[![CI](https://github.com/lMcfly/nutry/actions/workflows/ci.yml/badge.svg)](https://github.com/lMcfly/nutry/actions/workflows/ci.yml)
-[![Déploiement GitHub Pages](https://github.com/lMcfly/nutry/actions/workflows/deploy.yml/badge.svg)](https://github.com/lMcfly/nutry/actions/workflows/deploy.yml)
+[![CI et déploiement](https://github.com/lMcfly/nutry/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lMcfly/nutry/actions/workflows/ci.yml?query=branch%3Amain)
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-3d6b4f.svg)](LICENSE)
 
 Nutry t'aide à **rééquilibrer ton alimentation durablement**, sans régime strict ni
@@ -77,7 +76,7 @@ Quand une nouvelle version est publiée, elle se télécharge en arrière-plan e
 
 ## Lancer le projet en local
 
-Prérequis : **Node.js 22** (20 minimum) et npm.
+Prérequis : **Node.js 22.12** ou plus récent (exigé par Vitest 5) et npm.
 
 ```bash
 git clone https://github.com/lMcfly/nutry.git

@@ -1,9 +1,26 @@
 # Déploiement sur GitHub Pages
 
-L'app est construite et publiée par GitHub Actions à chaque push sur `main`
-(`.github/workflows/deploy.yml`). Elle est servie à l'adresse
-<https://lmcfly.github.io/nutry/>. Aucun secret n'est nécessaire : le workflow utilise le
-jeton OIDC fourni par GitHub (`id-token: write`) et la permission `pages: write`.
+L'app est construite, vérifiée puis publiée par un seul workflow GitHub Actions,
+`.github/workflows/ci.yml`. Elle est servie à l'adresse <https://lmcfly.github.io/nutry/>.
+
+Sur chaque push (toutes branches) et chaque PR, deux jobs de vérification tournent en
+parallèle ; sur `main` seulement, le déploiement les suit :
+
+| Job                                 | Contenu                                                  |
+| ----------------------------------- | -------------------------------------------------------- |
+| `verifier` (Lint, types, format…)   | lint, typecheck, format:check, test:coverage, build      |
+| `e2e` (Tests de bout en bout)       | Playwright sur le build de production (`vite preview`)   |
+| `deploy` (Déploiement GitHub Pages) | **uniquement sur `main`**, après `verifier` **et** `e2e` |
+
+Le job `deploy` déclare `needs: [verifier, e2e]` et
+`if: github.ref == 'refs/heads/main' && (push || workflow_dispatch)` : **un seul échec de
+vérification bloque la mise en ligne**. Le `dist/` publié est exactement celui construit
+et vérifié par `verifier` (artefact `github-pages`), il n'y a pas de second build.
+
+Aucun secret n'est nécessaire : seul le job `deploy` reçoit le jeton OIDC
+(`id-token: write`) et la permission `pages: write` ; les autres jobs sont en
+`contents: read`. Sur `main`, un nouveau push n'annule pas le workflow en cours, et un
+seul déploiement s'exécute à la fois (groupe de concurrence `pages`).
 
 ## 1. Créer le dépôt distant (une seule fois)
 
@@ -45,7 +62,8 @@ il n'accepte que la branche par défaut (`main`) : c'est voulu.
 - **Settings → Code security → Private vulnerability reporting** : activer, pour le lien
   « Faille de sécurité » des modèles d'issues.
 - **Settings → Branches** : protéger `main` en exigeant les vérifications
-  « Lint, types, format, tests et build » et « Tests de bout en bout (Playwright) ».
+  « Lint, types, format, tests et build » et « Tests de bout en bout (Playwright) » (le
+  déploiement les attend déjà ; la protection empêche en plus de pousser du code rouge).
 - Étiquettes utilisées par les modèles d'issues :
 
   ```bash
@@ -57,14 +75,16 @@ il n'accepte que la branche par défaut (`main`) : c'est voulu.
 
 ## 3. Premier déploiement et vérification
 
-1. Pousser sur `main` (ou **Actions → Déploiement GitHub Pages → Run workflow**) :
+1. Pousser sur `main` (ou **Actions → CI → Run workflow** sur la branche `main`) :
 
    ```bash
-   gh workflow run deploy.yml
+   gh workflow run ci.yml --ref main
    gh run watch
    ```
 
-2. Le job **Déploiement** affiche l'URL publiée (environnement `github-pages`).
+2. Une fois `verifier` et `e2e` verts, le job **Déploiement GitHub Pages** affiche l'URL
+   publiée (environnement `github-pages`). Si un job de vérification échoue, `deploy`
+   apparaît « skipped » et la version en ligne reste la précédente.
 3. Vérifier en ligne :
 
    ```bash
@@ -82,7 +102,7 @@ il n'accepte que la branche par défaut (`main`) : c'est voulu.
 
 ## 4. Mettre à jour
 
-Chaque push sur `main` redéploie automatiquement. Le service worker de la nouvelle version
+Chaque push sur `main` dont la CI est entièrement verte redéploie automatiquement. Le service worker de la nouvelle version
 se télécharge en arrière-plan chez les personnes qui ont déjà l'app, puis s'active quand
 elles ferment l'app ou la passent en arrière-plan (voir `vite.config.ts`). Leurs données
 (IndexedDB) ne sont jamais touchées par un déploiement.
