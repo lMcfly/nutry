@@ -88,8 +88,11 @@ export type Aisle = (typeof AISLES)[number];
  * - `petit-dejeuner` : proposé uniquement au petit-déjeuner ;
  * - `alcool` : contient du vin, de la bière ou un autre alcool (même cuit) ;
  * - `cru` : poisson ou viande crus ou peu cuits, œuf cru ou peu cuit (jaune coulant),
- *   fromage au lait cru. Ces deux étiquettes excluent la recette pendant la grossesse
- *   ou l'allaitement (ADR 0007) ;
+ *   fromage au lait cru, graines germées crues, fruits surgelés consommés sans cuisson.
+ *   Ces deux étiquettes excluent la recette pendant la grossesse ou l'allaitement
+ *   (ADR 0007, ADR 0008) ;
+ * - `accompagner-pain` : plat sans féculent ; l'UI affiche « Avec une tranche de pain
+ *   complet » pour compléter l'assiette (ingrédients inchangés, ADR 0008) ;
  * - les autres sont informatives (affichage, filtres de l'UI).
  */
 export const RECIPE_TAGS = [
@@ -103,5 +106,6 @@ export const RECIPE_TAGS = [
   'plat-unique',
   'alcool',
   'cru',
+  'accompagner-pain',
 ] as const;
 export type RecipeTag = (typeof RECIPE_TAGS)[number];
