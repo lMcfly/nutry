@@ -9,7 +9,8 @@ export interface FormatShoppingOptions {
 
 /**
  * Texte de la liste pour le partage (Web Share ou presse-papiers) :
- * un titre, puis chaque rayon et ses lignes « - nom : quantité ».
+ * un titre, puis chaque rayon et ses lignes « - nom : quantité ». Liste vide : un mot
+ * neutre ; tout coché : un bravo.
  */
 export function formatShoppingListText(
   list: ShoppingList,
@@ -28,6 +29,9 @@ export function formatShoppingListText(
     });
     blocks.push([section.label, ...lines].join('\n'));
   }
-  if (blocks.length === 1) blocks.push('Tout est dans le panier, bravo !');
+  if (blocks.length === 1) {
+    const empty = list.sections.every((section) => section.items.length === 0);
+    blocks.push(empty ? 'Ta liste est vide pour l’instant.' : 'Tout est dans le panier, bravo !');
+  }
   return blocks.join('\n\n');
 }

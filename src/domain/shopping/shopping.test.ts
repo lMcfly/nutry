@@ -78,6 +78,9 @@ describe('unités et arrondis', () => {
     expect(formatNumberFr(1.5)).toBe('1,5');
     expect(formatQuantity(300, 'g')).toBe('300 g');
     expect(formatQuantity(2, 'gousse')).toBe('2 gousses');
+    expect(formatQuantity(1.5, 'gousse')).toBe('1,5 gousse');
+    expect(formatQuantity(1.5, 'boite')).toBe('1,5 boîte');
+    expect(formatQuantity(2.5, 'tranche')).toBe('2,5 tranches');
     expect(formatQuantity(1, 'boite')).toBe('1 boîte');
     expect(formatQuantity(3, 'piece')).toBe('3');
     expect(formatQuantity(1.5, 'cuillere-soupe')).toBe('1,5 c. à soupe');
@@ -251,7 +254,7 @@ describe('formatShoppingListText', () => {
     );
   });
 
-  it('félicite quand tout est coché', () => {
+  it('reste neutre sur une liste vide et félicite quand tout est coché', () => {
     const empty = buildShoppingList({
       plan: plan([]),
       recipes: [fixture('dahl-lentilles-corail')],
@@ -259,7 +262,21 @@ describe('formatShoppingListText', () => {
       userPortionFactor: 1,
     });
     expect(formatShoppingListText(empty)).toBe(
+      'Liste de courses\n\nTa liste est vide pour l’instant.',
+    );
+    const one = addManualItem(EMPTY_SHOPPING_STATE, { id: 'c', label: 'Café' });
+    const done = buildShoppingList({
+      plan: plan([]),
+      recipes: [],
+      householdSize: 1,
+      userPortionFactor: 1,
+      state: toggleChecked(one, manualKey({ id: 'c' })),
+    });
+    expect(formatShoppingListText(done)).toBe(
       'Liste de courses\n\nTout est dans le panier, bravo !',
     );
+    expect(
+      formatShoppingListText({ sections: [{ key: 'divers', label: 'Divers', items: [] }] }),
+    ).toMatch(/vide/);
   });
 });

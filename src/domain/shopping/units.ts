@@ -63,7 +63,8 @@ export function formatNumberFr(value: number): string {
 /** « 300 g », « 1,5 kg », « 2 gousses », « 3 » (pièces). */
 export function formatQuantity(quantity: number, unit: Unit): string {
   const [singular, plural] = UNIT_LABELS[unit];
-  const label = quantity > 1 ? plural : singular;
+  // Pluriel à partir de 2 : « 1,5 gousse », « 2 gousses ».
+  const label = quantity >= 2 ? plural : singular;
   const number = formatNumberFr(quantity);
   return label === '' ? number : `${number} ${label}`;
 }
