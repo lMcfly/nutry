@@ -23,8 +23,9 @@ Quatre couches sous `src/`, avec des alias `@domain`, `@application`, `@infrastr
 
 - Les **ports** (interfaces) vivent dans `application/ports` ; l'infrastructure les implémente.
 - Le temps (`Clock`) et l'aléa (`RandomSource`) sont des ports : tests déterministes.
-- **Injection sans framework** : `main.tsx` instancie les adaptateurs et les passe à
-  `<DependenciesProvider>` ; les composants les lisent via `useDependencies()`.
+- **Injection sans framework** : `main.tsx` instancie les adaptateurs, fabrique les cas
+  d'usage (`createUseCases(ports)`) et ne passe **que les cas d'usage** à
+  `<DependenciesProvider>` ; les composants les lisent via `useDependencies()` (phase 4).
 - Les vocabulaires fermés (régimes, allergènes…) sont des tableaux `as const` du domain, dont
   dérivent les types TS et les schémas Zod (ADR 0005).
 
