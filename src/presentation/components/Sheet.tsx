@@ -15,7 +15,7 @@ interface SheetProps {
   readonly onClose: () => void;
   readonly children: ReactNode;
   /** `sheet` : feuille ancrée en bas (mobile) ; `dialog` : boîte centrée. */
-  readonly variant?: 'sheet' | 'dialog';
+  readonly variant?: 'sheet' | 'dialog' | undefined;
   /** Description lue à l'ouverture. */
   readonly description?: ReactNode;
   /** Libellé du bouton de fermeture ✕. */

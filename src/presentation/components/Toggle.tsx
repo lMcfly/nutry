@@ -13,10 +13,13 @@ interface ToggleProps {
 /** Interrupteur : case à cocher native exposée comme `switch`. */
 export function Toggle({ label, hint, checked, onChange, disabled }: ToggleProps) {
   const hintId = useId();
+  const labelId = useId();
   return (
     <label className={styles.toggle}>
       <span className={styles.text}>
-        <span className={styles.label}>{label}</span>
+        <span id={labelId} className={styles.label}>
+          {label}
+        </span>
         {hint !== undefined && (
           <span id={hintId} className={styles.hint}>
             {hint}
@@ -29,6 +32,7 @@ export function Toggle({ label, hint, checked, onChange, disabled }: ToggleProps
         className={styles.input}
         checked={checked}
         disabled={disabled}
+        aria-labelledby={labelId}
         aria-describedby={hint !== undefined ? hintId : undefined}
         onChange={(event) => {
           onChange(event.target.checked);

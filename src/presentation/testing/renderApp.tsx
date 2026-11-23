@@ -11,7 +11,7 @@ import type { InMemoryPorts } from '@application/testing';
 import { createUseCases } from '@application/usecases';
 import type { UseCases } from '@application/usecases';
 import type { Profile } from '@domain/profile';
-import type { QuizQuestion } from '@domain/quiz';
+import type { QuizQuestion, QuizState } from '@domain/quiz';
 import type { Recipe } from '@domain/recipe';
 import { BASE_PROFILE, FIXTURE_RECIPES } from '@domain/testing/fixtures';
 import { App } from '../app/App';
@@ -45,7 +45,7 @@ export const TEST_QUESTIONS: readonly QuizQuestion[] = [
 export const TEST_PROFILE: Profile = { ...BASE_PROFILE, householdSize: 2 };
 
 export interface SetupOptions {
-  readonly profile?: Profile;
+  readonly profile?: Profile | undefined;
   readonly recipes?: readonly Recipe[];
   readonly questions?: readonly QuizQuestion[];
   /** Route initiale (hash), ex. '/courses'. */
@@ -53,6 +53,7 @@ export interface SetupOptions {
   /** Laisser la carte quiz s'afficher (masquée par défaut). */
   readonly quiz?: boolean;
   readonly shareResult?: 'shared' | 'copied' | 'failed';
+  readonly quizState?: QuizState;
 }
 
 export interface Setup {
@@ -71,6 +72,7 @@ export function createTestUseCases(options: SetupOptions = {}): {
     ...(options.shareResult ? { shareResult: options.shareResult } : {}),
   });
   if (options.profile) ports.state.profile = options.profile;
+  if (options.quizState) ports.state.quiz = options.quizState;
   return { ports, useCases: createUseCases(ports) };
 }
 
@@ -92,12 +94,14 @@ export function renderApp(options: SetupOptions = {}): Setup {
 /** Un écran isolé, sous MemoryRouter, avec les providers nécessaires. */
 export function renderScreen(
   ui: ReactElement,
-  options: SetupOptions & { readonly status?: ProfileStatus } = {},
+  options: SetupOptions & {
+    readonly status?: ProfileStatus;
+    /** Ports et cas d'usage déjà préparés (menu généré, avis…). */
+    readonly existing?: { readonly ports: InMemoryPorts; readonly useCases: UseCases };
+  } = {},
 ): Setup & { setProfileStatus: (s: ProfileStatus) => void; statuses: ProfileStatus[] } {
-  const { ports, useCases } = createTestUseCases({
-    profile: TEST_PROFILE,
-    ...options,
-  });
+  const { ports, useCases } =
+    options.existing ?? createTestUseCases({ profile: TEST_PROFILE, ...options });
   const statuses: ProfileStatus[] = [];
   const setProfileStatus = (s: ProfileStatus) => {
     statuses.push(s);
