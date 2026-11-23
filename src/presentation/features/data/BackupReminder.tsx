@@ -3,24 +3,12 @@ import { useDependencies } from '../../app/dependencies';
 import { ButtonLink } from '../../components/Button';
 import { Notice } from '../../components/Notice';
 
-/** Clé de session : une fois masqué, le rappel ne revient pas avant le prochain lancement. */
-const DISMISS_KEY = 'nutry.backup-reminder.dismissed';
-
-function isDismissed(): boolean {
-  try {
-    return sessionStorage.getItem(DISMISS_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
 /** Carte douce, fermable, quand une sauvegarde serait bienvenue (`getBackupReminder`). */
 export function BackupReminder() {
-  const { getBackupReminder } = useDependencies();
+  const { getBackupReminder, dismissBackupReminder } = useDependencies();
   const [due, setDue] = useState(false);
 
   useEffect(() => {
-    if (isDismissed()) return undefined;
     let active = true;
     void getBackupReminder().then((reminder) => {
       if (active) setDue(reminder.due);
@@ -40,11 +28,8 @@ export function BackupReminder() {
       dismissLabel="Masquer le rappel de sauvegarde"
       onDismiss={() => {
         setDue(false);
-        try {
-          sessionStorage.setItem(DISMISS_KEY, '1');
-        } catch {
-          // ignoré
-        }
+        // Une fois masqué, le rappel ne revient pas avant le prochain lancement.
+        dismissBackupReminder();
       }}
       action={
         <ButtonLink to="/profil#mes-donnees" small variant="secondary">

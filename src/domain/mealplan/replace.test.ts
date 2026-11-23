@@ -2,11 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { createSeededRng } from '../shared';
 import { FIXTURE_RECIPES, fixture, makeProfile } from '../testing/fixtures';
 import { learnWeights } from '../preferences';
-import type { Recipe } from '../recipe';
 import {
   BALANCE_TARGETS,
   applyReplacement,
-  buildBatchCookingPlan,
   computeWeekBalance,
   explainMeal,
   generateWeeklyPlan,
@@ -199,66 +197,6 @@ describe('explainMeal', () => {
 
   it('explique chaque repas d’un menu généré, sans calories', () => {
     for (const m of plan.meals) expect(explainMeal(m)).not.toMatch(/kcal|calorie/i);
-  });
-});
-
-describe('batch cooking', () => {
-  const recipes: Recipe[] = [...FIXTURE_RECIPES];
-  const batchPlan: WeeklyPlan = {
-    weekStart: '2026-11-23',
-    notices: [],
-    meals: [
-      {
-        ...meal('0-diner'),
-        id: '0-diner',
-        dayIndex: 0,
-        slot: 'diner',
-        recipeId: 'chili-sin-carne',
-      },
-      {
-        ...meal('1-dejeuner'),
-        id: '1-dejeuner',
-        dayIndex: 1,
-        slot: 'dejeuner',
-        recipeId: 'chili-sin-carne',
-        isLeftover: true,
-        leftoverOf: '0-diner',
-      },
-      {
-        ...meal('2-diner'),
-        id: '2-diner',
-        dayIndex: 2,
-        slot: 'diner',
-        recipeId: 'dahl-lentilles-corail',
-      },
-      {
-        ...meal('3-diner'),
-        id: '3-diner',
-        dayIndex: 3,
-        slot: 'diner',
-        recipeId: 'saumon-haricots-verts',
-      },
-      { ...meal('4-diner'), id: '4-diner', dayIndex: 4, slot: 'diner', recipeId: 'inconnue' },
-      {
-        ...meal('5-diner'),
-        id: '5-diner',
-        dayIndex: 5,
-        slot: 'diner',
-        recipeId: 'chili-sin-carne',
-      },
-    ],
-  };
-
-  it('liste les recettes « batch » et les repas concernés', () => {
-    const preps = buildBatchCookingPlan(batchPlan, recipes, true);
-    expect(preps.map((p) => [p.recipe.id, p.mealLabels])).toEqual([
-      ['chili-sin-carne', ['lundi – dîner', 'samedi – dîner']],
-      ['dahl-lentilles-corail', ['mercredi – dîner']],
-    ]);
-  });
-
-  it('est vide sans l’option', () => {
-    expect(buildBatchCookingPlan(batchPlan, recipes, false)).toEqual([]);
   });
 });
 

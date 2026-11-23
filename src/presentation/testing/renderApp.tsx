@@ -9,7 +9,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { createInMemoryPorts } from '@application/testing';
 import type { InMemoryPorts } from '@application/testing';
 import { createUseCases } from '@application/usecases';
-import type { UseCases } from '@application/usecases';
+import type { ShareResult, UseCases } from '@application/usecases';
 import type { Profile } from '@domain/profile';
 import type { QuizQuestion, QuizState } from '@domain/quiz';
 import type { Recipe } from '@domain/recipe';
@@ -17,7 +17,6 @@ import { BASE_PROFILE, FIXTURE_RECIPES } from '@domain/testing/fixtures';
 import { App } from '../app/App';
 import { AppStateContext } from '../app/appState';
 import type { ProfileStatus } from '../app/appState';
-import { markQuizShownThisSession, resetQuizSession } from '../app/appState';
 import { DependenciesProvider } from '../app/dependencies';
 import { ToastProvider } from '../components/Toast';
 
@@ -52,7 +51,7 @@ export interface SetupOptions {
   readonly route?: string;
   /** Laisser la carte quiz s'afficher (masquée par défaut). */
   readonly quiz?: boolean;
-  readonly shareResult?: 'shared' | 'copied' | 'failed';
+  readonly shareResult?: ShareResult;
   readonly quizState?: QuizState;
 }
 
@@ -80,8 +79,7 @@ export function createTestUseCases(options: SetupOptions = {}): {
 export function renderApp(options: SetupOptions = {}): Setup {
   const { ports, useCases } = createTestUseCases(options);
   window.location.hash = options.route ?? '';
-  resetQuizSession();
-  if (!options.quiz) markQuizShownThisSession();
+  if (!options.quiz) useCases.markDailyQuizShown();
   const user = userEvent.setup();
   render(
     <DependenciesProvider value={useCases}>

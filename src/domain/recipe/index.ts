@@ -29,6 +29,7 @@ export {
   isRecipeCompatible,
   matchesDiets,
   recipeMentions,
+  suggestsBread,
   totalMinutes,
 } from './compatibility';
 export type { DietaryConstraints } from './compatibility';

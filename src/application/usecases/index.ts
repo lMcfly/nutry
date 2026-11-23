@@ -1,6 +1,6 @@
 import { createCatalogUseCases } from './catalog';
 import type { CatalogUseCases } from './catalog';
-import { createSerialRunner } from './context';
+import { createSerialRunner, memoryDeviceStorage } from './context';
 import type { AppPorts } from './context';
 import { createDataUseCases } from './data';
 import type { DataUseCases } from './data';
@@ -37,8 +37,9 @@ export type UseCases = ProfileUseCases &
  * Fabrique les cas d'usage à partir des ports (injection par paramètres, sans framework).
  * Les écritures sont sérialisées par un verrou commun.
  */
-export function createUseCases(ports: AppPorts): UseCases {
+export function createUseCases(appPorts: AppPorts): UseCases {
   const serial = createSerialRunner();
+  const ports = { ...appPorts, device: appPorts.device ?? memoryDeviceStorage() };
   return {
     ...createProfileUseCases(ports, serial),
     ...createPlanUseCases(ports, serial),
@@ -63,13 +64,22 @@ export type {
   WipeResult,
 } from './data';
 export {
+  IMPORT_MAX_BYTES,
   IMPORT_MAX_LENGTH,
   IMPORT_MESSAGES,
   PASSPHRASE_MIN_LENGTH,
   STORAGE_FAILURE_MESSAGES,
 } from './data';
 export type { FridgeResult } from './fridge';
-export type { MealAlternative, PlanHistory, PlanOrigin, PlanResult, PlanView } from './plan';
+export type {
+  MealAlternative,
+  PlanHistory,
+  PlanOrigin,
+  PlanResult,
+  PlanView,
+  RecipeIngredientLine,
+  RecipeView,
+} from './plan';
 export type {
   EnergyDetail,
   HealthSummary,
@@ -82,4 +92,5 @@ export { WEIGHT_TRACKING_DISABLED_MESSAGE } from './progress';
 export type { DailyQuizView, QuizAnswerView } from './quiz';
 export type { RateMealInput } from './ratings';
 export type { ShoppingResult, ShoppingView } from './shopping';
+export type { ShareResult } from '../ports';
 export { MANUAL_ITEM_MAX_LENGTH } from './shopping';

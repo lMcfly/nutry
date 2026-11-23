@@ -18,6 +18,7 @@ import {
 import { MathRandomSource } from '@infrastructure/random/MathRandomSource';
 import { NavigatorSharer } from '@infrastructure/share/NavigatorSharer';
 import { NavigatorStoragePersistence } from '@infrastructure/storage/NavigatorStoragePersistence';
+import { WebDeviceStorage, browserDeviceStorages } from '@infrastructure/storage/WebDeviceStorage';
 import { App } from '@presentation/app/App';
 import { DependenciesProvider } from '@presentation/app/dependencies';
 import '@presentation/theme/tokens.css';
@@ -79,6 +80,7 @@ const ports: AppPorts = {
   // Le stockage persistant n'est demandé qu'après l'onboarding (cas d'usage dédié).
   persistence: new NavigatorStoragePersistence((navigator as { storage?: StorageManager }).storage),
   fileSaver: new DownloadFileSaver(browserDownloadEnvironment(document, URL)),
+  device: new WebDeviceStorage(browserDeviceStorages(window)),
 };
 
 const useCases = createUseCases(ports);

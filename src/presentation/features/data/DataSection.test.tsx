@@ -1,5 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { IMPORT_MAX_BYTES, IMPORT_MESSAGES } from '@application/usecases';
 import { DataSection, FORGOTTEN_PASSPHRASE_WARNING, WIPE_CONFIRMATION_WORD } from './DataSection';
 import { renderScreen } from '../../testing/renderApp';
 
@@ -77,6 +78,17 @@ describe('Mes données', () => {
     expect(statuses).toEqual([]);
   });
 
+  it('fichier trop gros : refusé sur sa taille, sans être lu', async () => {
+    const { user } = renderScreen(<DataSection />);
+    const file = new File(['{}'], 'enorme.json', { type: 'application/json' });
+    Object.defineProperty(file, 'size', { value: IMPORT_MAX_BYTES + 1 });
+    const text = vi.spyOn(file, 'text');
+    await user.upload(screen.getByLabelText('Choisir une sauvegarde à importer'), file);
+    expect(await screen.findByText(IMPORT_MESSAGES['too-large'])).toBeInTheDocument();
+    expect(text).not.toHaveBeenCalled();
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+  });
+
   it('import réussi : remplace tout et revient au menu', async () => {
     const source = renderScreen(<DataSection />);
     await source.useCases.exportData();
@@ -96,7 +108,8 @@ describe('Mes données', () => {
   });
 
   it('tout effacer demande une confirmation forte', async () => {
-    const { user, ports, statuses } = renderScreen(<DataSection />);
+    const { user, ports, statuses, useCases } = renderScreen(<DataSection />);
+    await useCases.setTheme('dark');
     await user.click(screen.getByRole('button', { name: /Tout effacer/ }));
     const dialog = await screen.findByRole('alertdialog', { name: 'Tout effacer ?' });
     const confirm = within(dialog).getByRole('button', { name: 'Effacer définitivement' });
@@ -108,5 +121,7 @@ describe('Mes données', () => {
       expect(statuses).toEqual(['none']);
     });
     expect(ports.state.profile).toBeUndefined();
+    // Les valeurs gardées par Nutry dans le navigateur (thème…) sont effacées aussi.
+    expect(ports.device.values.local.size).toBe(0);
   });
 });

@@ -340,8 +340,8 @@ export function OrganisationSection({ draft, onChange }: SectionProps) {
           }}
         />
         <Toggle
-          label="Batch cooking du dimanche"
-          hint="Prépare quelques plats d’avance pour gagner du temps."
+          label="Cuisiner en avance le dimanche"
+          hint="Une liste de préparations à faire le dimanche (céréales, légumes, sauces, plats entiers) pour aller plus vite en semaine."
           checked={draft.batchCooking}
           onChange={(batchCooking) => {
             onChange({ batchCooking });

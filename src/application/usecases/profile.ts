@@ -1,4 +1,4 @@
-import { MEDICAL_DISCLAIMER, assessEnergy, validateProfile } from '@domain/profile';
+import { MEDICAL_DISCLAIMER, assessEnergy, normalizeGoal, validateProfile } from '@domain/profile';
 import type { EnergyAssessment, HealthMessage, Profile, ProfileIssue } from '@domain/profile';
 import type { AppPorts, SerialRunner } from './context';
 
@@ -55,6 +55,10 @@ export interface ProfileUseCases {
   readonly getProfile: () => Promise<ProfileView | undefined>;
   /** Aperçu pendant la saisie (onboarding, écran Profil) : erreurs et garde-fous. */
   readonly previewProfile: (profile: Profile) => ProfilePreview;
+  /**
+   * Enregistre le profil. L'objectif est normalisé (`normalizeGoal`) : « perdre en douceur »
+   * redevient « rééquilibrer » pour un profil protégé ; `view.profile` donne la valeur retenue.
+   */
   readonly saveProfile: (profile: Profile) => Promise<SaveProfileResult>;
 }
 
@@ -102,10 +106,12 @@ export function createProfileUseCases(ports: AppPorts, serial: SerialRunner): Pr
         : { issues, health: toHealthSummary(assessEnergy(profile)) };
     },
 
-    saveProfile: (profile) =>
+    saveProfile: (input) =>
       serial(async () => {
-        const issues = validateProfile(profile);
+        const issues = validateProfile(input);
         if (issues.length > 0) return { status: 'invalid', issues };
+        // Garde-fous : un profil protégé ne garde jamais l'objectif « perdre en douceur ».
+        const profile = normalizeGoal(input);
         const [previous, settings] = await Promise.all([
           ports.profiles.get(),
           ports.settings.get(),

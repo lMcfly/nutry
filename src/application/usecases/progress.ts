@@ -1,6 +1,7 @@
 import { isWeightTrackingEnabledByDefault } from '@domain/profile';
 import { computeTrend, recordProgress, summarizeProgress } from '@domain/progress';
 import type { EntryCheck, ProgressEntry, ProgressSummary, TrendPoint } from '@domain/progress';
+import { startOfWeek } from '@domain/shared';
 import type { IsoDate } from '@domain/shared';
 import { isWeightTrackingEnabled } from '@domain/userdata';
 import type { AppPorts, SerialRunner } from './context';
@@ -20,6 +21,8 @@ export interface ProgressView {
   readonly weightTrend: readonly TrendPoint[];
   readonly waistTrend: readonly TrendPoint[];
   readonly weightTracking: WeightTrackingStatus;
+  /** Mesure de la semaine calendaire en cours (jour local du port Clock), s'il y en a une. */
+  readonly thisWeekEntry?: ProgressEntry;
 }
 
 export interface LogProgressInput {
@@ -64,9 +67,13 @@ export function createProgressUseCases(ports: AppPorts, serial: SerialRunner): P
       const entries = (weightTracking.enabled ? stored : stored.map(withoutWeight)).filter(
         (e) => e.weightKg !== undefined || e.waistCm !== undefined,
       );
+      const today = ports.clock.today();
+      const thisWeek = startOfWeek(today);
+      const thisWeekEntry = entries.find((e) => startOfWeek(e.date) === thisWeek);
       return {
         entries,
-        summary: summarizeProgress(entries, ports.clock.today()),
+        ...(thisWeekEntry ? { thisWeekEntry } : {}),
+        summary: summarizeProgress(entries, today),
         weightTrend: weightTracking.enabled ? computeTrend(entries, 'weightKg') : [],
         waistTrend: computeTrend(entries, 'waistCm'),
         weightTracking,

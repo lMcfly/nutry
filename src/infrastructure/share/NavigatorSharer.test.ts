@@ -28,8 +28,11 @@ describe('NavigatorSharer', () => {
     const share = vi.fn().mockRejectedValue(abortError());
     const writeText = vi.fn();
     const sharer = new NavigatorSharer({ share, clipboard: { writeText } });
-    await expect(sharer.share('x')).resolves.toBe('failed');
+    await expect(sharer.share('x')).resolves.toBe('cancelled');
     expect(writeText).not.toHaveBeenCalled();
+    // DOMException (navigateur) : reconnue par son nom.
+    const domAbort = vi.fn().mockRejectedValue(new DOMException('annulé', 'AbortError'));
+    await expect(new NavigatorSharer({ share: domAbort }).share('x')).resolves.toBe('cancelled');
   });
 
   it('échoue proprement sans aucune capacité', async () => {

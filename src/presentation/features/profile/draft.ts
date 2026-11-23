@@ -188,13 +188,6 @@ export function draftFromProfile(profile: Profile): ProfileDraft {
   };
 }
 
-/** Objectif « perdre » non autorisé (profil protégé) : on revient à « rééquilibrer ». */
-export function withAllowedGoal(profile: Profile, lossAllowed: boolean): Profile {
-  return !lossAllowed && profile.goal === 'perdre-en-douceur'
-    ? { ...profile, goal: 'reequilibrer' }
-    : profile;
-}
-
 /** Message expliquant pourquoi « perdre en douceur » est grisé. */
 export function lossBlockedReason(health: HealthSummary): string | undefined {
   if (health.lossAllowed) return undefined;

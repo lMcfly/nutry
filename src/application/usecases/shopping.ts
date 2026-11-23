@@ -43,7 +43,10 @@ export interface ShoppingUseCases {
   }) => Promise<ShoppingResult>;
   readonly removeShoppingItem: (id: string) => Promise<ShoppingResult>;
   readonly uncheckAllShoppingItems: () => Promise<ShoppingResult>;
-  /** Partage les articles restant à acheter (Web Share, sinon presse-papiers). */
+  /**
+   * Partage les articles restant à acheter (Web Share, sinon presse-papiers).
+   * `cancelled` si la personne ferme la feuille de partage : rien à afficher.
+   */
   readonly shareShoppingList: () => Promise<ShareResult>;
 }
 

@@ -7,7 +7,6 @@ import type { RatingReason } from '@domain/preferences';
 import type { ActivityLevel, Goal, Sex } from '@domain/profile';
 import type { QuizCategory } from '@domain/quiz';
 import type { Aisle, Allergen, Diet, Level, ProteinType } from '@domain/recipe';
-import type { Season } from '@domain/season';
 import type { ShoppingSectionKey } from '@domain/shopping';
 import type { Theme } from '@domain/userdata';
 
@@ -189,12 +188,9 @@ export const THEME_LABELS: Readonly<Record<Theme, string>> = {
   dark: 'Sombre',
 };
 
-export const SEASON_LABELS: Readonly<Record<Season, string>> = {
-  printemps: 'Printemps',
-  ete: 'Été',
-  automne: 'Automne',
-  hiver: 'Hiver',
-};
+/** Citation de la source des valeurs nutritionnelles (Confidentialité, détail recette). */
+export const CIQUAL_CITATION =
+  'Anses. 2025. Table de composition nutritionnelle des aliments Ciqual';
 
 /** Durées proposées par repas (minutes). */
 export const TIME_OPTIONS = [15, 20, 30, 45, 60, 90] as const;

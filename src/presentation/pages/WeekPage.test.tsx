@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { Recipe } from '@domain/recipe';
 import { FIXTURE_RECIPES } from '@domain/testing/fixtures';
-import { WeekPage } from './WeekPage';
+import { DISLIKED_TOAST, REPLACE_NOW_LABEL, WeekPage } from './WeekPage';
 import { TEST_PROFILE, renderScreen } from '../testing/renderApp';
 
 async function firstMeal() {
@@ -76,6 +76,29 @@ describe('<WeekPage />', () => {
     expect(plan?.meals.map((m) => m.recipeId)).not.toContain(disliked);
   });
 
+  it('👎 « pas aimé » : un toast propose de remplacer le plat tout de suite', async () => {
+    const { user } = renderScreen(<WeekPage />);
+    const meal = await firstMeal();
+    await user.click(within(meal).getByRole('button', { name: 'Pas pour moi' }));
+    await user.click(await within(meal).findByRole('radio', { name: 'Pas aimé le goût' }));
+    expect(await screen.findByText(DISLIKED_TOAST)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: REPLACE_NOW_LABEL }));
+    const sheet = await screen.findByRole('dialog', { name: 'Remplacer ce repas' });
+    expect(within(sheet).getByText(/Lundi/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: REPLACE_NOW_LABEL })).toBeNull();
+  });
+
+  it('👎 « trop long » : pas de proposition de remplacement immédiat', async () => {
+    const { user, ports } = renderScreen(<WeekPage />);
+    const meal = await firstMeal();
+    await user.click(within(meal).getByRole('button', { name: 'Pas pour moi' }));
+    await user.click(await within(meal).findByRole('radio', { name: /Trop long/ }));
+    await waitFor(() => {
+      expect([...ports.state.ratings.values()][0]?.reason).toBe('trop-long');
+    });
+    expect(screen.queryByRole('button', { name: REPLACE_NOW_LABEL })).toBeNull();
+  });
+
   it('👍 puis re-clic retire l’avis', async () => {
     const { user, ports } = renderScreen(<WeekPage />);
     const meal = await firstMeal();
@@ -100,7 +123,14 @@ describe('<WeekPage />', () => {
       profile: { ...TEST_PROFILE, batchCooking: true },
     });
     await firstMeal();
-    expect(screen.getByRole('heading', { name: /Batch cooking du dimanche/ })).toBeVisible();
+    const batch = screen.getByRole('region', { name: /Cuisiner en avance le dimanche/ });
+    expect(batch).toBeVisible();
+    // Préparations groupées par famille, chacune avec ses repas.
+    expect(within(batch).getAllByRole('heading', { level: 3 }).length).toBeGreaterThan(0);
+    expect(
+      within(batch).getAllByText(/^pour (lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche) – /)
+        .length,
+    ).toBeGreaterThan(0);
     const pills = screen.queryAllByRole('button', { name: /Restes du/ });
     if (pills.length > 0 && pills[0]) {
       await user.click(pills[0]);

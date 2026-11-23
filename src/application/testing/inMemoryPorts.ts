@@ -7,6 +7,8 @@ import type {
   BackupValidator,
   Cipher,
   Clock,
+  DeviceStorage,
+  DeviceStorageScope,
   EncryptedPayload,
   FileSaver,
   FileToSave,
@@ -331,6 +333,24 @@ export class FakeBackupValidator implements BackupValidator {
   }
 }
 
+/** Stockage d'appareil en mémoire (thème mis en cache, drapeaux de session). */
+export class InMemoryDeviceStorage implements DeviceStorage {
+  readonly values: Record<DeviceStorageScope, Map<string, string>> = {
+    local: new Map(),
+    session: new Map(),
+  };
+  get(scope: DeviceStorageScope, key: string) {
+    return this.values[scope].get(key);
+  }
+  set(scope: DeviceStorageScope, key: string, value: string) {
+    this.values[scope].set(key, value);
+  }
+  clear() {
+    this.values.local.clear();
+    this.values.session.clear();
+  }
+}
+
 export interface InMemoryPorts extends AppPorts {
   readonly clock: FixedClock;
   readonly recipes: InMemoryRecipeRepository;
@@ -338,6 +358,7 @@ export interface InMemoryPorts extends AppPorts {
   readonly sharer: RecordingSharer;
   readonly fileSaver: RecordingFileSaver;
   readonly persistence: FakePersistence;
+  readonly device: InMemoryDeviceStorage;
   /** Données « en base », inspectables par les tests. */
   readonly state: InMemoryState;
 }
@@ -372,5 +393,6 @@ export function createInMemoryPorts(
     backupValidator: new FakeBackupValidator(),
     persistence: new FakePersistence(options.grantPersistence),
     fileSaver: new RecordingFileSaver(),
+    device: new InMemoryDeviceStorage(),
   };
 }

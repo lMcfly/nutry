@@ -8,6 +8,7 @@ import {
   computeUserPortionFactor,
   isWeightTrackingEnabledByDefault,
   lowBmiThreshold,
+  normalizeGoal,
 } from './index';
 
 const loss = (overrides: Parameters<typeof makeProfile>[0]) =>
@@ -128,5 +129,20 @@ describe('suivi du poids par défaut', () => {
     expect(assessEnergy(makeProfile()).weightTrackingEnabledByDefault).toBe(true);
     // Pas d'âge minimum bloquant : un profil de 12 ans reste évaluable.
     expect(() => assessEnergy(makeProfile({ age: 12, heightCm: 150, weightKg: 40 }))).not.toThrow();
+  });
+});
+
+describe('normalizeGoal', () => {
+  it('remet « perdre en douceur » à « rééquilibrer » si la perte n’est pas autorisée', () => {
+    const minor = makeProfile({ age: 16, goal: 'perdre-en-douceur' });
+    expect(normalizeGoal(minor).goal).toBe('reequilibrer');
+    expect(normalizeGoal(minor, { perteAutorisee: false }).goal).toBe('reequilibrer');
+  });
+
+  it('garde l’objectif si la perte est autorisée ou si un autre objectif est choisi', () => {
+    const adult = makeProfile({ goal: 'perdre-en-douceur' });
+    expect(normalizeGoal(adult)).toBe(adult);
+    const minor = makeProfile({ age: 16, goal: 'maintenir' });
+    expect(normalizeGoal(minor)).toBe(minor);
   });
 });

@@ -1,8 +1,8 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { MEDICAL_DISCLAIMER } from '@domain/profile';
-import { ProfilePage } from './ProfilePage';
-import { TEST_PROFILE, renderScreen } from '../testing/renderApp';
+import { ProfilePage, SAVE_FAILED_MESSAGE } from './ProfilePage';
+import { TEST_PROFILE, createTestUseCases, renderScreen } from '../testing/renderApp';
 
 describe('<ProfilePage />', () => {
   it('affiche le bandeau médical, modifie et enregistre les réponses', async () => {
@@ -46,5 +46,51 @@ describe('<ProfilePage />', () => {
     const details = summary.closest('details');
     expect(details).not.toHaveAttribute('open');
     expect(within(details as HTMLElement).getByText('IMC')).toBeInTheDocument();
+  });
+
+  it('chargement : bandeau médical déjà là, place réservée, pas encore de « Mes données »', () => {
+    const { ports, useCases } = createTestUseCases({ profile: TEST_PROFILE });
+    const pending = { ...useCases, getProfile: () => new Promise<never>(() => undefined) };
+    renderScreen(<ProfilePage />, { existing: { ports, useCases: pending } });
+    expect(screen.getByText(MEDICAL_DISCLAIMER)).toBeVisible();
+    expect(screen.getByTestId('profile-skeleton')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /Mes données/ })).toBeNull();
+  });
+
+  it('erreur de chargement : bandeau médical, message doux et « Mes données »', async () => {
+    const { ports, useCases } = createTestUseCases({ profile: TEST_PROFILE });
+    const failing = { ...useCases, getProfile: () => Promise.reject(new Error('base')) };
+    renderScreen(<ProfilePage />, { existing: { ports, useCases: failing } });
+    expect(await screen.findByText(/Ton profil n’a pas pu être chargé/)).toBeVisible();
+    expect(screen.getByText(MEDICAL_DISCLAIMER)).toBeVisible();
+    expect(screen.getByRole('heading', { name: /Mes données/ })).toBeVisible();
+    expect(screen.queryByTestId('profile-skeleton')).toBeNull();
+  });
+
+  it('un enregistrement raté affiche un message, sans planter', async () => {
+    const { ports, useCases } = createTestUseCases({ profile: TEST_PROFILE });
+    const failing = { ...useCases, saveProfile: () => Promise.reject(new Error('quota')) };
+    const { user } = renderScreen(<ProfilePage />, { existing: { ports, useCases: failing } });
+    await user.click(await screen.findByText(/Goûts/, { selector: 'summary' }));
+    const dislikes = screen.getByRole('group', { name: /Je n’aime pas/ });
+    await user.click(within(dislikes).getByRole('checkbox', { name: /Champignons/ }));
+    await user.click(screen.getByRole('button', { name: 'Enregistrer mes réponses' }));
+    expect(await screen.findByText(SAVE_FAILED_MESSAGE)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Enregistrer mes réponses' })).toBeEnabled();
+  });
+
+  it('l’objectif retenu par l’application remplace « perdre » pour un profil protégé', async () => {
+    const { user, ports } = renderScreen(<ProfilePage />, {
+      profile: { ...TEST_PROFILE, age: 16, goal: 'perdre-en-douceur' },
+    });
+    await user.click(await screen.findByText(/Goûts/, { selector: 'summary' }));
+    const dislikes = screen.getByRole('group', { name: /Je n’aime pas/ });
+    await user.click(within(dislikes).getByRole('checkbox', { name: /Champignons/ }));
+    await user.click(screen.getByRole('button', { name: 'Enregistrer mes réponses' }));
+    await waitFor(() => {
+      expect(ports.state.profile?.goal).toBe('reequilibrer');
+    });
+    await user.click(screen.getByText(/Objectif, régime/, { selector: 'summary' }));
+    expect(screen.getByRole('radio', { name: /Rééquilibrer/ })).toBeChecked();
   });
 });

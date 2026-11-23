@@ -27,6 +27,14 @@ describe('liste de courses', () => {
     expect(ports.sharer.shared).toEqual([]);
   });
 
+  it('relaie un partage annulé sans le transformer en échec', async () => {
+    const ports = createInMemoryPorts({ recipes: FIXTURE_RECIPES, shareResult: 'cancelled' });
+    const uc = createUseCases(ports);
+    await uc.saveProfile(makeProfile());
+    await expect(uc.shareShoppingList()).resolves.toBe('cancelled');
+    expect(ports.sharer.shared).toHaveLength(1);
+  });
+
   it('est construite depuis le menu de la semaine (généré au besoin)', async () => {
     const { uc, ports } = await setup();
     const view = ready(await uc.getShoppingList());

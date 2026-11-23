@@ -134,12 +134,65 @@ describe('menu de la semaine', () => {
     const gauges = await uc.getWeekBalance();
     expect(gauges.map((g) => g.key)).toEqual(['vegetables', 'legumes', 'fish', 'wholeGrains']);
     const preps = await uc.getBatchCookingPlan();
-    expect(preps.every((p) => p.recipe.tags.includes('batch'))).toBe(true);
+    expect(preps.length).toBeGreaterThan(0);
+    for (const group of preps) {
+      expect(group.tasks.length).toBeGreaterThan(0);
+      for (const task of group.tasks) expect(task.mealLabels.length).toBeGreaterThan(0);
+    }
   });
 
   it('pas de préparation du dimanche sans l’option', async () => {
     const { uc } = await setup(makeProfile({ batchCooking: false }));
     await expect(uc.getBatchCookingPlan()).resolves.toEqual([]);
+  });
+
+  it('getRecipeView : quantités pour le foyer, restes compris, et repas du menu', async () => {
+    const { uc } = await setup(makeProfile({ householdSize: 3 }));
+    const view = ready(await uc.getCurrentPlan());
+    const cooked = view.plan.meals.find(
+      (m) => !m.isLeftover && view.plan.meals.some((l) => l.leftoverOf === m.id),
+    );
+    if (!cooked) throw new Error('un plat à restes est attendu dans le menu');
+    const recipe = view.recipes[cooked.recipeId];
+    if (!recipe) throw new Error('recette attendue');
+
+    const detail = await uc.getRecipeView(recipe.id);
+    expect(detail).toMatchObject({
+      recipe,
+      householdSize: 3,
+      batches: 2,
+      totalMinutes: recipe.prepMinutes + recipe.cookMinutes,
+      meal: { weekStart: view.plan.weekStart, mealId: cooked.id, liked: false },
+    });
+    expect(detail?.ingredients).toHaveLength(recipe.ingredients.length);
+    expect(detail?.ingredients.every((l) => l.amount !== '' && l.label !== '')).toBe(true);
+
+    await uc.rateMeal({ weekStart: view.plan.weekStart, mealId: cooked.id, verdict: 'up' });
+    expect((await uc.getRecipeView(recipe.id))?.meal?.liked).toBe(true);
+  });
+
+  it('getRecipeView : recette hors menu ou sans profil, quantités d’une personne', async () => {
+    const { uc } = await setup();
+    const view = ready(await uc.getCurrentPlan());
+    const outside = FIXTURE_RECIPES.find((r) => view.recipes[r.id] === undefined);
+    if (!outside) throw new Error('fixture hors menu attendue');
+    const detail = await uc.getRecipeView(outside.id);
+    expect(detail).toMatchObject({ householdSize: 1, batches: 1 });
+    expect(detail?.meal).toBeUndefined();
+    await expect(uc.getRecipeView('inconnue')).resolves.toBeUndefined();
+
+    const anonymous = await setup(null);
+    const bread = {
+      ...outside,
+      id: 'avec-pain',
+      tags: [...outside.tags, 'accompagner-pain' as const],
+    };
+    anonymous.ports.recipes.recipes = [...FIXTURE_RECIPES, bread];
+    const noProfile = await anonymous.uc.getRecipeView(outside.id);
+    expect(noProfile).toMatchObject({ householdSize: 1, batches: 1, suggestsBread: false });
+    expect(noProfile?.meal).toBeUndefined();
+    await expect(anonymous.uc.getRecipeView('inconnue')).resolves.toBeUndefined();
+    expect((await anonymous.uc.getRecipeView(bread.id))?.suggestsBread).toBe(true);
   });
 
   it('garde l’historique des menus, du plus récent au plus ancien', async () => {

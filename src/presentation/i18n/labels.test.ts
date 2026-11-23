@@ -4,7 +4,6 @@ import { RATING_REASONS } from '@domain/preferences';
 import { ACTIVITY_LEVELS, GOALS, SEXES } from '@domain/profile';
 import { QUIZ_CATEGORIES } from '@domain/quiz';
 import { AISLES, ALLERGENS, DIETS, LEVELS, PROTEIN_TYPES } from '@domain/recipe';
-import { SEASONS } from '@domain/season';
 import { SHOPPING_SECTIONS } from '@domain/shopping';
 import { THEMES } from '@domain/userdata';
 import * as labels from './labels';
@@ -32,7 +31,6 @@ const CASES: readonly (readonly [string, readonly string[], Readonly<Record<stri
   ['jours', DAY_INDEXES.map(String), labels.DAY_LABELS],
   ['catégories du quiz', QUIZ_CATEGORIES, labels.QUIZ_CATEGORY_LABELS],
   ['thèmes', THEMES, labels.THEME_LABELS],
-  ['saisons', SEASONS, labels.SEASON_LABELS],
 ];
 
 describe('libellés français', () => {

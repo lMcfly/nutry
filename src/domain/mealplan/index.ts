@@ -22,7 +22,14 @@ export type { GeneratePlanInput } from './generate';
 export { applyReplacement, replaceMeal } from './replace';
 export type { ReplaceMealInput } from './replace';
 export { explainMeal, joinFr } from './explain';
-export { buildBatchCookingPlan } from './batch';
-export type { BatchPrep } from './batch';
+export {
+  BATCH_PREP_KINDS,
+  BATCH_PREP_TEXTS,
+  COOK_AHEAD_TERMS,
+  FIRM_VEGETABLE_TERMS,
+  buildBatchCookingPlan,
+  sauceToPrepare,
+} from './batch';
+export type { BatchPrepGroup, BatchPrepKind, BatchPrepTask } from './batch';
 export { BALANCE_TARGETS, computeWeekBalance } from './balance';
 export type { BalanceGauge, BalanceGaugeKey } from './balance';

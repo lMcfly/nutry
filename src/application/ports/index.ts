@@ -1,6 +1,7 @@
 export type { BackupParseResult, BackupValidator } from './BackupValidator';
 export type { Cipher, EncryptedPayload } from './Cipher';
 export type { Clock } from './Clock';
+export type { DeviceStorage, DeviceStorageScope } from './DeviceStorage';
 export type { FileSaver, FileToSave } from './FileSaver';
 export type { PlanRepository } from './PlanRepository';
 export type { ProfileRepository } from './ProfileRepository';

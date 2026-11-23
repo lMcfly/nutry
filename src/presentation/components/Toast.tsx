@@ -13,21 +13,33 @@ import styles from './Toast.module.css';
 
 export type ToastTone = 'info' | 'success' | 'error';
 
+/** Action proposée dans un toast (ex. « Remplacer ce plat maintenant »). */
+export interface ToastAction {
+  readonly label: string;
+  readonly onClick: () => void;
+}
+
 interface ToastMessage {
   readonly id: number;
   readonly text: string;
   readonly tone: ToastTone;
+  readonly action?: ToastAction;
 }
 
 interface ToastApi {
-  /** Affiche un message bref et l'annonce aux lecteurs d'écran (aria-live). */
-  readonly show: (text: string, tone?: ToastTone) => void;
+  /**
+   * Affiche un message bref et l'annonce aux lecteurs d'écran (aria-live). Avec une
+   * action, le toast reste plus longtemps (`TOAST_ACTION_DURATION`) et se ferme au clic.
+   */
+  readonly show: (text: string, tone?: ToastTone, action?: ToastAction) => void;
 }
 
 const ToastContext = createContext<ToastApi | null>(null);
 
 /** Durée d'affichage d'un toast (ms). */
 export const TOAST_DURATION = 4000;
+/** Durée d'un toast avec action : le temps de lire et d'atteindre le bouton. */
+export const TOAST_ACTION_DURATION = 12000;
 
 export function ToastProvider({ children }: { readonly children: ReactNode }) {
   const [toasts, setToasts] = useState<readonly ToastMessage[]>([]);
@@ -41,15 +53,28 @@ export function ToastProvider({ children }: { readonly children: ReactNode }) {
     };
   }, []);
 
-  const show = useCallback((text: string, tone: ToastTone = 'info') => {
-    const id = nextId.current++;
-    setToasts((current) => [...current.slice(-2), { id, text, tone }]);
-    const timer = setTimeout(() => {
-      timers.current.delete(timer);
-      setToasts((current) => current.filter((t) => t.id !== id));
-    }, TOAST_DURATION);
-    timers.current.add(timer);
+  const dismiss = useCallback((id: number) => {
+    setToasts((current) => current.filter((t) => t.id !== id));
   }, []);
+
+  const show = useCallback(
+    (text: string, tone: ToastTone = 'info', action?: ToastAction) => {
+      const id = nextId.current++;
+      setToasts((current) => [
+        ...current.slice(-2),
+        { id, text, tone, ...(action ? { action } : {}) },
+      ]);
+      const timer = setTimeout(
+        () => {
+          timers.current.delete(timer);
+          dismiss(id);
+        },
+        action ? TOAST_ACTION_DURATION : TOAST_DURATION,
+      );
+      timers.current.add(timer);
+    },
+    [dismiss],
+  );
 
   const api = useMemo(() => ({ show }), [show]);
 
@@ -58,11 +83,30 @@ export function ToastProvider({ children }: { readonly children: ReactNode }) {
       {children}
       {createPortal(
         <div className={styles.region} role="status" aria-live="polite" data-live-region="">
-          {toasts.map((toast) => (
-            <p key={toast.id} className={`${styles.toast} ${styles[toast.tone]}`}>
-              {toast.text}
-            </p>
-          ))}
+          {toasts.map((toast) =>
+            toast.action ? (
+              <div
+                key={toast.id}
+                className={`${styles.toast} ${styles[toast.tone]} ${styles.withAction}`}
+              >
+                <p>{toast.text}</p>
+                <button
+                  type="button"
+                  className={styles.action}
+                  onClick={() => {
+                    dismiss(toast.id);
+                    toast.action?.onClick();
+                  }}
+                >
+                  {toast.action.label}
+                </button>
+              </div>
+            ) : (
+              <p key={toast.id} className={`${styles.toast} ${styles[toast.tone]}`}>
+                {toast.text}
+              </p>
+            ),
+          )}
         </div>,
         document.body,
       )}
