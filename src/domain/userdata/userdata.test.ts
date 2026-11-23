@@ -79,7 +79,12 @@ describe('réglages', () => {
 describe('isBackupReminderDue', () => {
   const today = '2026-11-23';
   const due = (settings: Partial<typeof DEFAULT_SETTINGS>, hasProfile = true) =>
-    isBackupReminderDue({ hasProfile, settings: { ...DEFAULT_SETTINGS, ...settings }, today });
+    isBackupReminderDue({
+      hasProfile,
+      settings: { ...DEFAULT_SETTINGS, ...settings },
+      today,
+      localDay: (instant) => instant.slice(0, 10),
+    });
 
   it('jamais sans profil ni date de référence', () => {
     expect(due({ profileCreatedAt: '2026-01-01T10:00:00.000Z' }, false)).toBe(false);

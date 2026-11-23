@@ -12,6 +12,10 @@ export class SystemClock implements Clock {
   today(): IsoDate {
     return localIsoDate(this.now());
   }
+
+  dayOf(instant: Date): IsoDate {
+    return localIsoDate(instant);
+  }
 }
 
 /** Jour calendaire local d'un instant, au format `AAAA-MM-JJ`. */

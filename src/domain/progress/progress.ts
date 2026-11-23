@@ -3,15 +3,15 @@ import type { IsoDate } from '../shared';
 import type { ProgressEntry, ProgressMetric } from './progress.types';
 
 export type EntryCheck =
-  | { readonly status: 'nouvelle' }
-  | { readonly status: 'correction' }
-  | { readonly status: 'refusee'; readonly message: string; readonly nextAllowedDate: IsoDate }
+  | { readonly status: 'created' }
+  /** Le point d'étape de la semaine existait : complété ou corrigé champ par champ. */
+  | { readonly status: 'updated' }
   | { readonly status: 'invalide'; readonly message: string };
 
 /**
- * Règle « une fois par semaine » : une mesure par semaine calendaire (lundi → dimanche),
- * plus lisible pour l'utilisateur qu'un délai glissant de 7 jours (« rendez-vous lundi »).
- * Une nouvelle saisie à la même date corrige la précédente.
+ * Règle « une fois par semaine » : un point d'étape par semaine calendaire (lundi →
+ * dimanche), plus lisible qu'un délai glissant de 7 jours. Une nouvelle saisie dans une
+ * semaine déjà suivie ne crée pas de 2e mesure : elle complète ou corrige celle-ci.
  */
 export function checkProgressEntry(
   entries: readonly ProgressEntry[],
@@ -25,31 +25,57 @@ export function checkProgressEntry(
   if (daysBetween(today, entry.date) > 0) {
     return { status: 'invalide', message: 'Cette date n’est pas encore arrivée.' };
   }
-  if (entries.some((e) => e.date === entry.date)) return { status: 'correction' };
-  const week = startOfWeek(entry.date);
-  if (entries.some((e) => startOfWeek(e.date) === week)) {
-    return {
-      status: 'refusee',
-      message:
-        'Tu as déjà fait le point cette semaine. Rendez-vous lundi prochain, sans pression !',
-      nextAllowedDate: addDays(week, 7),
-    };
-  }
-  return { status: 'nouvelle' };
+  return sameWeek(entries, entry.date) ? { status: 'updated' } : { status: 'created' };
 }
 
-/** Enregistre la mesure si elle est acceptée ; renvoie les mesures triées par date. */
+/** Mesure la plus récente de la semaine de `date`, s'il y en a une. */
+function sameWeek(entries: readonly ProgressEntry[], date: IsoDate): ProgressEntry | undefined {
+  const week = startOfWeek(date);
+  return entries
+    .filter((e) => startOfWeek(e.date) === week)
+    .reduce<ProgressEntry | undefined>((a, e) => (a && a.date >= e.date ? a : e), undefined);
+}
+
+export interface RecordedProgress {
+  readonly check: EntryCheck;
+  /** Mesures triées par date (inchangées si la saisie est invalide). */
+  readonly entries: readonly ProgressEntry[];
+  /** Mesure à enregistrer (fusionnée avec celle de la semaine le cas échéant). */
+  readonly saved?: ProgressEntry;
+  /** Date de la mesure remplacée, si elle diffère de `saved.date` (à supprimer). */
+  readonly replacedDate?: IsoDate;
+}
+
+/**
+ * Enregistre la saisie. Dans une semaine déjà suivie, FUSION champ par champ : les champs
+ * saisis remplacent les anciens, les autres sont conservés ; la mesure garde la date la
+ * plus récente des deux.
+ */
 export function recordProgress(
   entries: readonly ProgressEntry[],
   entry: ProgressEntry,
   today: IsoDate,
-): { readonly check: EntryCheck; readonly entries: readonly ProgressEntry[] } {
+): RecordedProgress {
   const check = checkProgressEntry(entries, entry, today);
-  if (check.status === 'refusee' || check.status === 'invalide') return { check, entries };
-  const next = [...entries.filter((e) => e.date !== entry.date), entry].sort((a, b) =>
+  if (check.status === 'invalide') return { check, entries };
+  const previous = sameWeek(entries, entry.date);
+  const date = previous && previous.date > entry.date ? previous.date : entry.date;
+  const weightKg = entry.weightKg ?? previous?.weightKg;
+  const waistCm = entry.waistCm ?? previous?.waistCm;
+  const saved: ProgressEntry = {
+    date,
+    ...(weightKg === undefined ? {} : { weightKg }),
+    ...(waistCm === undefined ? {} : { waistCm }),
+  };
+  const next = [...entries.filter((e) => e !== previous && e.date !== date), saved].sort((a, b) =>
     a.date.localeCompare(b.date),
   );
-  return { check, entries: next };
+  return {
+    check,
+    entries: next,
+    saved,
+    ...(previous && previous.date !== date ? { replacedDate: previous.date } : {}),
+  };
 }
 
 export interface TrendPoint {

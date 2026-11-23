@@ -313,6 +313,33 @@ describe('grossesse et allaitement : ni alcool ni cru', () => {
       ingredients: [ing('vinaigre de vin', 1, 'cuillere-soupe', 'epicerie')],
     });
     expect(checkSafetyTags(vinegar)).toEqual([]);
+    const smoothie = makeRecipe({
+      id: 'smoothie',
+      cookMinutes: 0,
+      tags: ['sans-cuisson'],
+      ingredients: [
+        ing('framboises surgelées', 150, 'g', 'surgeles'),
+        ing('banane', 1, 'piece', 'fruits-legumes'),
+      ],
+    });
+    expect(checkSafetyTags(smoothie).map((i) => [i.code, i.severity])).toEqual([
+      ['etiquette-cru-manquante', 'erreur'],
+    ]);
+    expect(checkSafetyTags({ ...smoothie, tags: ['sans-cuisson', 'cru'] })).toEqual([]);
+    // Cuits (crumble, compote) ou frais : pas d'étiquette exigée.
+    expect(checkSafetyTags({ ...smoothie, cookMinutes: 25, tags: [] })).toEqual([]);
+    const fresh = makeRecipe({
+      id: 'frais',
+      cookMinutes: 0,
+      ingredients: [ing('framboises', 150, 'g', 'fruits-legumes')],
+    });
+    expect(checkSafetyTags(fresh)).toEqual([]);
+    const byName = makeRecipe({
+      id: 'nom',
+      cookMinutes: 0,
+      ingredients: [ing('mangue surgelée', 150, 'g', 'epicerie')],
+    });
+    expect(checkSafetyTags(byName).map((i) => i.code)).toEqual(['etiquette-cru-manquante']);
     for (const name of ['marsala', 'mirin', 'xérès']) {
       const recipe = makeRecipe({ id: name, ingredients: [ing(name, 5, 'cl', 'epicerie')] });
       expect(

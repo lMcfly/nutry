@@ -17,27 +17,27 @@ const entries: ProgressEntry[] = [
 describe('une mesure par semaine', () => {
   it('accepte une nouvelle semaine', () => {
     expect(checkProgressEntry(entries, { date: '2026-11-23', weightKg: 68.5 }, TODAY)).toEqual({
-      status: 'nouvelle',
+      status: 'created',
     });
     expect(checkProgressEntry([], { date: TODAY, waistCm: 84 }, TODAY)).toEqual({
-      status: 'nouvelle',
+      status: 'created',
     });
   });
 
-  it('refuse une 2e mesure dans la même semaine (lundi → dimanche)', () => {
-    const check = checkProgressEntry(entries, { date: '2026-11-22', weightKg: 69 }, TODAY);
-    expect(check).toMatchObject({ status: 'refusee', nextAllowedDate: '2026-11-23' });
-    if (check.status === 'refusee') expect(check.message).not.toMatch(/trop|interdit|erreur/i);
-    // Le lundi suivant est accepté même 1 jour après un dimanche.
+  it('une 2e saisie dans la même semaine (lundi → dimanche) met à jour', () => {
+    expect(checkProgressEntry(entries, { date: '2026-11-22', weightKg: 69 }, TODAY)).toEqual({
+      status: 'updated',
+    });
+    // Le lundi suivant ouvre une nouvelle semaine, même 1 jour après un dimanche.
     const sunday = [{ date: '2026-11-22', weightKg: 69 }];
     expect(checkProgressEntry(sunday, { date: '2026-11-23', weightKg: 69 }, TODAY).status).toBe(
-      'nouvelle',
+      'created',
     );
   });
 
   it('autorise la correction d’une mesure à la même date', () => {
     expect(checkProgressEntry(entries, { date: '2026-11-16', weightKg: 68.8 }, TODAY)).toEqual({
-      status: 'correction',
+      status: 'updated',
     });
   });
 
@@ -50,15 +50,28 @@ describe('une mesure par semaine', () => {
     expect(checkProgressEntry(entries, entry, TODAY).status).toBe('invalide');
   });
 
-  it('enregistre, remplace ou ignore selon la règle, en gardant l’ordre chronologique', () => {
+  it('enregistre ou fusionne selon la semaine, en gardant l’ordre chronologique', () => {
     const added = recordProgress(entries, { date: '2026-11-02', weightKg: 71 }, TODAY);
+    expect(added.check.status).toBe('created');
     expect(added.entries.map((e) => e.date)).toEqual(['2026-11-02', '2026-11-09', '2026-11-16']);
     const corrected = recordProgress(entries, { date: '2026-11-16', weightKg: 68 }, TODAY);
     expect(corrected.entries.at(-1)?.weightKg).toBe(68);
     expect(corrected.entries).toHaveLength(2);
-    const refused = recordProgress(entries, { date: '2026-11-17', weightKg: 68 }, TODAY);
-    expect(refused.entries).toBe(entries);
-    expect(refused.check.status).toBe('refusee');
+    expect(corrected.replacedDate).toBeUndefined();
+    // Même semaine, autre jour : fusion champ par champ, date la plus récente.
+    const merged = recordProgress(entries, { date: '2026-11-11', waistCm: 84 }, TODAY);
+    expect(merged.check.status).toBe('updated');
+    expect(merged.saved).toEqual({ date: '2026-11-11', weightKg: 70, waistCm: 84 });
+    expect(merged.replacedDate).toBe('2026-11-09');
+    expect(merged.entries.map((e) => e.date)).toEqual(['2026-11-11', '2026-11-16']);
+    // Saisie antérieure dans la semaine : la date la plus récente est gardée.
+    const thursday = [{ date: '2026-11-12', weightKg: 70 }];
+    const earlier = recordProgress(thursday, { date: '2026-11-10', waistCm: 84 }, TODAY);
+    expect(earlier.saved).toEqual({ date: '2026-11-12', weightKg: 70, waistCm: 84 });
+    expect(earlier.replacedDate).toBeUndefined();
+    const invalid = recordProgress(entries, { date: '2026-11-17' }, TODAY);
+    expect(invalid.entries).toBe(entries);
+    expect(invalid.saved).toBeUndefined();
   });
 });
 

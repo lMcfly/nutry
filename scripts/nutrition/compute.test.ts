@@ -124,6 +124,22 @@ describe('fonctions de calcul', () => {
     expect(roundGrams(0.1 + 0.2)).toBe(0.3);
   });
 
+  it('applique la dilution d’un produit allégé (le reste est de l’eau)', () => {
+    const r = recipe([{ name: 'riz allégé', quantity: 150, unit: 'g', aisle: 'epicerie' }]);
+    const plain = computeNutritionPerServing(
+      recipe([{ name: 'riz', quantity: 75, unit: 'g', aisle: 'epicerie' }]),
+      map,
+      table,
+    );
+    expect(
+      computeNutritionPerServing(
+        r,
+        { ...map, 'riz allégé': { ciqualCode: '1', dilution: 0.5 } },
+        table,
+      ),
+    ).toEqual(plain);
+  });
+
   it('signale ingrédient non mappé, code inconnu, fiche incomplète et unité sans conversion', () => {
     const r = recipe([
       { name: 'inconnu', quantity: 1, unit: 'g', aisle: 'epicerie' },

@@ -99,8 +99,10 @@ qu'aucun 👍 plus récent n'existe : contrainte souple, assouplie juste après 
   jamais réduit ; le reste → facteur de la personne. Les autres membres du foyer comptent pour 1.
 - Équilibre de la semaine (sans calories) : légumes **différents** / 10, repas avec légumineuses
   / 2, repas de poisson ou fruits de mer / 2, repas avec céréale complète / 7.
-- Progrès : une mesure par semaine **calendaire** (lundi → dimanche), correction possible à la
-  même date ; tendance par lissage exponentiel (α = 0,4).
+- Progrès : une mesure par semaine **calendaire** (lundi → dimanche). Une nouvelle saisie dans
+  une semaine déjà suivie la complète ou la corrige champ par champ (`updated`, sinon
+  `created`) ; les champs non ressaisis, poids masqué compris, sont conservés et la mesure
+  garde la date la plus récente. Tendance par lissage exponentiel (α = 0,4).
 - Performance : `tokenize` et `findProduce` sont mémoïsés (cache borné, sans effet observable) ;
   un menu se génère en ~2 ms sur 25 recettes.
 

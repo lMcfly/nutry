@@ -1,6 +1,6 @@
 # ADR 0008 — Règles de contenu : allergènes, régimes et grossesse
 
-- Statut : proposé (à valider par l'utilisateur et, idéalement, par un·e diététicien·ne)
+- Statut : accepté (validé par l'utilisateur ; validation par un·e diététicien·ne souhaitable)
 - Date : 2026-11-23
 
 ## Contexte
@@ -47,8 +47,9 @@ gluten.
   sauf si le nom précise « végétarien » ou « sans présure animale ». Les autres fromages
   (mozzarella, feta, chèvre frais, emmental, paneer, fromage blanc…) existent couramment avec un
   coagulant microbien : ils restent acceptés, avec l'étiquette à vérifier. Le contrôle est
-  `checkDietConsistency` (erreur `regime-ingredient`). Conséquence : le risotto au parmesan
-  n'est plus végétarien (il reste flexitarien).
+  `checkDietConsistency` (erreur `regime-ingredient`). Le risotto utilise donc un « fromage à
+  pâte dure végétarien » (type grana à coagulant non animal, fiche Ciqual du parmesan) et reste
+  végétarien.
 - **Sans gluten** : l'avoine non certifiée, les tortillas de maïs et galettes de sarrasin du
   commerce sont comptées avec gluten.
 - **Sans lactose** : strict, aucun allergène lait (fromages affinés compris).
@@ -58,20 +59,36 @@ gluten.
 Étiquette `cru` obligatoire pour : poisson ou fruits de mer crus ou marinés (tartare, ceviche),
 poisson fumé ou mariné à froid (saumon fumé, gravlax), œuf au jaune coulant (coque, poché,
 miroir), viande crue ou saignante, charcuterie crue, foie gras, fromage au lait cru **à pâte
-molle ou persillée**, graines germées crues.
+molle ou persillée**, graines germées crues, **fruits surgelés consommés sans cuisson**
+(hépatite A, norovirus : overnight oats, smoothie bowl). Ce dernier cas est contrôlé par
+`checkSafetyTags` (erreur `etiquette-cru-manquante` : fruit surgelé, par son nom ou son rayon,
+dans une recette sans cuisson ou de temps de cuisson nul).
 
 Ne déclenchent pas `cru`, conformément aux repères de l'Anses et de Santé publique France :
 fromages à **pâte pressée cuite** (parmesan, comté, emmental), fromages pasteurisés, charcuterie
 cuite (jambon blanc), graines germées cuites à cœur. Les recettes à base de poisson cru
 précisent la congélation préalable (7 jours à −18 °C) contre les parasites.
 
+### Équilibre de l'assiette
+
+- Un plat qui annonce **au moins 45 % de légumes** en apporte **au moins 200 g par personne**
+  (légumes du rayon frais ou surgelé, tomates en conserve, oignons ; hors pommes de terre,
+  patate douce, maïs, fruits, herbes et aromates).
+- Le lait de coco des recettes est **allégé** (`dilution` de 0,5 sur la fiche Ciqual du lait de
+  coco dans `data/ciqual/ingredients.json`, soit ≈ 100 kcal pour 100 g).
+- Un plat sans féculent (omelette, frittata, chakchouka, velouté) porte l'étiquette
+  `accompagner-pain` : l'UI affiche « Avec une tranche de pain complet ». Ses ingrédients ne
+  changent pas (la limite de 6 ingrédients des recettes simples reste respectée) et ses
+  valeurs nutritionnelles ne comptent pas le pain.
+
 ## Conséquences
 
 - Moins de recettes pour une personne allergique aux sulfites (6 plats de plus portent
   l'allergène) : c'est voulu, l'allergène est réellement présent dans les produits courants.
 - Les recettes qui veulent rester accessibles peuvent nommer un produit sans l'allergène
-  (« moutarde sans sulfites », « parmesan végétarien », « flocons d'avoine sans gluten »).
-- Points à faire valider par un professionnel : seuils de sulfites (la réglementation impose la
-  mention au-delà de 10 mg/kg, une cuillère de moutarde dans un plat en apporte bien moins),
-  fruits rouges surgelés consommés crus pendant la grossesse, traces (« peut contenir »)
-  non gérées.
+  (« moutarde sans sulfites », « fromage à pâte dure végétarien », « flocons d'avoine sans
+  gluten »).
+- La mention « vérifie l'étiquette » (jambon, lardons, pain) et les traces (« peut contenir »)
+  sont gérées par l'UI.
+- Point à faire valider par un professionnel : seuils de sulfites (la réglementation impose la
+  mention au-delà de 10 mg/kg, une cuillère de moutarde dans un plat en apporte bien moins).

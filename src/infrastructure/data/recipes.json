@@ -13,7 +13,7 @@
     "ingredients": [
       { "name": "quinoa", "quantity": 120, "unit": "g", "aisle": "epicerie" },
       { "name": "pois chiches cuits", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
-      { "name": "épinards frais", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "épinards frais", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
       { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
@@ -26,11 +26,11 @@
     ],
     "plateBalance": { "vegetables": 0.5, "proteins": 0.25, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 495,
-      "proteinG": 20.2,
-      "carbsG": 61.4,
-      "fatG": 14.9,
-      "fiberG": 15
+      "kcal": 512,
+      "proteinG": 21.6,
+      "carbsG": 62.9,
+      "fatG": 15.1,
+      "fiberG": 16.3
     },
     "tags": ["plat-unique"]
   },
@@ -47,7 +47,7 @@
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
       { "name": "lentilles cuites", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
-      { "name": "carottes", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "échalote", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
       { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
@@ -61,11 +61,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.35, "starches": 0.2 },
     "nutritionPerServing": {
-      "kcal": 425,
-      "proteinG": 20.1,
-      "carbsG": 41.8,
-      "fatG": 16.8,
-      "fiberG": 15.5
+      "kcal": 447,
+      "proteinG": 20.7,
+      "carbsG": 45.7,
+      "fatG": 17.2,
+      "fiberG": 17.7
     },
     "tags": ["rapide", "sans-cuisson", "plat-unique", "batch"]
   },
@@ -117,7 +117,7 @@
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
       { "name": "tofu nature", "quantity": 200, "unit": "g", "aisle": "frais" },
-      { "name": "haricots verts surgelés", "quantity": 300, "unit": "g", "aisle": "surgeles" },
+      { "name": "haricots verts surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" },
       { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
       { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
       { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
@@ -131,11 +131,11 @@
     ],
     "plateBalance": { "vegetables": 0.5, "proteins": 0.25, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 539,
-      "proteinG": 20.6,
-      "carbsG": 58,
-      "fatG": 23.2,
-      "fiberG": 5.4
+      "kcal": 555,
+      "proteinG": 21.5,
+      "carbsG": 60.3,
+      "fatG": 23.3,
+      "fiberG": 6.7
     },
     "tags": []
   },
@@ -152,7 +152,7 @@
     "seasons": ["ete", "automne"],
     "ingredients": [
       { "name": "tofu nature", "quantity": 200, "unit": "g", "aisle": "frais" },
-      { "name": "brocoli", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "brocoli", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
       { "name": "sauce soja", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
       { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
@@ -166,11 +166,11 @@
     ],
     "plateBalance": { "vegetables": 0.5, "proteins": 0.25, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 478,
-      "proteinG": 23.3,
-      "carbsG": 53.9,
-      "fatG": 16.5,
-      "fiberG": 5.3
+      "kcal": 494,
+      "proteinG": 24.7,
+      "carbsG": 55,
+      "fatG": 16.7,
+      "fiberG": 6.6
     },
     "tags": []
   },
@@ -381,7 +381,7 @@
       "fatG": 23.8,
       "fiberG": 3.1
     },
-    "tags": ["rapide"]
+    "tags": ["rapide", "accompagner-pain"]
   },
   {
     "id": "salade-pates-oeufs-tomates-cerises",
@@ -431,7 +431,7 @@
     "seasons": ["ete"],
     "ingredients": [
       { "name": "pâtes complètes", "quantity": 160, "unit": "g", "aisle": "epicerie" },
-      { "name": "courgettes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "courgettes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "chèvre frais", "quantity": 100, "unit": "g", "aisle": "frais" },
       { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
       { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
@@ -445,11 +445,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.2, "starches": 0.35 },
     "nutritionPerServing": {
-      "kcal": 477,
-      "proteinG": 17.8,
-      "carbsG": 59.1,
-      "fatG": 17,
-      "fiberG": 7.5
+      "kcal": 486,
+      "proteinG": 18.5,
+      "carbsG": 60,
+      "fatG": 17.1,
+      "fiberG": 8
     },
     "tags": ["rapide"]
   },
@@ -506,7 +506,7 @@
         "unit": "piece",
         "aisle": "boucherie-poissonnerie"
       },
-      { "name": "haricots verts surgelés", "quantity": 300, "unit": "g", "aisle": "surgeles" },
+      { "name": "haricots verts surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" },
       { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
       { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
@@ -519,11 +519,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 574,
-      "proteinG": 32.7,
-      "carbsG": 54.8,
-      "fatG": 23.4,
-      "fiberG": 5
+      "kcal": 591,
+      "proteinG": 33.6,
+      "carbsG": 57.2,
+      "fatG": 23.5,
+      "fiberG": 6.3
     },
     "tags": []
   },
@@ -694,7 +694,7 @@
         "unit": "piece",
         "aisle": "boucherie-poissonnerie"
       },
-      { "name": "haricots verts surgelés", "quantity": 300, "unit": "g", "aisle": "surgeles" },
+      { "name": "haricots verts surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" },
       { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
       { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
       { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
@@ -708,11 +708,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 464,
-      "proteinG": 29.6,
-      "carbsG": 55.8,
-      "fatG": 12.4,
-      "fiberG": 5.5
+      "kcal": 481,
+      "proteinG": 30.5,
+      "carbsG": 58.1,
+      "fatG": 12.5,
+      "fiberG": 6.8
     },
     "tags": []
   },
@@ -809,7 +809,7 @@
         "unit": "g",
         "aisle": "boucherie-poissonnerie"
       },
-      { "name": "lait de coco", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
+      { "name": "lait de coco allégé", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
       { "name": "petits pois surgelés", "quantity": 200, "unit": "g", "aisle": "surgeles" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
@@ -823,11 +823,11 @@
     ],
     "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 647,
-      "proteinG": 41.9,
-      "carbsG": 64.4,
-      "fatG": 22.2,
-      "fiberG": 8.9
+      "kcal": 548,
+      "proteinG": 41,
+      "carbsG": 62.3,
+      "fatG": 12.6,
+      "fiberG": 8.5
     },
     "tags": ["plat-unique"]
   },
@@ -849,7 +849,7 @@
         "unit": "g",
         "aisle": "boucherie-poissonnerie"
       },
-      { "name": "poireaux", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "poireaux", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
       { "name": "moutarde", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
       { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
@@ -863,11 +863,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 469,
-      "proteinG": 36.3,
-      "carbsG": 54.3,
-      "fatG": 10.6,
-      "fiberG": 3.6
+      "kcal": 485,
+      "proteinG": 37.1,
+      "carbsG": 56.6,
+      "fatG": 10.7,
+      "fiberG": 4.5
     },
     "tags": []
   },
@@ -889,7 +889,7 @@
         "unit": "g",
         "aisle": "boucherie-poissonnerie"
       },
-      { "name": "courgettes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "courgettes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
       { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
       { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
@@ -903,11 +903,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 436,
-      "proteinG": 31.6,
-      "carbsG": 55.4,
-      "fatG": 9.1,
-      "fiberG": 3.3
+      "kcal": 445,
+      "proteinG": 32.2,
+      "carbsG": 56.3,
+      "fatG": 9.2,
+      "fiberG": 3.8
     },
     "tags": ["rapide"]
   },
@@ -924,7 +924,7 @@
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
       { "name": "lentilles corail", "quantity": 250, "unit": "g", "aisle": "epicerie" },
-      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "lait de coco allégé", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
       { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
@@ -944,11 +944,11 @@
     ],
     "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 711,
-      "proteinG": 27.3,
-      "carbsG": 87.9,
-      "fatG": 24.7,
-      "fiberG": 15.6
+      "kcal": 612,
+      "proteinG": 26.3,
+      "carbsG": 85.8,
+      "fatG": 15.1,
+      "fiberG": 15.3
     },
     "tags": ["plat-unique", "batch", "restes", "monde"]
   },
@@ -968,7 +968,7 @@
       { "name": "lentilles corail", "quantity": 150, "unit": "g", "aisle": "epicerie" },
       { "name": "carottes", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
-      { "name": "lait de coco", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
+      { "name": "lait de coco allégé", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
       { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
       { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
       { "name": "eau", "quantity": 1, "unit": "l", "aisle": "epicerie" }
@@ -981,17 +981,17 @@
     ],
     "plateBalance": { "vegetables": 0.6, "proteins": 0.3, "starches": 0.1 },
     "nutritionPerServing": {
-      "kcal": 316,
-      "proteinG": 14,
-      "carbsG": 29.4,
-      "fatG": 14.1,
-      "fiberG": 9
+      "kcal": 266,
+      "proteinG": 13.5,
+      "carbsG": 28.3,
+      "fatG": 9.3,
+      "fiberG": 8.8
     },
-    "tags": ["plat-unique", "batch", "restes"]
+    "tags": ["plat-unique", "batch", "restes", "accompagner-pain"]
   },
   {
     "id": "curry-pois-chiches-patate-douce",
-    "name": "Curry de pois chiches et patate douce",
+    "name": "Curry de pois chiches, patate douce et épinards",
     "level": "medium",
     "prepMinutes": 15,
     "cookMinutes": 25,
@@ -1003,8 +1003,9 @@
     "ingredients": [
       { "name": "pois chiches cuits", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
       { "name": "patates douces", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
-      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "lait de coco allégé", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
       { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "épinards surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
       { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
@@ -1015,16 +1016,16 @@
     "steps": [
       "Épluche les patates douces et coupe-les en cubes de 2 cm.",
       "Fais revenir l'oignon, l'ail et le gingembre hachés avec les épices 3 minutes dans une cocotte, avec un fond d'eau.",
-      "Ajoute les patates douces, les tomates et le lait de coco, et laisse mijoter 20 minutes.",
+      "Ajoute les patates douces, les tomates et le lait de coco, et laisse mijoter 20 minutes. Ajoute les épinards les 5 dernières minutes.",
       "Ajoute les pois chiches égouttés 5 minutes avant la fin, sale et parsème de coriandre."
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 524,
-      "proteinG": 15.2,
-      "carbsG": 56.1,
-      "fatG": 23.7,
-      "fiberG": 15.4
+      "kcal": 458,
+      "proteinG": 16.9,
+      "carbsG": 57,
+      "fatG": 14.5,
+      "fiberG": 17.6
     },
     "tags": ["plat-unique", "batch", "restes"]
   },
@@ -1078,7 +1079,7 @@
     "seasons": ["ete", "automne"],
     "ingredients": [
       { "name": "tofu nature", "quantity": 400, "unit": "g", "aisle": "frais" },
-      { "name": "poivrons", "quantity": 3, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "poivrons", "quantity": 5, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "sauce soja", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
@@ -1093,11 +1094,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.25, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 462,
-      "proteinG": 19.7,
-      "carbsG": 51.6,
-      "fatG": 17.8,
-      "fiberG": 5.9
+      "kcal": 479,
+      "proteinG": 20.3,
+      "carbsG": 54.2,
+      "fatG": 18,
+      "fiberG": 7
     },
     "tags": ["batch"]
   },
@@ -1189,7 +1190,7 @@
     "seasons": ["ete"],
     "ingredients": [
       { "name": "oeufs", "quantity": 8, "unit": "piece", "aisle": "frais" },
-      { "name": "courgettes", "quantity": 500, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "courgettes", "quantity": 700, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "feta", "quantity": 150, "unit": "g", "aisle": "frais" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
@@ -1203,13 +1204,13 @@
     ],
     "plateBalance": { "vegetables": 0.5, "proteins": 0.5, "starches": 0 },
     "nutritionPerServing": {
-      "kcal": 326,
-      "proteinG": 21.8,
-      "carbsG": 4.3,
-      "fatG": 24,
-      "fiberG": 2.2
+      "kcal": 335,
+      "proteinG": 22.4,
+      "carbsG": 5.2,
+      "fatG": 24.2,
+      "fiberG": 2.7
     },
-    "tags": ["four", "batch", "restes"]
+    "tags": ["four", "batch", "restes", "accompagner-pain"]
   },
   {
     "id": "tortilla-pommes-de-terre-epinards",
@@ -1247,12 +1248,12 @@
   },
   {
     "id": "risotto-champignons-parmesan",
-    "name": "Risotto aux champignons et parmesan",
+    "name": "Risotto aux champignons et fromage à pâte dure",
     "level": "medium",
     "prepMinutes": 10,
     "cookMinutes": 25,
     "servings": 4,
-    "diets": ["omnivore", "flexitarien"],
+    "diets": ["omnivore", "flexitarien", "vegetarien"],
     "allergens": ["lait", "celeri", "gluten", "sulfites"],
     "mainProtein": "fromage",
     "seasons": ["printemps", "ete", "automne", "hiver"],
@@ -1262,7 +1263,7 @@
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "vin blanc sec", "quantity": 10, "unit": "cl", "aisle": "epicerie" },
       { "name": "bouillon de légumes", "quantity": 1, "unit": "l", "aisle": "epicerie" },
-      { "name": "parmesan", "quantity": 60, "unit": "g", "aisle": "frais" },
+      { "name": "fromage à pâte dure végétarien", "quantity": 60, "unit": "g", "aisle": "frais" },
       { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
       { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" }
     ],
@@ -1271,7 +1272,7 @@
       "Fais revenir l'oignon émincé dans l'huile 3 minutes, ajoute le riz et remue jusqu'à ce qu'il devienne translucide.",
       "Verse le vin blanc et laisse-le s'évaporer, puis ajoute le bouillon louche par louche pendant 18 minutes, en remuant.",
       "Fais sauter les champignons à part 6 minutes et ajoute-les au risotto.",
-      "Hors du feu, incorpore le parmesan râpé et le persil haché."
+      "Hors du feu, incorpore le fromage râpé et le persil haché."
     ],
     "plateBalance": { "vegetables": 0.35, "proteins": 0.2, "starches": 0.45 },
     "nutritionPerServing": {
@@ -1935,7 +1936,7 @@
     "ingredients": [
       { "name": "quinoa", "quantity": 240, "unit": "g", "aisle": "epicerie" },
       { "name": "patates douces", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
-      { "name": "brocoli", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "brocoli", "quantity": 800, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "graines de courge", "quantity": 60, "unit": "g", "aisle": "epicerie" },
       { "name": "tahini", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
       { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
@@ -1950,11 +1951,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.2, "starches": 0.35 },
     "nutritionPerServing": {
-      "kcal": 618,
-      "proteinG": 21.2,
-      "carbsG": 66.5,
-      "fatG": 24.8,
-      "fiberG": 14.6
+      "kcal": 633,
+      "proteinG": 22.6,
+      "carbsG": 67.6,
+      "fatG": 25,
+      "fiberG": 15.9
     },
     "tags": ["four", "plat-unique", "batch"]
   },
@@ -1973,7 +1974,7 @@
       { "name": "chou-fleur", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "carottes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "petits pois surgelés", "quantity": 200, "unit": "g", "aisle": "surgeles" },
-      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "lait de coco allégé", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
       { "name": "noix de cajou", "quantity": 80, "unit": "g", "aisle": "epicerie" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
@@ -1989,11 +1990,11 @@
     ],
     "plateBalance": { "vegetables": 0.5, "proteins": 0.2, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 647,
-      "proteinG": 16.4,
-      "carbsG": 69.5,
-      "fatG": 31.2,
-      "fiberG": 12.5
+      "kcal": 548,
+      "proteinG": 15.4,
+      "carbsG": 67.4,
+      "fatG": 21.6,
+      "fiberG": 12.1
     },
     "tags": ["plat-unique", "batch", "restes"]
   },
@@ -2016,7 +2017,7 @@
       { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
       { "name": "cumin", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
       { "name": "boulgour", "quantity": 150, "unit": "g", "aisle": "epicerie" },
-      { "name": "tomates", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "tomates", "quantity": 500, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "citron", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
@@ -2032,11 +2033,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 612,
-      "proteinG": 21.7,
-      "carbsG": 64.8,
-      "fatG": 25.6,
-      "fiberG": 15.9
+      "kcal": 620,
+      "proteinG": 22,
+      "carbsG": 66.5,
+      "fatG": 25.8,
+      "fiberG": 16.4
     },
     "tags": ["monde"]
   },
@@ -2135,7 +2136,7 @@
     "seasons": ["ete", "automne"],
     "ingredients": [
       { "name": "tofu nature", "quantity": 400, "unit": "g", "aisle": "frais" },
-      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "lait de coco allégé", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
       { "name": "citronnelle", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "gingembre frais", "quantity": 30, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
@@ -2157,11 +2158,11 @@
     ],
     "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 642,
-      "proteinG": 22,
-      "carbsG": 61.7,
-      "fatG": 32.1,
-      "fiberG": 5.9
+      "kcal": 542,
+      "proteinG": 21.1,
+      "carbsG": 59.6,
+      "fatG": 22.5,
+      "fiberG": 5.6
     },
     "tags": ["monde"]
   },
@@ -2329,7 +2330,7 @@
       "fatG": 19.5,
       "fiberG": 6.3
     },
-    "tags": ["plat-unique", "monde", "cru"]
+    "tags": ["plat-unique", "monde", "cru", "accompagner-pain"]
   },
   {
     "id": "okonomiyaki-chou",
@@ -2343,7 +2344,7 @@
     "mainProtein": "oeufs",
     "seasons": ["automne", "hiver"],
     "ingredients": [
-      { "name": "chou blanc", "quantity": 500, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "chou blanc", "quantity": 700, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "farine de blé", "quantity": 150, "unit": "g", "aisle": "epicerie" },
       { "name": "oeufs", "quantity": 4, "unit": "piece", "aisle": "frais" },
       { "name": "eau", "quantity": 15, "unit": "cl", "aisle": "epicerie" },
@@ -2363,11 +2364,11 @@
     ],
     "plateBalance": { "vegetables": 0.55, "proteins": 0.2, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 403,
-      "proteinG": 14.2,
-      "carbsG": 37.7,
-      "fatG": 20,
-      "fiberG": 7.4
+      "kcal": 421,
+      "proteinG": 14.9,
+      "carbsG": 40,
+      "fatG": 20.3,
+      "fiberG": 9.2
     },
     "tags": ["monde"]
   },
@@ -2423,7 +2424,7 @@
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
       { "name": "pâte filo", "quantity": 250, "unit": "g", "aisle": "frais" },
-      { "name": "épinards surgelés", "quantity": 800, "unit": "g", "aisle": "surgeles" },
+      { "name": "épinards surgelés", "quantity": 1200, "unit": "g", "aisle": "surgeles" },
       { "name": "feta", "quantity": 200, "unit": "g", "aisle": "frais" },
       { "name": "oeufs", "quantity": 2, "unit": "piece", "aisle": "frais" },
       { "name": "oignons nouveaux", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
@@ -2439,11 +2440,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 378,
-      "proteinG": 14.3,
-      "carbsG": 26.4,
-      "fatG": 22.4,
-      "fiberG": 5.2
+      "kcal": 400,
+      "proteinG": 16.1,
+      "carbsG": 28.4,
+      "fatG": 22.6,
+      "fiberG": 7
     },
     "tags": ["four", "batch", "restes", "monde"]
   },
@@ -2939,7 +2940,7 @@
         "unit": "g",
         "aisle": "boucherie-poissonnerie"
       },
-      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "lait de coco allégé", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
       { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
       { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
@@ -2966,11 +2967,11 @@
     ],
     "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 685,
-      "proteinG": 35.9,
-      "carbsG": 66.8,
-      "fatG": 29.1,
-      "fiberG": 7.6
+      "kcal": 586,
+      "proteinG": 34.9,
+      "carbsG": 64.6,
+      "fatG": 19.5,
+      "fiberG": 7.2
     },
     "tags": ["monde"]
   },
@@ -3128,7 +3129,7 @@
       "fatG": 10.7,
       "fiberG": 12.9
     },
-    "tags": ["petit-dejeuner", "rapide", "sans-cuisson", "batch"]
+    "tags": ["petit-dejeuner", "rapide", "sans-cuisson", "batch", "cru"]
   },
   {
     "id": "tartines-puree-cacahuete-banane",
@@ -3263,7 +3264,7 @@
       "fatG": 7.2,
       "fiberG": 12.4
     },
-    "tags": ["petit-dejeuner", "rapide", "sans-cuisson"]
+    "tags": ["petit-dejeuner", "rapide", "sans-cuisson", "cru"]
   },
   {
     "id": "pancakes-banane-avoine",
@@ -3312,7 +3313,7 @@
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
       { "name": "graines de chia", "quantity": 50, "unit": "g", "aisle": "epicerie" },
-      { "name": "lait de coco", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
+      { "name": "lait de coco allégé", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
       { "name": "eau", "quantity": 10, "unit": "cl", "aisle": "epicerie" },
       { "name": "mangue", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "sirop d'érable", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
@@ -3324,11 +3325,11 @@
     ],
     "plateBalance": { "vegetables": 0.4, "proteins": 0.2, "starches": 0.4 },
     "nutritionPerServing": {
-      "kcal": 446,
-      "proteinG": 7,
-      "carbsG": 34.4,
-      "fatG": 27.6,
-      "fiberG": 11.8
+      "kcal": 347,
+      "proteinG": 6,
+      "carbsG": 32.2,
+      "fatG": 18,
+      "fiberG": 11.4
     },
     "tags": ["petit-dejeuner", "rapide", "sans-cuisson", "batch"]
   },

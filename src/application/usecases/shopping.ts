@@ -89,7 +89,9 @@ export function createShoppingUseCases(ports: AppPorts, serial: SerialRunner): S
       ctx,
       plan,
       record,
-      reset: stored !== undefined && stored.state.checkedKeys.length > 0,
+      // Signalé seulement si des ingrédients cochés ont été décochés.
+      reset:
+        stored !== undefined && record.state.checkedKeys.length < stored.state.checkedKeys.length,
     };
   };
 

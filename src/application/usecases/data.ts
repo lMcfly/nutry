@@ -1,6 +1,11 @@
 import { validateProfile } from '@domain/profile';
 import type { IsoDateTime } from '@domain/shared';
-import { backupFileName, isBackupReminderDue, latestInstant } from '@domain/userdata';
+import {
+  DEFAULT_SETTINGS,
+  backupFileName,
+  isBackupReminderDue,
+  latestInstant,
+} from '@domain/userdata';
 import type { BackupFile, UserDataSnapshot } from '@domain/userdata';
 import type { AppPorts, SerialRunner } from './context';
 
@@ -22,7 +27,22 @@ export type ExportResult =
       readonly status: 'passphrase-too-short';
       readonly minLength: number;
       readonly message: string;
-    };
+    }
+  /** Le stockage ou le téléchargement a échoué : rien n'a changé. */
+  | { readonly status: 'failed'; readonly message: string };
+
+/** Résultat de « Tout effacer ». */
+export type WipeResult =
+  | { readonly status: 'wiped' }
+  /** Échec du stockage : rien n'a été effacé. */
+  | { readonly status: 'failed'; readonly message: string };
+
+/** Messages doux en cas d'échec technique (stockage plein ou indisponible…). */
+export const STORAGE_FAILURE_MESSAGES = {
+  export:
+    'La sauvegarde n’a pas pu être créée. Tes données sont intactes : réessaie dans un instant.',
+  wipe: 'L’effacement n’a pas abouti : rien n’a été effacé. Réessaie dans un instant.',
+} as const;
 
 export interface ImportCounts {
   readonly profile: boolean;
@@ -32,7 +52,13 @@ export interface ImportCounts {
 }
 
 export type ImportFailure =
-  'too-large' | 'invalid' | 'future-version' | 'passphrase-required' | 'wrong-passphrase';
+  | 'too-large'
+  | 'invalid'
+  | 'future-version'
+  | 'passphrase-required'
+  | 'wrong-passphrase'
+  /** Échec du stockage de l'appareil (plein, indisponible…) : données intactes. */
+  | 'failed';
 
 export type ImportResult =
   | { readonly status: 'imported'; readonly counts: ImportCounts }
@@ -52,6 +78,8 @@ export const IMPORT_MESSAGES: Readonly<Record<ImportFailure, string>> = {
   'passphrase-required': 'Cette sauvegarde est protégée : saisis sa phrase secrète.',
   'wrong-passphrase':
     'Impossible d’ouvrir la sauvegarde : la phrase secrète est incorrecte ou le fichier a été modifié.',
+  failed:
+    'L’import n’a pas pu aller au bout (stockage de l’appareil indisponible ou plein). Tes données actuelles sont intactes.',
 };
 
 export interface BackupReminder {
@@ -71,7 +99,7 @@ export interface DataUseCases {
     readonly passphrase?: string;
   }) => Promise<ImportResult>;
   /** « Tout effacer » (à confirmer côté UI). */
-  readonly wipeAllData: () => Promise<void>;
+  readonly wipeAllData: () => Promise<WipeResult>;
   /** Rappel doux de sauvegarde ; le montrer le note pour 30 jours. */
   readonly getBackupReminder: () => Promise<BackupReminder>;
 }
@@ -91,6 +119,90 @@ function parseJson(text: string): { ok: true; value: unknown } | { ok: false } {
 }
 
 export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataUseCases {
+  /** Produit et remet le fichier de sauvegarde ; lève si le stockage échoue. */
+  async function saveBackup(exportedAt: string, passphrase: string | undefined): Promise<string> {
+    const snapshot = await ports.userData.exportAll();
+    const file: BackupFile = { app: 'nutry', exportedAt, ...snapshot };
+    const json = JSON.stringify(file);
+    const encrypted = passphrase !== undefined;
+    const content = encrypted
+      ? JSON.stringify(await ports.cipher.encrypt(json, passphrase))
+      : JSON.stringify(file, null, 2);
+    const fileName = backupFileName(ports.clock.today(), encrypted);
+    await ports.fileSaver.save({
+      name: fileName,
+      mimeType: encrypted ? ENCRYPTED_MIME_TYPE : JSON_MIME_TYPE,
+      content,
+    });
+    return fileName;
+  }
+
+  async function importBackup({
+    content,
+    passphrase,
+  }: {
+    readonly content: string;
+    readonly passphrase?: string;
+  }): Promise<ImportResult> {
+    if (content.length > IMPORT_MAX_LENGTH) return failure('too-large');
+    let parsed = parseJson(content);
+    if (!parsed.ok) return failure('invalid');
+
+    const encrypted = await ports.backupValidator.parseEncrypted(parsed.value);
+    if (encrypted) {
+      if (passphrase === undefined || passphrase === '') return failure('passphrase-required');
+      let plaintext: string;
+      try {
+        plaintext = await ports.cipher.decrypt(encrypted, passphrase);
+      } catch {
+        return failure('wrong-passphrase');
+      }
+      parsed = parseJson(plaintext);
+      if (!parsed.ok) return failure('invalid');
+    }
+
+    const result = await ports.backupValidator.parseBackup(parsed.value);
+    if (!result.ok) {
+      return failure(
+        result.reason === 'version-future' ? 'future-version' : 'invalid',
+        result.errors,
+      );
+    }
+    const { snapshot } = result;
+    const profileIssues = snapshot.profile ? validateProfile(snapshot.profile) : [];
+    if (profileIssues.length > 0) {
+      return failure(
+        'invalid',
+        profileIssues.map((i) => `profile.${i.field}: ${i.message}`),
+      );
+    }
+
+    const current = await ports.settings.get();
+    const backupAt = latestInstant(snapshot.settings.lastBackupAt, result.exportedAt);
+    // Réglage propre à cet appareil : on garde celui d'ici, jamais celui du fichier.
+    const { persistenceGranted } = current;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { persistenceGranted: _otherDevice, ...importedSettings } = snapshot.settings;
+    const toImport: UserDataSnapshot = {
+      ...snapshot,
+      settings: {
+        ...importedSettings,
+        ...(backupAt === undefined ? {} : { lastBackupAt: backupAt }),
+        ...(persistenceGranted === undefined ? {} : { persistenceGranted }),
+      },
+    };
+    await ports.userData.importAll(toImport);
+    return {
+      status: 'imported',
+      counts: {
+        profile: snapshot.profile !== undefined,
+        plans: snapshot.plans.length,
+        ratings: snapshot.ratings.length,
+        progress: snapshot.progress.length,
+      },
+    };
+  }
+
   return {
     exportData: (input = {}) =>
       serial(async () => {
@@ -103,90 +215,62 @@ export function createDataUseCases(ports: AppPorts, serial: SerialRunner): DataU
           };
         }
         const exportedAt = ports.clock.now().toISOString();
-        const snapshot = await ports.userData.exportAll();
-        const file: BackupFile = { app: 'nutry', exportedAt, ...snapshot };
-        const json = JSON.stringify(file);
-        const encrypted = passphrase !== undefined;
-        const content = encrypted
-          ? JSON.stringify(await ports.cipher.encrypt(json, passphrase))
-          : JSON.stringify(file, null, 2);
-        const fileName = backupFileName(ports.clock.today(), encrypted);
-        await ports.fileSaver.save({
-          name: fileName,
-          mimeType: encrypted ? ENCRYPTED_MIME_TYPE : JSON_MIME_TYPE,
-          content,
-        });
-        const settings = await ports.settings.get();
-        await ports.settings.save({ ...settings, lastBackupAt: exportedAt });
-        return { status: 'exported', fileName, encrypted };
+        let fileName: string;
+        try {
+          fileName = await saveBackup(exportedAt, passphrase);
+        } catch {
+          return { status: 'failed', message: STORAGE_FAILURE_MESSAGES.export };
+        }
+        try {
+          const settings = await ports.settings.get();
+          await ports.settings.save({ ...settings, lastBackupAt: exportedAt });
+        } catch {
+          // Le fichier est remis : seule la date du rappel n'a pas pu être notée.
+        }
+        return { status: 'exported', fileName, encrypted: passphrase !== undefined };
       }),
 
-    importData: ({ content, passphrase }) =>
+    importData: (input) =>
       serial(async () => {
-        if (content.length > IMPORT_MAX_LENGTH) return failure('too-large');
-        let parsed = parseJson(content);
-        if (!parsed.ok) return failure('invalid');
-
-        const encrypted = await ports.backupValidator.parseEncrypted(parsed.value);
-        if (encrypted) {
-          if (passphrase === undefined || passphrase === '') return failure('passphrase-required');
-          let plaintext: string;
-          try {
-            plaintext = await ports.cipher.decrypt(encrypted, passphrase);
-          } catch {
-            return failure('wrong-passphrase');
-          }
-          parsed = parseJson(plaintext);
-          if (!parsed.ok) return failure('invalid');
+        try {
+          return await importBackup(input);
+        } catch {
+          // Stockage ou chargement du validateur : la transaction n'a rien modifié.
+          return failure('failed');
         }
-
-        const result = await ports.backupValidator.parseBackup(parsed.value);
-        if (!result.ok) {
-          return failure(
-            result.reason === 'version-future' ? 'future-version' : 'invalid',
-            result.errors,
-          );
-        }
-        const { snapshot } = result;
-        const profileIssues = snapshot.profile ? validateProfile(snapshot.profile) : [];
-        if (profileIssues.length > 0) {
-          return failure(
-            'invalid',
-            profileIssues.map((i) => `profile.${i.field}: ${i.message}`),
-          );
-        }
-
-        const current = await ports.settings.get();
-        const backupAt = latestInstant(snapshot.settings.lastBackupAt, result.exportedAt);
-        // Réglage propre à cet appareil : on garde celui d'ici.
-        const { persistenceGranted } = current;
-        const toImport: UserDataSnapshot = {
-          ...snapshot,
-          settings: {
-            ...snapshot.settings,
-            ...(backupAt === undefined ? {} : { lastBackupAt: backupAt }),
-            ...(persistenceGranted === undefined ? {} : { persistenceGranted }),
-          },
-        };
-        await ports.userData.importAll(toImport);
-        return {
-          status: 'imported',
-          counts: {
-            profile: snapshot.profile !== undefined,
-            plans: snapshot.plans.length,
-            ratings: snapshot.ratings.length,
-            progress: snapshot.progress.length,
-          },
-        };
       }),
 
-    wipeAllData: () => serial(() => ports.userData.clearAll()),
+    wipeAllData: () =>
+      serial(async (): Promise<WipeResult> => {
+        let persistenceGranted: boolean | undefined;
+        try {
+          // Réglage propre à l'appareil (le navigateur garde sa décision) : conservé, comme
+          // à l'import, pour que « tout effacer » puis réimporter rende le même état.
+          ({ persistenceGranted } = await ports.settings.get());
+          await ports.userData.clearAll();
+        } catch {
+          return { status: 'failed', message: STORAGE_FAILURE_MESSAGES.wipe };
+        }
+        if (persistenceGranted !== undefined) {
+          try {
+            await ports.settings.save({ ...DEFAULT_SETTINGS, persistenceGranted });
+          } catch {
+            // Tout est effacé ; seul ce réglage d'appareil n'a pas pu être remis.
+          }
+        }
+        return { status: 'wiped' };
+      }),
 
     getBackupReminder: () =>
       serial(async () => {
         const [profile, settings] = await Promise.all([ports.profiles.get(), ports.settings.get()]);
         const today = ports.clock.today();
-        const due = isBackupReminderDue({ hasProfile: profile !== undefined, settings, today });
+        const due = isBackupReminderDue({
+          hasProfile: profile !== undefined,
+          settings,
+          today,
+          localDay: (instant) => ports.clock.dayOf(new Date(instant)),
+        });
         if (due && settings.lastBackupReminderOn !== today) {
           await ports.settings.save({ ...settings, lastBackupReminderOn: today });
         }

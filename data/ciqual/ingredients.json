@@ -403,11 +403,13 @@
       "cuillere-soupe": 17
     }
   },
-  "lait de coco": {
+  "lait de coco allégé": {
     "ciqualCode": "18041",
     "gramsPerUnit": {
       "cl": 10
-    }
+    },
+    "dilution": 0.5,
+    "approx": "Pas de lait de coco allégé dans Ciqual : lait de coco dilué de moitié (≈ 100 kcal et 9,6 g de lipides pour 100 g, comme les produits allégés du commerce à 8-10 % de matières grasses)."
   },
   "lait demi-écrémé": {
     "ciqualCode": "19041",
@@ -573,8 +575,9 @@
       "pincee": 0.3
     }
   },
-  "parmesan": {
-    "ciqualCode": "12120"
+  "fromage à pâte dure végétarien": {
+    "ciqualCode": "12120",
+    "approx": "Fromage à pâte dure italien à coagulant non animal (type grana) : fiche Parmesan, composition équivalente."
   },
   "patates douces": {
     "ciqualCode": "4101"

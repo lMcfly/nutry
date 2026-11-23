@@ -11,21 +11,21 @@ const GUILT =
   /trop|échec|raté|dommage|attention|interdit|erreur|il faut|devrais|oubli|grossi|perdu/i;
 
 describe('QA progrès', () => {
-  it('saisie quotidienne pendant 8 semaines : exactement une mesure acceptée par semaine', () => {
+  it('saisie quotidienne pendant 8 semaines : exactement une mesure par semaine', () => {
     let entries: readonly ProgressEntry[] = [];
     const start = '2026-09-02'; // un mercredi
     for (let d = 0; d < 56; d += 1) {
       const date = addDays(start, d);
       const result = recordProgress(entries, { date, weightKg: 80 - d * 0.05 }, date);
-      if (result.check.status === 'refusee') {
-        expect(result.check.message).not.toMatch(GUILT);
-        expect(result.check.nextAllowedDate).toBe(addDays(startOfWeek(date), 7));
-      }
+      const firstOfWeek = !entries.some((e) => startOfWeek(e.date) === startOfWeek(date));
+      expect(result.check.status).toBe(firstOfWeek ? 'created' : 'updated');
       entries = result.entries;
     }
     const weeks = entries.map((e) => startOfWeek(e.date));
     expect(new Set(weeks).size).toBe(weeks.length);
     expect(entries).toHaveLength(9); // mercredi 2/09 → mardi 27/10 : 9 semaines calendaires
+    // Chaque semaine garde la dernière saisie.
+    expect(entries.at(-1)).toEqual({ date: '2026-10-27', weightKg: 80 - 55 * 0.05 });
   });
 
   it('dimanche puis lundi : deux semaines différentes, acceptées', () => {
@@ -35,7 +35,7 @@ describe('QA progrès', () => {
       { date: '2026-11-23', weightKg: 70 },
       '2026-11-23',
     );
-    expect(monday.check.status).toBe('nouvelle');
+    expect(monday.check.status).toBe('created');
     expect(monday.entries).toHaveLength(2);
   });
 
@@ -46,7 +46,7 @@ describe('QA progrès', () => {
       { date: '2026-11-23', weightKg: 69.5 },
       '2026-11-25',
     );
-    expect(fixed.check.status).toBe('correction');
+    expect(fixed.check.status).toBe('updated');
     expect(fixed.entries).toEqual([{ date: '2026-11-23', weightKg: 69.5 }]);
   });
 

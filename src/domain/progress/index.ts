@@ -6,4 +6,4 @@ export {
   recordProgress,
   summarizeProgress,
 } from './progress';
-export type { EntryCheck, ProgressSummary, TrendPoint } from './progress';
+export type { EntryCheck, ProgressSummary, RecordedProgress, TrendPoint } from './progress';

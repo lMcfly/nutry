@@ -14,7 +14,7 @@ import type { Profile } from '@domain/profile';
 import type { ProgressEntry } from '@domain/progress';
 import type { QuizState } from '@domain/quiz';
 import { AISLES, ALLERGENS, DIETS, LEVELS } from '@domain/recipe';
-import { isIsoDate } from '@domain/shared';
+import { addDays, isIsoDate } from '@domain/shared';
 import { SNAPSHOT_SCHEMA_VERSION, THEMES } from '@domain/userdata';
 import type {
   BackupFile,
@@ -51,11 +51,18 @@ const list = <T extends z.ZodTypeAny>(item: T, max: number = BACKUP_LIMITS.list)
   z.array(item).max(max);
 const num = z.number().finite();
 const isoDate = z.string().max(10).refine(isIsoDate, 'date AAAA-MM-JJ attendue');
+/**
+ * Instant ISO en UTC (`Z`) uniquement, comme `toISOString` : comparable comme une chaîne.
+ * `Date.parse` accepte le 30 février (reporté au 2 mars) : on vérifie aussi le jour.
+ */
 const isoDateTime = z
   .string()
   .max(40)
-  .regex(/^\d{4}-\d{2}-\d{2}T/, 'date et heure ISO attendues')
-  .refine((s) => !Number.isNaN(Date.parse(s)), 'date et heure ISO attendues');
+  .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?Z$/, 'instant ISO en UTC (Z) attendu')
+  .refine(
+    (s) => isIsoDate(s.slice(0, 10)) && !Number.isNaN(Date.parse(s)),
+    'date et heure ISO attendues',
+  );
 
 function unique<T>(key: (item: T) => string, label: string) {
   return (items: readonly T[], ctx: z.RefinementCtx) => {
@@ -239,6 +246,72 @@ export const backupFileSchema = z.object({
   settings: settingsSchema,
 });
 
+/** Marge tolérée après `exportedAt` (horloges et fuseaux décalés). */
+const FUTURE_MARGIN_MS = 24 * 60 * 60 * 1000;
+
+type ParsedBackup = z.infer<typeof backupFileSchema>;
+
+/**
+ * Cohérence d'ensemble : rien n'est daté après l'export (+ 1 jour), les repas d'un menu
+ * ont des identifiants uniques et une date conforme à leur jour de la semaine (le
+ * `weekStart` d'un menu est le lundi de sa semaine).
+ */
+function checkCoherence(backup: ParsedBackup, ctx: z.RefinementCtx): void {
+  // Peut s'exécuter sur des données déjà signalées invalides : ne jamais lever.
+  const limitMs = Date.parse(backup.exportedAt) + FUTURE_MARGIN_MS;
+  if (!Number.isFinite(limitMs)) return;
+  const limitDay = new Date(limitMs).toISOString().slice(0, 10);
+  const future = (path: (string | number)[]) => {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path, message: 'date postérieure à l’export' });
+  };
+  const instant = (value: string | undefined, path: (string | number)[]) => {
+    if (value !== undefined && Date.parse(value) > limitMs) future(path);
+  };
+  const day = (value: string | undefined, path: (string | number)[]) => {
+    if (value !== undefined && value > limitDay) future(path);
+  };
+
+  backup.plans.forEach((plan, p) => {
+    day(plan.weekStart, ['plans', p, 'weekStart']);
+    instant(plan.generatedAt, ['plans', p, 'generatedAt']);
+    const ids = new Set<string>();
+    plan.meals.forEach((meal, m) => {
+      if (ids.has(meal.id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['plans', p, 'meals', m, 'id'],
+          message: 'repas en double',
+        });
+      }
+      ids.add(meal.id);
+      if (isIsoDate(plan.weekStart) && meal.date !== addDays(plan.weekStart, meal.dayIndex)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['plans', p, 'meals', m, 'date'],
+          message: 'date incohérente avec le jour du menu',
+        });
+      }
+    });
+  });
+  backup.ratings.forEach((r, i) => {
+    instant(r.ratedAt, ['ratings', i, 'ratedAt']);
+    day(r.weekStart, ['ratings', i, 'weekStart']);
+  });
+  backup.progress.forEach((e, i) => {
+    day(e.date, ['progress', i, 'date']);
+  });
+  day(backup.quiz.daily?.date, ['quiz', 'daily', 'date']);
+  backup.shopping.forEach((s, i) => {
+    day(s.weekStart, ['shopping', i, 'weekStart']);
+  });
+  const { settings } = backup;
+  instant(settings.profileCreatedAt, ['settings', 'profileCreatedAt']);
+  instant(settings.lastBackupAt, ['settings', 'lastBackupAt']);
+  day(settings.lastBackupReminderOn, ['settings', 'lastBackupReminderOn']);
+}
+
+const coherentBackupSchema = backupFileSchema.superRefine(checkCoherence);
+
 export const encryptedPayloadSchema = z.object({
   v: z.literal(1),
   alg: z.literal('AES-GCM'),
@@ -343,7 +416,7 @@ export function parseBackupFile(raw: unknown): BackupParseResult {
   }
   const migrated = migrateBackup(raw);
   if (!migrated.ok) return { ok: false, reason: migrated.reason, errors: [migrated.error] };
-  const result = backupFileSchema.safeParse(migrated.raw);
+  const result = coherentBackupSchema.safeParse(migrated.raw);
   if (!result.success) {
     return { ok: false, reason: 'invalide', errors: formatIssues(result.error.issues) };
   }

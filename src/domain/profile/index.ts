@@ -35,5 +35,5 @@ export {
   scaleRecipeForHousehold,
 } from './portions';
 export type { HouseholdPortions } from './portions';
-export { validateProfile } from './validate';
+export { PROFILE_BOUNDS, validateProfile } from './validate';
 export type { ProfileField, ProfileIssue } from './validate';
