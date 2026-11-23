@@ -3,8 +3,8 @@ import quiz from './quiz.json';
 import recipes from './recipes.json';
 import { quizFileSchema, recipeSchema, recipesFileSchema } from './schemas';
 
-const formatIssues = (issues: readonly { path: (string | number)[]; message: string }[]) =>
-  issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('\n');
+const formatIssues = (issues: readonly { path: readonly PropertyKey[]; message: string }[]) =>
+  issues.map((i) => `${i.path.map(String).join('.')}: ${i.message}`).join('\n');
 
 describe('fichiers de contenu embarqués', () => {
   it('recipes.json respecte le schéma Recipe', () => {

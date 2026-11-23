@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * QA phase 4 — confidentialité : aucune API réseau dans le cœur ni dans les adaptateurs
  * (PROMPT §2 et §3.9 : « aucune donnée envoyée »). Analyse statique des sources.

@@ -33,8 +33,16 @@ export default mergeConfig(
         provider: 'v8',
         reporter: ['text', 'html', 'lcov'],
         include: ['src/domain/**/*.ts', 'src/application/**/*.ts'],
-        // Seuls les ports (interfaces pures, garanties par ESLint) et les tests sont exclus.
-        exclude: ['src/application/ports/**', '**/*.test.ts'],
+        /*
+         * Exclus : les ports (interfaces pures, garanties par ESLint), les tests et les
+         * doublures de test (fixtures, ports en mémoire), qui gonfleraient la couverture.
+         */
+        exclude: [
+          'src/application/ports/**',
+          'src/domain/testing/**',
+          'src/application/testing/**',
+          '**/*.test.ts',
+        ],
         thresholds: {
           'src/domain/**': { lines: 90, functions: 90, branches: 90, statements: 90 },
           'src/application/**': { lines: 90, functions: 90, branches: 90, statements: 90 },

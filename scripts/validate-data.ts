@@ -9,7 +9,7 @@ import { quizFileSchema, recipesFileSchema } from '../src/infrastructure/data/sc
 
 const DATA_DIR = new URL('../src/infrastructure/data/', import.meta.url);
 
-const files: readonly { name: string; schema: z.ZodTypeAny }[] = [
+const files: readonly { name: string; schema: z.ZodType }[] = [
   { name: 'recipes.json', schema: recipesFileSchema },
   { name: 'quiz.json', schema: quizFileSchema },
 ];
