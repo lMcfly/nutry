@@ -9,7 +9,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { createInMemoryPorts } from '@application/testing';
 import type { InMemoryPorts } from '@application/testing';
 import { createUseCases } from '@application/usecases';
-import type { UseCases } from '@application/usecases';
+import type { ShareResult, UseCases } from '@application/usecases';
 import type { Profile } from '@domain/profile';
 import type { QuizQuestion, QuizState } from '@domain/quiz';
 import type { Recipe } from '@domain/recipe';
@@ -51,7 +51,7 @@ export interface SetupOptions {
   readonly route?: string;
   /** Laisser la carte quiz s'afficher (masquée par défaut). */
   readonly quiz?: boolean;
-  readonly shareResult?: 'shared' | 'copied' | 'failed';
+  readonly shareResult?: ShareResult;
   readonly quizState?: QuizState;
 }
 

@@ -58,4 +58,20 @@ describe('<ShoppingPage />', () => {
     expect(await screen.findByText(/Liste copiée/)).toBeInTheDocument();
     expect(ports.sharer.shared[0]).toMatch(/Ma liste de courses Nutry/);
   });
+
+  it('partage annulé : aucun message d’erreur', async () => {
+    const { user, ports } = renderScreen(<ShoppingPage />, { shareResult: 'cancelled' });
+    await user.click(await screen.findByRole('button', { name: /Partager/ }));
+    await waitFor(() => {
+      expect(ports.sharer.shared).toHaveLength(1);
+    });
+    expect(screen.queryByText(/partage n’a pas fonctionné/)).toBeNull();
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('partage impossible : message d’erreur', async () => {
+    const { user } = renderScreen(<ShoppingPage />, { shareResult: 'failed' });
+    await user.click(await screen.findByRole('button', { name: /Partager/ }));
+    expect(await screen.findByText(/partage n’a pas fonctionné/)).toBeInTheDocument();
+  });
 });

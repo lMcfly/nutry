@@ -79,6 +79,7 @@ export function ShoppingPage() {
 
   const share = async () => {
     const result = await shareShoppingList();
+    // `shared` : la feuille de partage suffit ; `cancelled` : la personne a renoncé, rien à dire.
     if (result === 'copied') toast.show('Liste copiée : colle-la où tu veux.', 'success');
     else if (result === 'failed') toast.show('Le partage n’a pas fonctionné.', 'error');
   };

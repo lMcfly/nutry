@@ -6,7 +6,11 @@ export interface ShareCapableNavigator {
   clipboard?: { writeText(text: string): Promise<void> };
 }
 
-const isAbort = (error: unknown): boolean => error instanceof Error && error.name === 'AbortError';
+/** Annulation par la personne : `DOMException` nommée `AbortError`. */
+const isAbort = (error: unknown): boolean =>
+  typeof error === 'object' &&
+  error !== null &&
+  (error as { name?: unknown }).name === 'AbortError';
 
 /** Web Share API, avec repli sur le presse-papiers. */
 export class NavigatorSharer implements Sharer {
@@ -19,7 +23,7 @@ export class NavigatorSharer implements Sharer {
         return 'shared';
       } catch (error) {
         // L'utilisateur a fermé la feuille de partage : on ne copie pas à sa place.
-        if (isAbort(error)) return 'failed';
+        if (isAbort(error)) return 'cancelled';
       }
     }
     if (this.nav.clipboard) {

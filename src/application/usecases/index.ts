@@ -91,4 +91,5 @@ export { WEIGHT_TRACKING_DISABLED_MESSAGE } from './progress';
 export type { DailyQuizView, QuizAnswerView } from './quiz';
 export type { RateMealInput } from './ratings';
 export type { ShoppingResult, ShoppingView } from './shopping';
+export type { ShareResult } from '../ports';
 export { MANUAL_ITEM_MAX_LENGTH } from './shopping';
