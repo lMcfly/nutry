@@ -68,6 +68,7 @@ const ports: AppPorts = {
   ratings: lazyPort((r) => new r.DexieRatingRepository(r.db)),
   progress: lazyPort((r) => new r.DexieProgressRepository(r.db)),
   quizState: lazyPort((r) => new r.DexieQuizStateRepository(r.db)),
+  companion: lazyPort((r) => new r.DexieCompanionRepository(r.db)),
   shopping: lazyPort((r) => new r.DexieShoppingRepository(r.db)),
   settings: lazyPort((r) => new r.DexieSettingsRepository(r.db)),
   userData: lazyPort((r) => new r.DexieUserDataStore(r.db)),

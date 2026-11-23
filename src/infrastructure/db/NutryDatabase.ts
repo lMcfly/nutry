@@ -1,5 +1,6 @@
 import Dexie from 'dexie';
 import type { DexieOptions, Table } from 'dexie';
+import type { CompanionState } from '@domain/companion';
 import type { Profile } from '@domain/profile';
 import type { ProgressEntry } from '@domain/progress';
 import type { QuizState } from '@domain/quiz';
@@ -15,6 +16,10 @@ export interface ProfileRow {
 export interface QuizRow {
   readonly id: string;
   readonly state: QuizState;
+}
+export interface CompanionRow {
+  readonly id: string;
+  readonly state: CompanionState;
 }
 export interface SettingsRow {
   readonly id: string;
@@ -37,6 +42,7 @@ export class NutryDatabase extends Dexie {
   declare readonly ratings: Table<RatingRecord, string>;
   declare readonly progress: Table<ProgressEntry, IsoDate>;
   declare readonly quiz: Table<QuizRow, string>;
+  declare readonly companion: Table<CompanionRow, string>;
   declare readonly shopping: Table<ShoppingRecord, IsoDate>;
   declare readonly settings: Table<SettingsRow, string>;
 
@@ -61,6 +67,7 @@ export class NutryDatabase extends Dexie {
       this.quiz,
       this.shopping,
       this.settings,
+      this.companion,
     ] as Table[];
   }
 }

@@ -1,5 +1,6 @@
 import { answerQuestion, createQuizSessionId, pickNextQuestion } from '@domain/quiz';
 import type { QuizCategory, QuizQuestion, QuizState } from '@domain/quiz';
+import { recordCompanionActivity } from './companion';
 import type { ResolvedPorts, SerialRunner } from './context';
 import { DEVICE_KEYS } from './settings';
 
@@ -119,7 +120,10 @@ export function createQuizUseCases(ports: ResolvedPorts, serial: SerialRunner): 
         const question = questions.find((q) => q.id === questionId);
         if (!question) return undefined;
         const result = answerQuestion(question, state, answerIndex, sessionId);
-        if (result.state !== state) await ports.quizState.save(result.state);
+        if (result.state !== state) {
+          await ports.quizState.save(result.state);
+          await recordCompanionActivity(ports);
+        }
         return toAnswerView(
           question,
           result.state,

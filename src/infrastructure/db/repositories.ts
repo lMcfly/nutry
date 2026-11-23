@@ -1,4 +1,5 @@
 import type {
+  CompanionRepository,
   PlanRepository,
   ProfileRepository,
   ProgressRepository,
@@ -8,6 +9,8 @@ import type {
   ShoppingRepository,
   UserDataStore,
 } from '@application/ports';
+import { INITIAL_COMPANION_STATE } from '@domain/companion';
+import type { CompanionState } from '@domain/companion';
 import type { Profile } from '@domain/profile';
 import type { ProgressEntry } from '@domain/progress';
 import { INITIAL_QUIZ_STATE } from '@domain/quiz';
@@ -83,6 +86,16 @@ export class DexieQuizStateRepository implements QuizStateRepository {
   }
 }
 
+export class DexieCompanionRepository implements CompanionRepository {
+  constructor(private readonly db: NutryDatabase) {}
+  async get(): Promise<CompanionState> {
+    return (await this.db.companion.get(SINGLETON_KEY))?.state ?? INITIAL_COMPANION_STATE;
+  }
+  async save(state: CompanionState): Promise<void> {
+    await this.db.companion.put({ id: SINGLETON_KEY, state });
+  }
+}
+
 export class DexieShoppingRepository implements ShoppingRepository {
   constructor(private readonly db: NutryDatabase) {}
   get(weekStart: IsoDate): Promise<ShoppingRecord | undefined> {
@@ -110,15 +123,17 @@ export class DexieUserDataStore implements UserDataStore {
   exportAll(): Promise<UserDataSnapshot> {
     const { db } = this;
     return db.transaction('r', db.userTables, async () => {
-      const [profile, plans, ratings, progress, quiz, shopping, settings] = await Promise.all([
-        db.profile.get(SINGLETON_KEY),
-        db.plans.toArray(),
-        db.ratings.orderBy('ratedAt').toArray(),
-        db.progress.toArray(),
-        db.quiz.get(SINGLETON_KEY),
-        db.shopping.toArray(),
-        db.settings.get(SINGLETON_KEY),
-      ]);
+      const [profile, plans, ratings, progress, quiz, companion, shopping, settings] =
+        await Promise.all([
+          db.profile.get(SINGLETON_KEY),
+          db.plans.toArray(),
+          db.ratings.orderBy('ratedAt').toArray(),
+          db.progress.toArray(),
+          db.quiz.get(SINGLETON_KEY),
+          db.companion.get(SINGLETON_KEY),
+          db.shopping.toArray(),
+          db.settings.get(SINGLETON_KEY),
+        ]);
       return {
         schemaVersion: SNAPSHOT_SCHEMA_VERSION,
         ...(profile ? { profile: profile.profile } : {}),
@@ -126,6 +141,7 @@ export class DexieUserDataStore implements UserDataStore {
         ratings,
         progress,
         quiz: quiz?.state ?? INITIAL_QUIZ_STATE,
+        companion: companion?.state ?? INITIAL_COMPANION_STATE,
         shopping,
         settings: settings?.settings ?? DEFAULT_SETTINGS,
       };
@@ -142,6 +158,7 @@ export class DexieUserDataStore implements UserDataStore {
         db.ratings.bulkPut([...snapshot.ratings]),
         db.progress.bulkPut([...snapshot.progress]),
         db.quiz.put({ id: SINGLETON_KEY, state: snapshot.quiz }),
+        db.companion.put({ id: SINGLETON_KEY, state: snapshot.companion }),
         db.shopping.bulkPut([...snapshot.shopping]),
         db.settings.put({ id: SINGLETON_KEY, settings: snapshot.settings }),
       ]);

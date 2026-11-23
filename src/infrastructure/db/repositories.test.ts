@@ -11,6 +11,7 @@ import {
   RecordingSharer,
   SeededRandom,
 } from '@application/testing';
+import { INITIAL_COMPANION_STATE } from '@domain/companion';
 import { INITIAL_QUIZ_STATE } from '@domain/quiz';
 import { FIXTURE_RECIPES, makeProfile } from '@domain/testing/fixtures';
 import { DEFAULT_SETTINGS, SNAPSHOT_SCHEMA_VERSION } from '@domain/userdata';
@@ -20,6 +21,7 @@ import {
   DexiePlanRepository,
   DexieProfileRepository,
   DexieProgressRepository,
+  DexieCompanionRepository,
   DexieQuizStateRepository,
   DexieRatingRepository,
   DexieSettingsRepository,
@@ -133,6 +135,13 @@ describe('DexieUserDataStore', () => {
     ratings: [rating('r1', '2026-11-23T10:00:00.000Z')],
     progress: [{ date: '2026-11-23', weightKg: 62 }],
     quiz: { seenIds: ['q1'], streak: 3, bestStreak: 4 },
+    companion: {
+      ...INITIAL_COMPANION_STATE,
+      lastActiveDay: '2026-11-23',
+      streak: 2,
+      best: 5,
+      acknowledgedBest: 3,
+    },
     shopping: [
       { weekStart: '2026-11-23', basisKey: 'b', state: { checkedKeys: [], manualItems: [] } },
     ],
@@ -147,6 +156,7 @@ describe('DexieUserDataStore', () => {
       ratings: [],
       progress: [],
       quiz: INITIAL_QUIZ_STATE,
+      companion: INITIAL_COMPANION_STATE,
       shopping: [],
       settings: DEFAULT_SETTINGS,
     });
@@ -209,6 +219,7 @@ describe('cas d’usage branchés sur Dexie', () => {
       progress: new DexieProgressRepository(db),
       quizBank: new InMemoryQuizRepository([]),
       quizState: new DexieQuizStateRepository(db),
+      companion: new DexieCompanionRepository(db),
       shopping: new DexieShoppingRepository(db),
       settings: new DexieSettingsRepository(db),
       recipes: new InMemoryRecipeRepository(FIXTURE_RECIPES),

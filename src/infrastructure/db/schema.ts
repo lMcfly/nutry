@@ -61,4 +61,19 @@ export const DB_VERSIONS: readonly DbVersion[] = [
         });
     },
   },
+  {
+    // Compagnon Nutry : nouvelle table singleton `companion`. Les autres tables sont
+    // inchangées ; l'absence de ligne vaut « état initial » (ADR 0012).
+    version: 3,
+    stores: {
+      profile: 'id',
+      plans: 'weekStart',
+      ratings: 'id, ratedAt',
+      progress: 'date',
+      quiz: 'id',
+      shopping: 'weekStart',
+      settings: 'id',
+      companion: 'id',
+    },
+  },
 ];

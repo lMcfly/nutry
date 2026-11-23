@@ -9,6 +9,17 @@ import type {
   ScoreBreakdown,
   ScoreComponentKey,
 } from '@domain/mealplan';
+import {
+  BODY_ACCESSORY_IDS,
+  COLOR_IDS,
+  EYE_IDS,
+  FACE_ACCESSORY_IDS,
+  HEAD_ACCESSORY_IDS,
+  INITIAL_COMPANION_STATE,
+  NECK_ACCESSORY_IDS,
+  equip,
+} from '@domain/companion';
+import type { CompanionState } from '@domain/companion';
 import { RATING_REASONS } from '@domain/preferences';
 import { ACTIVITY_LEVELS, GOALS, SEXES } from '@domain/profile';
 import type { Profile } from '@domain/profile';
@@ -44,6 +55,7 @@ export const BACKUP_LIMITS = {
   ratings: 20_000,
   progress: 5_000,
   quizSeen: 10_000,
+  streak: 100_000,
   meals: 21,
 } as const;
 
@@ -208,6 +220,24 @@ const quizSchema = z.object({
     .optional(),
 });
 
+const dayCount = z.number().int().nonnegative().max(BACKUP_LIMITS.streak);
+const companionSchema = z.object({
+  look: z.object({
+    color: z.enum(COLOR_IDS),
+    eyes: z.enum(EYE_IDS),
+    accessories: z.object({
+      tete: z.enum(HEAD_ACCESSORY_IDS).optional(),
+      visage: z.enum(FACE_ACCESSORY_IDS).optional(),
+      cou: z.enum(NECK_ACCESSORY_IDS).optional(),
+      corps: z.enum(BODY_ACCESSORY_IDS).optional(),
+    }),
+  }),
+  lastActiveDay: isoDate.optional(),
+  streak: dayCount,
+  best: dayCount,
+  acknowledgedBest: dayCount,
+});
+
 const shoppingSchema = z.object({
   weekStart: isoDate,
   basisKey: text(BACKUP_LIMITS.key),
@@ -242,6 +272,7 @@ export const backupFileSchema = z.object({
     unique((p) => p.date, 'mesure'),
   ),
   quiz: quizSchema,
+  companion: companionSchema,
   shopping: list(shoppingSchema, BACKUP_LIMITS.plans).superRefine(
     unique((s) => s.weekStart, 'semaine'),
   ),
@@ -252,6 +283,26 @@ export const backupFileSchema = z.object({
 const FUTURE_MARGIN_MS = 24 * 60 * 60 * 1000;
 
 type ParsedBackup = z.infer<typeof backupFileSchema>;
+
+/**
+ * Cohérence du compagnon : la série ne dépasse pas le record, un jour actif accompagne
+ * toute série, et l'apparence ne porte que des éléments débloqués par le record.
+ */
+function checkCompanion(companion: ParsedBackup['companion'], ctx: z.RefinementCtx): void {
+  const issue = (path: string, message: string) => {
+    ctx.addIssue({ code: 'custom', path: ['companion', path], message });
+  };
+  if (companion.streak > companion.best) issue('streak', 'série supérieure au record');
+  if (companion.acknowledgedBest > companion.best) {
+    issue('acknowledgedBest', 'record célébré supérieur au record');
+  }
+  if ((companion.lastActiveDay === undefined) !== (companion.best === 0)) {
+    issue('lastActiveDay', 'jour actif incohérent avec le record');
+  }
+  if (!equip(companion as CompanionState, companion.look as CompanionState['look']).ok) {
+    issue('look', 'apparence non débloquée');
+  }
+}
 
 /**
  * Cohérence d'ensemble : rien n'est daté après l'export (+ 1 jour), les repas d'un menu
@@ -305,6 +356,8 @@ function checkCoherence(backup: ParsedBackup, ctx: z.RefinementCtx): void {
   backup.shopping.forEach((s, i) => {
     day(s.weekStart, ['shopping', i, 'weekStart']);
   });
+  checkCompanion(backup.companion, ctx);
+  day(backup.companion.lastActiveDay, ['companion', 'lastActiveDay']);
   const { settings } = backup;
   instant(settings.profileCreatedAt, ['settings', 'profileCreatedAt']);
   instant(settings.lastBackupAt, ['settings', 'lastBackupAt']);
@@ -348,6 +401,7 @@ type Checks = [
   Same<Plain<z.infer<typeof ratingSchema>>, Plain<RatingRecord>>,
   Same<Plain<z.infer<typeof progressSchema>>, Plain<ProgressEntry>>,
   Same<Plain<z.infer<typeof quizSchema>>, Plain<QuizState>>,
+  Same<Plain<z.infer<typeof companionSchema>>, Plain<CompanionState>>,
   Same<Plain<z.infer<typeof shoppingSchema>>, Plain<ShoppingRecord>>,
   Same<Plain<z.infer<typeof settingsSchema>>, Plain<UserSettings>>,
   Same<keyof z.infer<typeof backupFileSchema>, keyof BackupFile>,
@@ -372,6 +426,8 @@ export type SnapshotMigration = (raw: RawBackup) => RawBackup;
 export const SNAPSHOT_MIGRATIONS: Readonly<Record<number, SnapshotMigration>> = {
   // v1 → v2 : quiz « question du jour » (`daily`) → question à chaque ouverture (`current`).
   1: (raw) => ({ ...raw, schemaVersion: 2, quiz: migrateQuizStateToSessions(raw['quiz']) }),
+  // v2 → v3 : compagnon Nutry. Un export v2 n'en contient pas : état initial (ADR 0012).
+  2: (raw) => ({ ...raw, schemaVersion: 3, companion: INITIAL_COMPANION_STATE }),
 };
 
 const MAX_ERRORS = 5;

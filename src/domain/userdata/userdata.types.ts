@@ -1,3 +1,4 @@
+import type { CompanionState } from '../companion';
 import type { WeeklyPlan } from '../mealplan';
 import type { MealRating } from '../preferences';
 import type { Profile } from '../profile';
@@ -60,7 +61,7 @@ export interface ShoppingRecord {
 }
 
 /** Version courante du format des données exportées. */
-export const SNAPSHOT_SCHEMA_VERSION = 2;
+export const SNAPSHOT_SCHEMA_VERSION = 3;
 
 /** Toutes les données de la personne, telles qu'exportées ou importées. */
 export interface UserDataSnapshot {
@@ -70,6 +71,7 @@ export interface UserDataSnapshot {
   readonly ratings: readonly RatingRecord[];
   readonly progress: readonly ProgressEntry[];
   readonly quiz: QuizState;
+  readonly companion: CompanionState;
   readonly shopping: readonly ShoppingRecord[];
   readonly settings: UserSettings;
 }

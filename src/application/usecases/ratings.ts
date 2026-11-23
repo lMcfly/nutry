@@ -5,6 +5,7 @@ import type { Recipe } from '@domain/recipe';
 import type { IsoDate } from '@domain/shared';
 import { mealRatingId, recipeRatingId } from '@domain/userdata';
 import type { RatingRecord } from '@domain/userdata';
+import { recordCompanionActivity } from './companion';
 import { indexRecipes } from './context';
 import type { AppPorts, SerialRunner } from './context';
 
@@ -55,6 +56,7 @@ export function createRatingUseCases(ports: AppPorts, serial: SerialRunner): Rat
           mealId,
         };
         await ports.ratings.save(rating);
+        await recordCompanionActivity(ports);
         return rating;
       }),
 

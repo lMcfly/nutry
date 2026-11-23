@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { EncryptedPayload } from '@application/ports';
 import { createInMemoryPorts } from '@application/testing';
 import { createUseCases } from '@application/usecases';
+import { INITIAL_COMPANION_STATE } from '@domain/companion';
 import { FIXTURE_RECIPES, makeProfile } from '@domain/testing/fixtures';
 import { WebCryptoCipher } from '../crypto/WebCryptoCipher';
 import {
@@ -125,12 +126,99 @@ describe('schéma de sauvegarde', () => {
 
   it('limite le nombre d’erreurs rapportées', async () => {
     const backup = await realBackup();
-    const raw = { ...backup, plans: 1, ratings: 2, progress: 3, quiz: 4, shopping: 5, settings: 6 };
+    const raw = {
+      ...backup,
+      plans: 1,
+      ratings: 2,
+      progress: 3,
+      quiz: 4,
+      companion: 7,
+      shopping: 5,
+      settings: 6,
+    };
     expect(errorsOf(raw)).toHaveLength(5);
   });
 });
 
+describe('compagnon dans la sauvegarde', () => {
+  const companion = {
+    look: { color: 'aurore', eyes: 'doux', accessories: { tete: 'toque-de-chef', cou: 'echarpe' } },
+    lastActiveDay: '2026-11-20',
+    streak: 2,
+    best: 12,
+    acknowledgedBest: 7,
+  };
+
+  it('l’exporte avec son avancement et le relit à l’identique', async () => {
+    const backup = { ...(await realBackup()), companion };
+    const result = parseBackupFile(backup);
+    expect(result.ok && result.snapshot.companion).toEqual(companion);
+    // Une vraie sauvegarde (quiz répondu) porte déjà un compagnon avec un jour actif.
+    const real = parseBackupFile(await realBackup());
+    expect(real.ok && real.snapshot.companion).toMatchObject({ streak: 1, best: 1 });
+  });
+
+  it('refuse un compagnon absent, un élément inconnu ou une série impossible', async () => {
+    const backup = await realBackup();
+    const bad = (patch: Record<string, unknown>) =>
+      errorsOf({ ...backup, companion: { ...companion, ...patch } }).join('\n');
+    expect(errorsOf({ ...backup, companion: undefined }).join('\n')).toContain('companion');
+    expect(bad({ look: { ...companion.look, color: 'noir' } })).toContain('companion.look.color');
+    expect(bad({ look: { ...companion.look, accessories: { tete: 'echarpe' } } })).toContain(
+      'companion.look.accessories.tete',
+    );
+    expect(bad({ streak: 13 })).toContain('série supérieure au record');
+    expect(bad({ acknowledgedBest: 13 })).toContain('record célébré');
+    expect(bad({ best: -1 })).toContain('companion.best');
+    expect(bad({ best: 1.5 })).toContain('companion.best');
+    expect(bad({ best: 100_001, streak: 0 })).toContain('companion.best');
+    expect(bad({ lastActiveDay: undefined })).toContain('jour actif incohérent');
+    expect(bad({ best: 0, streak: 0, acknowledgedBest: 0 })).toContain('jour actif incohérent');
+    expect(bad({ lastActiveDay: '2026-13-40' })).toContain('companion.lastActiveDay');
+    expect(bad({ lastActiveDay: '2099-01-01' })).toContain('postérieure');
+  });
+
+  it('refuse une apparence non débloquée par le record', async () => {
+    const backup = await realBackup();
+    const locked = { ...companion, best: 4, streak: 2, acknowledgedBest: 0 };
+    expect(errorsOf({ ...backup, companion: locked }).join('\n')).toContain(
+      'companion.look: apparence non débloquée',
+    );
+  });
+});
+
 describe('migrations des exports', () => {
+  it('v2 → v3 : un export sans compagnon reçoit l’état initial', async () => {
+    const rest = await realBackup();
+    delete rest['companion'];
+    const v2 = { ...rest, schemaVersion: 2 };
+    const result = parseBackupFile(v2);
+    expect(result.ok && result.snapshot.schemaVersion).toBe(3);
+    expect(result.ok && result.snapshot.companion).toEqual(INITIAL_COMPANION_STATE);
+    // Une clé `companion` parasite dans un fichier v2 est écrasée, jamais reprise.
+    const stray = parseBackupFile({ ...v2, companion: { best: 99 } });
+    expect(stray.ok && stray.snapshot.companion).toEqual(INITIAL_COMPANION_STATE);
+  });
+
+  it('v1 → v3 : les deux migrations s’enchaînent', async () => {
+    const rest = await realBackup();
+    delete rest['companion'];
+    const v1 = {
+      ...rest,
+      schemaVersion: 1,
+      quiz: {
+        seenIds: [],
+        streak: 1,
+        bestStreak: 2,
+        daily: { date: '2026-11-23', questionId: 'q1' },
+      },
+    };
+    const result = parseBackupFile(v1);
+    expect(result.ok && result.snapshot.schemaVersion).toBe(3);
+    expect(result.ok && result.snapshot.companion).toEqual(INITIAL_COMPANION_STATE);
+    expect(result.ok && result.snapshot.quiz.current?.sessionId).toBe('jour-2026-11-23');
+  });
+
   it('v1 → v2 : la question du jour devient la question de la dernière session', async () => {
     const v2 = await realBackup();
     const v1 = {

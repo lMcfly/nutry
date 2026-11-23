@@ -14,6 +14,7 @@ import type { ShoppingList, ShoppingState } from '@domain/shopping';
 import type { IsoDate } from '@domain/shared';
 import { shoppingBasisKey } from '@domain/userdata';
 import type { SavedPlan, ShoppingRecord } from '@domain/userdata';
+import { recordCompanionActivity } from './companion';
 import { NO_PROFILE, loadPlanningContext } from './context';
 import type { AppPorts, NoProfile, PlanningContext, SerialRunner } from './context';
 import { ensureCurrentPlan } from './plan';
@@ -111,12 +112,19 @@ export function createShoppingUseCases(ports: AppPorts, serial: SerialRunner): S
     }),
   });
 
-  const update = (change: (state: ShoppingState) => ShoppingState): Promise<ShoppingResult> =>
+  const update = (
+    change: (state: ShoppingState) => ShoppingState,
+    /** Appelé après l'enregistrement d'un changement, toujours dans le verrou sériel. */
+    afterChange?: (before: ShoppingState, after: ShoppingState) => Promise<void>,
+  ): Promise<ShoppingResult> =>
     serial(async () => {
       const loaded = await load();
       if (!loaded) return NO_PROFILE;
       const record = { ...loaded.record, state: change(loaded.record.state) };
-      if (record.state !== loaded.record.state) await ports.shopping.save(record);
+      if (record.state !== loaded.record.state) {
+        await ports.shopping.save(record);
+        await afterChange?.(loaded.record.state, record.state);
+      }
       return toView({ ...loaded, record });
     });
 
@@ -130,7 +138,16 @@ export function createShoppingUseCases(ports: AppPorts, serial: SerialRunner): S
         return loaded ? toView(loaded) : NO_PROFILE;
       }),
 
-    toggleShoppingItem: (key) => update((state) => toggleChecked(state, key)),
+    // Seul le fait de COCHER est un geste pour la série (pas décocher).
+    toggleShoppingItem: (key) =>
+      update(
+        (state) => toggleChecked(state, key),
+        async (before, after) => {
+          if (after.checkedKeys.includes(key) && !before.checkedKeys.includes(key)) {
+            await recordCompanionActivity(ports);
+          }
+        },
+      ),
 
     addShoppingItem: ({ label, aisle }) =>
       update((state) =>

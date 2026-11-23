@@ -2,6 +2,8 @@ import { createCatalogUseCases } from './catalog';
 import type { CatalogUseCases } from './catalog';
 import { createSerialRunner, memoryDeviceStorage } from './context';
 import type { AppPorts } from './context';
+import { createCompanionUseCases } from './companion';
+import type { CompanionUseCases } from './companion';
 import { createDataUseCases } from './data';
 import type { DataUseCases } from './data';
 import { createFridgeUseCases } from './fridge';
@@ -31,7 +33,8 @@ export type UseCases = ProfileUseCases &
   ProgressUseCases &
   SettingsUseCases &
   DataUseCases &
-  CatalogUseCases;
+  CatalogUseCases &
+  CompanionUseCases;
 
 /**
  * Fabrique les cas d'usage à partir des ports (injection par paramètres, sans framework).
@@ -51,6 +54,7 @@ export function createUseCases(appPorts: AppPorts): UseCases {
     ...createSettingsUseCases(ports, serial),
     ...createDataUseCases(ports, serial),
     ...createCatalogUseCases(ports),
+    ...createCompanionUseCases(ports, serial),
   };
 }
 
@@ -70,6 +74,7 @@ export {
   PASSPHRASE_MIN_LENGTH,
   STORAGE_FAILURE_MESSAGES,
 } from './data';
+export type { CompanionView, CustomizeResult } from './companion';
 export type { FridgeResult } from './fridge';
 export type {
   MealAlternative,

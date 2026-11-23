@@ -7,6 +7,7 @@ import type {
   BackupValidator,
   Cipher,
   Clock,
+  CompanionRepository,
   DeviceStorage,
   DeviceStorageScope,
   EncryptedPayload,
@@ -28,6 +29,8 @@ import type {
   UserDataStore,
 } from '../ports';
 import type { AppPorts } from '../usecases/context';
+import { INITIAL_COMPANION_STATE } from '@domain/companion';
+import type { CompanionState } from '@domain/companion';
 import type { Profile } from '@domain/profile';
 import type { ProgressEntry } from '@domain/progress';
 import { INITIAL_QUIZ_STATE } from '@domain/quiz';
@@ -87,6 +90,7 @@ export interface InMemoryState {
   ratings: Map<string, RatingRecord>;
   progress: Map<IsoDate, ProgressEntry>;
   quiz: QuizState;
+  companion: CompanionState;
   shopping: Map<IsoDate, ShoppingRecord>;
   settings: UserSettings;
 }
@@ -97,6 +101,7 @@ export function emptyState(): InMemoryState {
     ratings: new Map(),
     progress: new Map(),
     quiz: INITIAL_QUIZ_STATE,
+    companion: INITIAL_COMPANION_STATE,
     shopping: new Map(),
     settings: DEFAULT_SETTINGS,
   };
@@ -174,6 +179,17 @@ export class InMemoryQuizStateRepository implements QuizStateRepository {
   }
 }
 
+export class InMemoryCompanionRepository implements CompanionRepository {
+  constructor(private readonly state: InMemoryState) {}
+  get() {
+    return Promise.resolve(this.state.companion);
+  }
+  save(companion: CompanionState) {
+    this.state.companion = companion;
+    return Promise.resolve();
+  }
+}
+
 export class InMemoryShoppingRepository implements ShoppingRepository {
   constructor(private readonly state: InMemoryState) {}
   get(weekStart: IsoDate) {
@@ -207,6 +223,7 @@ export class InMemoryUserDataStore implements UserDataStore {
       ratings: [...s.ratings.values()],
       progress: [...s.progress.values()],
       quiz: s.quiz,
+      companion: s.companion,
       shopping: [...s.shopping.values()],
       settings: s.settings,
     });
@@ -222,6 +239,7 @@ export class InMemoryUserDataStore implements UserDataStore {
       ratings: [],
       progress: [],
       quiz: INITIAL_QUIZ_STATE,
+      companion: INITIAL_COMPANION_STATE,
       shopping: [],
       settings: DEFAULT_SETTINGS,
     });
@@ -235,6 +253,7 @@ export class InMemoryUserDataStore implements UserDataStore {
     s.ratings = new Map(snapshot.ratings.map((r) => [r.id, r]));
     s.progress = new Map(snapshot.progress.map((p) => [p.date, p]));
     s.quiz = snapshot.quiz;
+    s.companion = snapshot.companion;
     s.shopping = new Map(snapshot.shopping.map((r) => [r.weekStart, r]));
     s.settings = snapshot.settings;
   }
@@ -384,6 +403,7 @@ export function createInMemoryPorts(
     progress: new InMemoryProgressRepository(state),
     quizBank: new InMemoryQuizRepository(options.questions ?? []),
     quizState: new InMemoryQuizStateRepository(state),
+    companion: new InMemoryCompanionRepository(state),
     shopping: new InMemoryShoppingRepository(state),
     settings: new InMemorySettingsRepository(state),
     recipes: new InMemoryRecipeRepository(options.recipes ?? []),

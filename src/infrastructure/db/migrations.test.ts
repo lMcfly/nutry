@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
+import { INITIAL_COMPANION_STATE } from '@domain/companion';
 import { makeProfile } from '@domain/testing/fixtures';
 import type { ProgressEntry } from '@domain/progress';
 import { startOfWeek } from '@domain/shared';
 import { NutryDatabase } from './NutryDatabase';
 import {
+  DexieCompanionRepository,
   DexieProfileRepository,
   DexieProgressRepository,
   DexieQuizStateRepository,
@@ -15,6 +17,7 @@ import { fakeIndexedDb } from './testing';
 
 const LATEST = DB_VERSIONS.at(-1);
 const V1 = DB_VERSIONS.slice(0, 1);
+const V2 = DB_VERSIONS.slice(0, 2);
 
 /**
  * Une future version imaginaire : nouvel index sur `progress` et donnée dérivée
@@ -35,8 +38,8 @@ const FUTURE: DbVersion = {
 };
 
 describe('migrations du schéma IndexedDB', () => {
-  it('la version 2 est la version courante', () => {
-    expect(DB_VERSIONS.map((v) => v.version)).toEqual([1, 2]);
+  it('la version 3 est la version courante', () => {
+    expect(DB_VERSIONS.map((v) => v.version)).toEqual([1, 2, 3]);
     const versions = DB_VERSIONS.map((v) => v.version);
     expect(versions).toEqual([...versions].sort((a, b) => a - b));
   });
@@ -112,7 +115,7 @@ describe('migrations du schéma IndexedDB', () => {
     });
     v1.close();
 
-    const v2 = new NutryDatabase({ ...idb, name: 'quiz' });
+    const v2 = new NutryDatabase({ ...idb, name: 'quiz', versions: V2 });
     await v2.open();
     expect(v2.verno).toBe(2);
     // Sans réponse, la question du jour redevient « non vue » ; série et record intacts.
@@ -139,7 +142,7 @@ describe('migrations du schéma IndexedDB', () => {
       },
     });
     v1.close();
-    const v2 = new NutryDatabase({ ...idb, name: 'quiz-repondu' });
+    const v2 = new NutryDatabase({ ...idb, name: 'quiz-repondu', versions: V2 });
     await expect(new DexieQuizStateRepository(v2).get()).resolves.toEqual({
       seenIds: ['q1'],
       streak: 1,
@@ -152,7 +155,7 @@ describe('migrations du schéma IndexedDB', () => {
     const empty = new NutryDatabase({ ...emptyIdb, name: 'vide', versions: V1 });
     await empty.open();
     empty.close();
-    const upgraded = new NutryDatabase({ ...emptyIdb, name: 'vide' });
+    const upgraded = new NutryDatabase({ ...emptyIdb, name: 'vide', versions: V2 });
     await upgraded.open();
     expect(upgraded.verno).toBe(2);
     await expect(new DexieQuizStateRepository(upgraded).get()).resolves.toEqual({
@@ -161,5 +164,51 @@ describe('migrations du schéma IndexedDB', () => {
       bestStreak: 0,
     });
     upgraded.close();
+  });
+
+  it('v2 → v3 : la table du compagnon apparaît, les données existantes sont conservées', async () => {
+    const idb = fakeIndexedDb();
+    const v2 = new NutryDatabase({ ...idb, name: 'compagnon', versions: V2 });
+    await new DexieProfileRepository(v2).save(makeProfile({ age: 41 }));
+    await new DexieQuizStateRepository(v2).save({ seenIds: ['q1'], streak: 2, bestStreak: 4 });
+    expect(v2.tables.map((t) => t.name)).not.toContain('companion');
+    v2.close();
+
+    const v3 = new NutryDatabase({ ...idb, name: 'compagnon' });
+    await v3.open();
+    expect(v3.verno).toBe(3);
+    expect(v3.tables.map((t) => t.name)).toContain('companion');
+    expect((await new DexieProfileRepository(v3).get())?.age).toBe(41);
+    await expect(new DexieQuizStateRepository(v3).get()).resolves.toMatchObject({ bestStreak: 4 });
+    // Pas de ligne : état initial ; puis l'état s'enregistre et se relit.
+    const companion = new DexieCompanionRepository(v3);
+    await expect(companion.get()).resolves.toEqual(INITIAL_COMPANION_STATE);
+    const state = { ...INITIAL_COMPANION_STATE, lastActiveDay: '2026-11-23', streak: 1, best: 1 };
+    await companion.save(state);
+    await expect(companion.get()).resolves.toEqual(state);
+    v3.close();
+  });
+
+  it('v1 → v3 directement : enchaîne les deux migrations', async () => {
+    const idb = fakeIndexedDb();
+    const v1 = new NutryDatabase({ ...idb, name: 'saut', versions: V1 });
+    await v1.table('quiz').put({
+      id: SINGLETON_KEY,
+      state: {
+        seenIds: [],
+        streak: 0,
+        bestStreak: 0,
+        daily: { date: '2026-11-22', questionId: 'q1' },
+      },
+    });
+    v1.close();
+    const v3 = new NutryDatabase({ ...idb, name: 'saut' });
+    await v3.open();
+    expect(v3.verno).toBe(3);
+    await expect(new DexieQuizStateRepository(v3).get()).resolves.toMatchObject({
+      current: { sessionId: 'jour-2026-11-22' },
+    });
+    await expect(new DexieCompanionRepository(v3).get()).resolves.toEqual(INITIAL_COMPANION_STATE);
+    v3.close();
   });
 });

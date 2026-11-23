@@ -2,6 +2,7 @@ import type {
   BackupValidator,
   Cipher,
   Clock,
+  CompanionRepository,
   DeviceStorage,
   FileSaver,
   PlanRepository,
@@ -35,6 +36,7 @@ export interface AppPorts {
   readonly progress: ProgressRepository;
   readonly quizBank: QuizRepository;
   readonly quizState: QuizStateRepository;
+  readonly companion: CompanionRepository;
   readonly shopping: ShoppingRepository;
   readonly settings: SettingsRepository;
   readonly recipes: RecipeRepository;

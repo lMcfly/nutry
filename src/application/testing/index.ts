@@ -3,6 +3,7 @@ export {
   FakeCipher,
   FakePersistence,
   FixedClock,
+  InMemoryCompanionRepository,
   InMemoryDeviceStorage,
   InMemoryPlanRepository,
   InMemoryProfileRepository,
