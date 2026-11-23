@@ -15,8 +15,8 @@ export interface UserSettings {
   readonly theme: Theme;
   /**
    * Choix explicite de la personne pour le suivi du poids. Absent : on suit
-   * `weightTrackingEnabledByDefault` du profil (désactivé avant 18 ans ou avec une
-   * condition de santé, ADR 0007).
+   * `weightTrackingEnabledByDefault` du profil (désactivé pour tout profil protégé :
+   * mineur, grossesse ou allaitement, condition de santé, IMC bas ; ADR 0007).
    */
   readonly weightTracking?: boolean;
   /** Fin du premier onboarding (point de départ du rappel de sauvegarde). */

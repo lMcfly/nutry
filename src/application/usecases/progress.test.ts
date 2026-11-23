@@ -60,6 +60,44 @@ describe('progrès', () => {
     expect(ports.state.progress.size).toBe(1);
   });
 
+  it('masque le poids par défaut pour tout profil protégé, aux bornes près', async () => {
+    const cases: [string, Profile, boolean][] = [
+      ['standard', makeProfile(), true],
+      ['grossesse', makeProfile({ sex: 'femme', pregnantOrBreastfeeding: true }), false],
+      ['condition de santé', makeProfile({ healthCondition: true }), false],
+      // 2 m : IMC = poids / 4.
+      ['IMC 18,49', makeProfile({ age: 40, heightCm: 200, weightKg: 73.96 }), false],
+      ['IMC 18,5', makeProfile({ age: 40, heightCm: 200, weightKg: 74 }), true],
+      ['69 ans, IMC 21,9', makeProfile({ age: 69, heightCm: 200, weightKg: 87.6 }), true],
+      ['70 ans, IMC 21,9', makeProfile({ age: 70, heightCm: 200, weightKg: 87.6 }), false],
+      ['70 ans, IMC 22', makeProfile({ age: 70, heightCm: 200, weightKg: 88 }), true],
+    ];
+    for (const [label, profile, expected] of cases) {
+      const { uc } = await setup(profile);
+      const view = await uc.getProgressSummary();
+      expect(view.weightTracking, label).toEqual({
+        enabled: expected,
+        enabledByDefault: expected,
+      });
+      expect(uc.previewProfile(profile).health?.weightTrackingEnabledByDefault, label).toBe(
+        expected,
+      );
+    }
+  });
+
+  it('le choix explicite prime sur le défaut d’un profil protégé (IMC bas senior)', async () => {
+    const { uc } = await setup(makeProfile({ age: 72, heightCm: 200, weightKg: 87.6 }));
+    await expect(uc.logProgress({ weightKg: 87.6 })).resolves.toMatchObject({
+      status: 'invalide',
+    });
+    await expect(uc.setWeightTracking(true)).resolves.toEqual({
+      enabled: true,
+      enabledByDefault: false,
+    });
+    await expect(uc.logProgress({ weightKg: 87.6 })).resolves.toEqual({ status: 'created' });
+    expect((await uc.getProgressSummary()).weightTrend).toHaveLength(1);
+  });
+
   it('masque le poids sans l’effacer quand la personne désactive son suivi', async () => {
     const { uc, ports } = await setup();
     await uc.logProgress({ weightKg: 62, waistCm: 75 });

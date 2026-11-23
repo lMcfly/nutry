@@ -117,7 +117,7 @@ function MeasuresSection({
           <p className={styles.small}>
             {tracking.enabledByDefault
               ? 'Le suivi du poids est en pause. Tu peux le réactiver quand tu veux : une mesure par semaine au plus, pour voir une tendance, jamais pour juger.'
-              : 'Pour ton profil, on préfère ne pas mettre l’accent sur le poids : l’essentiel se joue dans l’assiette et dans ton énergie. Si tu y tiens vraiment, tu peux l’activer, tout en douceur.'}
+              : 'Ici, on mise sur le plaisir de manger varié et sur ton énergie, sans suivre le poids. Si tu as envie de le suivre, tu peux l’activer quand tu veux : une mesure par semaine au plus.'}
           </p>
           <Button
             variant="secondary"

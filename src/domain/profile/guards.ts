@@ -76,7 +76,10 @@ export interface EnergyAssessment {
    * portions jamais réduites, avis « trop copieux » ignorés.
    */
   readonly protectedProfile: boolean;
-  /** Suivi du poids activé par défaut (faux avant 18 ans ou avec une condition de santé). */
+  /**
+   * Suivi du poids activé par défaut : faux pour tout profil protégé (`protectedProfile`),
+   * vrai sinon. Un choix explicite de la personne prime toujours (ADR 0007).
+   */
   readonly weightTrackingEnabledByDefault: boolean;
   readonly messages: readonly HealthMessage[];
 }
@@ -87,13 +90,12 @@ export function lowBmiThreshold(age: number): number {
 }
 
 /**
- * Suivi du poids proposé par défaut ? Non avant 18 ans ni en cas de condition de
- * santé déclarée (la personne peut toujours l'activer elle-même).
+ * Suivi du poids proposé par défaut ? Non pour tout profil protégé : moins de 18 ans,
+ * grossesse ou allaitement, condition de santé, IMC bas (18,5, ou 22 dès 70 ans). La
+ * personne peut toujours l'activer elle-même (choix explicite enregistré).
  */
-export function isWeightTrackingEnabledByDefault(
-  profile: Pick<Profile, 'age' | 'healthCondition'>,
-): boolean {
-  return profile.age >= ADULT_AGE && profile.healthCondition !== true;
+export function isWeightTrackingEnabledByDefault(profile: Profile): boolean {
+  return assessEnergy(profile).weightTrackingEnabledByDefault;
 }
 
 /**
@@ -137,7 +139,8 @@ export function assessEnergy(profile: Profile): EnergyAssessment {
     deficitApplied: targetKcal < needsKcal,
     perteAutorisee,
     protectedProfile: !perteAutorisee,
-    weightTrackingEnabledByDefault: isWeightTrackingEnabledByDefault(profile),
+    // Aligné sur `protectedProfile` : pas d'accent mis sur le poids pour ces profils.
+    weightTrackingEnabledByDefault: perteAutorisee,
     messages,
   };
 }

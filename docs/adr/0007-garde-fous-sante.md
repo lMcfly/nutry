@@ -27,9 +27,18 @@ allaitement, IMC bas, tour de taille).
    allaitement, condition de santé, IMC bas (18,5 ou 22 selon l'âge). Pour ces profils,
    `computeUserPortionFactor` renvoie un facteur **≥ 1** et ignore l'ajustement appris
    « trop copieux ». L'alerte de tour de taille seule ne rend pas un profil protégé.
-5. **Suivi du poids** : `weightTrackingEnabledByDefault` (et
-   `isWeightTrackingEnabledByDefault`) vaut `false` avant 18 ans ou avec une condition de santé,
-   `true` sinon. La personne peut l'activer elle-même. Aucun âge minimum n'est bloquant.
+5. **Suivi du poids** (révisé, validé par l'utilisateur) : `weightTrackingEnabledByDefault`
+   (et `isWeightTrackingEnabledByDefault`) vaut `false` pour **tout profil protégé**, c.-à-d.
+   exactement `!protectedProfile` : moins de 18 ans, grossesse ou allaitement, condition de
+   santé, IMC bas (< 18,5, ou < 22 à partir de 70 ans) ; `true` sinon. L'alerte de tour de
+   taille seule ne le désactive pas. La personne peut toujours l'activer elle-même : son
+   choix explicite (`UserSettings.weightTracking`) prime sur le défaut. Le poids déjà saisi
+   n'est jamais effacé, seulement masqué. La carte « Suivi du poids » de l'écran Progrès
+   reste douce et neutre pour ces profils : elle ne mentionne ni l'IMC, ni un risque, ni une
+   raison médicale (« Ici, on mise sur le plaisir de manger varié et sur ton énergie, sans
+   suivre le poids… »). Aucun âge minimum n'est bloquant. Bornes testées (domain,
+   application, composant) : IMC 18,49 / 18,5 ; 69 / 70 ans avec IMC 21,9 / 22 ; grossesse ;
+   profil standard.
 6. Les cibles des jauges d'équilibre (PNNS) et les seuils d'audit des recettes (ADR 0006) sont
    validés tels quels.
 

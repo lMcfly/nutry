@@ -119,16 +119,55 @@ describe('profil protégé et portions', () => {
   });
 });
 
-describe('suivi du poids par défaut', () => {
-  it('désactivé avant 18 ans ou avec une condition de santé, activé sinon', () => {
-    expect(isWeightTrackingEnabledByDefault({ age: 17 })).toBe(false);
-    expect(isWeightTrackingEnabledByDefault({ age: 18 })).toBe(true);
-    expect(isWeightTrackingEnabledByDefault({ age: 40, healthCondition: true })).toBe(false);
-    expect(isWeightTrackingEnabledByDefault({ age: 80, healthCondition: false })).toBe(true);
-    expect(assessEnergy(makeProfile({ age: 16 })).weightTrackingEnabledByDefault).toBe(false);
-    expect(assessEnergy(makeProfile()).weightTrackingEnabledByDefault).toBe(true);
-    // Pas d'âge minimum bloquant : un profil de 12 ans reste évaluable.
+describe('suivi du poids par défaut (aligné sur les profils protégés)', () => {
+  const tracking = (overrides: Parameters<typeof makeProfile>[0]) => {
+    const profile = makeProfile(overrides);
+    const a = assessEnergy(profile);
+    // Les deux points d'entrée disent la même chose, toujours alignés sur `protectedProfile`.
+    expect(isWeightTrackingEnabledByDefault(profile)).toBe(a.weightTrackingEnabledByDefault);
+    expect(a.weightTrackingEnabledByDefault).toBe(!a.protectedProfile);
+    return a.weightTrackingEnabledByDefault;
+  };
+
+  it('profil standard : activé', () => {
+    expect(tracking({})).toBe(true);
+  });
+
+  it('âge : désactivé à 17 ans, activé à 18', () => {
+    expect(tracking({ age: 17 })).toBe(false);
+    expect(tracking({ age: 18 })).toBe(true);
+  });
+
+  it('grossesse ou allaitement : désactivé', () => {
+    expect(tracking({ sex: 'femme', pregnantOrBreastfeeding: true })).toBe(false);
+    expect(tracking({ sex: 'femme', pregnantOrBreastfeeding: false })).toBe(true);
+  });
+
+  it('condition de santé : désactivé, même à 80 ans', () => {
+    expect(tracking({ age: 40, healthCondition: true })).toBe(false);
+    expect(tracking({ age: 80, heightCm: 170, weightKg: 70, healthCondition: true })).toBe(false);
+    expect(tracking({ age: 80, heightCm: 170, weightKg: 70, healthCondition: false })).toBe(true);
+  });
+
+  // 2 m : IMC = poids / 4.
+  it('IMC bas avant 70 ans : désactivé à 18,49, activé à 18,5', () => {
+    expect(tracking({ age: 40, heightCm: 200, weightKg: 73.96 })).toBe(false);
+    expect(tracking({ age: 40, heightCm: 200, weightKg: 74 })).toBe(true);
+  });
+
+  it('seuil senior : à 69 ans IMC 21,9 → activé ; à 70 ans IMC 21,9 → désactivé, 22 → activé', () => {
+    expect(tracking({ age: 69, heightCm: 200, weightKg: 87.6 })).toBe(true);
+    expect(tracking({ age: 70, heightCm: 200, weightKg: 87.6 })).toBe(false);
+    expect(tracking({ age: 70, heightCm: 200, weightKg: 88 })).toBe(true);
+  });
+
+  it('l’alerte de tour de taille seule ne masque pas le suivi', () => {
+    expect(tracking({ waistCm: 100 })).toBe(true);
+  });
+
+  it('aucun âge minimum bloquant : un profil de 12 ans reste évaluable', () => {
     expect(() => assessEnergy(makeProfile({ age: 12, heightCm: 150, weightKg: 40 }))).not.toThrow();
+    expect(tracking({ age: 12, heightCm: 150, weightKg: 40 })).toBe(false);
   });
 });
 

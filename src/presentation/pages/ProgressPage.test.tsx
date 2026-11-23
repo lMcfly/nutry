@@ -43,7 +43,7 @@ describe('<ProgressPage />', () => {
     const card = (await screen.findByRole('heading', { name: /Suivi du poids/ })).closest(
       'section',
     );
-    expect(card).toHaveTextContent(/on préfère ne pas mettre l’accent sur le poids/);
+    expect(card).toHaveTextContent(/on mise sur le plaisir de manger varié et sur ton énergie/);
     expect(screen.queryByLabelText('Poids')).toBeNull();
     expect(screen.getByLabelText('Tour de taille')).toBeInTheDocument();
     await user.click(
@@ -51,6 +51,44 @@ describe('<ProgressPage />', () => {
     );
     expect(await screen.findByLabelText('Poids')).toBeInTheDocument();
     expect(ports.state.settings.weightTracking).toBe(true);
+  });
+
+  it.each([
+    ['grossesse', { sex: 'femme', pregnantOrBreastfeeding: true }],
+    ['condition de santé', { healthCondition: true }],
+    // 2 m : IMC = poids / 4 → 18,49, puis 21,9 à 70 ans.
+    ['IMC bas', { age: 40, heightCm: 200, weightKg: 73.96 }],
+    ['IMC bas après 70 ans', { age: 70, heightCm: 200, weightKg: 87.6 }],
+  ] as const)(
+    'profil protégé (%s) : suivi masqué, carte douce sans jugement',
+    async (_label, overrides) => {
+      renderScreen(<ProgressPage />, { profile: { ...TEST_PROFILE, ...overrides } });
+      const card = (await screen.findByRole('heading', { name: /Suivi du poids/ })).closest(
+        'section',
+      ) as HTMLElement;
+      expect(card).toHaveTextContent(/tu peux l’activer quand tu veux/);
+      expect(card.textContent).not.toMatch(
+        /IMC|risque|maigre|insuffisan|danger|santé|médecin|en pause|y tiens vraiment/i,
+      );
+      expect(screen.queryByLabelText('Poids')).toBeNull();
+    },
+  );
+
+  it('profil standard : poids proposé, pas de carte de suivi désactivé', async () => {
+    const existing = createTestUseCases({ profile: TEST_PROFILE });
+    renderScreen(<ProgressPage />, { existing });
+    expect(await screen.findByLabelText('Poids')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /Suivi du poids/ })).toBeNull();
+  });
+
+  it('profil standard qui a mis le suivi en pause : formulation « en pause »', async () => {
+    const existing = createTestUseCases({ profile: TEST_PROFILE });
+    await existing.useCases.setWeightTracking(false);
+    renderScreen(<ProgressPage />, { existing });
+    const card = (await screen.findByRole('heading', { name: /Suivi du poids/ })).closest(
+      'section',
+    );
+    expect(card).toHaveTextContent(/Le suivi du poids est en pause/);
   });
 
   it('liste favoris et historique des menus', async () => {

@@ -9,7 +9,10 @@ import type { AppPorts, SerialRunner } from './context';
 export interface WeightTrackingStatus {
   /** Suivi du poids effectif (choix explicite, sinon défaut du profil). */
   readonly enabled: boolean;
-  /** Valeur par défaut pour ce profil (faux avant 18 ans ou avec une condition de santé). */
+  /**
+   * Valeur par défaut pour ce profil : faux pour tout profil protégé (moins de 18 ans,
+   * grossesse ou allaitement, condition de santé, IMC bas), vrai sinon.
+   */
   readonly enabledByDefault: boolean;
 }
 
@@ -33,7 +36,7 @@ export interface LogProgressInput {
 }
 
 export const WEIGHT_TRACKING_DISABLED_MESSAGE =
-  'Le suivi du poids est désactivé : tu peux le réactiver dans tes réglages si tu le souhaites.';
+  'Le suivi du poids n’est pas activé : tu peux l’activer dans ton profil si tu le souhaites.';
 
 export interface ProgressUseCases {
   readonly getProgressSummary: () => Promise<ProgressView>;
