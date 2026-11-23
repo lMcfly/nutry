@@ -1,3 +1,4 @@
+import type { IsoDate } from '../shared';
 import type { QuizCategory, QuizDifficulty } from './quiz.constants';
 
 export interface QuizQuestion {
@@ -13,14 +14,19 @@ export interface QuizQuestion {
   readonly difficulty: QuizDifficulty;
 }
 
-/**
- * PLACEHOLDER (phase 2) — état persistant du quiz.
- * À étoffer avec le cas d'usage GetDailyQuiz / AnswerQuiz.
- */
+/** Question du jour et réponse éventuelle. */
+export interface DailyQuiz {
+  readonly date: IsoDate;
+  readonly questionId: string;
+  readonly answerIndex?: number;
+}
+
+/** État persistant du quiz. */
 export interface QuizState {
-  /** Questions déjà posées depuis le dernier épuisement de la banque. */
+  /** Questions déjà posées dans le cycle en cours (remis à zéro quand la banque est épuisée). */
   readonly seenIds: readonly string[];
   /** Série courante de bonnes réponses. */
   readonly streak: number;
   readonly bestStreak: number;
+  readonly daily?: DailyQuiz;
 }
