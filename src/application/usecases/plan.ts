@@ -6,7 +6,7 @@ import {
   generateWeeklyPlan,
   replaceMeal,
 } from '@domain/mealplan';
-import type { BalanceGauge, BatchPrep, PlannedMeal, ScoreBreakdown } from '@domain/mealplan';
+import type { BalanceGauge, BatchPrepGroup, PlannedMeal, ScoreBreakdown } from '@domain/mealplan';
 import { scaleRecipeForHousehold } from '@domain/profile';
 import { isRecipeCompatible, suggestsBread, totalMinutes } from '@domain/recipe';
 import type { Recipe } from '@domain/recipe';
@@ -108,7 +108,7 @@ export interface PlanUseCases {
    */
   readonly getRecipeView: (recipeId: string) => Promise<RecipeView | undefined>;
   /** Préparations du dimanche (vide si l'option batch cooking est désactivée). */
-  readonly getBatchCookingPlan: () => Promise<readonly BatchPrep[]>;
+  readonly getBatchCookingPlan: () => Promise<readonly BatchPrepGroup[]>;
   readonly getWeekBalance: () => Promise<readonly BalanceGauge[]>;
   readonly getPlanHistory: () => Promise<PlanHistory>;
 }

@@ -134,7 +134,11 @@ describe('menu de la semaine', () => {
     const gauges = await uc.getWeekBalance();
     expect(gauges.map((g) => g.key)).toEqual(['vegetables', 'legumes', 'fish', 'wholeGrains']);
     const preps = await uc.getBatchCookingPlan();
-    expect(preps.every((p) => p.recipe.tags.includes('batch'))).toBe(true);
+    expect(preps.length).toBeGreaterThan(0);
+    for (const group of preps) {
+      expect(group.tasks.length).toBeGreaterThan(0);
+      for (const task of group.tasks) expect(task.mealLabels.length).toBeGreaterThan(0);
+    }
   });
 
   it('pas de préparation du dimanche sans l’option', async () => {

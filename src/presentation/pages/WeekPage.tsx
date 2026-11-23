@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { PlanOrigin, PlanView } from '@application/usecases';
-import type { BalanceGauge, BatchPrep, DayIndex, PlannedMeal } from '@domain/mealplan';
+import type { BalanceGauge, BatchPrepGroup, DayIndex, PlannedMeal } from '@domain/mealplan';
 import type { RatingReason, RatingVerdict } from '@domain/preferences';
 import { useDependencies } from '../app/dependencies';
 import { Button, ButtonLink } from '../components/Button';
@@ -21,7 +21,7 @@ import styles from './WeekPage.module.css';
 interface WeekData {
   readonly view: PlanView;
   readonly balance: readonly BalanceGauge[];
-  readonly batch: readonly BatchPrep[];
+  readonly batch: readonly BatchPrepGroup[];
 }
 
 const GAUGE_EMOJIS: Readonly<Record<BalanceGauge['key'], string>> = {
@@ -303,19 +303,37 @@ function WeekContent({ data, origin, busy, onReplace, onRate, onReason }: WeekCo
       {batch.length > 0 && (
         <Card as="section" tone="soft" aria-labelledby="batch-title">
           <h2 id="batch-title" className={styles.sectionTitle}>
-            <span aria-hidden="true">🥘 </span>Batch cooking du dimanche
+            <span aria-hidden="true">🥘 </span>Cuisiner en avance le dimanche
           </h2>
-          <p className={styles.sectionIntro}>À préparer d’avance pour une semaine sereine :</p>
-          <ul className={styles.batchList}>
-            {batch.map((prep) => (
-              <li key={prep.recipe.id}>
-                <ButtonLink to={`/recette/${prep.recipe.id}`} variant="ghost" small>
-                  {prep.recipe.name}
-                </ButtonLink>
-                <span className={styles.batchMeals}>pour {prep.mealLabels.join(', ')}</span>
-              </li>
-            ))}
-          </ul>
+          <p className={styles.sectionIntro}>
+            Une heure ou deux le dimanche, et les soirs de semaine vont plus vite :
+          </p>
+          {batch.map((group) => (
+            <section
+              key={group.kind}
+              className={styles.batchGroup}
+              aria-labelledby={`batch-${group.kind}`}
+            >
+              <h3 id={`batch-${group.kind}`} className={styles.batchTitle}>
+                {group.title}
+              </h3>
+              <p className={styles.batchHint}>{group.hint}</p>
+              <ul className={styles.batchList}>
+                {group.tasks.map((task) => (
+                  <li key={task.label}>
+                    {group.kind === 'plat-entier' && task.recipeIds[0] ? (
+                      <ButtonLink to={`/recette/${task.recipeIds[0]}`} variant="ghost" small>
+                        {task.label}
+                      </ButtonLink>
+                    ) : (
+                      <span className={styles.batchTask}>{task.label}</span>
+                    )}
+                    <span className={styles.batchMeals}>pour {task.mealLabels.join(', ')}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
         </Card>
       )}
 

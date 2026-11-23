@@ -100,7 +100,14 @@ describe('<WeekPage />', () => {
       profile: { ...TEST_PROFILE, batchCooking: true },
     });
     await firstMeal();
-    expect(screen.getByRole('heading', { name: /Batch cooking du dimanche/ })).toBeVisible();
+    const batch = screen.getByRole('region', { name: /Cuisiner en avance le dimanche/ });
+    expect(batch).toBeVisible();
+    // Préparations groupées par famille, chacune avec ses repas.
+    expect(within(batch).getAllByRole('heading', { level: 3 }).length).toBeGreaterThan(0);
+    expect(
+      within(batch).getAllByText(/^pour (lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche) – /)
+        .length,
+    ).toBeGreaterThan(0);
     const pills = screen.queryAllByRole('button', { name: /Restes du/ });
     if (pills.length > 0 && pills[0]) {
       await user.click(pills[0]);
