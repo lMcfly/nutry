@@ -49,6 +49,20 @@ describe('schémas Zod', () => {
     expect(recipeSchema.safeParse(invalid).success).toBe(false);
   });
 
+  it('rejette un ingrédient révélant un allergène non déclaré (cohérence domain)', () => {
+    const result = recipeSchema.safeParse({
+      ...validRecipe,
+      diets: ['omnivore', 'flexitarien', 'vegetarien'],
+      allergens: [],
+      ingredients: [
+        ...(validRecipe?.ingredients ?? []),
+        { name: 'crème fraîche', quantity: 10, unit: 'cl', aisle: 'frais' },
+      ],
+    });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues.map((i) => i.path)).toContainEqual(['allergens']);
+  });
+
   it('rejette les identifiants en double', () => {
     expect(recipesFileSchema.safeParse([validRecipe, validRecipe]).success).toBe(false);
   });

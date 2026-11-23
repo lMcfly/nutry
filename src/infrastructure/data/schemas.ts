@@ -8,6 +8,7 @@ import {
   PROTEIN_TYPES,
   RECIPE_TAGS,
   UNITS,
+  checkAllergenDeclarations,
   checkDietConsistency,
   type Recipe,
 } from '@domain/recipe';
@@ -78,6 +79,10 @@ export const recipeSchema: z.ZodType<Recipe> = z
     // Cohérence régime ↔ allergènes / protéine / ingrédients (règles du domain).
     for (const issue of checkDietConsistency(recipe)) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['diets'], message: issue.message });
+    }
+    // Un ingrédient révélant un allergène (crème → lait, sauce soja → soja + gluten…) l'impose.
+    for (const issue of checkAllergenDeclarations(recipe)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['allergens'], message: issue.message });
     }
   });
 

@@ -1,7 +1,7 @@
 [
   {
-    "id": "poelee-pois-chiches-epinards-riz-complet",
-    "name": "Poêlée de pois chiches, épinards et riz complet",
+    "id": "poelee-pois-chiches-epinards-quinoa",
+    "name": "Poêlée de pois chiches, épinards et quinoa",
     "level": "simple",
     "prepMinutes": 5,
     "cookMinutes": 15,
@@ -9,9 +9,9 @@
     "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
     "allergens": [],
     "mainProtein": "legumineuses",
-    "seasons": ["printemps", "automne", "hiver"],
+    "seasons": ["printemps", "automne"],
     "ingredients": [
-      { "name": "riz complet", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "quinoa", "quantity": 120, "unit": "g", "aisle": "epicerie" },
       { "name": "pois chiches cuits", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
       { "name": "épinards frais", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
@@ -19,13 +19,3386 @@
       { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
     ],
     "steps": [
-      "Fais cuire le riz complet selon les indications du paquet.",
-      "Fais revenir l'oignon émincé et l'ail dans l'huile d'olive 3 minutes.",
-      "Ajoute les pois chiches égouttés, puis les épinards, et laisse tomber 2 à 3 minutes.",
-      "Sers la poêlée avec le riz, une pincée de sel et un tour de poivre."
+      "Rince le quinoa et fais-le cuire 12 minutes dans deux fois son volume d'eau bouillante.",
+      "Pendant ce temps, fais revenir l'oignon émincé et l'ail haché dans l'huile d'olive 3 minutes.",
+      "Ajoute les pois chiches égouttés, puis les épinards : laisse-les tomber 2 à 3 minutes en remuant.",
+      "Sers la poêlée sur le quinoa, sale et poivre à ton goût."
     ],
     "plateBalance": { "vegetables": 0.5, "proteins": 0.25, "starches": 0.25 },
-    "nutritionPerServing": { "kcal": 520, "proteinG": 19, "carbsG": 82, "fatG": 11, "fiberG": 14 },
-    "tags": ["restes"]
+    "nutritionPerServing": {
+      "kcal": 495,
+      "proteinG": 20.2,
+      "carbsG": 61.4,
+      "fatG": 14.9,
+      "fiberG": 15
+    },
+    "tags": ["plat-unique"]
+  },
+  {
+    "id": "salade-lentilles-carottes-moutarde",
+    "name": "Salade de lentilles et carottes, vinaigrette à la moutarde",
+    "level": "simple",
+    "prepMinutes": 15,
+    "cookMinutes": 0,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["moutarde"],
+    "mainProtein": "legumineuses",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "lentilles cuites", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "carottes", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "échalote", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "moutarde", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Rince les lentilles à l'eau froide et égoutte-les bien.",
+      "Râpe les carottes, cisèle l'échalote et hache le persil.",
+      "Dans un saladier, fouette la moutarde avec l'huile d'olive, un peu de sel et de poivre.",
+      "Ajoute le reste et mélange : c'est encore meilleur après 10 minutes au frais."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.35, "starches": 0.2 },
+    "nutritionPerServing": {
+      "kcal": 425,
+      "proteinG": 20.1,
+      "carbsG": 41.8,
+      "fatG": 16.8,
+      "fiberG": 15.5
+    },
+    "tags": ["rapide", "sans-cuisson", "plat-unique", "batch"]
+  },
+  {
+    "id": "chili-sin-carne-express",
+    "name": "Chili sin carne express",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "legumineuses",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "haricots rouges cuits", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "tomates concassées", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Lance la cuisson du riz dans une grande casserole d'eau bouillante (11 minutes environ).",
+      "Fais revenir les oignons émincés dans l'huile d'olive 3 minutes, puis ajoute le cumin.",
+      "Verse les tomates et les haricots rouges rincés, et laisse mijoter 10 minutes.",
+      "Goûte, sale, poivre, et sers bien chaud avec le riz. Le reste se garde 3 jours au frais."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 446,
+      "proteinG": 17.8,
+      "carbsG": 74,
+      "fatG": 6.6,
+      "fiberG": 13.9
+    },
+    "tags": ["plat-unique", "batch", "restes"]
+  },
+  {
+    "id": "tofu-curcuma-haricots-verts-riz",
+    "name": "Tofu doré au curcuma, haricots verts et riz",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["soja"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "tofu nature", "quantity": 200, "unit": "g", "aisle": "frais" },
+      { "name": "haricots verts surgelés", "quantity": 300, "unit": "g", "aisle": "surgeles" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes dans une casserole d'eau bouillante.",
+      "Fais cuire les haricots verts 8 minutes à la vapeur ou dans l'eau bouillante.",
+      "Coupe le tofu en dés, roule-les dans le curcuma et fais-les dorer 6 minutes dans l'huile d'olive.",
+      "Ajoute l'ail haché et les haricots verts, mélange 1 minute, sale, poivre et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.5, "proteins": 0.25, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 539,
+      "proteinG": 20.6,
+      "carbsG": 58,
+      "fatG": 23.2,
+      "fiberG": 5.4
+    },
+    "tags": []
+  },
+  {
+    "id": "tofu-brocoli-sauce-soja-riz",
+    "name": "Tofu poêlé, brocoli et riz à la sauce soja",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["soja", "gluten"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      { "name": "tofu nature", "quantity": 200, "unit": "g", "aisle": "frais" },
+      { "name": "brocoli", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "sauce soja", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "huile de colza", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes dans une casserole d'eau bouillante.",
+      "Détaille le brocoli en petits bouquets et fais-les cuire 5 minutes à la vapeur.",
+      "Fais dorer le tofu coupé en dés dans l'huile 6 minutes, puis ajoute l'ail haché et le brocoli.",
+      "Arrose de sauce soja, mélange 1 minute et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.5, "proteins": 0.25, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 478,
+      "proteinG": 23.3,
+      "carbsG": 53.9,
+      "fatG": 16.5,
+      "fiberG": 5.3
+    },
+    "tags": []
+  },
+  {
+    "id": "couscous-express-pois-chiches-legumes",
+    "name": "Couscous express aux pois chiches et légumes",
+    "level": "simple",
+    "prepMinutes": 10,
+    "cookMinutes": 10,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["gluten"],
+    "mainProtein": "legumineuses",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "semoule complète", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "pois chiches cuits", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "courgettes", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 150, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Coupe les carottes en fines rondelles et les courgettes en dés.",
+      "Fais-les revenir 8 minutes dans l'huile d'olive avec le cumin, puis ajoute les pois chiches égouttés.",
+      "Verse la semoule dans un saladier, couvre-la du même volume d'eau bouillante salée et laisse gonfler 5 minutes.",
+      "Égraine la semoule à la fourchette et sers-la avec les légumes."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.25, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 482,
+      "proteinG": 18.3,
+      "carbsG": 68.1,
+      "fatG": 12.3,
+      "fiberG": 13
+    },
+    "tags": ["plat-unique"]
+  },
+  {
+    "id": "pates-tofu-fume-tomates-cerises",
+    "name": "Pâtes complètes au tofu fumé et tomates cerises",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 12,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["gluten", "soja"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "pâtes complètes", "quantity": 160, "unit": "g", "aisle": "epicerie" },
+      { "name": "tofu fumé", "quantity": 150, "unit": "g", "aisle": "frais" },
+      { "name": "tomates cerises", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "basilic", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les pâtes dans une grande casserole d'eau bouillante salée.",
+      "Pendant ce temps, fais dorer le tofu fumé coupé en dés dans l'huile d'olive 5 minutes.",
+      "Ajoute l'ail haché et les tomates cerises coupées en deux, et laisse compoter 4 minutes.",
+      "Mélange avec les pâtes égouttées et parsème de basilic ciselé."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.25, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 515,
+      "proteinG": 22.8,
+      "carbsG": 64.2,
+      "fatG": 16.6,
+      "fiberG": 7.1
+    },
+    "tags": ["rapide"]
+  },
+  {
+    "id": "spaghetti-champignons-noix",
+    "name": "Spaghetti complets aux champignons, ail et noix",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 12,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["gluten", "fruits-a-coque"],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "spaghetti complets", "quantity": 180, "unit": "g", "aisle": "epicerie" },
+      { "name": "champignons de Paris", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "cerneaux de noix", "quantity": 30, "unit": "g", "aisle": "epicerie" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les spaghetti dans une grande casserole d'eau bouillante salée.",
+      "Fais sauter les champignons émincés dans l'huile d'olive 6 minutes à feu vif.",
+      "Ajoute l'ail haché et les noix concassées, puis laisse dorer 2 minutes.",
+      "Mélange avec les pâtes égouttées et le persil haché, poivre et sers aussitôt."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.2, "starches": 0.4 },
+    "nutritionPerServing": {
+      "kcal": 595,
+      "proteinG": 16.7,
+      "carbsG": 66.4,
+      "fatG": 26.8,
+      "fiberG": 9.1
+    },
+    "tags": ["rapide"]
+  },
+  {
+    "id": "riz-saute-legumes-cacahuetes",
+    "name": "Riz sauté aux légumes et cacahuètes",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["arachides"],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "riz basmati", "quantity": 150, "unit": "g", "aisle": "epicerie" },
+      { "name": "petits pois surgelés", "quantity": 150, "unit": "g", "aisle": "surgeles" },
+      { "name": "carottes", "quantity": 150, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "cacahuètes", "quantity": 40, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes dans une casserole d'eau bouillante, puis égoutte-le.",
+      "Pendant ce temps, fais revenir l'oignon émincé et les carottes en petits dés dans l'huile 5 minutes.",
+      "Ajoute les petits pois et 3 cuillères à soupe d'eau, puis laisse cuire 4 minutes.",
+      "Verse le riz, fais sauter 2 minutes à feu vif et parsème de cacahuètes concassées."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.2, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 551,
+      "proteinG": 15.4,
+      "carbsG": 75.9,
+      "fatG": 18.3,
+      "fiberG": 10.4
+    },
+    "tags": ["plat-unique"]
+  },
+  {
+    "id": "wraps-tofu-carottes-houmous",
+    "name": "Wraps au tofu paprika, carottes et houmous",
+    "level": "simple",
+    "prepMinutes": 10,
+    "cookMinutes": 6,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["gluten", "soja", "sesame"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "tortillas de blé", "quantity": 4, "unit": "piece", "aisle": "epicerie" },
+      { "name": "tofu nature", "quantity": 200, "unit": "g", "aisle": "frais" },
+      { "name": "carottes", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "houmous", "quantity": 100, "unit": "g", "aisle": "frais" },
+      { "name": "paprika", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Coupe le tofu en bâtonnets, saupoudre-les de paprika et fais-les dorer 6 minutes dans l'huile d'olive.",
+      "Râpe les carottes.",
+      "Tartine chaque tortilla de houmous, ajoute les carottes et le tofu.",
+      "Roule bien serré et coupe en deux : c'est prêt !"
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.3, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 628,
+      "proteinG": 24.8,
+      "carbsG": 55.1,
+      "fatG": 32.1,
+      "fiberG": 8.7
+    },
+    "tags": ["rapide"]
+  },
+  {
+    "id": "omelette-champignons-salade",
+    "name": "Omelette aux champignons et à la ciboulette, salade verte",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 10,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["oeufs"],
+    "mainProtein": "oeufs",
+    "seasons": ["printemps", "ete", "automne"],
+    "ingredients": [
+      { "name": "oeufs", "quantity": 6, "unit": "piece", "aisle": "frais" },
+      { "name": "champignons de Paris", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ciboulette", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "salade verte", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais sauter les champignons émincés dans la moitié de l'huile 5 minutes, puis réserve-les.",
+      "Bats les œufs avec la ciboulette ciselée, un peu de sel et de poivre.",
+      "Verse-les dans la poêle avec le reste de l'huile, ajoute les champignons et laisse cuire 3 à 4 minutes jusqu'à ce que l'omelette soit prise.",
+      "Sers avec la salade verte lavée et essorée."
+    ],
+    "plateBalance": { "vegetables": 0.55, "proteins": 0.45, "starches": 0 },
+    "nutritionPerServing": {
+      "kcal": 340,
+      "proteinG": 25.3,
+      "carbsG": 4.5,
+      "fatG": 23.8,
+      "fiberG": 3.1
+    },
+    "tags": ["rapide"]
+  },
+  {
+    "id": "salade-pates-oeufs-tomates-cerises",
+    "name": "Salade de pâtes, œufs durs, tomates cerises et concombre",
+    "level": "simple",
+    "prepMinutes": 10,
+    "cookMinutes": 10,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-lactose"],
+    "allergens": ["gluten", "oeufs"],
+    "mainProtein": "oeufs",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "pâtes complètes", "quantity": 140, "unit": "g", "aisle": "epicerie" },
+      { "name": "oeufs", "quantity": 4, "unit": "piece", "aisle": "frais" },
+      { "name": "tomates cerises", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "basilic", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les pâtes dans l'eau bouillante salée et les œufs 10 minutes dans une autre casserole.",
+      "Rafraîchis les pâtes et les œufs sous l'eau froide, puis écale les œufs.",
+      "Coupe les tomates cerises en deux, le concombre en dés et les œufs en quartiers.",
+      "Mélange le tout avec l'huile d'olive et le basilic ciselé, sale et poivre."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.25, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 596,
+      "proteinG": 25.4,
+      "carbsG": 59.1,
+      "fatG": 27.2,
+      "fiberG": 6.7
+    },
+    "tags": ["batch"]
+  },
+  {
+    "id": "pates-courgettes-chevre-frais",
+    "name": "Pâtes complètes aux courgettes et chèvre frais",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 12,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien"],
+    "allergens": ["gluten", "lait"],
+    "mainProtein": "fromage",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "pâtes complètes", "quantity": 160, "unit": "g", "aisle": "epicerie" },
+      { "name": "courgettes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "chèvre frais", "quantity": 100, "unit": "g", "aisle": "frais" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les pâtes dans une grande casserole d'eau bouillante salée.",
+      "Pendant ce temps, fais revenir les courgettes en fines demi-rondelles et l'ail dans l'huile 8 minutes.",
+      "Égoutte les pâtes en gardant un petit verre d'eau de cuisson.",
+      "Mélange pâtes, courgettes, chèvre émietté et un filet d'eau de cuisson, puis ajoute la menthe ciselée."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.2, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 477,
+      "proteinG": 17.8,
+      "carbsG": 59.1,
+      "fatG": 17,
+      "fiberG": 7.5
+    },
+    "tags": ["rapide"]
+  },
+  {
+    "id": "salade-quinoa-feta-concombre",
+    "name": "Salade de quinoa à la feta, concombre et tomates",
+    "level": "simple",
+    "prepMinutes": 10,
+    "cookMinutes": 10,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-gluten"],
+    "allergens": ["lait"],
+    "mainProtein": "fromage",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "quinoa", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "feta", "quantity": 100, "unit": "g", "aisle": "frais" },
+      { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "tomates", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Rince le quinoa et fais-le cuire 10 minutes dans l'eau bouillante, puis égoutte-le et laisse tiédir.",
+      "Coupe le concombre et les tomates en dés, et émiette la feta.",
+      "Mélange le tout avec l'huile d'olive et la menthe ciselée.",
+      "Poivre (la feta est déjà salée) et sers frais."
+    ],
+    "plateBalance": { "vegetables": 0.5, "proteins": 0.2, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 537,
+      "proteinG": 17.5,
+      "carbsG": 44.3,
+      "fatG": 30.7,
+      "fiberG": 7.2
+    },
+    "tags": ["batch"]
+  },
+  {
+    "id": "saumon-haricots-verts-riz-citron",
+    "name": "Pavé de saumon, haricots verts et riz au citron",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons"],
+    "mainProtein": "poisson",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "pavés de saumon",
+        "quantity": 2,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "haricots verts surgelés", "quantity": 300, "unit": "g", "aisle": "surgeles" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes et les haricots verts 8 minutes à la vapeur ou dans l'eau bouillante.",
+      "Fais cuire les pavés de saumon côté peau dans l'huile d'olive 5 minutes, puis 3 minutes de l'autre côté, jusqu'à ce qu'ils soient bien cuits à cœur.",
+      "Arrose de jus de citron.",
+      "Sers avec les haricots verts et le riz, sale et poivre."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 574,
+      "proteinG": 32.7,
+      "carbsG": 54.8,
+      "fatG": 23.4,
+      "fiberG": 5
+    },
+    "tags": []
+  },
+  {
+    "id": "papillote-cabillaud-courgettes-quinoa",
+    "name": "Papillote de cabillaud aux courgettes et tomates cerises, quinoa",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons"],
+    "mainProtein": "poisson",
+    "seasons": ["ete"],
+    "ingredients": [
+      {
+        "name": "dos de cabillaud",
+        "quantity": 2,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "courgettes", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "tomates cerises", "quantity": 150, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "quinoa", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Préchauffe le four à 200 °C et lance la cuisson du quinoa (12 minutes dans l'eau bouillante).",
+      "Sur deux feuilles de papier cuisson, répartis les courgettes en fines rondelles et les tomates cerises coupées en deux.",
+      "Pose le cabillaud dessus, ajoute une rondelle de citron, l'huile d'olive, sel et poivre, puis ferme les papillotes.",
+      "Enfourne 15 minutes et sers avec le quinoa."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 441,
+      "proteinG": 35.9,
+      "carbsG": 41.9,
+      "fatG": 12.4,
+      "fiberG": 6.8
+    },
+    "tags": ["four"]
+  },
+  {
+    "id": "pates-thon-tomates-olives",
+    "name": "Pâtes complètes au thon, tomates et olives",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 12,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "sans-lactose"],
+    "allergens": ["gluten", "poissons"],
+    "mainProtein": "poisson",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "pâtes complètes", "quantity": 160, "unit": "g", "aisle": "epicerie" },
+      { "name": "thon au naturel", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "olives noires", "quantity": 40, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les pâtes dans une grande casserole d'eau bouillante salée.",
+      "Fais revenir l'oignon émincé dans l'huile d'olive 3 minutes, puis ajoute les tomates et laisse mijoter 8 minutes.",
+      "Ajoute le thon égoutté et émietté, et les olives : réchauffe 1 minute.",
+      "Mélange avec les pâtes égouttées et poivre."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.3, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 519,
+      "proteinG": 26.6,
+      "carbsG": 64.5,
+      "fatG": 15.6,
+      "fiberG": 10.6
+    },
+    "tags": ["rapide"]
+  },
+  {
+    "id": "tartare-saumon-avocat-riz",
+    "name": "Tartare de saumon à l'avocat et riz",
+    "level": "simple",
+    "prepMinutes": 9,
+    "cookMinutes": 11,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons"],
+    "mainProtein": "poisson",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "saumon extra-frais",
+        "quantity": 250,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "avocat", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "citron vert", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ciboulette", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes, égoutte-le et laisse-le tiédir.",
+      "Demande au poissonnier un saumon extra-frais spécial cru, sans peau ni arêtes, et coupe-le en petits dés.",
+      "Mélange le saumon avec l'avocat en dés, le jus du citron vert, l'huile d'olive et la ciboulette ciselée.",
+      "Sale, poivre et sers aussitôt avec le riz, en gardant le tartare bien au frais jusqu'au service."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.4, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 670,
+      "proteinG": 31.5,
+      "carbsG": 48.1,
+      "fatG": 37.4,
+      "fiberG": 4.8
+    },
+    "tags": ["cru"]
+  },
+  {
+    "id": "galette-complete-champignons",
+    "name": "Galette complète aux champignons",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien"],
+    "allergens": ["gluten", "oeufs", "lait"],
+    "mainProtein": "porc",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "galettes de sarrasin", "quantity": 4, "unit": "piece", "aisle": "frais" },
+      { "name": "jambon blanc", "quantity": 2, "unit": "tranche", "aisle": "frais" },
+      { "name": "oeufs", "quantity": 4, "unit": "piece", "aisle": "frais" },
+      { "name": "emmental râpé", "quantity": 60, "unit": "g", "aisle": "frais" },
+      { "name": "champignons de Paris", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Fais sauter les champignons émincés 5 minutes dans une poêle antiadhésive, puis réserve-les.",
+      "Pose une galette dans la poêle chaude, parsème d'emmental, ajoute une demi-tranche de jambon et des champignons.",
+      "Casse un œuf au centre et laisse cuire 3 minutes, jusqu'à ce que le blanc soit pris (le jaune reste coulant ; prolonge si tu le préfères cuit).",
+      "Replie les bords en carré et recommence avec les autres galettes."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.4, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 493,
+      "proteinG": 38,
+      "carbsG": 32.9,
+      "fatG": 22.8,
+      "fiberG": 2
+    },
+    "tags": ["cru"]
+  },
+  {
+    "id": "steak-hache-haricots-verts-persilles-riz",
+    "name": "Steak haché, haricots verts persillés et riz",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "boeuf",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "steaks hachés 5 %",
+        "quantity": 2,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "haricots verts surgelés", "quantity": 300, "unit": "g", "aisle": "surgeles" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes et les haricots verts 8 minutes dans l'eau bouillante.",
+      "Fais cuire les steaks hachés 3 à 4 minutes de chaque côté, bien cuits à cœur.",
+      "Dans la même poêle, fais sauter les haricots verts avec l'huile, l'ail et le persil hachés 2 minutes.",
+      "Sale, poivre et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 464,
+      "proteinG": 29.6,
+      "carbsG": 55.8,
+      "fatG": 12.4,
+      "fiberG": 5.5
+    },
+    "tags": []
+  },
+  {
+    "id": "boeuf-saute-poivrons-riz",
+    "name": "Bœuf sauté aux poivrons et riz",
+    "level": "simple",
+    "prepMinutes": 10,
+    "cookMinutes": 10,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "sans-lactose"],
+    "allergens": ["soja", "gluten"],
+    "mainProtein": "boeuf",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      { "name": "rumsteck", "quantity": 250, "unit": "g", "aisle": "boucherie-poissonnerie" },
+      { "name": "poivrons", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "sauce soja", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes dans l'eau bouillante.",
+      "Coupe le bœuf en fines lanières, les poivrons et l'oignon en lamelles.",
+      "Fais sauter les légumes 5 minutes à feu vif dans l'huile, puis ajoute le bœuf 3 minutes.",
+      "Arrose de sauce soja, mélange 1 minute et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 481,
+      "proteinG": 36.5,
+      "carbsG": 56.2,
+      "fatG": 11.3,
+      "fiberG": 3.9
+    },
+    "tags": []
+  },
+  {
+    "id": "dinde-champignons-creme-tagliatelles",
+    "name": "Escalopes de dinde, champignons à la crème et tagliatelles",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien"],
+    "allergens": ["gluten", "lait", "oeufs"],
+    "mainProtein": "volaille",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "escalopes de dinde",
+        "quantity": 2,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "champignons de Paris", "quantity": 250, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "crème fraîche légère", "quantity": 10, "unit": "cl", "aisle": "frais" },
+      { "name": "échalote", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "tagliatelles aux œufs", "quantity": 160, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les tagliatelles dans une grande casserole d'eau bouillante salée.",
+      "Fais dorer les escalopes coupées en lanières dans l'huile 5 minutes, puis réserve-les.",
+      "Dans la même poêle, fais revenir l'échalote et les champignons émincés 5 minutes.",
+      "Remets la dinde, ajoute la crème, laisse frémir 2 minutes et sers avec les tagliatelles."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.3, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 614,
+      "proteinG": 43.9,
+      "carbsG": 60.8,
+      "fatG": 20.3,
+      "fiberG": 4.6
+    },
+    "tags": []
+  },
+  {
+    "id": "poulet-coco-curcuma-petits-pois-riz",
+    "name": "Poulet au lait de coco, curcuma et petits pois, riz",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "volaille",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "filets de poulet",
+        "quantity": 250,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "lait de coco", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
+      { "name": "petits pois surgelés", "quantity": 200, "unit": "g", "aisle": "surgeles" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes dans l'eau bouillante.",
+      "Fais revenir l'oignon émincé 3 minutes dans une sauteuse avec 2 cuillères à soupe de lait de coco.",
+      "Ajoute le poulet en dés et le curcuma, fais dorer 4 minutes, puis verse le reste du lait de coco et les petits pois.",
+      "Laisse mijoter 7 minutes, sale, poivre et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 647,
+      "proteinG": 41.9,
+      "carbsG": 64.4,
+      "fatG": 22.2,
+      "fiberG": 8.9
+    },
+    "tags": ["plat-unique"]
+  },
+  {
+    "id": "poulet-poireaux-moutarde-riz",
+    "name": "Poulet et poireaux fondants à la moutarde, riz",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["moutarde"],
+    "mainProtein": "volaille",
+    "seasons": ["printemps", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "filets de poulet",
+        "quantity": 250,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "poireaux", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "moutarde", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes dans l'eau bouillante.",
+      "Émince finement les poireaux et fais-les fondre 8 minutes dans l'huile avec un fond d'eau.",
+      "Ajoute le poulet en dés et le thym, et fais cuire 5 minutes en remuant.",
+      "Hors du feu, incorpore la moutarde, sale, poivre et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 469,
+      "proteinG": 36.3,
+      "carbsG": 54.3,
+      "fatG": 10.6,
+      "fiberG": 3.6
+    },
+    "tags": []
+  },
+  {
+    "id": "crevettes-ail-courgettes-riz",
+    "name": "Crevettes sautées à l'ail, courgettes et riz",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["crustaces"],
+    "mainProtein": "fruits-de-mer",
+    "seasons": ["ete"],
+    "ingredients": [
+      {
+        "name": "crevettes crues décortiquées",
+        "quantity": 250,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "courgettes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz 11 minutes dans l'eau bouillante.",
+      "Fais sauter les courgettes en dés dans l'huile d'olive 6 minutes.",
+      "Ajoute les crevettes et l'ail haché, et fais cuire 3 minutes, jusqu'à ce qu'elles soient bien roses.",
+      "Parsème de persil haché, sale, poivre et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 436,
+      "proteinG": 31.6,
+      "carbsG": 55.4,
+      "fatG": 9.1,
+      "fiberG": 3.3
+    },
+    "tags": ["rapide"]
+  },
+  {
+    "id": "dahl-lentilles-corail-epinards",
+    "name": "Dahl de lentilles corail aux épinards et riz basmati",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "legumineuses",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "lentilles corail", "quantity": 250, "unit": "g", "aisle": "epicerie" },
+      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "épinards surgelés", "quantity": 300, "unit": "g", "aisle": "surgeles" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "eau", "quantity": 50, "unit": "cl", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais revenir l'oignon émincé, l'ail et le gingembre râpés dans l'huile 4 minutes, avec le curcuma et le cumin.",
+      "Ajoute les lentilles rincées, les tomates, le lait de coco et l'eau, puis laisse mijoter 20 minutes en remuant de temps en temps.",
+      "Pendant ce temps, fais cuire le riz dans l'eau bouillante.",
+      "Ajoute les épinards dans le dahl 5 minutes avant la fin, sale et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 711,
+      "proteinG": 27.3,
+      "carbsG": 87.9,
+      "fatG": 24.7,
+      "fiberG": 15.6
+    },
+    "tags": ["plat-unique", "batch", "restes", "monde"]
+  },
+  {
+    "id": "veloute-potiron-lentilles-corail",
+    "name": "Velouté de potiron aux lentilles corail",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "legumineuses",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      { "name": "potiron", "quantity": 1, "unit": "kg", "aisle": "fruits-legumes" },
+      { "name": "lentilles corail", "quantity": 150, "unit": "g", "aisle": "epicerie" },
+      { "name": "carottes", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "lait de coco", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "eau", "quantity": 1, "unit": "l", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Épluche le potiron et les carottes, puis coupe-les en morceaux.",
+      "Fais revenir l'oignon émincé dans l'huile avec le cumin 3 minutes.",
+      "Ajoute les légumes, les lentilles rincées et l'eau, puis laisse cuire 20 minutes à couvert.",
+      "Mixe avec le lait de coco, sale, poivre : le velouté se congèle très bien."
+    ],
+    "plateBalance": { "vegetables": 0.6, "proteins": 0.3, "starches": 0.1 },
+    "nutritionPerServing": {
+      "kcal": 316,
+      "proteinG": 14,
+      "carbsG": 29.4,
+      "fatG": 14.1,
+      "fiberG": 9
+    },
+    "tags": ["plat-unique", "batch", "restes"]
+  },
+  {
+    "id": "curry-pois-chiches-patate-douce",
+    "name": "Curry de pois chiches et patate douce",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "legumineuses",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      { "name": "pois chiches cuits", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "patates douces", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Épluche les patates douces et coupe-les en cubes de 2 cm.",
+      "Fais revenir l'oignon, l'ail et le gingembre hachés avec les épices 3 minutes dans une cocotte, avec un fond d'eau.",
+      "Ajoute les patates douces, les tomates et le lait de coco, et laisse mijoter 20 minutes.",
+      "Ajoute les pois chiches égouttés 5 minutes avant la fin, sale et parsème de coriandre."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 524,
+      "proteinG": 15.2,
+      "carbsG": 56.1,
+      "fatG": 23.7,
+      "fiberG": 15.4
+    },
+    "tags": ["plat-unique", "batch", "restes"]
+  },
+  {
+    "id": "hachis-parmentier-lentilles",
+    "name": "Hachis parmentier aux lentilles",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 35,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "legumineuses",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "pommes de terre", "quantity": 1, "unit": "kg", "aisle": "fruits-legumes" },
+      { "name": "lentilles cuites", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "carottes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les pommes de terre épluchées 20 minutes dans l'eau bouillante salée, et préchauffe le four à 200 °C.",
+      "Pendant ce temps, fais revenir l'oignon et les carottes en petits dés dans 1 cuillère d'huile 8 minutes.",
+      "Ajoute les lentilles égouttées, les tomates et le thym, et laisse mijoter 5 minutes.",
+      "Écrase les pommes de terre avec le reste de l'huile et un peu d'eau de cuisson.",
+      "Étale les lentilles dans un plat, couvre de purée et fais gratiner 15 minutes."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.3, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 470,
+      "proteinG": 16.2,
+      "carbsG": 65.9,
+      "fatG": 12.6,
+      "fiberG": 15.3
+    },
+    "tags": ["four", "plat-unique", "batch", "restes"]
+  },
+  {
+    "id": "saute-tofu-gingembre-poivrons-riz-complet",
+    "name": "Sauté de tofu au gingembre, poivrons et riz complet",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["soja", "gluten"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      { "name": "tofu nature", "quantity": 400, "unit": "g", "aisle": "frais" },
+      { "name": "poivrons", "quantity": 3, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "sauce soja", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "riz complet", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz complet 30 minutes dans l'eau bouillante.",
+      "Coupe le tofu en dés et fais-le dorer 8 minutes dans la moitié de l'huile, puis réserve.",
+      "Fais sauter les poivrons et l'oignon en lamelles avec le gingembre râpé 6 minutes dans le reste de l'huile.",
+      "Remets le tofu, arrose de sauce soja, mélange 1 minute et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.25, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 462,
+      "proteinG": 19.7,
+      "carbsG": 51.6,
+      "fatG": 17.8,
+      "fiberG": 5.9
+    },
+    "tags": ["batch"]
+  },
+  {
+    "id": "ratatouille-tofu-grille-quinoa",
+    "name": "Ratatouille, tofu grillé et quinoa",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["soja"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "courgettes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "aubergine", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "poivrons", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "tomates", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "herbes de Provence", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "tofu nature", "quantity": 400, "unit": "g", "aisle": "frais" },
+      { "name": "quinoa", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Coupe tous les légumes en dés.",
+      "Fais revenir l'oignon et l'ail dans 2 cuillères d'huile, ajoute aubergine, poivron et courgettes, puis laisse cuire 10 minutes.",
+      "Ajoute les tomates et les herbes, et laisse mijoter 20 minutes à couvert. Fais cuire le quinoa en parallèle.",
+      "Fais griller le tofu en tranches dans le reste de l'huile 4 minutes par face et sers le tout ensemble."
+    ],
+    "plateBalance": { "vegetables": 0.55, "proteins": 0.25, "starches": 0.2 },
+    "nutritionPerServing": {
+      "kcal": 529,
+      "proteinG": 24.5,
+      "carbsG": 48.3,
+      "fatG": 23.9,
+      "fiberG": 10.2
+    },
+    "tags": ["batch", "restes"]
+  },
+  {
+    "id": "tofu-roti-paprika-carottes-pommes-de-terre",
+    "name": "Tofu rôti au paprika, carottes et pommes de terre au four",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["soja"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "tofu nature", "quantity": 400, "unit": "g", "aisle": "frais" },
+      { "name": "pommes de terre", "quantity": 800, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon rouge", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "paprika fumé", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Préchauffe le four à 210 °C.",
+      "Coupe les pommes de terre et les carottes en bâtonnets, l'oignon en quartiers et le tofu en cubes.",
+      "Mélange le tout sur la plaque avec l'huile, le paprika, le thym, du sel et du poivre.",
+      "Enfourne 30 minutes en remuant à mi-cuisson, jusqu'à ce que tout soit doré."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.25, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 444,
+      "proteinG": 18.7,
+      "carbsG": 42.1,
+      "fatG": 19.9,
+      "fiberG": 8.9
+    },
+    "tags": ["four", "plat-unique"]
+  },
+  {
+    "id": "frittata-courgettes-feta-menthe",
+    "name": "Frittata aux courgettes, feta et menthe",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-gluten"],
+    "allergens": ["oeufs", "lait"],
+    "mainProtein": "oeufs",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "oeufs", "quantity": 8, "unit": "piece", "aisle": "frais" },
+      { "name": "courgettes", "quantity": 500, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "feta", "quantity": 150, "unit": "g", "aisle": "frais" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Préchauffe le four à 180 °C.",
+      "Fais revenir l'oignon émincé et les courgettes en fines rondelles dans l'huile 8 minutes, dans une poêle allant au four.",
+      "Bats les œufs avec la menthe ciselée et du poivre, puis verse-les sur les légumes et émiette la feta.",
+      "Enfourne 15 minutes, jusqu'à ce que la frittata soit bien prise. Elle se mange chaude ou froide."
+    ],
+    "plateBalance": { "vegetables": 0.5, "proteins": 0.5, "starches": 0 },
+    "nutritionPerServing": {
+      "kcal": 326,
+      "proteinG": 21.8,
+      "carbsG": 4.3,
+      "fatG": 24,
+      "fiberG": 2.2
+    },
+    "tags": ["four", "batch", "restes"]
+  },
+  {
+    "id": "tortilla-pommes-de-terre-epinards",
+    "name": "Tortilla de pommes de terre aux épinards",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["oeufs"],
+    "mainProtein": "oeufs",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "oeufs", "quantity": 8, "unit": "piece", "aisle": "frais" },
+      { "name": "pommes de terre", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "épinards surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" },
+      { "name": "huile d'olive", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Coupe les pommes de terre en fines rondelles et émince les oignons.",
+      "Fais-les cuire doucement 20 minutes dans l'huile d'olive, à couvert, en remuant souvent.",
+      "Ajoute les épinards décongelés et bien pressés, puis verse les œufs battus salés et poivrés.",
+      "Laisse cuire 6 minutes à feu doux, retourne la tortilla à l'aide d'une assiette et poursuis 4 minutes."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 421,
+      "proteinG": 20.4,
+      "carbsG": 30.6,
+      "fatG": 22.1,
+      "fiberG": 6.8
+    },
+    "tags": ["batch", "restes", "monde"]
+  },
+  {
+    "id": "risotto-champignons-parmesan",
+    "name": "Risotto aux champignons et parmesan",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien"],
+    "allergens": ["lait", "celeri", "gluten", "sulfites"],
+    "mainProtein": "fromage",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "riz arborio", "quantity": 300, "unit": "g", "aisle": "epicerie" },
+      { "name": "champignons de Paris", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "vin blanc sec", "quantity": 10, "unit": "cl", "aisle": "epicerie" },
+      { "name": "bouillon de légumes", "quantity": 1, "unit": "l", "aisle": "epicerie" },
+      { "name": "parmesan", "quantity": 60, "unit": "g", "aisle": "frais" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Prépare le bouillon avec un cube et 1 litre d'eau chaude, et garde-le frémissant.",
+      "Fais revenir l'oignon émincé dans l'huile 3 minutes, ajoute le riz et remue jusqu'à ce qu'il devienne translucide.",
+      "Verse le vin blanc et laisse-le s'évaporer, puis ajoute le bouillon louche par louche pendant 18 minutes, en remuant.",
+      "Fais sauter les champignons à part 6 minutes et ajoute-les au risotto.",
+      "Hors du feu, incorpore le parmesan râpé et le persil haché."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.2, "starches": 0.45 },
+    "nutritionPerServing": {
+      "kcal": 448,
+      "proteinG": 13.5,
+      "carbsG": 63.4,
+      "fatG": 13.2,
+      "fiberG": 3
+    },
+    "tags": ["alcool", "cru"]
+  },
+  {
+    "id": "gratin-gnocchis-tomate-mozzarella",
+    "name": "Gratin de gnocchis à la tomate, épinards et mozzarella",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien"],
+    "allergens": ["gluten", "lait", "oeufs"],
+    "mainProtein": "fromage",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "gnocchis", "quantity": 800, "unit": "g", "aisle": "frais" },
+      { "name": "tomates concassées", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "épinards surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" },
+      { "name": "mozzarella", "quantity": 250, "unit": "g", "aisle": "frais" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "origan", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Préchauffe le four à 200 °C.",
+      "Fais revenir l'ail haché dans l'huile, ajoute les tomates, les épinards et l'origan, puis laisse mijoter 10 minutes.",
+      "Mélange la sauce avec les gnocchis crus dans un plat à gratin.",
+      "Couvre de mozzarella en tranches et enfourne 15 minutes, jusqu'à ce que ce soit doré."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.25, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 607,
+      "proteinG": 24.9,
+      "carbsG": 81.3,
+      "fatG": 18.8,
+      "fiberG": 10.9
+    },
+    "tags": ["four", "plat-unique"]
+  },
+  {
+    "id": "hauts-de-cuisse-poulet-pommes-de-terre-carottes",
+    "name": "Hauts de cuisse de poulet rôtis, pommes de terre et carottes",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 35,
+    "servings": 4,
+    "diets": ["omnivore", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "volaille",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "hauts de cuisse de poulet",
+        "quantity": 8,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "pommes de terre", "quantity": 800, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 4, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Préchauffe le four à 210 °C.",
+      "Coupe les pommes de terre et les carottes en morceaux, les oignons en quartiers.",
+      "Dispose les légumes et le poulet dans un grand plat avec l'ail en chemise, le thym, l'huile, du sel et du poivre.",
+      "Enfourne 35 minutes en arrosant à mi-cuisson : la chair doit se détacher et le jus être clair."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 663,
+      "proteinG": 40.3,
+      "carbsG": 41.7,
+      "fatG": 35,
+      "fiberG": 8.5
+    },
+    "tags": ["four", "plat-unique", "batch", "restes"]
+  },
+  {
+    "id": "emince-poulet-moutarde-haricots-verts",
+    "name": "Émincé de poulet à la moutarde, haricots verts et riz complet",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten"],
+    "allergens": ["lait", "moutarde"],
+    "mainProtein": "volaille",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "filets de poulet",
+        "quantity": 500,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      {
+        "name": "moutarde à l'ancienne",
+        "quantity": 2,
+        "unit": "cuillere-soupe",
+        "aisle": "epicerie"
+      },
+      { "name": "crème fraîche légère", "quantity": 20, "unit": "cl", "aisle": "frais" },
+      { "name": "échalote", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "haricots verts surgelés", "quantity": 600, "unit": "g", "aisle": "surgeles" },
+      { "name": "riz complet", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz complet 30 minutes et les haricots verts 10 minutes dans l'eau bouillante.",
+      "Fais dorer le poulet en lanières dans l'huile 6 minutes, puis ajoute les échalotes émincées 2 minutes.",
+      "Verse la crème et la moutarde, et laisse frémir 5 minutes.",
+      "Sers avec le riz et les haricots verts."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 530,
+      "proteinG": 38.2,
+      "carbsG": 54.3,
+      "fatG": 15.4,
+      "fiberG": 8.1
+    },
+    "tags": []
+  },
+  {
+    "id": "poulet-basquaise-riz",
+    "name": "Poulet basquaise et riz",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "volaille",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      {
+        "name": "filets de poulet",
+        "quantity": 500,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "poivrons", "quantity": 3, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "tomates", "quantity": 500, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "piment d'Espelette", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais dorer le poulet en morceaux dans l'huile 5 minutes dans une cocotte, puis réserve.",
+      "Fais revenir les oignons et les poivrons en lanières 8 minutes, ajoute l'ail et les tomates en dés.",
+      "Remets le poulet, ajoute le piment d'Espelette et laisse mijoter 20 minutes à couvert.",
+      "Fais cuire le riz pendant ce temps et sers bien chaud."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 484,
+      "proteinG": 35.8,
+      "carbsG": 59.2,
+      "fatG": 10.6,
+      "fiberG": 4.8
+    },
+    "tags": ["batch", "restes"]
+  },
+  {
+    "id": "saumon-fondue-poireaux-riz-complet",
+    "name": "Saumon et fondue de poireaux, riz complet",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons"],
+    "mainProtein": "poisson",
+    "seasons": ["printemps", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "pavés de saumon",
+        "quantity": 4,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "poireaux", "quantity": 800, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "riz complet", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ciboulette", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz complet 30 minutes dans l'eau bouillante.",
+      "Émince finement les poireaux et fais-les fondre 20 minutes à couvert dans l'huile avec un fond d'eau.",
+      "Pose les pavés de saumon sur les poireaux, couvre et laisse cuire 8 minutes, jusqu'à ce que le saumon soit cuit à cœur.",
+      "Arrose de jus de citron, parsème de ciboulette et sers avec le riz."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 581,
+      "proteinG": 33,
+      "carbsG": 52.4,
+      "fatG": 24.9,
+      "fiberG": 7.1
+    },
+    "tags": []
+  },
+  {
+    "id": "cabillaud-provencale-riz",
+    "name": "Cabillaud à la provençale et riz",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons"],
+    "mainProtein": "poisson",
+    "seasons": ["ete"],
+    "ingredients": [
+      {
+        "name": "dos de cabillaud",
+        "quantity": 4,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "tomates", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "courgettes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "olives noires", "quantity": 50, "unit": "g", "aisle": "epicerie" },
+      { "name": "herbes de Provence", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais revenir l'oignon et l'ail dans l'huile, ajoute les courgettes en dés 5 minutes, puis les tomates et les herbes.",
+      "Laisse mijoter 10 minutes, ajoute les olives.",
+      "Pose le cabillaud sur la sauce, couvre et laisse cuire 10 minutes à feu doux.",
+      "Fais cuire le riz en parallèle et sers le tout ensemble."
+    ],
+    "plateBalance": { "vegetables": 0.5, "proteins": 0.25, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 460,
+      "proteinG": 32.2,
+      "carbsG": 56,
+      "fatG": 11.6,
+      "fiberG": 4.9
+    },
+    "tags": []
+  },
+  {
+    "id": "gratin-colin-epinards-pommes-de-terre",
+    "name": "Gratin de colin aux épinards et pommes de terre",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten"],
+    "allergens": ["poissons", "lait"],
+    "mainProtein": "poisson",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "filets de colin",
+        "quantity": 4,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "pommes de terre", "quantity": 800, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "épinards surgelés", "quantity": 600, "unit": "g", "aisle": "surgeles" },
+      { "name": "crème fraîche légère", "quantity": 20, "unit": "cl", "aisle": "frais" },
+      { "name": "emmental râpé", "quantity": 60, "unit": "g", "aisle": "frais" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "muscade", "quantity": 1, "unit": "pincee", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Préchauffe le four à 200 °C et fais cuire les pommes de terre en rondelles 10 minutes dans l'eau bouillante.",
+      "Fais réchauffer les épinards avec l'ail haché, la crème et la muscade.",
+      "Dans un plat, superpose pommes de terre, colin en morceaux et épinards à la crème.",
+      "Parsème d'emmental et enfourne 20 minutes."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 438,
+      "proteinG": 34.8,
+      "carbsG": 39.6,
+      "fatG": 12.8,
+      "fiberG": 8.8
+    },
+    "tags": ["four", "plat-unique", "restes"]
+  },
+  {
+    "id": "maquereaux-four-fenouil-pommes-de-terre",
+    "name": "Maquereaux au four, fenouil et pommes de terre",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons"],
+    "mainProtein": "poisson",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      {
+        "name": "filets de maquereau",
+        "quantity": 500,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "fenouil", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "pommes de terre", "quantity": 800, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Préchauffe le four à 200 °C.",
+      "Coupe les pommes de terre en rondelles et le fenouil en lamelles, mélange-les avec l'huile, le thym, sel et poivre.",
+      "Enfourne 20 minutes.",
+      "Pose les filets de maquereau et des rondelles de citron sur les légumes et poursuis 10 minutes."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 499,
+      "proteinG": 28,
+      "carbsG": 37.2,
+      "fatG": 24.8,
+      "fiberG": 7.8
+    },
+    "tags": ["four", "plat-unique"]
+  },
+  {
+    "id": "boulettes-boeuf-sauce-tomate-spaghetti",
+    "name": "Boulettes de bœuf à la sauce tomate et spaghetti",
+    "level": "medium",
+    "prepMinutes": 20,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-lactose"],
+    "allergens": ["gluten", "oeufs"],
+    "mainProtein": "boeuf",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "bœuf haché 5 %", "quantity": 400, "unit": "g", "aisle": "boucherie-poissonnerie" },
+      { "name": "chapelure", "quantity": 40, "unit": "g", "aisle": "epicerie" },
+      { "name": "oeufs", "quantity": 1, "unit": "piece", "aisle": "frais" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "tomates concassées", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "origan", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "spaghetti", "quantity": 320, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Mélange le bœuf, la chapelure, l'œuf, la moitié de l'oignon haché, sel et poivre, puis forme une vingtaine de boulettes.",
+      "Fais-les dorer 5 minutes dans l'huile et réserve.",
+      "Fais revenir le reste d'oignon, l'ail et les carottes râpées, ajoute les tomates et l'origan, puis remets les boulettes.",
+      "Laisse mijoter 15 minutes : les boulettes doivent être cuites à cœur. Sers avec les spaghetti cuits."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.3, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 613,
+      "proteinG": 37.4,
+      "carbsG": 77.8,
+      "fatG": 15.8,
+      "fiberG": 8.6
+    },
+    "tags": ["batch", "restes"]
+  },
+  {
+    "id": "chili-con-carne-riz",
+    "name": "Chili con carne et riz",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "boeuf",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "bœuf haché 5 %", "quantity": 400, "unit": "g", "aisle": "boucherie-poissonnerie" },
+      { "name": "haricots rouges cuits", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "tomates concassées", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "maïs doux", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "cumin", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "paprika", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais revenir les oignons et l'ail hachés dans l'huile 3 minutes.",
+      "Ajoute le bœuf haché et fais-le bien colorer en l'émiettant, avec le cumin et le paprika.",
+      "Verse les tomates, les haricots rouges et le maïs égouttés, et laisse mijoter 25 minutes.",
+      "Fais cuire le riz en parallèle et sers. Encore meilleur réchauffé le lendemain !"
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 655,
+      "proteinG": 41.8,
+      "carbsG": 87.9,
+      "fatG": 12.5,
+      "fiberG": 16.5
+    },
+    "tags": ["plat-unique", "batch", "restes"]
+  },
+  {
+    "id": "lentilles-vertes-lardons-carottes",
+    "name": "Lentilles vertes aux lardons et carottes",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 35,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "porc",
+    "seasons": ["printemps", "automne", "hiver"],
+    "ingredients": [
+      { "name": "lentilles vertes", "quantity": 300, "unit": "g", "aisle": "epicerie" },
+      { "name": "lardons fumés", "quantity": 150, "unit": "g", "aisle": "frais" },
+      { "name": "carottes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "feuilles de laurier", "quantity": 2, "unit": "piece", "aisle": "epicerie" },
+      { "name": "eau", "quantity": 1, "unit": "l", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais revenir les lardons à sec 3 minutes dans une cocotte, ajoute l'oignon émincé et les carottes en rondelles.",
+      "Ajoute les lentilles rincées, l'ail, le thym, le laurier et l'eau froide.",
+      "Laisse cuire 30 minutes à frémissement, sans saler avant la fin.",
+      "Goûte, poivre (les lardons sont déjà salés) et sers bien chaud."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.35, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 390,
+      "proteinG": 26.2,
+      "carbsG": 40.6,
+      "fatG": 10.5,
+      "fiberG": 15.9
+    },
+    "tags": ["plat-unique", "batch", "restes"]
+  },
+  {
+    "id": "filet-mignon-porc-pommes-patate-douce",
+    "name": "Filet mignon de porc aux pommes et purée de patate douce",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "porc",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "filet mignon de porc",
+        "quantity": 500,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "pommes", "quantity": 3, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "patates douces", "quantity": 800, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les patates douces épluchées en morceaux 20 minutes dans l'eau bouillante, puis écrase-les avec 1 cuillère d'huile.",
+      "Fais dorer le filet mignon sur toutes ses faces dans le reste de l'huile 5 minutes.",
+      "Ajoute l'oignon émincé, les pommes en quartiers, le thym et un fond d'eau, puis couvre et laisse cuire 20 minutes.",
+      "Tranche la viande, cuite à cœur, et sers avec les pommes et la purée."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 450,
+      "proteinG": 30.2,
+      "carbsG": 49.4,
+      "fatG": 12.7,
+      "fiberG": 8.1
+    },
+    "tags": []
+  },
+  {
+    "id": "endives-jambon-gratinees",
+    "name": "Endives au jambon gratinées",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien"],
+    "allergens": ["gluten", "lait"],
+    "mainProtein": "porc",
+    "seasons": ["automne", "hiver", "printemps"],
+    "ingredients": [
+      { "name": "endives", "quantity": 8, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "jambon blanc", "quantity": 8, "unit": "tranche", "aisle": "frais" },
+      { "name": "lait demi-écrémé", "quantity": 50, "unit": "cl", "aisle": "frais" },
+      { "name": "farine de blé", "quantity": 40, "unit": "g", "aisle": "epicerie" },
+      { "name": "beurre", "quantity": 30, "unit": "g", "aisle": "frais" },
+      { "name": "emmental râpé", "quantity": 60, "unit": "g", "aisle": "frais" },
+      { "name": "muscade", "quantity": 1, "unit": "pincee", "aisle": "epicerie" },
+      { "name": "pommes de terre", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Fais cuire les endives entières 15 minutes à la vapeur, puis presse-les pour retirer l'eau. Fais cuire les pommes de terre en même temps.",
+      "Préchauffe le four à 200 °C. Fais fondre le beurre, ajoute la farine, puis le lait petit à petit en fouettant jusqu'à épaississement.",
+      "Roule chaque endive dans une tranche de jambon et range-les dans un plat.",
+      "Nappe de béchamel muscadée, parsème d'emmental et fais gratiner 15 minutes. Sers avec les pommes de terre."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 462,
+      "proteinG": 32,
+      "carbsG": 45.5,
+      "fatG": 16.7,
+      "fiberG": 6.4
+    },
+    "tags": ["four", "restes"]
+  },
+  {
+    "id": "moules-marinieres-pommes-de-terre",
+    "name": "Moules marinières aux petits légumes et pommes de terre vapeur",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten"],
+    "allergens": ["mollusques", "sulfites", "lait"],
+    "mainProtein": "fruits-de-mer",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      { "name": "moules", "quantity": 2, "unit": "kg", "aisle": "boucherie-poissonnerie" },
+      { "name": "échalote", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "poireaux", "quantity": 150, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "vin blanc sec", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
+      { "name": "beurre", "quantity": 20, "unit": "g", "aisle": "frais" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "pommes de terre", "quantity": 1, "unit": "kg", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Fais cuire les pommes de terre 20 minutes à la vapeur. Gratte et rince les moules, jette celles qui restent ouvertes.",
+      "Dans un grand faitout, fais fondre les échalotes, le poireau et les carottes en julienne dans le beurre 5 minutes.",
+      "Verse le vin blanc, ajoute les moules, couvre et fais cuire 6 à 8 minutes à feu vif en secouant, jusqu'à ce qu'elles s'ouvrent.",
+      "Parsème de persil et sers aussitôt avec les pommes de terre."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.4, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 395,
+      "proteinG": 20.7,
+      "carbsG": 50.5,
+      "fatG": 7.2,
+      "fiberG": 8.4
+    },
+    "tags": ["alcool"]
+  },
+  {
+    "id": "cotelettes-agneau-flageolets",
+    "name": "Côtelettes d'agneau, flageolets et haricots verts à l'ail",
+    "level": "medium",
+    "prepMinutes": 10,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "agneau",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "côtelettes d'agneau",
+        "quantity": 8,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "flageolets cuits", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "haricots verts surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les haricots verts 10 minutes dans l'eau bouillante.",
+      "Fais revenir l'oignon et l'ail émincés dans l'huile, ajoute les flageolets égouttés, le thym et un fond d'eau : réchauffe 8 minutes.",
+      "Fais griller les côtelettes 4 à 5 minutes de chaque côté dans une poêle bien chaude, pour une cuisson à point.",
+      "Mélange les haricots verts aux flageolets et sers avec les côtelettes."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 535,
+      "proteinG": 25.8,
+      "carbsG": 23.3,
+      "fatG": 35,
+      "fiberG": 11.7
+    },
+    "tags": []
+  },
+  {
+    "id": "bolognaise-champignons-noix-spaghetti",
+    "name": "Bolognaise de champignons et noix, spaghetti complets",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["gluten", "fruits-a-coque"],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "champignons de Paris", "quantity": 500, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "cerneaux de noix", "quantity": 80, "unit": "g", "aisle": "epicerie" },
+      { "name": "carottes", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "tomates concassées", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "origan", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "spaghetti complets", "quantity": 320, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Hache finement les champignons, les carottes et l'oignon (au robot, c'est plus rapide), et concasse les noix.",
+      "Fais revenir l'oignon, l'ail et les carottes dans l'huile 5 minutes, puis ajoute les champignons et laisse rendre leur eau 8 minutes.",
+      "Ajoute les noix, les tomates et l'origan, et laisse mijoter 15 minutes.",
+      "Fais cuire les spaghetti en parallèle et sers-les nappés de sauce. La sauce se congèle très bien."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.2, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 587,
+      "proteinG": 18,
+      "carbsG": 69.7,
+      "fatG": 24.1,
+      "fiberG": 13.2
+    },
+    "tags": ["batch", "restes"]
+  },
+  {
+    "id": "bowl-quinoa-patate-douce-brocoli-tahini",
+    "name": "Bowl de quinoa, patate douce rôtie et brocoli, sauce citron-tahini",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["sesame"],
+    "mainProtein": "aucune",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      { "name": "quinoa", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "patates douces", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "brocoli", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "graines de courge", "quantity": 60, "unit": "g", "aisle": "epicerie" },
+      { "name": "tahini", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "paprika", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Préchauffe le four à 210 °C. Coupe les patates douces en cubes, mélange-les avec l'huile et le paprika, et enfourne 25 minutes.",
+      "Fais cuire le quinoa 12 minutes, et le brocoli en bouquets 5 minutes à la vapeur.",
+      "Délaye le tahini avec le jus du citron, 4 cuillères d'eau et une pincée de sel.",
+      "Compose les bols : quinoa, patate douce, brocoli, graines de courge, et nappe de sauce."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.2, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 602,
+      "proteinG": 19.7,
+      "carbsG": 65.4,
+      "fatG": 24.6,
+      "fiberG": 13.3
+    },
+    "tags": ["four", "plat-unique", "batch"]
+  },
+  {
+    "id": "curry-legumes-coco-cajou",
+    "name": "Curry de chou-fleur et petits pois au lait de coco et noix de cajou",
+    "level": "medium",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["fruits-a-coque"],
+    "mainProtein": "aucune",
+    "seasons": ["automne", "hiver", "printemps"],
+    "ingredients": [
+      { "name": "chou-fleur", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "petits pois surgelés", "quantity": 200, "unit": "g", "aisle": "surgeles" },
+      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "noix de cajou", "quantity": 80, "unit": "g", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais revenir l'oignon émincé et le gingembre râpé avec le curcuma et le cumin 3 minutes, avec un fond d'eau.",
+      "Ajoute le chou-fleur en petits bouquets, les carottes en rondelles et le lait de coco, puis laisse mijoter 15 minutes.",
+      "Ajoute les petits pois et les noix de cajou, et poursuis 5 minutes.",
+      "Fais cuire le riz en parallèle, sale le curry et sers."
+    ],
+    "plateBalance": { "vegetables": 0.5, "proteins": 0.2, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 647,
+      "proteinG": 16.4,
+      "carbsG": 69.5,
+      "fatG": 31.2,
+      "fiberG": 12.5
+    },
+    "tags": ["plat-unique", "batch", "restes"]
+  },
+  {
+    "id": "falafels-taboule-sauce-tahini",
+    "name": "Falafels maison, taboulé libanais et sauce tahini",
+    "level": "experiment",
+    "prepMinutes": 35,
+    "cookMinutes": 15,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["gluten", "sesame"],
+    "mainProtein": "legumineuses",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "pois chiches secs", "quantity": 250, "unit": "g", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "persil", "quantity": 2, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "cumin", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "boulgour", "quantity": 150, "unit": "g", "aisle": "epicerie" },
+      { "name": "tomates", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "citron", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "tahini", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 4, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "La veille, fais tremper les pois chiches secs dans un grand volume d'eau froide (ils ne se cuisent pas avant).",
+      "Mixe les pois chiches égouttés avec l'oignon, l'ail, la moitié du persil, la coriandre, le cumin et du sel, jusqu'à obtenir une semoule grossière.",
+      "Forme des petites galettes et fais-les dorer 3 à 4 minutes par face dans 3 cuillères d'huile.",
+      "Pour le taboulé, couvre le boulgour d'eau bouillante 10 minutes, égoutte, puis mélange avec tomates, concombre, reste de persil, menthe, jus d'un citron et le reste d'huile.",
+      "Délaye le tahini avec le jus du second citron et un peu d'eau : sers en sauce avec les falafels."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 612,
+      "proteinG": 21.7,
+      "carbsG": 64.8,
+      "fatG": 25.6,
+      "fiberG": 15.9
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "mujaddara-lentilles-riz-oignons",
+    "name": "Mujaddara : lentilles, riz et oignons caramélisés",
+    "level": "experiment",
+    "prepMinutes": 15,
+    "cookMinutes": 40,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "legumineuses",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "lentilles vertes", "quantity": 200, "unit": "g", "aisle": "epicerie" },
+      { "name": "riz basmati", "quantity": 200, "unit": "g", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 4, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 4, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cannelle", "quantity": 1, "unit": "pincee", "aisle": "epicerie" },
+      { "name": "carottes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "eau", "quantity": 1, "unit": "l", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les lentilles 15 minutes dans l'eau, sans sel.",
+      "Pendant ce temps, fais caraméliser les oignons émincés dans 3 cuillères d'huile 25 minutes à feu moyen, en remuant souvent, jusqu'à ce qu'ils soient bien bruns.",
+      "Ajoute le riz rincé, le cumin et la cannelle aux lentilles avec leur eau, sale et poursuis 15 minutes à couvert.",
+      "Râpe les carottes et assaisonne-les avec le jus de citron, le reste d'huile et le persil.",
+      "Sers la mujaddara couverte d'oignons caramélisés, avec la salade de carottes."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.3, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 548,
+      "proteinG": 18.5,
+      "carbsG": 73.9,
+      "fatG": 16.7,
+      "fiberG": 14
+    },
+    "tags": ["plat-unique", "batch", "restes", "monde"]
+  },
+  {
+    "id": "feijoada-vegane-haricots-noirs",
+    "name": "Feijoada végane aux haricots noirs, patate douce et chou",
+    "level": "experiment",
+    "prepMinutes": 20,
+    "cookMinutes": 40,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "legumineuses",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      { "name": "haricots noirs cuits", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "patates douces", "quantity": 500, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "paprika fumé", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "feuilles de laurier", "quantity": 2, "unit": "piece", "aisle": "epicerie" },
+      { "name": "chou vert", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "orange", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais revenir les oignons et l'ail hachés dans 1 cuillère d'huile, ajoute le paprika fumé et le cumin.",
+      "Ajoute les patates douces en cubes, les tomates, le laurier et un verre d'eau, puis laisse mijoter 20 minutes.",
+      "Ajoute les haricots noirs rincés et poursuis 15 minutes, en écrasant une louche de haricots pour épaissir.",
+      "Fais sauter le chou émincé finement dans le reste d'huile 5 minutes, et fais cuire le riz.",
+      "Sers la feijoada avec le riz, le chou et des quartiers d'orange, comme au Brésil."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 596,
+      "proteinG": 20.2,
+      "carbsG": 97.6,
+      "fatG": 10,
+      "fiberG": 19.4
+    },
+    "tags": ["batch", "restes", "monde"]
+  },
+  {
+    "id": "curry-thai-tofu-citronnelle",
+    "name": "Curry thaï de tofu au lait de coco et à la citronnelle",
+    "level": "experiment",
+    "prepMinutes": 20,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["soja"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      { "name": "tofu nature", "quantity": 400, "unit": "g", "aisle": "frais" },
+      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "citronnelle", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "gingembre frais", "quantity": 30, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "piment rouge", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "poivrons", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "haricots verts surgelés", "quantity": 300, "unit": "g", "aisle": "surgeles" },
+      { "name": "citron vert", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "riz jasmin", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "sucre de canne", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Mixe la citronnelle (partie tendre), le gingembre, l'ail, le piment et les tiges de coriandre avec 2 cuillères de lait de coco : c'est ta pâte de curry maison.",
+      "Fais-la revenir 2 minutes dans l'huile, puis verse le reste du lait de coco et le sucre.",
+      "Ajoute le poivron en lanières, les haricots verts et le tofu en cubes, et laisse mijoter 12 minutes.",
+      "Fais cuire le riz jasmin en parallèle.",
+      "Termine avec le jus du citron vert et les feuilles de coriandre, sale et sers."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 642,
+      "proteinG": 22,
+      "carbsG": 61.7,
+      "fatG": 32.1,
+      "fiberG": 5.9
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "pad-thai-tofu-cacahuetes",
+    "name": "Pad thaï au tofu et aux cacahuètes",
+    "level": "experiment",
+    "prepMinutes": 25,
+    "cookMinutes": 10,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["soja", "arachides"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "nouilles de riz", "quantity": 250, "unit": "g", "aisle": "epicerie" },
+      { "name": "tofu nature", "quantity": 300, "unit": "g", "aisle": "frais" },
+      {
+        "name": "pousses de haricot mungo",
+        "quantity": 200,
+        "unit": "g",
+        "aisle": "fruits-legumes"
+      },
+      { "name": "carottes", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignons nouveaux", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "cacahuètes", "quantity": 60, "unit": "g", "aisle": "epicerie" },
+      { "name": "citron vert", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "pulpe de tamarin", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "sucre de canne", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "huile de colza", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Fais tremper les nouilles de riz 10 minutes dans l'eau chaude, puis égoutte-les.",
+      "Mélange la pulpe de tamarin, le sucre, le jus d'un citron vert, 3 cuillères d'eau et une pincée de sel : c'est la sauce.",
+      "Au wok, fais dorer le tofu en dés dans l'huile 5 minutes, ajoute l'ail, les carottes en julienne et le blanc des oignons.",
+      "Ajoute les nouilles et la sauce, saute 2 minutes, puis les pousses de haricot mungo 1 minute.",
+      "Sers parsemé de cacahuètes concassées, de vert d'oignon, de coriandre et de quartiers de citron vert."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.25, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 595,
+      "proteinG": 21,
+      "carbsG": 73,
+      "fatG": 22.1,
+      "fiberG": 7.8
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "poke-bowl-tofu-edamame-mangue",
+    "name": "Poke bowl au tofu mariné, edamame et mangue",
+    "level": "experiment",
+    "prepMinutes": 25,
+    "cookMinutes": 15,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["soja", "gluten", "sesame", "sulfites"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["printemps", "ete"],
+    "ingredients": [
+      { "name": "riz rond", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "vinaigre de riz", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "tofu nature", "quantity": 400, "unit": "g", "aisle": "frais" },
+      { "name": "sauce soja", "quantity": 4, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "gingembre frais", "quantity": 15, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "edamame surgelés", "quantity": 200, "unit": "g", "aisle": "surgeles" },
+      { "name": "mangue", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "avocat", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "graines de sésame", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz rond 15 minutes, puis assaisonne-le avec le vinaigre de riz et laisse tiédir.",
+      "Coupe le tofu en cubes et fais-le mariner dans la sauce soja et le gingembre râpé pendant la cuisson du riz.",
+      "Fais cuire les edamame 4 minutes dans l'eau bouillante et rafraîchis-les.",
+      "Coupe la mangue, le concombre et l'avocat en dés.",
+      "Compose les bols : riz, tofu et sa marinade, edamame, fruits et légumes, puis parsème de sésame."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 567,
+      "proteinG": 25.5,
+      "carbsG": 69.1,
+      "fatG": 18,
+      "fiberG": 7.3
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "tacos-tofu-chou-rouge-guacamole",
+    "name": "Tacos de tofu épicé, chou rouge et guacamole",
+    "level": "experiment",
+    "prepMinutes": 25,
+    "cookMinutes": 15,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["soja", "gluten"],
+    "mainProtein": "soja-tofu",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      { "name": "tortillas de maïs", "quantity": 12, "unit": "piece", "aisle": "epicerie" },
+      { "name": "tofu nature", "quantity": 400, "unit": "g", "aisle": "frais" },
+      { "name": "paprika fumé", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "chou rouge", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "avocat", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "citron vert", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "oignon rouge", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Émiette le tofu et fais-le dorer 10 minutes dans l'huile avec le paprika fumé, le cumin et du sel, jusqu'à ce qu'il soit croustillant.",
+      "Émince très finement le chou rouge et assaisonne-le avec le jus d'un citron vert et une pincée de sel.",
+      "Écrase les avocats avec le jus du second citron, l'oignon rouge haché fin et la moitié de la coriandre.",
+      "Réchauffe les tortillas 30 secondes par face dans une poêle sèche.",
+      "Garnis chaque tortilla de tofu, chou et guacamole, puis parsème de coriandre."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 634,
+      "proteinG": 20.9,
+      "carbsG": 52.2,
+      "fatG": 34.9,
+      "fiberG": 10.1
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "chakchouka-oeufs-poivrons",
+    "name": "Chakchouka : œufs pochés dans une sauce aux poivrons et tomates",
+    "level": "experiment",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["oeufs"],
+    "mainProtein": "oeufs",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      { "name": "oeufs", "quantity": 8, "unit": "piece", "aisle": "frais" },
+      { "name": "poivrons", "quantity": 3, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "tomates concassées", "quantity": 2, "unit": "boite", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "paprika", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais revenir l'oignon et les poivrons en lanières dans l'huile 10 minutes, ajoute l'ail, le cumin et le paprika.",
+      "Verse les tomates et laisse mijoter 8 minutes, jusqu'à ce que la sauce épaississe.",
+      "Creuse 8 puits dans la sauce et casse un œuf dans chacun.",
+      "Couvre et laisse cuire 6 à 8 minutes : le blanc doit être pris, le jaune reste coulant (prolonge si tu le veux bien cuit).",
+      "Parsème de coriandre et sers dans la poêle."
+    ],
+    "plateBalance": { "vegetables": 0.6, "proteins": 0.4, "starches": 0 },
+    "nutritionPerServing": {
+      "kcal": 305,
+      "proteinG": 18.1,
+      "carbsG": 13.6,
+      "fatG": 19.5,
+      "fiberG": 6.3
+    },
+    "tags": ["plat-unique", "monde", "cru"]
+  },
+  {
+    "id": "okonomiyaki-chou",
+    "name": "Okonomiyaki, la galette japonaise au chou",
+    "level": "experiment",
+    "prepMinutes": 20,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-lactose"],
+    "allergens": ["gluten", "oeufs", "soja", "moutarde", "sesame"],
+    "mainProtein": "oeufs",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      { "name": "chou blanc", "quantity": 500, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "farine de blé", "quantity": 150, "unit": "g", "aisle": "epicerie" },
+      { "name": "oeufs", "quantity": 4, "unit": "piece", "aisle": "frais" },
+      { "name": "eau", "quantity": 15, "unit": "cl", "aisle": "epicerie" },
+      { "name": "oignons nouveaux", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "sauce soja", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "ketchup", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "mayonnaise", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "graines de sésame", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Émince le chou très finement et le blanc des oignons nouveaux.",
+      "Fouette la farine, les œufs et l'eau, puis incorpore le chou et les oignons : la pâte doit juste enrober les légumes.",
+      "Fais cuire 4 galettes épaisses dans l'huile, 5 minutes de chaque côté à feu moyen, jusqu'à ce qu'elles soient dorées et cuites à cœur.",
+      "Mélange le ketchup et la sauce soja pour la sauce.",
+      "Nappe les galettes de sauce, trace des zigzags de mayonnaise et parsème de sésame et de vert d'oignon."
+    ],
+    "plateBalance": { "vegetables": 0.55, "proteins": 0.2, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 403,
+      "proteinG": 14.2,
+      "carbsG": 37.7,
+      "fatG": 20,
+      "fiberG": 7.4
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "saag-paneer-riz-basmati",
+    "name": "Saag paneer (épinards et fromage indien) et riz basmati",
+    "level": "experiment",
+    "prepMinutes": 15,
+    "cookMinutes": 25,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-gluten"],
+    "allergens": ["lait"],
+    "mainProtein": "fromage",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "paneer", "quantity": 400, "unit": "g", "aisle": "frais" },
+      { "name": "épinards surgelés", "quantity": 800, "unit": "g", "aisle": "surgeles" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "garam masala", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "yaourt nature", "quantity": 1, "unit": "piece", "aisle": "frais" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Coupe le paneer en cubes et fais-le dorer 5 minutes dans 1 cuillère d'huile, puis réserve.",
+      "Fais revenir les oignons, l'ail et le gingembre hachés dans le reste d'huile 5 minutes avec le cumin et le garam masala.",
+      "Ajoute les épinards et laisse cuire 10 minutes, puis mixe grossièrement avec le yaourt.",
+      "Remets le paneer dans la sauce 5 minutes, sale, et sers avec le riz basmati cuit en parallèle."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 613,
+      "proteinG": 28.3,
+      "carbsG": 59.4,
+      "fatG": 27,
+      "fiberG": 7.6
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "spanakopita-epinards-feta",
+    "name": "Spanakopita, feuilleté grec aux épinards et à la feta",
+    "level": "experiment",
+    "prepMinutes": 30,
+    "cookMinutes": 35,
+    "servings": 6,
+    "diets": ["omnivore", "flexitarien", "vegetarien"],
+    "allergens": ["gluten", "lait", "oeufs"],
+    "mainProtein": "fromage",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "pâte filo", "quantity": 250, "unit": "g", "aisle": "frais" },
+      { "name": "épinards surgelés", "quantity": 800, "unit": "g", "aisle": "surgeles" },
+      { "name": "feta", "quantity": 200, "unit": "g", "aisle": "frais" },
+      { "name": "oeufs", "quantity": 2, "unit": "piece", "aisle": "frais" },
+      { "name": "oignons nouveaux", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "aneth", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 4, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais décongeler les épinards et presse-les très fort pour retirer toute l'eau.",
+      "Mélange-les avec la feta émiettée, les œufs battus, les oignons nouveaux et l'aneth ciselés, et du poivre.",
+      "Préchauffe le four à 180 °C. Huile un moule, puis superpose la moitié des feuilles de filo en badigeonnant chacune d'huile.",
+      "Étale la farce, recouvre avec le reste des feuilles huilées et entaille le dessus en parts.",
+      "Enfourne 35 minutes, jusqu'à ce que ce soit bien doré. Laisse tiédir 10 minutes avant de couper."
+    ],
+    "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 378,
+      "proteinG": 14.3,
+      "carbsG": 26.4,
+      "fatG": 22.4,
+      "fiberG": 5.2
+    },
+    "tags": ["four", "batch", "restes", "monde"]
+  },
+  {
+    "id": "poulet-tikka-masala-riz",
+    "name": "Poulet tikka masala et riz basmati",
+    "level": "experiment",
+    "prepMinutes": 20,
+    "cookMinutes": 30,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten"],
+    "allergens": ["lait"],
+    "mainProtein": "volaille",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "filets de poulet",
+        "quantity": 500,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "yaourt nature", "quantity": 2, "unit": "piece", "aisle": "frais" },
+      { "name": "garam masala", "quantity": 3, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "crème fraîche légère", "quantity": 10, "unit": "cl", "aisle": "frais" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais mariner le poulet en cubes au moins 1 heure au frais avec le yaourt, la moitié du garam masala, l'ail et le gingembre râpés.",
+      "Fais dorer le poulet égoutté dans 1 cuillère d'huile 6 minutes à feu vif, puis réserve.",
+      "Fais revenir les oignons hachés dans le reste d'huile 8 minutes avec le reste du garam masala, ajoute les tomates et laisse mijoter 10 minutes.",
+      "Mixe la sauce, ajoute la crème et le poulet, et laisse mijoter 8 minutes : le poulet doit être cuit à cœur.",
+      "Sers avec le riz basmati et la coriandre."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.35, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 537,
+      "proteinG": 38.9,
+      "carbsG": 58.6,
+      "fatG": 15,
+      "fiberG": 4.9
+    },
+    "tags": ["restes", "monde"]
+  },
+  {
+    "id": "poulet-yassa-riz",
+    "name": "Poulet yassa au citron et aux oignons",
+    "level": "experiment",
+    "prepMinutes": 20,
+    "cookMinutes": 40,
+    "servings": 4,
+    "diets": ["omnivore", "sans-gluten", "sans-lactose"],
+    "allergens": ["moutarde"],
+    "mainProtein": "volaille",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "hauts de cuisse de poulet",
+        "quantity": 8,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "oignon", "quantity": 5, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "citron", "quantity": 3, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "moutarde", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "piment de Cayenne", "quantity": 1, "unit": "pincee", "aisle": "epicerie" },
+      { "name": "carottes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "feuilles de laurier", "quantity": 2, "unit": "piece", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "La veille ou 2 heures avant, fais mariner le poulet avec les oignons émincés, le jus des citrons, la moutarde, l'ail, le piment et du sel.",
+      "Égoutte le poulet et fais-le dorer 8 minutes dans l'huile, puis réserve.",
+      "Fais fondre les oignons de la marinade 15 minutes jusqu'à ce qu'ils soient bien tendres.",
+      "Remets le poulet avec le jus de la marinade, les carottes en rondelles, le laurier et un verre d'eau, puis laisse mijoter 25 minutes.",
+      "Sers avec le riz : la sauce doit être bien acidulée."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 791,
+      "proteinG": 41.7,
+      "carbsG": 60.8,
+      "fatG": 40.2,
+      "fiberG": 5.6
+    },
+    "tags": ["batch", "restes", "monde"]
+  },
+  {
+    "id": "tajine-poulet-citrons-confits-olives",
+    "name": "Tajine de poulet aux citrons confits et olives",
+    "level": "experiment",
+    "prepMinutes": 20,
+    "cookMinutes": 50,
+    "servings": 4,
+    "diets": ["omnivore", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "volaille",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "cuisses de poulet",
+        "quantity": 4,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "citrons confits", "quantity": 2, "unit": "piece", "aisle": "epicerie" },
+      { "name": "olives vertes", "quantity": 100, "unit": "g", "aisle": "epicerie" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "gingembre moulu", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "pommes de terre", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais dorer les cuisses de poulet dans l'huile 8 minutes, dans un tajine ou une cocotte.",
+      "Ajoute les oignons émincés, l'ail, le gingembre et le curcuma, et fais revenir 5 minutes.",
+      "Ajoute les carottes et les pommes de terre en gros morceaux, deux verres d'eau, couvre et laisse mijoter 30 minutes.",
+      "Ajoute les citrons confits en quartiers et les olives rincées, puis poursuis 10 minutes à découvert.",
+      "Parsème de coriandre : le poulet doit se détacher tout seul de l'os."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 616,
+      "proteinG": 34.6,
+      "carbsG": 34.5,
+      "fatG": 35.3,
+      "fiberG": 8.7
+    },
+    "tags": ["plat-unique", "batch", "restes", "monde"]
+  },
+  {
+    "id": "ceviche-daurade-patate-douce",
+    "name": "Ceviche de daurade, patate douce et maïs",
+    "level": "experiment",
+    "prepMinutes": 25,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons"],
+    "mainProtein": "poisson",
+    "seasons": ["printemps", "ete"],
+    "ingredients": [
+      {
+        "name": "filets de daurade",
+        "quantity": 500,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "citron vert", "quantity": 6, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "oignon rouge", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "piment rouge", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "patates douces", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "maïs doux", "quantity": 1, "unit": "boite", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire les patates douces en rondelles 20 minutes à la vapeur, puis laisse refroidir.",
+      "Choisis une daurade extra-fraîche spéciale cru, retire peau et arêtes, et coupe-la en cubes de 1,5 cm.",
+      "Couvre le poisson du jus des citrons verts avec l'oignon rouge émincé, le piment haché et du sel : laisse « cuire » 15 minutes au frais.",
+      "Ajoute le concombre en dés et la coriandre.",
+      "Sers bien frais avec la patate douce et le maïs égoutté."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.35, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 370,
+      "proteinG": 28.7,
+      "carbsG": 45.6,
+      "fatG": 4.6,
+      "fiberG": 11.2
+    },
+    "tags": ["monde", "cru"]
+  },
+  {
+    "id": "saumon-teriyaki-brocoli-riz",
+    "name": "Saumon laqué teriyaki maison, brocoli et riz",
+    "level": "experiment",
+    "prepMinutes": 15,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-lactose"],
+    "allergens": ["poissons", "soja", "gluten", "sesame"],
+    "mainProtein": "poisson",
+    "seasons": ["ete", "automne"],
+    "ingredients": [
+      {
+        "name": "pavés de saumon",
+        "quantity": 4,
+        "unit": "piece",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "sauce soja", "quantity": 4, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "miel", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "brocoli", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "riz rond", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "graines de sésame", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz rond 15 minutes et le brocoli en bouquets 6 minutes à la vapeur.",
+      "Mélange la sauce soja, le miel, le gingembre râpé, l'ail haché et 3 cuillères d'eau : c'est la sauce teriyaki.",
+      "Fais dorer le saumon côté peau dans l'huile 4 minutes, retourne-le, puis verse la sauce.",
+      "Laisse réduire 3 à 4 minutes en arrosant le saumon jusqu'à ce qu'il soit laqué et cuit à cœur.",
+      "Sers avec le riz et le brocoli, parsemé de sésame."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 571,
+      "proteinG": 35.9,
+      "carbsG": 55,
+      "fatG": 21.3,
+      "fiberG": 5.7
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "bo-bun-boeuf-citronnelle",
+    "name": "Bò bún au bœuf citronnelle",
+    "level": "experiment",
+    "prepMinutes": 30,
+    "cookMinutes": 15,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons", "arachides"],
+    "mainProtein": "boeuf",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "rumsteck", "quantity": 400, "unit": "g", "aisle": "boucherie-poissonnerie" },
+      { "name": "citronnelle", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "nuoc-mâm", "quantity": 4, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "sucre de canne", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "citron vert", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "vermicelles de riz", "quantity": 250, "unit": "g", "aisle": "epicerie" },
+      { "name": "salade verte", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "cacahuètes", "quantity": 50, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais mariner le bœuf en fines lanières avec la citronnelle hachée, l'ail et 1 cuillère de nuoc-mâm pendant 20 minutes.",
+      "Prépare la sauce : le reste de nuoc-mâm, le sucre, le jus des citrons verts et 6 cuillères d'eau.",
+      "Fais cuire les vermicelles 4 minutes dans l'eau bouillante, puis rince-les à l'eau froide.",
+      "Coupe la salade, les carottes et le concombre en julienne, et fais sauter le bœuf 3 minutes à feu très vif dans l'huile, jusqu'à ce qu'il soit cuit.",
+      "Dans chaque bol : salade, vermicelles, légumes, bœuf, menthe, cacahuètes concassées, et la sauce à verser."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 550,
+      "proteinG": 35.1,
+      "carbsG": 68,
+      "fatG": 13.4,
+      "fiberG": 6.6
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "boeuf-bulgogi-riz-chou-chinois",
+    "name": "Bœuf bulgogi, riz et chou chinois sauté",
+    "level": "experiment",
+    "prepMinutes": 20,
+    "cookMinutes": 15,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-lactose"],
+    "allergens": ["soja", "gluten", "sesame"],
+    "mainProtein": "boeuf",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      { "name": "rumsteck", "quantity": 500, "unit": "g", "aisle": "boucherie-poissonnerie" },
+      { "name": "sauce soja", "quantity": 5, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "poire", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "huile de sésame", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "oignons nouveaux", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "carottes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "chou chinois", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "riz rond", "quantity": 280, "unit": "g", "aisle": "epicerie" },
+      { "name": "graines de sésame", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Râpe la poire et mélange-la avec la sauce soja, l'ail, le gingembre et l'huile de sésame.",
+      "Coupe le bœuf en tranches très fines et fais-le mariner au moins 30 minutes dans ce mélange.",
+      "Fais cuire le riz rond 15 minutes.",
+      "Saisis le bœuf égoutté par petites quantités dans une poêle très chaude 2 minutes, jusqu'à ce qu'il soit bien cuit et caramélisé.",
+      "Fais sauter les carottes en julienne et le chou chinois émincé 4 minutes avec un peu de marinade, puis sers avec le riz, les oignons nouveaux et le sésame."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 522,
+      "proteinG": 38.8,
+      "carbsG": 68.2,
+      "fatG": 9.3,
+      "fiberG": 7
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "boeuf-stroganoff-tagliatelles",
+    "name": "Bœuf Stroganoff aux champignons et tagliatelles",
+    "level": "experiment",
+    "prepMinutes": 20,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien"],
+    "allergens": ["lait", "gluten", "oeufs", "moutarde"],
+    "mainProtein": "boeuf",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "rumsteck", "quantity": 500, "unit": "g", "aisle": "boucherie-poissonnerie" },
+      { "name": "champignons de Paris", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "crème fraîche légère", "quantity": 20, "unit": "cl", "aisle": "frais" },
+      { "name": "moutarde", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "paprika", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "tagliatelles aux œufs", "quantity": 320, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Coupe le bœuf en fines lanières et saupoudre-les de paprika.",
+      "Saisis-le 2 minutes à feu très vif dans l'huile, par petites quantités, puis réserve.",
+      "Fais revenir les oignons émincés 5 minutes, ajoute les champignons et poursuis 6 minutes.",
+      "Ajoute la crème et la moutarde, remets le bœuf et réchauffe 3 minutes, jusqu'à ce qu'il soit cuit.",
+      "Sers sur les tagliatelles cuites, parsemé de persil."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.3, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 618,
+      "proteinG": 45.3,
+      "carbsG": 62.9,
+      "fatG": 18.9,
+      "fiberG": 5.6
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "porc-caramel-vietnamien",
+    "name": "Porc au caramel à la vietnamienne",
+    "level": "experiment",
+    "prepMinutes": 15,
+    "cookMinutes": 45,
+    "servings": 4,
+    "diets": ["omnivore", "sans-gluten", "sans-lactose"],
+    "allergens": ["poissons"],
+    "mainProtein": "porc",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "échine de porc", "quantity": 600, "unit": "g", "aisle": "boucherie-poissonnerie" },
+      { "name": "sucre", "quantity": 60, "unit": "g", "aisle": "epicerie" },
+      { "name": "nuoc-mâm", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "échalote", "quantity": 3, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "eau", "quantity": 25, "unit": "cl", "aisle": "epicerie" },
+      { "name": "pak choï", "quantity": 4, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "riz jasmin", "quantity": 240, "unit": "g", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Coupe l'échine en cubes de 3 cm.",
+      "Dans une cocotte, fais fondre le sucre à sec jusqu'à obtenir un caramel ambré, puis verse l'eau chaude avec précaution (ça éclabousse).",
+      "Ajoute le porc, les échalotes et l'ail émincés, et le nuoc-mâm, puis laisse mijoter 40 minutes à couvert, et 5 minutes à découvert pour laquer.",
+      "Fais cuire le riz jasmin, et le pak choï coupé en deux 4 minutes à la vapeur.",
+      "Sers le porc nappé de sa sauce, avec le riz et le pak choï."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": { "kcal": 678, "proteinG": 34, "carbsG": 68.9, "fatG": 29, "fiberG": 3 },
+    "tags": ["batch", "restes", "monde"]
+  },
+  {
+    "id": "tacos-al-pastor-ananas",
+    "name": "Tacos al pastor : porc mariné à l'ananas",
+    "level": "experiment",
+    "prepMinutes": 25,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-lactose"],
+    "allergens": ["gluten"],
+    "mainProtein": "porc",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "filet mignon de porc",
+        "quantity": 500,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "ananas", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "tortillas de maïs", "quantity": 12, "unit": "piece", "aisle": "epicerie" },
+      { "name": "oignon rouge", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "citron vert", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "paprika fumé", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "ail", "quantity": 2, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "piment de Cayenne", "quantity": 1, "unit": "pincee", "aisle": "epicerie" },
+      { "name": "chou rouge", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Coupe le porc en fines lanières et fais-le mariner 30 minutes avec le paprika, le cumin, l'ail, le piment, l'huile et le jus d'un citron vert.",
+      "Coupe l'ananas en petits dés et fais-le caraméliser 5 minutes dans une poêle chaude, puis réserve.",
+      "Saisis le porc dans la même poêle 6 à 8 minutes à feu vif, jusqu'à ce qu'il soit bien doré et cuit à cœur.",
+      "Émince finement le chou rouge et l'oignon, et réchauffe les tortillas.",
+      "Garnis les tortillas de porc, ananas, chou, oignon et coriandre, avec un quartier de citron vert."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": { "kcal": 516, "proteinG": 33, "carbsG": 61, "fatG": 14, "fiberG": 7.8 },
+    "tags": ["monde"]
+  },
+  {
+    "id": "paella-fruits-de-mer",
+    "name": "Paella aux fruits de mer",
+    "level": "experiment",
+    "prepMinutes": 25,
+    "cookMinutes": 35,
+    "servings": 4,
+    "diets": ["omnivore", "sans-gluten", "sans-lactose"],
+    "allergens": ["crustaces", "mollusques"],
+    "mainProtein": "fruits-de-mer",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "riz rond", "quantity": 300, "unit": "g", "aisle": "epicerie" },
+      {
+        "name": "crevettes crues décortiquées",
+        "quantity": 300,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "moules", "quantity": 1, "unit": "kg", "aisle": "boucherie-poissonnerie" },
+      {
+        "name": "anneaux de calamar",
+        "quantity": 300,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "poivrons", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "petits pois surgelés", "quantity": 150, "unit": "g", "aisle": "surgeles" },
+      { "name": "tomates", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "safran", "quantity": 1, "unit": "pincee", "aisle": "epicerie" },
+      { "name": "paprika", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "eau", "quantity": 80, "unit": "cl", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Fais ouvrir les moules nettoyées 5 minutes à couvert avec un verre d'eau, puis filtre et garde le jus.",
+      "Dans une grande poêle, fais revenir les calamars dans l'huile 3 minutes, puis l'oignon, l'ail et le poivron 5 minutes.",
+      "Ajoute les tomates râpées, le paprika et le riz, et mélange 2 minutes.",
+      "Verse l'eau, le jus des moules et le safran, puis laisse cuire 18 minutes sans remuer.",
+      "Ajoute les crevettes et les petits pois enfoncés dans le riz, puis les moules, et poursuis 5 minutes. Sers avec le citron."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.35, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 605,
+      "proteinG": 41.3,
+      "carbsG": 74,
+      "fatG": 14.7,
+      "fiberG": 5.8
+    },
+    "tags": ["plat-unique", "monde"]
+  },
+  {
+    "id": "curry-crevettes-coco-kerala",
+    "name": "Curry de crevettes au lait de coco, façon Kerala",
+    "level": "experiment",
+    "prepMinutes": 15,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
+    "allergens": ["crustaces", "moutarde"],
+    "mainProtein": "fruits-de-mer",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "crevettes crues décortiquées",
+        "quantity": 500,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "lait de coco", "quantity": 40, "unit": "cl", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "tomates concassées", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "gingembre frais", "quantity": 20, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 3, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "curcuma", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "cumin", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      {
+        "name": "graines de moutarde",
+        "quantity": 1,
+        "unit": "cuillere-cafe",
+        "aisle": "epicerie"
+      },
+      { "name": "épinards surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" },
+      { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "coriandre fraîche", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Fais crépiter les graines de moutarde 1 minute dans l'huile chaude, à couvert.",
+      "Ajoute les oignons émincés et fais-les dorer 8 minutes, puis l'ail, le gingembre, le curcuma et le cumin.",
+      "Verse les tomates, le lait de coco et les épinards, et laisse mijoter 8 minutes.",
+      "Ajoute les crevettes et fais-les cuire 3 à 4 minutes, jusqu'à ce qu'elles soient bien roses.",
+      "Sers avec le riz basmati et la coriandre."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 685,
+      "proteinG": 35.9,
+      "carbsG": 66.8,
+      "fatG": 29.1,
+      "fiberG": 7.6
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "tajine-agneau-pruneaux-amandes",
+    "name": "Tajine d'agneau aux pruneaux, butternut et amandes",
+    "level": "experiment",
+    "prepMinutes": 25,
+    "cookMinutes": 90,
+    "servings": 6,
+    "diets": ["omnivore", "sans-lactose"],
+    "allergens": ["fruits-a-coque", "sulfites", "gluten"],
+    "mainProtein": "agneau",
+    "seasons": ["automne", "hiver"],
+    "ingredients": [
+      {
+        "name": "épaule d'agneau désossée",
+        "quantity": 900,
+        "unit": "g",
+        "aisle": "boucherie-poissonnerie"
+      },
+      { "name": "pruneaux", "quantity": 200, "unit": "g", "aisle": "epicerie" },
+      { "name": "amandes émondées", "quantity": 60, "unit": "g", "aisle": "epicerie" },
+      { "name": "oignon", "quantity": 3, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "cannelle", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "gingembre moulu", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "miel", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "courge butternut", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "semoule", "quantity": 360, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "eau", "quantity": 50, "unit": "cl", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Coupe l'agneau en gros cubes et fais-le dorer dans l'huile, puis ajoute les oignons émincés, la cannelle et le gingembre.",
+      "Verse l'eau, couvre et laisse mijoter 1 heure à feu doux.",
+      "Ajoute la butternut en cubes, les pruneaux et le miel, puis poursuis 30 minutes.",
+      "Fais dorer les amandes à sec 3 minutes, et prépare la semoule avec le même volume d'eau bouillante salée.",
+      "Sers le tajine parsemé d'amandes, avec la semoule. Il est encore meilleur réchauffé."
+    ],
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.3, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 722,
+      "proteinG": 38.9,
+      "carbsG": 76.5,
+      "fatG": 27.1,
+      "fiberG": 8.2
+    },
+    "tags": ["batch", "restes", "monde"]
+  },
+  {
+    "id": "keftas-agneau-yaourt-menthe-boulgour",
+    "name": "Keftas d'agneau, sauce yaourt à la menthe et boulgour aux légumes",
+    "level": "experiment",
+    "prepMinutes": 25,
+    "cookMinutes": 20,
+    "servings": 4,
+    "diets": ["omnivore", "flexitarien"],
+    "allergens": ["lait", "gluten"],
+    "mainProtein": "agneau",
+    "seasons": ["ete"],
+    "ingredients": [
+      { "name": "agneau haché", "quantity": 500, "unit": "g", "aisle": "boucherie-poissonnerie" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "persil", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "menthe", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "cumin", "quantity": 2, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "yaourt nature", "quantity": 2, "unit": "piece", "aisle": "frais" },
+      { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "boulgour", "quantity": 240, "unit": "g", "aisle": "epicerie" },
+      { "name": "tomates", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "courgettes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Mélange l'agneau avec l'oignon râpé, la moitié du persil et de la menthe hachés, le cumin, sel et poivre, puis forme des keftas allongées.",
+      "Fais cuire le boulgour 12 minutes, et fais revenir les courgettes et les tomates en dés dans 1 cuillère d'huile 8 minutes, puis mélange-les au boulgour.",
+      "Fais griller les keftas dans le reste d'huile 8 à 10 minutes en les retournant, jusqu'à ce qu'elles soient bien cuites à cœur.",
+      "Mélange le yaourt avec le concombre râpé, l'ail, le reste de menthe et une pincée de sel.",
+      "Sers les keftas avec le boulgour aux légumes et la sauce yaourt."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 576,
+      "proteinG": 35.1,
+      "carbsG": 51.6,
+      "fatG": 23.3,
+      "fiberG": 9.7
+    },
+    "tags": ["monde"]
+  },
+  {
+    "id": "porridge-pomme-cannelle",
+    "name": "Porridge à la pomme et à la cannelle",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 5,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien"],
+    "allergens": ["gluten", "lait"],
+    "mainProtein": "aucune",
+    "seasons": ["automne", "hiver", "printemps"],
+    "ingredients": [
+      { "name": "flocons d'avoine", "quantity": 80, "unit": "g", "aisle": "epicerie" },
+      { "name": "lait demi-écrémé", "quantity": 40, "unit": "cl", "aisle": "frais" },
+      { "name": "pommes", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "cannelle", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "miel", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais chauffer le lait avec les flocons d'avoine et la cannelle 5 minutes à feu doux, en remuant.",
+      "Pendant ce temps, râpe la pomme ou coupe-la en petits dés.",
+      "Ajoute la pomme au porridge et verse dans deux bols.",
+      "Termine par un filet de miel."
+    ],
+    "plateBalance": { "vegetables": 0.25, "proteins": 0.25, "starches": 0.5 },
+    "nutritionPerServing": {
+      "kcal": 324,
+      "proteinG": 11.7,
+      "carbsG": 51,
+      "fatG": 6.5,
+      "fiberG": 6.1
+    },
+    "tags": ["petit-dejeuner", "rapide"]
+  },
+  {
+    "id": "overnight-oats-fruits-rouges",
+    "name": "Overnight oats aux fruits rouges",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 0,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["gluten", "soja"],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "flocons d'avoine", "quantity": 80, "unit": "g", "aisle": "epicerie" },
+      { "name": "boisson au soja nature", "quantity": 30, "unit": "cl", "aisle": "frais" },
+      { "name": "framboises surgelées", "quantity": 150, "unit": "g", "aisle": "surgeles" },
+      { "name": "graines de chia", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "sirop d'érable", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Le soir, mélange les flocons d'avoine, les graines de chia, la boisson au soja et le sirop d'érable dans deux bocaux.",
+      "Ajoute les fruits rouges encore surgelés par-dessus.",
+      "Ferme et laisse reposer toute la nuit au réfrigérateur.",
+      "Le matin, mélange et savoure : c'est prêt !"
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.2, "starches": 0.5 },
+    "nutritionPerServing": {
+      "kcal": 330,
+      "proteinG": 12,
+      "carbsG": 38,
+      "fatG": 10.7,
+      "fiberG": 12.9
+    },
+    "tags": ["petit-dejeuner", "rapide", "sans-cuisson", "batch"]
+  },
+  {
+    "id": "tartines-puree-cacahuete-banane",
+    "name": "Tartines de pain complet, purée de cacahuète et banane",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 0,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-lactose"],
+    "allergens": ["gluten", "arachides"],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "pain complet", "quantity": 4, "unit": "tranche", "aisle": "boulangerie" },
+      {
+        "name": "purée de cacahuète",
+        "quantity": 2,
+        "unit": "cuillere-soupe",
+        "aisle": "epicerie"
+      },
+      { "name": "banane", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Fais griller les tranches de pain si tu aimes le croustillant.",
+      "Tartine-les de purée de cacahuète.",
+      "Ajoute la banane en rondelles et déguste."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.2, "starches": 0.5 },
+    "nutritionPerServing": {
+      "kcal": 395,
+      "proteinG": 11.8,
+      "carbsG": 59.4,
+      "fatG": 10.2,
+      "fiberG": 9.9
+    },
+    "tags": ["petit-dejeuner", "rapide", "sans-cuisson"]
+  },
+  {
+    "id": "oeufs-brouilles-avocat-pain-complet",
+    "name": "Œufs brouillés, avocat et pain complet",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 5,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-lactose"],
+    "allergens": ["oeufs", "gluten"],
+    "mainProtein": "oeufs",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "oeufs", "quantity": 4, "unit": "piece", "aisle": "frais" },
+      { "name": "avocat", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "pain complet", "quantity": 2, "unit": "tranche", "aisle": "boulangerie" },
+      { "name": "ciboulette", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Bats les œufs avec un peu de sel et de poivre.",
+      "Fais-les cuire à feu doux dans l'huile en remuant sans cesse 4 à 5 minutes, jusqu'à ce qu'ils soient bien pris.",
+      "Fais griller le pain et écrase l'avocat dessus.",
+      "Sers les œufs parsemés de ciboulette avec les tartines."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.4, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 413,
+      "proteinG": 18.9,
+      "carbsG": 16.8,
+      "fatG": 28.2,
+      "fiberG": 5.7
+    },
+    "tags": ["petit-dejeuner", "rapide"]
+  },
+  {
+    "id": "fromage-blanc-pomme-noix",
+    "name": "Fromage blanc, pomme râpée et noix",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 0,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-gluten"],
+    "allergens": ["lait", "fruits-a-coque"],
+    "mainProtein": "aucune",
+    "seasons": ["automne", "hiver", "printemps"],
+    "ingredients": [
+      { "name": "fromage blanc nature", "quantity": 300, "unit": "g", "aisle": "frais" },
+      { "name": "pommes", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "cerneaux de noix", "quantity": 30, "unit": "g", "aisle": "epicerie" },
+      { "name": "miel", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "cannelle", "quantity": 1, "unit": "pincee", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Répartis le fromage blanc dans deux bols.",
+      "Râpe la pomme par-dessus.",
+      "Ajoute les noix concassées, le miel et la cannelle."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.45, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 296,
+      "proteinG": 13.2,
+      "carbsG": 24.2,
+      "fatG": 15.1,
+      "fiberG": 2.2
+    },
+    "tags": ["petit-dejeuner", "rapide", "sans-cuisson"]
+  },
+  {
+    "id": "smoothie-bowl-banane-fruits-rouges",
+    "name": "Smoothie bowl banane et fruits rouges",
+    "level": "simple",
+    "prepMinutes": 10,
+    "cookMinutes": 0,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["soja"],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "banane", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "framboises surgelées", "quantity": 200, "unit": "g", "aisle": "surgeles" },
+      { "name": "boisson au soja nature", "quantity": 20, "unit": "cl", "aisle": "frais" },
+      { "name": "graines de chia", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Mixe une banane avec les framboises surgelées et la boisson au soja jusqu'à obtenir une texture épaisse.",
+      "Verse dans deux bols.",
+      "Ajoute l'autre banane en rondelles et les graines de chia."
+    ],
+    "plateBalance": { "vegetables": 0.5, "proteins": 0.2, "starches": 0.3 },
+    "nutritionPerServing": {
+      "kcal": 251,
+      "proteinG": 7.7,
+      "carbsG": 32.3,
+      "fatG": 7.2,
+      "fiberG": 12.4
+    },
+    "tags": ["petit-dejeuner", "rapide", "sans-cuisson"]
+  },
+  {
+    "id": "pancakes-banane-avoine",
+    "name": "Pancakes à la banane et aux flocons d'avoine",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 10,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "sans-lactose"],
+    "allergens": ["gluten", "oeufs"],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "banane", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "oeufs", "quantity": 2, "unit": "piece", "aisle": "frais" },
+      { "name": "flocons d'avoine", "quantity": 60, "unit": "g", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "sirop d'érable", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Écrase les bananes à la fourchette, puis mélange-les avec les œufs et les flocons d'avoine.",
+      "Fais chauffer une poêle légèrement huilée.",
+      "Verse des petites louches de pâte et fais cuire 2 minutes de chaque côté, jusqu'à ce que les pancakes soient bien cuits.",
+      "Sers avec un filet de sirop d'érable."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.3, "starches": 0.4 },
+    "nutritionPerServing": {
+      "kcal": 340,
+      "proteinG": 11.5,
+      "carbsG": 47.7,
+      "fatG": 10.6,
+      "fiberG": 6.6
+    },
+    "tags": ["petit-dejeuner", "rapide"]
+  },
+  {
+    "id": "chia-pudding-coco-mangue",
+    "name": "Chia pudding au lait de coco et à la mangue",
+    "level": "simple",
+    "prepMinutes": 10,
+    "cookMinutes": 0,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "graines de chia", "quantity": 50, "unit": "g", "aisle": "epicerie" },
+      { "name": "lait de coco", "quantity": 20, "unit": "cl", "aisle": "epicerie" },
+      { "name": "eau", "quantity": 10, "unit": "cl", "aisle": "epicerie" },
+      { "name": "mangue", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "sirop d'érable", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "La veille, mélange les graines de chia avec le lait de coco, l'eau et le sirop d'érable.",
+      "Remue de nouveau après 10 minutes pour éviter les grumeaux, puis laisse prendre au frais toute la nuit.",
+      "Le matin, coupe la mangue en dés et dépose-la sur le pudding."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.2, "starches": 0.4 },
+    "nutritionPerServing": {
+      "kcal": 446,
+      "proteinG": 7,
+      "carbsG": 34.4,
+      "fatG": 27.6,
+      "fiberG": 11.8
+    },
+    "tags": ["petit-dejeuner", "rapide", "sans-cuisson", "batch"]
+  },
+  {
+    "id": "dessert-soja-compote-graines-courge",
+    "name": "Dessert au soja, compote de pommes et graines de courge",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 0,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": ["soja"],
+    "mainProtein": "aucune",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "dessert au soja nature", "quantity": 2, "unit": "piece", "aisle": "frais" },
+      {
+        "name": "compote de pommes sans sucres ajoutés",
+        "quantity": 200,
+        "unit": "g",
+        "aisle": "epicerie"
+      },
+      { "name": "graines de courge", "quantity": 30, "unit": "g", "aisle": "epicerie" },
+      { "name": "cannelle", "quantity": 1, "unit": "pincee", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Verse un dessert au soja dans chaque bol.",
+      "Ajoute la compote de pommes.",
+      "Parsème de graines de courge et d'une pincée de cannelle."
+    ],
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.35, "starches": 0.25 },
+    "nutritionPerServing": {
+      "kcal": 205,
+      "proteinG": 10.3,
+      "carbsG": 15,
+      "fatG": 10,
+      "fiberG": 3.7
+    },
+    "tags": ["petit-dejeuner", "rapide", "sans-cuisson"]
+  },
+  {
+    "id": "oeufs-coque-mouillettes-orange",
+    "name": "Œufs à la coque, mouillettes et orange",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 4,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien"],
+    "allergens": ["oeufs", "gluten", "lait"],
+    "mainProtein": "oeufs",
+    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "ingredients": [
+      { "name": "oeufs", "quantity": 4, "unit": "piece", "aisle": "frais" },
+      { "name": "pain complet", "quantity": 4, "unit": "tranche", "aisle": "boulangerie" },
+      { "name": "beurre", "quantity": 15, "unit": "g", "aisle": "frais" },
+      { "name": "orange", "quantity": 2, "unit": "piece", "aisle": "fruits-legumes" }
+    ],
+    "steps": [
+      "Plonge les œufs à température ambiante dans l'eau bouillante et compte 3 minutes 30 pour un jaune coulant.",
+      "Pendant ce temps, fais griller le pain, beurre-le légèrement et coupe-le en mouillettes.",
+      "Coupe les oranges en quartiers.",
+      "Sers les œufs dans des coquetiers avec les mouillettes et l'orange."
+    ],
+    "plateBalance": { "vegetables": 0.3, "proteins": 0.35, "starches": 0.35 },
+    "nutritionPerServing": {
+      "kcal": 461,
+      "proteinG": 22.2,
+      "carbsG": 45.1,
+      "fatG": 19.1,
+      "fiberG": 9.9
+    },
+    "tags": ["petit-dejeuner", "rapide", "cru"]
   }
 ]
