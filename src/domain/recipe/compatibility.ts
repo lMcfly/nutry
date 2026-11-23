@@ -1,4 +1,5 @@
 import { containsTerm } from '../shared';
+import { expandFoodTerm } from './food-terms';
 import type { Allergen, Diet, RecipeTag } from './recipe.constants';
 import type { Recipe } from './recipe.types';
 
@@ -51,11 +52,15 @@ export function matchesDiets(recipe: Recipe, diets: readonly Diet[]): boolean {
   return diets.every((d) => recipe.diets.includes(d));
 }
 
-/** Vrai si `term` désigne un ingrédient ou la protéine principale de la recette. */
+/**
+ * Vrai si `term` (ou l'un de ses synonymes : « viande » → bœuf, poulet…) désigne un
+ * ingrédient ou la protéine principale de la recette.
+ */
 export function recipeMentions(recipe: Recipe, term: string): boolean {
-  return (
-    containsTerm(recipe.mainProtein, term) ||
-    recipe.ingredients.some((ingredient) => containsTerm(ingredient.name, term))
+  return expandFoodTerm(term).some(
+    (t) =>
+      containsTerm(recipe.mainProtein, t) ||
+      recipe.ingredients.some((ingredient) => containsTerm(ingredient.name, t)),
   );
 }
 

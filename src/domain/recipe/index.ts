@@ -52,6 +52,11 @@ export {
   checkDietConsistency,
   checkLevel,
   checkNutrition,
+  checkAllergenDeclarations,
   checkSafetyTags,
 } from './audit';
 export type { RecipeIssue, RecipeIssueCode, RecipeIssueSeverity } from './audit';
+export { CHEESES, FOOD_PREFERENCE_CHIPS, FOOD_SYNONYMS, expandFoodTerm } from './food-terms';
+export type { FoodPreferenceChip } from './food-terms';
+export { ALLERGEN_KEYWORDS, allergensInIngredient } from './allergen-keywords';
+export type { AllergenKeywords } from './allergen-keywords';

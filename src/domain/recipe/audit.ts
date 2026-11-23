@@ -1,4 +1,5 @@
 import { containsAnyTerm } from '../shared';
+import { allergensInIngredient } from './allergen-keywords';
 import { hasTag, isBreakfastRecipe, totalMinutes } from './compatibility';
 import {
   ALCOHOL_TERMS,
@@ -27,7 +28,8 @@ export type RecipeIssueCode =
   | 'proteines-faibles'
   | 'niveau-temps'
   | 'niveau-ingredients'
-  | 'etiquette-alcool-manquante';
+  | 'etiquette-alcool-manquante'
+  | 'allergene-non-declare';
 
 export interface RecipeIssue {
   readonly code: RecipeIssueCode;
@@ -221,6 +223,27 @@ export function checkSafetyTags(recipe: Recipe): RecipeIssue[] {
   ];
 }
 
+/**
+ * Cohérence ingrédients ↔ allergènes (erreurs) : un ingrédient révélant un allergène
+ * (« crème fraîche » → lait, « sauce soja » → soja et gluten…) impose sa déclaration.
+ */
+export function checkAllergenDeclarations(recipe: Recipe): RecipeIssue[] {
+  const issues: RecipeIssue[] = [];
+  for (const ingredient of recipe.ingredients) {
+    for (const allergen of allergensInIngredient(ingredient.name)) {
+      if (!recipe.allergens.includes(allergen)) {
+        issues.push(
+          error(
+            'allergene-non-declare',
+            `« ${ingredient.name} » contient l’allergène « ${allergen} », non déclaré`,
+          ),
+        );
+      }
+    }
+  }
+  return issues;
+}
+
 /** Tous les contrôles d'une recette. */
 export function auditRecipe(recipe: Recipe): RecipeIssue[] {
   return [
@@ -229,5 +252,6 @@ export function auditRecipe(recipe: Recipe): RecipeIssue[] {
     ...checkNutrition(recipe),
     ...checkLevel(recipe),
     ...checkSafetyTags(recipe),
+    ...checkAllergenDeclarations(recipe),
   ];
 }
