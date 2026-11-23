@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import type { Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 const fromRoot = (path: string): string => fileURLToPath(new URL(path, import.meta.url));
@@ -16,6 +17,18 @@ const BASE = '/nutry/';
 const SAGE = '#3d6b4f';
 const CREAM = '#fbf7f0';
 
+/**
+ * La CSP de index.html interdit les scripts en ligne ; or le serveur de développement
+ * injecte le préambule React Refresh en ligne. On la retire donc en `vite` (serve)
+ * uniquement : `vite build` et `vite preview` (e2e) servent la page avec la CSP.
+ */
+const CSP_META = /\s*<meta\s+http-equiv="Content-Security-Policy"[^>]*>/;
+const devWithoutCsp = (): Plugin => ({
+  name: 'nutry:dev-without-csp',
+  apply: 'serve',
+  transformIndexHtml: (html) => html.replace(CSP_META, ''),
+});
+
 export default defineConfig({
   base: BASE,
   resolve: {
@@ -27,13 +40,14 @@ export default defineConfig({
     },
   },
   plugins: [
+    devWithoutCsp(),
     react(),
     VitePWA({
       /*
-       * Mise à jour « douce » : une nouvelle version s'installe en arrière-plan puis attend.
-       * Elle s'active quand l'app est fermée, ou quand elle passe en arrière-plan (onglet
-       * masqué, autre app au premier plan) : jamais sous les doigts de la personne.
-       * L'enregistrement est fait par le script de index.html (virtual:pwa-register).
+       * Mise à jour « douce » : une nouvelle version s'installe en arrière-plan puis attend
+       * la prochaine ouverture de l'app (jamais de rechargement pendant l'utilisation).
+       * L'enregistrement est fait par src/infrastructure/pwa/register.ts, chargé par
+       * index.html (voir serviceWorker.ts et docs/DEPLOIEMENT.md).
        */
       registerType: 'prompt',
       injectRegister: false,

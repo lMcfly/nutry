@@ -17,10 +17,12 @@ function lazy<T>(load: Loader<T>): Loader<T> {
   };
 }
 
-function describeIssues(issues: readonly { path: (string | number)[]; message: string }[]): string {
+function describeIssues(
+  issues: readonly { path: readonly PropertyKey[]; message: string }[],
+): string {
   return issues
     .slice(0, 5)
-    .map((i) => `${i.path.join('.')}: ${i.message}`)
+    .map((i) => `${i.path.map(String).join('.')}: ${i.message}`)
     .join(' ; ');
 }
 

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from './zod';
 import { QUIZ_CATEGORIES, QUIZ_DIFFICULTIES, type QuizQuestion } from '@domain/quiz';
 import {
   AISLES,
@@ -24,7 +24,7 @@ import { SEASONS } from '@domain/season';
 const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const id = z.string().regex(ID_PATTERN, 'identifiant attendu en kebab-case ASCII');
 const nonEmptyText = z.string().trim().min(1);
-const uniqueList = <T extends z.ZodTypeAny>(item: T, minLength = 0) =>
+const uniqueList = <T extends z.ZodType>(item: T, minLength = 0) =>
   z
     .array(item)
     .min(minLength)
@@ -78,11 +78,11 @@ export const recipeSchema: z.ZodType<Recipe> = z
   .superRefine((recipe, ctx) => {
     // Cohérence régime ↔ allergènes / protéine / ingrédients (règles du domain).
     for (const issue of checkDietConsistency(recipe)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['diets'], message: issue.message });
+      ctx.addIssue({ code: 'custom', path: ['diets'], message: issue.message });
     }
     // Un ingrédient révélant un allergène (crème → lait, sauce soja → soja + gluten…) l'impose.
     for (const issue of checkAllergenDeclarations(recipe)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['allergens'], message: issue.message });
+      ctx.addIssue({ code: 'custom', path: ['allergens'], message: issue.message });
     }
   });
 
@@ -108,7 +108,7 @@ const withUniqueIds = <T extends { id: string }>(schema: z.ZodType<T>) =>
     items.forEach((item, index) => {
       if (seen.has(item.id)) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: [index, 'id'],
           message: `identifiant en double : ${item.id}`,
         });

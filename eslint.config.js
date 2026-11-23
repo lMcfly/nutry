@@ -1,4 +1,5 @@
 // @ts-check
+import comments from '@eslint-community/eslint-plugin-eslint-comments';
 import js from '@eslint/js';
 import boundaries from 'eslint-plugin-boundaries';
 import prettier from 'eslint-config-prettier';
@@ -52,19 +53,86 @@ const PURE_CORE_RESTRICTIONS = {
   ],
 };
 
-/** Globals navigateur interdits dans le cœur (domain, application). */
-const BROWSER_GLOBALS = [
-  'window',
-  'document',
-  'navigator',
-  'localStorage',
-  'sessionStorage',
-  'indexedDB',
-  'fetch',
-  'XMLHttpRequest',
-  'location',
-  'crypto',
-].map((name) => ({ name, message: 'Le cœur ne dépend pas du navigateur (ADR 0001).' }));
+/**
+ * Confidentialité (PROMPT §2) : aucune API réseau nulle part dans src/, adaptateurs compris.
+ * `indexedDB` n'est autorisé que dans src/infrastructure/db (Dexie).
+ */
+const NETWORK_MESSAGE = 'Nutry n’envoie aucune donnée : pas d’API réseau dans src/.';
+const NETWORK_APIS = ['fetch', 'XMLHttpRequest', 'WebSocket', 'EventSource'];
+const STORAGE_MESSAGE = 'IndexedDB passe par l’adaptateur src/infrastructure/db.';
+
+/** @param {readonly string[]} names @param {string} message */
+const restrictGlobals = (names, message) => names.map((name) => ({ name, message }));
+
+const NETWORK_GLOBALS = restrictGlobals(NETWORK_APIS, NETWORK_MESSAGE);
+const STORAGE_GLOBALS = restrictGlobals(['indexedDB'], STORAGE_MESSAGE);
+
+/**
+ * Les mêmes API atteintes par un objet global (`window.fetch`, `globalThis.fetch`…) et
+ * `navigator.sendBeacon` (toute forme `x.sendBeacon`).
+ * @param {readonly string[]} names @param {string} message
+ */
+const restrictGlobalProperties = (names, message) =>
+  ['window', 'globalThis', 'self'].flatMap((object) =>
+    names.map((property) => ({ object, property, message })),
+  );
+const NETWORK_PROPERTIES = [
+  ...restrictGlobalProperties(NETWORK_APIS, NETWORK_MESSAGE),
+  { property: 'sendBeacon', message: NETWORK_MESSAGE },
+];
+const STORAGE_PROPERTIES = restrictGlobalProperties(['indexedDB'], STORAGE_MESSAGE);
+
+/** Globals navigateur et d'exécution interdits dans le cœur (domain, application). */
+const BROWSER_GLOBALS = restrictGlobals(
+  [
+    'window',
+    'globalThis',
+    'self',
+    'document',
+    'navigator',
+    'localStorage',
+    'sessionStorage',
+    'indexedDB',
+    'location',
+    'crypto',
+    'performance',
+    'setTimeout',
+    'setInterval',
+    ...NETWORK_APIS,
+  ],
+  'Le cœur ne dépend pas du navigateur (ADR 0001).',
+);
+
+/**
+ * Présentation : liste blanche des paquets (React, routeur). Tout le reste (dexie, zod…)
+ * passe par l'application et ses ports ; les alias @domain, @application, @presentation et
+ * les chemins relatifs (dont les .css / .module.css) sont contrôlés par boundaries.
+ */
+const PRESENTATION_IMPORT_ALLOWLIST =
+  '^(?!(?:react|react-dom|react-dom/client|react-router-dom)$|(?:@domain|@application|@presentation)/|\\.{1,2}/).+';
+const PRESENTATION_TEST_IMPORT_ALLOWLIST =
+  '^(?!(?:react|react-dom|react-dom/client|react-router-dom|vitest|@testing-library/jest-dom/vitest|@testing-library/react|@testing-library/user-event)$|(?:@domain|@application|@presentation)/|\\.{1,2}/).+';
+const PRESENTATION_IMPORT_MESSAGE =
+  'La présentation n’importe que React et react-router-dom : le reste passe par les cas d’usage.';
+/** @param {string} regex */
+const presentationImports = (regex) => ({
+  patterns: [{ regex, message: PRESENTATION_IMPORT_MESSAGE }],
+});
+/** `import()` dynamique : mêmes règles (no-restricted-imports ne le voit pas). */
+const PRESENTATION_DYNAMIC_IMPORTS = [
+  {
+    // esquery ne tolère pas de « / » dans une regex de sélecteur : on l'écrit \x2F.
+    selector: `ImportExpression[source.type='Literal'][source.value=/${PRESENTATION_IMPORT_ALLOWLIST.replaceAll('/', '\\x2F')}/]`,
+    message: PRESENTATION_IMPORT_MESSAGE,
+  },
+  {
+    selector: "ImportExpression[source.type!='Literal']",
+    message: 'Import dynamique avec un chemin calculé interdit dans la présentation.',
+  },
+];
+
+/** Règles interdites de désactivation par commentaire (frontières, confidentialité). */
+const LOCKED_RULES = ['boundaries/*', 'no-restricted-*', '@typescript-eslint/no-restricted-*'];
 
 export default tseslint.config(
   {
@@ -107,6 +175,16 @@ export default tseslint.config(
     rules: {
       'boundaries/dependencies': ['error', LAYER_RULES],
       'boundaries/no-unknown-files': 'error',
+      'no-restricted-globals': ['error', ...NETWORK_GLOBALS, ...STORAGE_GLOBALS],
+      'no-restricted-properties': ['error', ...NETWORK_PROPERTIES, ...STORAGE_PROPERTIES],
+    },
+  },
+  {
+    // Seul l'adaptateur de base de données accède à IndexedDB ; le réseau reste interdit.
+    files: ['src/infrastructure/db/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-globals': ['error', ...NETWORK_GLOBALS],
+      'no-restricted-properties': ['error', ...NETWORK_PROPERTIES],
     },
   },
   {
@@ -119,6 +197,8 @@ export default tseslint.config(
       // Le temps et l'aléa passent par les ports Clock et RandomSource.
       'no-restricted-properties': [
         'error',
+        ...NETWORK_PROPERTIES,
+        ...STORAGE_PROPERTIES,
         { object: 'Date', property: 'now', message: 'Utilise le port Clock.' },
         { object: 'Math', property: 'random', message: 'Utilise le port RandomSource.' },
       ],
@@ -161,19 +241,39 @@ export default tseslint.config(
   {
     // La date du jour vient du port Clock, via le cas d'usage `today()`.
     files: ['src/presentation/**/*.{ts,tsx}'],
-    ignores: ['**/*.test.{ts,tsx}'],
+    ignores: [
+      '**/*.test.{ts,tsx}',
+      'src/presentation/test-setup.ts',
+      'src/presentation/testing/**',
+    ],
     rules: {
+      'no-restricted-imports': ['error', presentationImports(PRESENTATION_IMPORT_ALLOWLIST)],
       'no-restricted-properties': [
         'error',
+        ...NETWORK_PROPERTIES,
+        ...STORAGE_PROPERTIES,
         { object: 'Date', property: 'now', message: 'Utilise le cas d’usage today().' },
       ],
       'no-restricted-syntax': [
         'error',
+        ...PRESENTATION_DYNAMIC_IMPORTS,
         {
           selector: "NewExpression[callee.name='Date'][arguments.length=0]",
           message: 'Utilise le cas d’usage today() (horloge injectée).',
         },
       ],
+    },
+  },
+  {
+    // Tests et outillage de test de la présentation : liste blanche + Vitest, Testing Library.
+    files: [
+      'src/presentation/**/*.test.{ts,tsx}',
+      'src/presentation/test-setup.ts',
+      'src/presentation/testing/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'no-restricted-imports': ['error', presentationImports(PRESENTATION_TEST_IMPORT_ALLOWLIST)],
+      'no-restricted-syntax': ['error', ...PRESENTATION_DYNAMIC_IMPORTS],
     },
   },
   {
@@ -205,6 +305,28 @@ export default tseslint.config(
   {
     files: ['**/*.js'],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    // Les verrous ci-dessus ne se désactivent pas par commentaire.
+    plugins: { '@eslint-community/eslint-comments': comments },
+    rules: {
+      '@eslint-community/eslint-comments/no-restricted-disable': ['error', ...LOCKED_RULES],
+      // `/* eslint règle: off */`, `/* global */`, `/* eslint-env */` : interdits.
+      '@eslint-community/eslint-comments/no-use': [
+        'error',
+        {
+          allow: [
+            'eslint-disable',
+            'eslint-disable-line',
+            'eslint-disable-next-line',
+            'eslint-enable',
+          ],
+        },
+      ],
+      // Toute désactivation nomme ses règles et justifie l'exception.
+      '@eslint-community/eslint-comments/no-unlimited-disable': 'error',
+      '@eslint-community/eslint-comments/no-unused-disable': 'error',
+    },
   },
   prettier,
 );

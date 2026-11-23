@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '../data/zod';
 import type { BackupParseResult, EncryptedPayload } from '@application/ports';
 import { MEAL_SLOTS } from '@domain/mealplan';
 import type {
@@ -47,9 +47,10 @@ export const BACKUP_LIMITS = {
 } as const;
 
 const text = (max: number = BACKUP_LIMITS.shortText) => z.string().max(max);
-const list = <T extends z.ZodTypeAny>(item: T, max: number = BACKUP_LIMITS.list) =>
+const list = <T extends z.ZodType>(item: T, max: number = BACKUP_LIMITS.list) =>
   z.array(item).max(max);
-const num = z.number().finite();
+// Zod 4 : `z.number()` refuse déjà Infinity et NaN.
+const num = z.number();
 const isoDate = z.string().max(10).refine(isIsoDate, 'date AAAA-MM-JJ attendue');
 /**
  * Instant ISO en UTC (`Z`) uniquement, comme `toISOString` : comparable comme une chaîne.
@@ -70,7 +71,7 @@ function unique<T>(key: (item: T) => string, label: string) {
     items.forEach((item, index) => {
       const k = key(item);
       if (seen.has(k)) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: [index], message: `${label} en double` });
+        ctx.addIssue({ code: 'custom', path: [index], message: `${label} en double` });
       }
       seen.add(k);
     });
@@ -262,7 +263,7 @@ function checkCoherence(backup: ParsedBackup, ctx: z.RefinementCtx): void {
   if (!Number.isFinite(limitMs)) return;
   const limitDay = new Date(limitMs).toISOString().slice(0, 10);
   const future = (path: (string | number)[]) => {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, path, message: 'date postérieure à l’export' });
+    ctx.addIssue({ code: 'custom', path, message: 'date postérieure à l’export' });
   };
   const instant = (value: string | undefined, path: (string | number)[]) => {
     if (value !== undefined && Date.parse(value) > limitMs) future(path);
@@ -278,7 +279,7 @@ function checkCoherence(backup: ParsedBackup, ctx: z.RefinementCtx): void {
     plan.meals.forEach((meal, m) => {
       if (ids.has(meal.id)) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['plans', p, 'meals', m, 'id'],
           message: 'repas en double',
         });
@@ -286,7 +287,7 @@ function checkCoherence(backup: ParsedBackup, ctx: z.RefinementCtx): void {
       ids.add(meal.id);
       if (isIsoDate(plan.weekStart) && meal.date !== addDays(plan.weekStart, meal.dayIndex)) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['plans', p, 'meals', m, 'date'],
           message: 'date incohérente avec le jour du menu',
         });
@@ -371,8 +372,10 @@ export const SNAPSHOT_MIGRATIONS: Readonly<Record<number, SnapshotMigration>> = 
 
 const MAX_ERRORS = 5;
 
-function formatIssues(issues: readonly z.ZodIssue[]): string[] {
-  return issues.slice(0, MAX_ERRORS).map((i) => `${i.path.join('.') || '(racine)'}: ${i.message}`);
+function formatIssues(issues: readonly z.core.$ZodIssue[]): string[] {
+  return issues
+    .slice(0, MAX_ERRORS)
+    .map((i) => `${i.path.map(String).join('.') || '(racine)'}: ${i.message}`);
 }
 
 const isRecord = (raw: unknown): raw is RawBackup =>

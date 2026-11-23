@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 test('l’application se charge sur l’onboarding au premier lancement', async ({ page }) => {
   await page.goto('./');

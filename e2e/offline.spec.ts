@@ -2,7 +2,7 @@
 // Les callbacks de page.evaluate s’exécutent dans le navigateur : types DOM requis.
 import { readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 /** Chemin public de l'app (base Vite, voir vite.config.ts). */
 const BASE_PATH = '/nutry/';

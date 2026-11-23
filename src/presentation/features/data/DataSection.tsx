@@ -110,7 +110,7 @@ export function DataSection() {
         applyTheme(settings.theme);
         toast.show('Tes données sont restaurées. Bon retour !', 'success');
         setProfileStatus(result.counts.profile ? 'ready' : 'none');
-        navigate(result.counts.profile ? '/semaine' : '/bienvenue');
+        void navigate(result.counts.profile ? '/semaine' : '/bienvenue');
         return;
       }
       if (result.status === 'passphrase-required') {
@@ -138,7 +138,7 @@ export function DataSection() {
     applyTheme('system');
     toast.show('Tout est effacé. À bientôt !');
     setProfileStatus('none');
-    navigate('/bienvenue', { replace: true });
+    void navigate('/bienvenue', { replace: true });
   };
 
   return (

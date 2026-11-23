@@ -1,7 +1,6 @@
 # Nutry — bien manger, en douceur
 
-[![CI](https://github.com/lMcfly/nutry/actions/workflows/ci.yml/badge.svg)](https://github.com/lMcfly/nutry/actions/workflows/ci.yml)
-[![Déploiement GitHub Pages](https://github.com/lMcfly/nutry/actions/workflows/deploy.yml/badge.svg)](https://github.com/lMcfly/nutry/actions/workflows/deploy.yml)
+[![CI et déploiement](https://github.com/lMcfly/nutry/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/lMcfly/nutry/actions/workflows/ci.yml?query=branch%3Amain)
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-3d6b4f.svg)](LICENSE)
 
 Nutry t'aide à **rééquilibrer ton alimentation durablement**, sans régime strict ni
@@ -72,12 +71,13 @@ navigateurs, Nutry s'utilise aussi très bien dans un onglet.
 ### Mises à jour
 
 Quand une nouvelle version est publiée, elle se télécharge en arrière-plan et s'applique
-**quand tu fermes l'app ou que tu passes à autre chose** : jamais pendant que tu remplis un
-écran. Tes données ne sont pas touchées par une mise à jour.
+**à la prochaine ouverture de l'app** : jamais pendant que tu l'utilises, donc rien de ce
+que tu es en train de saisir n'est perdu. Tes données ne sont pas touchées par une mise à
+jour.
 
 ## Lancer le projet en local
 
-Prérequis : **Node.js 22** (20 minimum) et npm.
+Prérequis : **Node.js 22.12** ou plus récent (exigé par Vitest 5) et npm.
 
 ```bash
 git clone https://github.com/lMcfly/nutry.git
