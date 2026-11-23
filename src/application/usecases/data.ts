@@ -14,6 +14,12 @@ import { DEVICE_KEYS } from './settings';
 export const PASSPHRASE_MIN_LENGTH = 8;
 /** Taille maximale d'un fichier importé (en caractères) : bien au-delà d'années d'usage. */
 export const IMPORT_MAX_LENGTH = 5_000_000;
+/**
+ * Taille maximale du fichier choisi (en octets), vérifiée par l'UI AVANT de le lire : même
+ * limite de 5 Mo (un caractère occupe au moins un octet, donc un fichier accepté ici
+ * respecte aussi `IMPORT_MAX_LENGTH`).
+ */
+export const IMPORT_MAX_BYTES = IMPORT_MAX_LENGTH;
 
 export const JSON_MIME_TYPE = 'application/json';
 export const ENCRYPTED_MIME_TYPE = 'application/octet-stream';

@@ -64,6 +64,7 @@ export type {
   WipeResult,
 } from './data';
 export {
+  IMPORT_MAX_BYTES,
   IMPORT_MAX_LENGTH,
   IMPORT_MESSAGES,
   PASSPHRASE_MIN_LENGTH,

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { PASSPHRASE_MIN_LENGTH } from '@application/usecases';
+import { IMPORT_MAX_BYTES, IMPORT_MESSAGES, PASSPHRASE_MIN_LENGTH } from '@application/usecases';
 import type { ImportResult } from '@application/usecases';
 import { useDependencies } from '../../app/dependencies';
 import { useAppState } from '../../app/appState';
@@ -204,6 +204,12 @@ export function DataSection() {
           onChange={(event) => {
             const file = event.target.files?.[0];
             if (!file) return;
+            // Vérifié avant la lecture : un fichier énorme ne bloque pas le téléphone.
+            if (file.size > IMPORT_MAX_BYTES) {
+              toast.show(IMPORT_MESSAGES['too-large'], 'error');
+              event.target.value = '';
+              return;
+            }
             void readFile(file).then(
               (content) => {
                 setPendingFile({ name: file.name, content });

@@ -1,5 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { IMPORT_MAX_BYTES, IMPORT_MESSAGES } from '@application/usecases';
 import { DataSection, FORGOTTEN_PASSPHRASE_WARNING, WIPE_CONFIRMATION_WORD } from './DataSection';
 import { renderScreen } from '../../testing/renderApp';
 
@@ -75,6 +76,17 @@ describe('Mes données', () => {
     expect(await within(dialog).findByRole('alert')).toHaveTextContent(/pas une sauvegarde Nutry/);
     expect(ports.state.profile).toBe(before);
     expect(statuses).toEqual([]);
+  });
+
+  it('fichier trop gros : refusé sur sa taille, sans être lu', async () => {
+    const { user } = renderScreen(<DataSection />);
+    const file = new File(['{}'], 'enorme.json', { type: 'application/json' });
+    Object.defineProperty(file, 'size', { value: IMPORT_MAX_BYTES + 1 });
+    const text = vi.spyOn(file, 'text');
+    await user.upload(screen.getByLabelText('Choisir une sauvegarde à importer'), file);
+    expect(await screen.findByText(IMPORT_MESSAGES['too-large'])).toBeInTheDocument();
+    expect(text).not.toHaveBeenCalled();
+    expect(screen.queryByRole('alertdialog')).toBeNull();
   });
 
   it('import réussi : remplace tout et revient au menu', async () => {

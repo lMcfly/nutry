@@ -74,3 +74,32 @@
   margin: 0;
   font-weight: var(--font-weight-bold);
 }
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Hauteur proche de celle des sections repliées du formulaire. */
+.skeletonBlock {
+  min-height: calc(var(--touch-min) + var(--space-4));
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-alt);
+}
+
+.skeleton .skeletonBlock:first-child {
+  min-height: 20rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeletonBlock {
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.55;
+  }
+}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { ProfileView, WeightTrackingStatus } from '@application/usecases';
+import { MEDICAL_DISCLAIMER } from '@domain/profile';
 import { THEMES } from '@domain/userdata';
 import type { Theme } from '@domain/userdata';
 import { useDependencies } from '../app/dependencies';
@@ -32,6 +33,8 @@ import { useAsync } from '../hooks/useAsync';
 import { THEME_LABELS, formatDecimal } from '../i18n/labels';
 import styles from './ProfilePage.module.css';
 
+export const SAVE_FAILED_MESSAGE = 'Oups, l’enregistrement n’a pas fonctionné. Réessaie.';
+
 interface ProfileData {
   readonly view: ProfileView | undefined;
   readonly theme: Theme;
@@ -48,7 +51,7 @@ export function ProfilePage() {
     ]);
     return { view, theme: settings.theme, tracking: progress.weightTracking };
   }, [getProfile, getSettings, getProgressSummary]);
-  const { state, setData } = useAsync(load);
+  const { state, setData, reload } = useAsync(load);
   const location = useLocation();
 
   const data = state.status === 'ready' ? state.data : undefined;
@@ -61,14 +64,33 @@ export function ProfilePage() {
 
   return (
     <Page title="Mon profil" subtitle="Tout se modifie, à tout moment.">
-      {data?.view && (
-        <p className={styles.disclaimer} role="note">
-          <span aria-hidden="true">🩺 </span>
-          {data.view.health.disclaimer}
-        </p>
-      )}
+      {/* Bandeau permanent (PROMPT §3.2) : affiché même pendant le chargement ou en erreur. */}
+      <p className={styles.disclaimer} role="note">
+        <span aria-hidden="true">🩺 </span>
+        {MEDICAL_DISCLAIMER}
+      </p>
       <BackupReminder />
-      {state.status === 'loading' && <p role="status">Un instant…</p>}
+      {state.status === 'loading' && (
+        <>
+          <p role="status" className="visually-hidden">
+            Un instant…
+          </p>
+          {/* Place réservée : la page ne saute pas quand les réponses arrivent. */}
+          <div className={styles.skeleton} aria-hidden="true" data-testid="profile-skeleton">
+            <div className={styles.skeletonBlock} />
+            <div className={styles.skeletonBlock} />
+            <div className={styles.skeletonBlock} />
+          </div>
+        </>
+      )}
+      {state.status === 'error' && (
+        <Notice tone="danger" emoji="😕">
+          Ton profil n’a pas pu être chargé.{' '}
+          <Button variant="ghost" small onClick={reload}>
+            Réessayer
+          </Button>
+        </Notice>
+      )}
       {data?.view && (
         <ProfileContent
           data={data}
@@ -84,7 +106,7 @@ export function ProfilePage() {
           }}
         />
       )}
-      <DataSection />
+      {state.status !== 'loading' && <DataSection />}
     </Page>
   );
 }
@@ -135,8 +157,12 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
         return;
       }
       setDirty(false);
+      // Objectif retenu par l'application (garde-fous) : le formulaire le reflète.
+      setDraft((d) => ({ ...d, goal: result.view.profile.goal }));
       onSaved(result.view);
       toast.show('C’est enregistré ! Ton menu s’adaptera.', 'success');
+    } catch {
+      toast.show(SAVE_FAILED_MESSAGE, 'error');
     } finally {
       setSaving(false);
     }
