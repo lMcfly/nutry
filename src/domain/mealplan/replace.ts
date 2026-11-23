@@ -20,7 +20,8 @@ export interface ReplaceMealInput {
 /**
  * Alternatives pour un repas : même niveau que le plat actuel, compatibles avec le
  * profil (filtres durs), absentes de la semaine, du même type (petit-déjeuner ou plat),
- * triées par score dans le contexte du repas (date, temps, protéine précédente).
+ * triées par score dans le contexte du repas (date, temps, protéines précédente et
+ * suivante ; pour un dîner à restes, le repas suivant est celui qui suit ses restes).
  */
 export function replaceMeal(input: ReplaceMealInput): RankedRecipe[] {
   const { plan, profile } = input;
@@ -52,6 +53,10 @@ export function replaceMeal(input: ReplaceMealInput): RankedRecipe[] {
     .filter((m) => m.slot !== 'petit-dejeuner')
     .at(-1);
   const previousProtein = breakfast || !previousMain ? undefined : proteinOf(previousMain);
+  const nextMain = plan.meals
+    .slice(index + 1)
+    .find((m) => m.slot !== 'petit-dejeuner' && m.leftoverOf !== meal.id);
+  const nextProtein = breakfast || !nextMain ? undefined : proteinOf(nextMain);
   const req = dayRequirements(profile, meal.date);
 
   return rankRecipes(pool, {
@@ -63,6 +68,7 @@ export function replaceMeal(input: ReplaceMealInput): RankedRecipe[] {
     weekend: req.weekend,
     ...(breakfast ? {} : { desiredLevel: req.level, proteinCounts }),
     ...(previousProtein ? { previousProtein } : {}),
+    ...(nextProtein ? { nextProtein } : {}),
   }).slice(0, input.count ?? 3);
 }
 

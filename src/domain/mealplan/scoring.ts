@@ -39,6 +39,8 @@ export interface ScoringContext {
   readonly weekend: boolean;
   /** Protéine du repas précédent (variété). */
   readonly previousProtein?: ProteinType;
+  /** Protéine du repas suivant, connue lors d'un remplacement (variété). */
+  readonly nextProtein?: ProteinType;
   /** Occurrences de chaque protéine déjà planifiées dans la semaine. */
   readonly proteinCounts?: ReadonlyMap<ProteinType, number>;
   /** Valeur dans [0, 1) pour départager ; absente = 0. */
@@ -84,6 +86,7 @@ export function scoreRecipe(recipe: Recipe, ctx: ScoringContext): ScoreBreakdown
   let variety = newProtein ? R.newProtein : count * R.repeatedProteinPerOccurrence;
   if (isConsecutiveProtein(recipe.mainProtein, ctx.previousProtein))
     variety += R.consecutiveProtein;
+  if (isConsecutiveProtein(recipe.mainProtein, ctx.nextProtein)) variety += R.consecutiveProtein;
 
   const components: ScoreComponent[] = [
     { key: 'aime', points: like },
