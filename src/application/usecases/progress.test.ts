@@ -39,8 +39,13 @@ describe('progrès', () => {
     expect(view.summary.currentStreakWeeks).toBe(2);
     expect(view.weightTracking).toEqual({ enabled: true, enabledByDefault: true });
 
+    expect(view.thisWeekEntry).toEqual({ date: '2026-11-30', weightKg: 61, waistCm: 74 });
+
     await uc.removeProgress('2026-11-30');
-    expect((await uc.getProgressSummary()).entries).toHaveLength(1);
+    const after = await uc.getProgressSummary();
+    expect(after.entries).toHaveLength(1);
+    // La mesure du 25 appartient à la semaine précédente.
+    expect(after.thisWeekEntry).toBeUndefined();
   });
 
   it('respecte le suivi du poids désactivé par défaut (mineur)', async () => {

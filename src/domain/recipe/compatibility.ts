@@ -37,6 +37,11 @@ export function totalMinutes(recipe: Recipe): number {
   return recipe.prepMinutes + recipe.cookMinutes;
 }
 
+/** Plat sans féculent (étiquette `accompagner-pain`) : suggérer du pain complet. */
+export function suggestsBread(recipe: Recipe): boolean {
+  return hasTag(recipe, 'accompagner-pain');
+}
+
 /** Allergènes de la recette parmi ceux déclarés. */
 export function declaredAllergensIn(recipe: Recipe, allergens: readonly Allergen[]): Allergen[] {
   return recipe.allergens.filter((a) => allergens.includes(a));

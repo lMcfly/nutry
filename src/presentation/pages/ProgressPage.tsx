@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { PlanHistory, ProgressView } from '@application/usecases';
 import type { Recipe } from '@domain/recipe';
-import { startOfWeek } from '@domain/shared';
 import { parseDecimal } from '../features/profile/draft';
 import { useDependencies } from '../app/dependencies';
 import { Button } from '../components/Button';
@@ -57,15 +56,13 @@ function MeasuresSection({
   readonly progress: ProgressView;
   readonly onChange: () => void;
 }) {
-  const { logProgress, removeProgress, setWeightTracking, today: getToday } = useDependencies();
+  const { logProgress, removeProgress, setWeightTracking } = useDependencies();
   const toast = useToast();
   const [weight, setWeight] = useState('');
   const [waist, setWaist] = useState('');
   const [message, setMessage] = useState<string | undefined>();
   const tracking = progress.weightTracking;
-  const today = getToday();
-  const thisWeek = startOfWeek(today);
-  const alreadyThisWeek = progress.entries.find((e) => startOfWeek(e.date) === thisWeek);
+  const alreadyThisWeek = progress.thisWeekEntry;
   const { summary } = progress;
 
   const submit = async () => {

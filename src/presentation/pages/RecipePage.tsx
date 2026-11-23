@@ -1,10 +1,5 @@
 import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { PlanView } from '@application/usecases';
-import { scaleRecipeForHousehold } from '@domain/profile';
-import type { Recipe } from '@domain/recipe';
-import { totalMinutes } from '@domain/recipe';
-import { formatIngredient, roundForRecipe } from '@domain/shopping';
 import { useDependencies } from '../app/dependencies';
 import { Badge } from '../components/Badge';
 import { Button, ButtonLink } from '../components/Button';
@@ -13,10 +8,11 @@ import { EmptyState } from '../components/EmptyState';
 import { Notice } from '../components/Notice';
 import { Page } from '../components/Page';
 import { useToast } from '../components/Toast';
-import { BREAD_SUGGESTION, suggestsBread } from '../features/recipe/suggestions';
+import { BREAD_SUGGESTION } from '../features/recipe/suggestions';
 import { useAsync } from '../hooks/useAsync';
 import {
   ALLERGEN_LABELS,
+  CIQUAL_CITATION,
   DIET_LABELS,
   LEVEL_EMOJIS,
   LEVEL_HINTS,
@@ -30,23 +26,13 @@ import styles from './RecipePage.module.css';
 export const PROCESSED_PRODUCTS_NOTICE =
   'Produits transformés (jambon, pain, sauces…) : vérifie l’étiquette.';
 
-interface RecipeData {
-  readonly recipe: Recipe | undefined;
-  readonly plan: PlanView | undefined;
-}
-
 export function RecipePage() {
   const { id = '' } = useParams();
-  const { getCurrentPlan, getRecipe, rateMeal } = useDependencies();
+  const { getRecipeView, rateMeal } = useDependencies();
   const toast = useToast();
   const [saving, setSaving] = useState(false);
 
-  const load = useCallback(async (): Promise<RecipeData> => {
-    const result = await getCurrentPlan();
-    const plan = result.status === 'ready' ? result : undefined;
-    const recipe = plan?.recipes[id] ?? (await getRecipe(id));
-    return { recipe, plan };
-  }, [id, getCurrentPlan, getRecipe]);
+  const load = useCallback(() => getRecipeView(id), [id, getRecipeView]);
 
   const { state, reload } = useAsync(load);
 
@@ -58,8 +44,8 @@ export function RecipePage() {
     );
   }
 
-  const { recipe, plan } = state.data;
-  if (!recipe) {
+  const view = state.data;
+  if (!view) {
     return (
       <Page title="Recette introuvable" back={{ to: '/semaine', label: 'Ma semaine' }}>
         <EmptyState
@@ -73,22 +59,14 @@ export function RecipePage() {
     );
   }
 
-  const householdSize = plan?.householdSize ?? 1;
-  const meal = plan?.plan.meals.find((m) => m.recipeId === recipe.id && !m.isLeftover);
-  const leftovers = meal ? plan?.plan.meals.filter((m) => m.leftoverOf === meal.id).length : 0;
-  const batches = 1 + (leftovers ?? 0);
-  const ingredients = scaleRecipeForHousehold(recipe, {
-    userFactor: plan?.portionFactor ?? 1,
-    householdSize,
-    batches,
-  });
-  const liked = meal ? plan?.ratings[meal.id]?.verdict === 'up' : false;
+  const { recipe, meal } = view;
+  const liked = meal?.liked ?? false;
 
   const addFavorite = async () => {
-    if (!meal || !plan) return;
+    if (!meal) return;
     setSaving(true);
     try {
-      await rateMeal({ weekStart: plan.plan.weekStart, mealId: meal.id, verdict: 'up' });
+      await rateMeal({ weekStart: meal.weekStart, mealId: meal.mealId, verdict: 'up' });
       toast.show('Ajoutée à tes favoris 💚', 'success');
       reload();
     } finally {
@@ -107,7 +85,7 @@ export function RecipePage() {
         </Badge>
         <Badge>
           <span aria-hidden="true">⏱</span>
-          {formatMinutes(totalMinutes(recipe))}
+          {formatMinutes(view.totalMinutes)}
         </Badge>
         <Badge>{PROTEIN_LABELS[recipe.mainProtein]}</Badge>
       </div>
@@ -119,7 +97,7 @@ export function RecipePage() {
         .
       </p>
 
-      {suggestsBread(recipe) && (
+      {view.suggestsBread && (
         <Notice tone="accent" emoji="🌾">
           {BREAD_SUGGESTION}
         </Notice>
@@ -142,20 +120,16 @@ export function RecipePage() {
       <Card as="section" aria-labelledby="ingredients-title">
         <h2 id="ingredients-title">Ingrédients</h2>
         <p className={styles.servings}>
-          Pour {plural(householdSize, 'personne')}
-          {batches > 1 ? ', restes du lendemain compris' : ''}
+          Pour {plural(view.householdSize, 'personne')}
+          {view.batches > 1 ? ', restes du lendemain compris' : ''}
         </p>
         <ul className={styles.ingredients}>
-          {ingredients.map((ingredient) => {
-            const q = roundForRecipe(ingredient.quantity, ingredient.unit);
-            const shown = formatIngredient(ingredient.name, q.quantity, q.unit);
-            return (
-              <li key={`${ingredient.name}-${ingredient.unit}`}>
-                <span className={styles.qty}>{shown.amount}</span>
-                <span>{shown.label}</span>
-              </li>
-            );
-          })}
+          {view.ingredients.map((line) => (
+            <li key={line.key}>
+              <span className={styles.qty}>{line.amount}</span>
+              <span>{line.label}</span>
+            </li>
+          ))}
         </ul>
       </Card>
 
@@ -202,7 +176,7 @@ export function RecipePage() {
           <dd>{n.fiberG.toLocaleString('fr-FR')} g</dd>
         </dl>
         <p className={styles.small}>
-          Source : Anses, table Ciqual 2025 (calcul à partir des ingrédients).
+          Source : « {CIQUAL_CITATION} » (calcul à partir des ingrédients).
         </p>
       </details>
     </Page>

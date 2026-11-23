@@ -70,7 +70,15 @@ export {
   STORAGE_FAILURE_MESSAGES,
 } from './data';
 export type { FridgeResult } from './fridge';
-export type { MealAlternative, PlanHistory, PlanOrigin, PlanResult, PlanView } from './plan';
+export type {
+  MealAlternative,
+  PlanHistory,
+  PlanOrigin,
+  PlanResult,
+  PlanView,
+  RecipeIngredientLine,
+  RecipeView,
+} from './plan';
 export type {
   EnergyDetail,
   HealthSummary,

@@ -7,8 +7,11 @@ import {
   replaceMeal,
 } from '@domain/mealplan';
 import type { BalanceGauge, BatchPrep, PlannedMeal, ScoreBreakdown } from '@domain/mealplan';
-import { isRecipeCompatible } from '@domain/recipe';
+import { scaleRecipeForHousehold } from '@domain/profile';
+import { isRecipeCompatible, suggestsBread, totalMinutes } from '@domain/recipe';
 import type { Recipe } from '@domain/recipe';
+import { formatIngredient, roundForRecipe } from '@domain/shopping';
+import type { IngredientDisplay } from '@domain/shopping';
 import { startOfWeek } from '@domain/shared';
 import type { IsoDate } from '@domain/shared';
 import { dietaryFingerprint } from '@domain/userdata';
@@ -40,6 +43,36 @@ export interface PlanView {
 
 export type PlanResult = NoProfile | PlanView;
 
+/** Une ligne d'ingrédient prête à afficher (quantité déjà mise à l'échelle et arrondie). */
+export interface RecipeIngredientLine extends IngredientDisplay {
+  /** Clé stable pour la liste. */
+  readonly key: string;
+}
+
+/** Détail d'une recette, avec les quantités pour le foyer : l'UI n'a rien à calculer. */
+export interface RecipeView {
+  readonly recipe: Recipe;
+  readonly totalMinutes: number;
+  /** Personnes servies (foyer du profil ; 1 sans profil). */
+  readonly householdSize: number;
+  /** Repas couverts par une même cuisson : plus de 1 si les restes servent le lendemain. */
+  readonly batches: number;
+  /**
+   * Ingrédients pour le foyer : portion de la personne (`computeUserPortionFactor`),
+   * autres membres, restes ; arrondis comme en cuisine.
+   */
+  readonly ingredients: readonly RecipeIngredientLine[];
+  /** Plat sans féculent : suggérer une tranche de pain complet. */
+  readonly suggestsBread: boolean;
+  /** Repas du menu de la semaine qui cuisine cette recette (absent hors menu). */
+  readonly meal?: {
+    readonly weekStart: IsoDate;
+    readonly mealId: string;
+    /** Déjà noté 👍 (favori). */
+    readonly liked: boolean;
+  };
+}
+
 export interface MealAlternative {
   readonly recipe: Recipe;
   readonly score: ScoreBreakdown;
@@ -69,6 +102,11 @@ export interface PlanUseCases {
     readonly recipeId: string;
   }) => Promise<PlanResult | { readonly status: 'unavailable' }>;
   readonly explainMeal: (mealId: string) => Promise<string | undefined>;
+  /**
+   * Détail d'une recette (menu de la semaine ou catalogue : frigo vide, lien profond) avec
+   * ses quantités pour le foyer. `undefined` si la recette n'existe pas.
+   */
+  readonly getRecipeView: (recipeId: string) => Promise<RecipeView | undefined>;
   /** Préparations du dimanche (vide si l'option batch cooking est désactivée). */
   readonly getBatchCookingPlan: () => Promise<readonly BatchPrep[]>;
   readonly getWeekBalance: () => Promise<readonly BalanceGauge[]>;
@@ -166,6 +204,48 @@ function findMeal(plan: SavedPlan, mealId: string): PlannedMeal | undefined {
   return plan.meals.find((m) => m.id === mealId);
 }
 
+/** Vue d'une recette ; `planned` : contexte et menu courant si un profil existe. */
+export function toRecipeView(
+  recipe: Recipe,
+  planned?: { readonly ctx: PlanningContext; readonly plan: SavedPlan },
+): RecipeView {
+  const meal = planned?.plan.meals.find((m) => m.recipeId === recipe.id && !m.isLeftover);
+  const leftovers = meal ? (planned?.plan.meals.filter((m) => m.leftoverOf === meal.id) ?? []) : [];
+  const batches = 1 + leftovers.length;
+  const householdSize = planned?.ctx.profile.householdSize ?? 1;
+  const scaled = scaleRecipeForHousehold(recipe, {
+    userFactor: planned?.ctx.portionFactor ?? 1,
+    householdSize,
+    batches,
+  });
+  const ingredients = scaled.map((ingredient): RecipeIngredientLine => {
+    const rounded = roundForRecipe(ingredient.quantity, ingredient.unit);
+    return {
+      key: `${ingredient.name}-${ingredient.unit}`,
+      ...formatIngredient(ingredient.name, rounded.quantity, rounded.unit),
+    };
+  });
+  const rating =
+    meal && planned ? ratingsByMeal(planned.plan, planned.ctx.ratings)[meal.id] : undefined;
+  return {
+    recipe,
+    totalMinutes: totalMinutes(recipe),
+    householdSize,
+    batches,
+    ingredients,
+    suggestsBread: suggestsBread(recipe),
+    ...(meal && planned
+      ? {
+          meal: {
+            weekStart: planned.plan.weekStart,
+            mealId: meal.id,
+            liked: rating?.verdict === 'up',
+          },
+        }
+      : {}),
+  };
+}
+
 export function createPlanUseCases(ports: AppPorts, serial: SerialRunner): PlanUseCases {
   /** Charge le contexte et le menu courant (sérialisé : la génération écrit). */
   const withPlan = <T>(
@@ -228,6 +308,18 @@ export function createPlanUseCases(ports: AppPorts, serial: SerialRunner): PlanU
         const meal = findMeal(plan, mealId);
         return meal ? explainMeal(meal) : undefined;
       }, undefined),
+
+    getRecipeView: (recipeId) =>
+      serial(async () => {
+        const ctx = await loadPlanningContext(ports);
+        if (!ctx) {
+          const recipe = await ports.recipes.getById(recipeId);
+          return recipe ? toRecipeView(recipe) : undefined;
+        }
+        const { plan } = await ensureCurrentPlan(ports, ctx);
+        const recipe = ctx.recipes.find((r) => r.id === recipeId);
+        return recipe ? toRecipeView(recipe, { ctx, plan }) : undefined;
+      }),
 
     getBatchCookingPlan: () =>
       withPlan(

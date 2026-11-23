@@ -4,7 +4,7 @@ import { RATING_REASONS } from '@domain/preferences';
 import type { RatingReason, RatingVerdict } from '@domain/preferences';
 import type { PlannedMeal } from '@domain/mealplan';
 import type { Recipe } from '@domain/recipe';
-import { totalMinutes } from '@domain/recipe';
+import { suggestsBread, totalMinutes } from '@domain/recipe';
 import type { RatingRecord } from '@domain/userdata';
 import { Badge } from '../../components/Badge';
 import { RadioGroup } from '../../components/Choice';
@@ -17,7 +17,7 @@ import {
   SLOT_LABELS,
   formatMinutes,
 } from '../../i18n/labels';
-import { BREAD_SUGGESTION, suggestsBread } from '../recipe/suggestions';
+import { BREAD_SUGGESTION } from '../recipe/suggestions';
 import styles from './MealCard.module.css';
 
 interface MealCardProps {
