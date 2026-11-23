@@ -2,6 +2,7 @@
  * Libellés français des identifiants du domain (qui restent en ASCII kebab-case).
  * `labels.test.ts` vérifie qu'aucune valeur des vocabulaires du domain n'est oubliée.
  */
+import type { CompanionItem } from '@domain/companion';
 import type { DayIndex, MealSlot } from '@domain/mealplan';
 import type { RatingReason } from '@domain/preferences';
 import type { ActivityLevel, Goal, Sex } from '@domain/profile';
@@ -166,6 +167,35 @@ export const DAY_LABELS: Readonly<Record<DayIndex, string>> = {
   6: 'Dimanche',
 };
 
+/** Libellés courts des créneaux (onglets). */
+export const SLOT_SHORT_LABELS: Readonly<Record<MealSlot, string>> = {
+  'petit-dejeuner': 'Petit-déj',
+  dejeuner: 'Déjeuner',
+  diner: 'Dîner',
+};
+
+/** Jours abrégés du bandeau de la semaine. */
+export const DAY_SHORT_LABELS: Readonly<Record<DayIndex, string>> = {
+  0: 'Lun',
+  1: 'Mar',
+  2: 'Mer',
+  3: 'Jeu',
+  4: 'Ven',
+  5: 'Sam',
+  6: 'Dim',
+};
+
+/** Libellés courts des rayons (puces de la liste de courses). */
+export const SECTION_SHORT_LABELS: Readonly<Record<ShoppingSectionKey, string>> = {
+  'fruits-legumes': 'Fruits et légumes',
+  'boucherie-poissonnerie': 'Viandes et poissons',
+  frais: 'Frais',
+  boulangerie: 'Boulangerie',
+  epicerie: 'Épicerie',
+  surgeles: 'Surgelés',
+  divers: 'Divers',
+};
+
 export const SLOT_EMOJIS: Readonly<Record<MealSlot, string>> = {
   'petit-dejeuner': '☕',
   dejeuner: '☀️',
@@ -187,6 +217,34 @@ export const THEME_LABELS: Readonly<Record<Theme, string>> = {
   light: 'Clair',
   dark: 'Sombre',
 };
+
+/**
+ * Éléments du catalogue de Nutry, avec leur article (« la toque de chef ») pour les phrases
+ * « Encore 3 jours pour la toque de chef ! » et « Nutry a gagné la toque de chef ! ».
+ */
+export const UNLOCK_PHRASES: Readonly<Record<string, string>> = {
+  feuille: 'la feuille sur la tête',
+  'lunettes-rondes': 'les lunettes rondes',
+  'toque-de-chef': 'la toque de chef',
+  echarpe: 'l’écharpe',
+  tablier: 'le tablier',
+  bonnet: 'le bonnet',
+  'couronne-de-fruits': 'la couronne de fruits',
+  aurore: 'la teinte Aurore',
+  cosmos: 'la teinte Cosmos',
+  'arc-en-ciel': 'la teinte Arc-en-ciel',
+};
+
+/** « la toque de chef » (sinon le libellé du catalogue en minuscules). */
+export function unlockPhrase(item: CompanionItem): string {
+  return UNLOCK_PHRASES[item.id] ?? item.label.toLowerCase();
+}
+
+/** « la toque de chef et l’écharpe ». */
+export function joinPhrases(phrases: readonly string[]): string {
+  if (phrases.length <= 1) return phrases.join('');
+  return `${phrases.slice(0, -1).join(', ')} et ${phrases.at(-1) ?? ''}`;
+}
 
 /** Citation de la source des valeurs nutritionnelles (Confidentialité, détail recette). */
 export const CIQUAL_CITATION =
@@ -226,6 +284,11 @@ const capitalize = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1)
 /** « Lundi 23 novembre ». */
 export function formatDayLong(iso: string): string {
   return capitalize(DATE_LONG.format(toDate(iso)));
+}
+
+/** « 23 » (jour du mois). */
+export function formatDayOfMonth(iso: string): string {
+  return String(toDate(iso).getUTCDate());
 }
 
 /** « 23 nov. ». */

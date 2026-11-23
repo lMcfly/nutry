@@ -35,6 +35,10 @@ const PAIRS: readonly (readonly [string, string, number])[] = [
   ['on-primary-soft', 'primary-soft', AA_TEXT],
   ['on-accent', 'accent', AA_TEXT],
   ['accent', 'surface', AA_TEXT],
+  ['accent', 'bg', AA_TEXT],
+  ['on-accent', 'accent', AA_TEXT],
+  ['on-accent-soft', 'accent-soft', AA_TEXT],
+  ['on-primary-soft', 'surface', AA_TEXT],
   ['on-accent-soft', 'accent-soft', AA_TEXT],
   ['success', 'success-soft', AA_TEXT],
   ['warning', 'warning-soft', AA_TEXT],
@@ -47,6 +51,15 @@ const PAIRS: readonly (readonly [string, string, number])[] = [
   ['focus', 'bg', AA_UI],
   ['focus', 'surface', AA_UI],
   ['primary', 'surface-alt', AA_UI],
+  // Jauges colorées (une par catégorie) : 3:1 sur la carte et sur leur piste.
+  ['gauge-veg', 'surface', AA_UI],
+  ['gauge-veg', 'surface-alt', AA_UI],
+  ['gauge-protein', 'surface', AA_UI],
+  ['gauge-protein', 'surface-alt', AA_UI],
+  ['gauge-starch', 'surface', AA_UI],
+  ['gauge-starch', 'surface-alt', AA_UI],
+  ['gauge-fish', 'surface', AA_UI],
+  ['gauge-fish', 'surface-alt', AA_UI],
 ];
 
 describe('contraste des jetons (WCAG AA)', () => {
@@ -67,8 +80,8 @@ describe('contraste des jetons (WCAG AA)', () => {
   ] as const) {
     describe(`thème ${name}`, () => {
       it.each(PAIRS)('%s sur %s ≥ %s:1', (fg, bg, min) => {
-        const foreground = tokens[`color-${fg}`];
-        const background = tokens[`color-${bg}`];
+        const foreground = tokens[`color-${fg}`] ?? tokens[fg];
+        const background = tokens[`color-${bg}`] ?? tokens[bg];
         expect(foreground, `--color-${fg}`).toBeDefined();
         expect(background, `--color-${bg}`).toBeDefined();
         expect(contrastRatio(foreground ?? '', background ?? '')).toBeGreaterThanOrEqual(min);

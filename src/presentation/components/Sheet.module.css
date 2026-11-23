@@ -21,21 +21,31 @@
   width: 100%;
   max-width: var(--content-max);
   max-height: 92dvh;
-  background: var(--color-surface);
+  background: var(--color-bg);
   color: var(--color-text);
   box-shadow: var(--shadow-lg);
 }
 
 .sheet {
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   padding-bottom: env(safe-area-inset-bottom);
   animation: slide-up var(--duration-medium) var(--ease-out);
 }
 
 .dialog {
   margin: auto var(--space-4);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
   animation: fade var(--duration-medium) var(--ease-out);
+}
+
+/* Plein écran : feuille qui couvre tout l'écran (Profil, Nutry…). */
+.full {
+  height: 100dvh;
+  max-height: none;
+  border-radius: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: slide-up var(--duration-medium) var(--ease-out);
 }
 
 @media (min-width: 40rem) {
@@ -45,6 +55,10 @@
 
   .sheet {
     border-radius: var(--radius-lg);
+  }
+
+  .full {
+    max-height: 100dvh;
   }
 }
 
@@ -78,11 +92,12 @@
 
 .close {
   flex: none;
-  width: var(--touch-min);
-  height: var(--touch-min);
+  width: var(--touch-small);
+  height: var(--touch-small);
   border: 0;
   border-radius: 50%;
-  background: var(--color-surface-alt);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
   color: var(--color-text);
   font-size: var(--font-size-lg);
   cursor: pointer;
@@ -94,6 +109,8 @@
 }
 
 .body {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   padding: var(--space-4);
   overscroll-behavior: contain;

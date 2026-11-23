@@ -1,0 +1,33 @@
+.swipeable {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  touch-action: pan-y;
+}
+
+.fromRight {
+  animation: slide-in-right var(--duration-medium) var(--ease-out);
+}
+
+.fromLeft {
+  animation: slide-in-left var(--duration-medium) var(--ease-out);
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(24px);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fromRight,
+  .fromLeft {
+    animation: none;
+  }
+}

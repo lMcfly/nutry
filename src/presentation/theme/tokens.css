@@ -1,9 +1,10 @@
 /*
- * Jetons de design Nutry (ADR 0004) : une identité végétale et chaleureuse.
- * Vert sauge (primaire), terracotta doux (accent), fond crème. Typographie système
- * (aucune police externe : hors ligne et confidentialité).
+ * Jetons de design Nutry (ADR 0004, refonte ADR 0013) : une identité fraîche et appétissante.
+ * Fond vert très pâle, cartes blanches très arrondies, accent corail (primaire), vert
+ * feuille (accent), couleurs de jauges par catégorie. Typographie système (aucune police
+ * externe : hors ligne et confidentialité).
  *
- * Les couleurs sont vérifiées WCAG AA par `contrast.test.ts` (paires texte/fond) :
+ * Les couleurs sont vérifiées WCAG AA par `contrast.test.ts` (paires texte/fond, jauges) :
  * toute modification doit garder ce test vert. Les jetons sombres sont dupliqués dans
  * le bloc `prefers-color-scheme` et dans `[data-theme='dark']` (le test vérifie qu'ils
  * restent identiques).
@@ -12,31 +13,37 @@
   color-scheme: light;
 
   /* Couleurs — thème clair */
-  --color-bg: #fbf7f0;
+  --color-bg: #eef6ee;
   --color-surface: #ffffff;
-  --color-surface-alt: #f3ece0;
-  --color-text: #2b2620;
-  --color-text-muted: #5e554a;
-  --color-border: #e5dccd;
-  --color-border-strong: #857a6a;
-  --color-primary: #3d6b4f;
-  --color-primary-hover: #2f5740;
+  --color-surface-alt: #e2eee3;
+  --color-text: #1f2a22;
+  --color-text-muted: #485a4d;
+  --color-border: #d3e3d5;
+  --color-border-strong: #6f8574;
+  --color-primary: #bd3d1b;
+  --color-primary-hover: #a43417;
   --color-on-primary: #ffffff;
-  --color-primary-soft: #e4eee3;
-  --color-on-primary-soft: #2a4d37;
-  --color-accent: #a9502f;
+  --color-primary-soft: #fde8df;
+  --color-on-primary-soft: #8f2e12;
+  --color-accent: #2b7a4b;
   --color-on-accent: #ffffff;
-  --color-accent-soft: #f8e4da;
-  --color-on-accent-soft: #7f3a20;
-  --color-success: #2f6b3f;
-  --color-success-soft: #e2f0e1;
+  --color-accent-soft: #d9eddb;
+  --color-on-accent-soft: #1d5a37;
+  --color-success: #256b40;
+  --color-success-soft: #dcefdd;
   --color-warning: #7a5200;
   --color-warning-soft: #fbefd5;
   --color-danger: #a8312a;
   --color-on-danger: #ffffff;
   --color-danger-soft: #fbe5e2;
   --color-focus: #2c5f8a;
-  --color-backdrop: rgb(43 38 32 / 45%);
+  --color-backdrop: rgb(24 40 28 / 45%);
+
+  /* Jauges : une couleur par catégorie (légumes, protéines, féculents, poisson) */
+  --gauge-veg: #2f8a52;
+  --gauge-protein: #d9482a;
+  --gauge-starch: #b36f00;
+  --gauge-fish: #2f77b0;
 
   /* Espacements (base 4 px) */
   --space-1: 0.25rem;
@@ -47,16 +54,17 @@
   --space-6: 2rem;
   --space-7: 3rem;
 
-  /* Rayons */
-  --radius-sm: 0.5rem;
-  --radius-md: 0.875rem;
-  --radius-lg: 1.25rem;
+  /* Rayons : très arrondis */
+  --radius-sm: 0.625rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
   --radius-pill: 999px;
 
   /* Ombres */
-  --shadow-sm: 0 1px 2px rgb(60 45 25 / 8%);
-  --shadow-md: 0 4px 14px rgb(60 45 25 / 10%);
-  --shadow-lg: 0 12px 32px rgb(60 45 25 / 18%);
+  --shadow-sm: 0 1px 2px rgb(30 60 40 / 8%);
+  --shadow-md: 0 6px 18px rgb(30 60 40 / 10%);
+  --shadow-lg: 0 14px 36px rgb(30 60 40 / 20%);
 
   /* Typographie (système) */
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -66,14 +74,15 @@
   --font-size-lg: 1.25rem;
   --font-size-xl: 1.5rem;
   --font-size-2xl: 1.875rem;
-  --line-height: 1.5;
+  --line-height: 1.45;
   --font-weight-medium: 550;
   --font-weight-bold: 700;
 
   /* Tactile */
   --touch-min: 48px;
+  --touch-small: 44px;
   --content-max: 40rem;
-  --tabbar-height: 4.25rem;
+  --tabbar-height: 3.75rem;
 
   /* Plans */
   --z-tabbar: 10;
@@ -89,24 +98,24 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --color-bg: #161a15;
-    --color-surface: #1f241e;
-    --color-surface-alt: #293027;
-    --color-text: #efeae0;
-    --color-text-muted: #bdb5a7;
-    --color-border: #394136;
-    --color-border-strong: #85907f;
-    --color-primary: #9dcaa6;
-    --color-primary-hover: #b4d8ba;
-    --color-on-primary: #132419;
-    --color-primary-soft: #2a3b2d;
-    --color-on-primary-soft: #cfe6d2;
-    --color-accent: #e9a487;
-    --color-on-accent: #2b140b;
-    --color-accent-soft: #3d2a21;
-    --color-on-accent-soft: #f4c9b6;
-    --color-success: #9dcaa6;
-    --color-success-soft: #22362a;
+    --color-bg: #101812;
+    --color-surface: #1a251d;
+    --color-surface-alt: #243228;
+    --color-text: #e8f1e8;
+    --color-text-muted: #b4c4b6;
+    --color-border: #2f3f33;
+    --color-border-strong: #7f9484;
+    --color-primary: #f08a6a;
+    --color-primary-hover: #f5a287;
+    --color-on-primary: #2b0f06;
+    --color-primary-soft: #3d2219;
+    --color-on-primary-soft: #f8c3b0;
+    --color-accent: #8fd0a2;
+    --color-on-accent: #0f2416;
+    --color-accent-soft: #213a29;
+    --color-on-accent-soft: #c5e8d0;
+    --color-success: #8fd0a2;
+    --color-success-soft: #213a29;
     --color-warning: #f0c36d;
     --color-warning-soft: #3a2f17;
     --color-danger: #f2a39b;
@@ -114,6 +123,10 @@
     --color-danger-soft: #3d2220;
     --color-focus: #8cc3f0;
     --color-backdrop: rgb(0 0 0 / 60%);
+    --gauge-veg: #5fbf82;
+    --gauge-protein: #f08a6a;
+    --gauge-starch: #f0b84a;
+    --gauge-fish: #6fb2e6;
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
     --shadow-md: 0 4px 14px rgb(0 0 0 / 35%);
     --shadow-lg: 0 12px 32px rgb(0 0 0 / 50%);
@@ -122,24 +135,24 @@
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --color-bg: #161a15;
-  --color-surface: #1f241e;
-  --color-surface-alt: #293027;
-  --color-text: #efeae0;
-  --color-text-muted: #bdb5a7;
-  --color-border: #394136;
-  --color-border-strong: #85907f;
-  --color-primary: #9dcaa6;
-  --color-primary-hover: #b4d8ba;
-  --color-on-primary: #132419;
-  --color-primary-soft: #2a3b2d;
-  --color-on-primary-soft: #cfe6d2;
-  --color-accent: #e9a487;
-  --color-on-accent: #2b140b;
-  --color-accent-soft: #3d2a21;
-  --color-on-accent-soft: #f4c9b6;
-  --color-success: #9dcaa6;
-  --color-success-soft: #22362a;
+  --color-bg: #101812;
+  --color-surface: #1a251d;
+  --color-surface-alt: #243228;
+  --color-text: #e8f1e8;
+  --color-text-muted: #b4c4b6;
+  --color-border: #2f3f33;
+  --color-border-strong: #7f9484;
+  --color-primary: #f08a6a;
+  --color-primary-hover: #f5a287;
+  --color-on-primary: #2b0f06;
+  --color-primary-soft: #3d2219;
+  --color-on-primary-soft: #f8c3b0;
+  --color-accent: #8fd0a2;
+  --color-on-accent: #0f2416;
+  --color-accent-soft: #213a29;
+  --color-on-accent-soft: #c5e8d0;
+  --color-success: #8fd0a2;
+  --color-success-soft: #213a29;
   --color-warning: #f0c36d;
   --color-warning-soft: #3a2f17;
   --color-danger: #f2a39b;
@@ -147,6 +160,10 @@
   --color-danger-soft: #3d2220;
   --color-focus: #8cc3f0;
   --color-backdrop: rgb(0 0 0 / 60%);
+  --gauge-veg: #5fbf82;
+  --gauge-protein: #f08a6a;
+  --gauge-starch: #f0b84a;
+  --gauge-fish: #6fb2e6;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
   --shadow-md: 0 4px 14px rgb(0 0 0 / 35%);
   --shadow-lg: 0 12px 32px rgb(0 0 0 / 50%);

@@ -16,13 +16,13 @@
 }
 
 .primary {
-  background: var(--color-primary-soft);
-  color: var(--color-on-primary-soft);
+  background: var(--color-accent-soft);
+  color: var(--color-on-accent-soft);
 }
 
 .accent {
-  background: var(--color-accent-soft);
-  color: var(--color-on-accent-soft);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
 }
 
 .warning {

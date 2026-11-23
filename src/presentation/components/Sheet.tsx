@@ -6,6 +6,9 @@ import styles from './Sheet.module.css';
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/** Fenêtres ouvertes, la plus récente en dernier : seule la dernière réagit à Échap et à Tab. */
+const openStack: symbol[] = [];
+
 /** Distance (px) de glissement vers le bas qui ferme une feuille. */
 const SWIPE_CLOSE_DISTANCE = 80;
 
@@ -14,8 +17,8 @@ interface SheetProps {
   readonly title: ReactNode;
   readonly onClose: () => void;
   readonly children: ReactNode;
-  /** `sheet` : feuille ancrée en bas (mobile) ; `dialog` : boîte centrée. */
-  readonly variant?: 'sheet' | 'dialog' | undefined;
+  /** `sheet` : feuille ancrée en bas ; `dialog` : boîte centrée ; `full` : plein écran. */
+  readonly variant?: 'sheet' | 'dialog' | 'full' | undefined;
   /** Description lue à l'ouverture. */
   readonly description?: ReactNode;
   /** Libellé du bouton de fermeture ✕. */
@@ -73,7 +76,12 @@ export function Sheet({
       initialFocusRef?.current ?? panel?.querySelector<HTMLElement>(FOCUSABLE) ?? panel;
     target?.focus();
 
+    const self = Symbol('sheet');
+    openStack.push(self);
+
     const onKeyDown = (event: KeyboardEvent) => {
+      // Fenêtres empilées (célébration sur une feuille…) : seule celle du dessus réagit.
+      if (openStack.at(-1) !== self) return;
       if (event.key === 'Escape') {
         event.stopPropagation();
         onCloseRef.current();
@@ -98,6 +106,7 @@ export function Sheet({
     document.addEventListener('keydown', onKeyDown);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
+      openStack.splice(openStack.indexOf(self), 1);
       for (const el of siblings) el.inert = false;
       document.body.style.overflow = previousOverflow;
       if (previouslyFocused?.isConnected) previouslyFocused.focus();
@@ -136,7 +145,7 @@ export function Sheet({
       />
       <div
         ref={panelRef}
-        className={`${styles.panel} ${variant === 'dialog' ? styles.dialog : styles.sheet}`}
+        className={`${styles.panel} ${styles[variant]}`}
         role={role}
         aria-modal="true"
         aria-labelledby={titleId}

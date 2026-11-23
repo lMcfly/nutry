@@ -9,8 +9,17 @@ html {
   text-size-adjust: 100%;
 }
 
+/* Coque d'app : l'écran ne défile jamais, seules certaines cartes défilent à l'intérieur. */
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
   font-family: var(--font-body);
   font-size: var(--font-size-md);
   line-height: var(--line-height);
@@ -28,7 +37,7 @@ p {
 }
 
 h1 {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   line-height: 1.2;
 }
 

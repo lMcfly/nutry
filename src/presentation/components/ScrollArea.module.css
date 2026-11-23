@@ -1,0 +1,26 @@
+.scroll {
+  min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll:focus-visible {
+  outline-offset: -3px;
+  border-radius: var(--radius-md);
+}
+
+.y {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+.x::-webkit-scrollbar {
+  display: none;
+}

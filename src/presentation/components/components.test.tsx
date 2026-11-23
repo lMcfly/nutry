@@ -9,7 +9,7 @@ import { Stepper } from './Stepper';
 import { TOAST_ACTION_DURATION, TOAST_DURATION, ToastProvider, useToast } from './Toast';
 import { Toggle } from './Toggle';
 
-function SheetHarness({ variant }: { readonly variant?: 'sheet' | 'dialog' }) {
+function SheetHarness({ variant }: { readonly variant?: 'sheet' | 'dialog' | 'full' }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -71,6 +71,56 @@ describe('Sheet', () => {
     fireEvent.pointerMove(handle, { clientY: 260 });
     fireEvent.pointerUp(handle, { clientY: 260 });
     expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('variante plein écran : pas de poignée, se ferme par ✕ et Échap', async () => {
+    const user = userEvent.setup();
+    render(<SheetHarness variant="full" />);
+    await user.click(screen.getByRole('button', { name: 'Ouvrir' }));
+    expect(screen.getByRole('dialog', { name: 'Ma feuille' })).toBeVisible();
+    expect(screen.queryByTestId('sheet-handle')).toBeNull();
+    await user.click(screen.getByRole('button', { name: 'Fermer' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    await user.click(screen.getByRole('button', { name: 'Ouvrir' }));
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('fenêtres empilées : Échap ferme seulement celle du dessus', async () => {
+    const user = userEvent.setup();
+    function Stack() {
+      const [top, setTop] = useState(false);
+      return (
+        <>
+          <Sheet open title="Dessous" onClose={() => undefined}>
+            <button
+              type="button"
+              onClick={() => {
+                setTop(true);
+              }}
+            >
+              Ouvrir dessus
+            </button>
+          </Sheet>
+          <Sheet
+            open={top}
+            variant="dialog"
+            title="Dessus"
+            onClose={() => {
+              setTop(false);
+            }}
+          >
+            <p>Bravo</p>
+          </Sheet>
+        </>
+      );
+    }
+    render(<Stack />);
+    await user.click(screen.getByRole('button', { name: 'Ouvrir dessus' }));
+    expect(screen.getByRole('dialog', { name: 'Dessus' })).toBeVisible();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog', { name: 'Dessus' })).toBeNull();
+    expect(screen.getByRole('dialog', { name: 'Dessous' })).toBeVisible();
   });
 
   it('variante boîte : fermeture par le fond', async () => {

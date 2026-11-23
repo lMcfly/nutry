@@ -7,18 +7,17 @@
 
 .default {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .soft {
-  background: var(--color-primary-soft);
-  color: var(--color-on-primary-soft);
+  background: var(--color-accent-soft);
+  color: var(--color-on-accent-soft);
 }
 
 .accent {
-  background: var(--color-accent-soft);
-  color: var(--color-on-accent-soft);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
 }
 
 .sunken {

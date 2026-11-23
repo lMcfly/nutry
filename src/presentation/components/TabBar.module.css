@@ -1,13 +1,10 @@
 .tabbar {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  flex: none;
   z-index: var(--z-tabbar);
-  border-top: 1px solid var(--color-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   background: var(--color-surface);
+  box-shadow: 0 -6px 18px rgb(30 60 40 / 8%);
   padding-bottom: env(safe-area-inset-bottom);
-  box-shadow: 0 -2px 12px rgb(60 45 25 / 6%);
 }
 
 .list {
@@ -23,9 +20,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 1px;
   min-height: var(--tabbar-height);
-  padding: var(--space-2) var(--space-1);
+  padding: var(--space-1);
   color: var(--color-text-muted);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
@@ -36,10 +33,10 @@
 .emoji {
   display: grid;
   place-items: center;
-  width: 3.5rem;
-  height: 2rem;
+  width: 3.25rem;
+  height: 1.85rem;
   border-radius: var(--radius-pill);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   line-height: 1;
   transition: background-color var(--duration-fast) var(--ease-out);
 }
