@@ -1,0 +1,42 @@
+.region {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tabbar-height) + var(--space-3) + env(safe-area-inset-bottom));
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(calc(100% - 2 * var(--space-4)), 28rem);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.toast {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-weight: var(--font-weight-medium);
+  animation: pop var(--duration-medium) var(--ease-out);
+}
+
+.info {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.success {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.error {
+  background: var(--color-danger);
+  color: var(--color-on-danger);
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}

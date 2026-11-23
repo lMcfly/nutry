@@ -1,0 +1,87 @@
+.cardTitle {
+  margin-bottom: var(--space-2);
+}
+
+.small {
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--space-3);
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.charts {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.entries {
+  margin-top: var(--space-3);
+}
+
+.entries summary,
+.week summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.entries ul {
+  list-style: none;
+}
+
+.entries li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.remove {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.links a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+.week {
+  border-bottom: 1px solid var(--color-border);
+}

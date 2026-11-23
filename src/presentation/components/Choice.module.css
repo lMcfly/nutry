@@ -1,0 +1,146 @@
+.fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-weight-bold);
+}
+
+.hint {
+  margin-bottom: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* La vraie case reste dans l'arbre d'accessibilité mais invisible. */
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.chip:has(.input:checked),
+.segment:has(.input:checked) {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.chip:has(.input:checked)::after {
+  content: '✓';
+  font-weight: var(--font-weight-bold);
+}
+
+.chip:has(.input:focus-visible),
+.card:has(.input:focus-visible),
+.segment:has(.input:focus-visible) {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.emoji {
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.cards {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--touch-min);
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.card .emoji {
+  font-size: 1.6rem;
+}
+
+.card:has(.input:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+  box-shadow: inset 0 0 0 1.5px var(--color-primary);
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardLabel {
+  font-weight: var(--font-weight-bold);
+}
+
+.cardHint {
+  font-size: var(--font-size-sm);
+  color: inherit;
+}
+
+.segmented {
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-alt);
+}
+
+.segment {
+  position: relative;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  padding: var(--space-1) var(--space-2);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-pill);
+  text-align: center;
+  cursor: pointer;
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  border-style: dashed;
+}

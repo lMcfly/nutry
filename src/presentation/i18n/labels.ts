@@ -1,0 +1,253 @@
+/**
+ * Libellés français des identifiants du domain (qui restent en ASCII kebab-case).
+ * `labels.test.ts` vérifie qu'aucune valeur des vocabulaires du domain n'est oubliée.
+ */
+import type { DayIndex, MealSlot } from '@domain/mealplan';
+import type { RatingReason } from '@domain/preferences';
+import type { ActivityLevel, Goal, Sex } from '@domain/profile';
+import type { QuizCategory } from '@domain/quiz';
+import type { Aisle, Allergen, Diet, Level, ProteinType } from '@domain/recipe';
+import type { Season } from '@domain/season';
+import type { ShoppingSectionKey } from '@domain/shopping';
+import type { Theme } from '@domain/userdata';
+
+export const LEVEL_LABELS: Readonly<Record<Level, string>> = {
+  simple: 'Simple',
+  medium: 'Médium',
+  experiment: 'Expérimenter',
+};
+
+export const LEVEL_HINTS: Readonly<Record<Level, string>> = {
+  simple: '20 min max, 6 ingrédients au plus, aucune technique.',
+  medium: '20 à 45 min, quelques étapes de plus.',
+  experiment: 'Des saveurs du monde et des gestes nouveaux.',
+};
+
+export const LEVEL_EMOJIS: Readonly<Record<Level, string>> = {
+  simple: '🌱',
+  medium: '🍲',
+  experiment: '✨',
+};
+
+export const DIET_LABELS: Readonly<Record<Diet, string>> = {
+  omnivore: 'Omnivore',
+  flexitarien: 'Flexitarien',
+  vegetarien: 'Végétarien',
+  vegan: 'Végan',
+  'sans-gluten': 'Sans gluten',
+  'sans-lactose': 'Sans lactose',
+};
+
+export const ALLERGEN_LABELS: Readonly<Record<Allergen, string>> = {
+  gluten: 'Gluten',
+  crustaces: 'Crustacés',
+  oeufs: 'Œufs',
+  poissons: 'Poissons',
+  arachides: 'Arachides',
+  soja: 'Soja',
+  lait: 'Lait',
+  'fruits-a-coque': 'Fruits à coque',
+  celeri: 'Céleri',
+  moutarde: 'Moutarde',
+  sesame: 'Sésame',
+  sulfites: 'Sulfites',
+  lupin: 'Lupin',
+  mollusques: 'Mollusques',
+};
+
+export const PROTEIN_LABELS: Readonly<Record<ProteinType, string>> = {
+  boeuf: 'Bœuf',
+  porc: 'Porc',
+  volaille: 'Volaille',
+  agneau: 'Agneau',
+  poisson: 'Poisson',
+  'fruits-de-mer': 'Fruits de mer',
+  oeufs: 'Œufs',
+  legumineuses: 'Légumineuses',
+  'soja-tofu': 'Soja et tofu',
+  fromage: 'Fromage',
+  aucune: 'Végétal',
+};
+
+export const AISLE_LABELS: Readonly<Record<Aisle, string>> = {
+  'fruits-legumes': 'Fruits et légumes',
+  'boucherie-poissonnerie': 'Boucherie et poissonnerie',
+  frais: 'Frais',
+  boulangerie: 'Boulangerie',
+  epicerie: 'Épicerie',
+  surgeles: 'Surgelés',
+};
+
+export const SECTION_EMOJIS: Readonly<Record<ShoppingSectionKey, string>> = {
+  'fruits-legumes': '🥕',
+  'boucherie-poissonnerie': '🐟',
+  frais: '🧀',
+  boulangerie: '🥖',
+  epicerie: '🫙',
+  surgeles: '❄️',
+  divers: '🧺',
+};
+
+export const SECTION_TITLES: Readonly<Record<ShoppingSectionKey, string>> = {
+  ...AISLE_LABELS,
+  divers: 'Divers',
+};
+
+export const SEX_LABELS: Readonly<Record<Sex, string>> = {
+  femme: 'Femme',
+  homme: 'Homme',
+  autre: 'Autre',
+};
+
+export const ACTIVITY_LABELS: Readonly<Record<ActivityLevel, string>> = {
+  sedentaire: 'Sédentaire',
+  leger: 'Un peu actif',
+  modere: 'Actif',
+  actif: 'Très actif',
+  'tres-actif': 'Sportif',
+};
+
+export const ACTIVITY_HINTS: Readonly<Record<ActivityLevel, string>> = {
+  sedentaire: 'Surtout assis, peu de marche',
+  leger: 'Marche ou sport léger 1 à 3 fois par semaine',
+  modere: 'Sport 3 à 5 fois par semaine',
+  actif: 'Sport intense 6 à 7 fois par semaine',
+  'tres-actif': 'Métier physique ou entraînement quotidien',
+};
+
+export const ACTIVITY_EMOJIS: Readonly<Record<ActivityLevel, string>> = {
+  sedentaire: '🛋️',
+  leger: '🚶',
+  modere: '🚴',
+  actif: '🏃',
+  'tres-actif': '🏋️',
+};
+
+export const GOAL_LABELS: Readonly<Record<Goal, string>> = {
+  reequilibrer: 'Rééquilibrer',
+  'perdre-en-douceur': 'Perdre en douceur',
+  maintenir: 'Maintenir',
+  energie: 'Reprendre de l’énergie',
+};
+
+export const GOAL_HINTS: Readonly<Record<Goal, string>> = {
+  reequilibrer: 'Des assiettes variées et de saison',
+  'perdre-en-douceur': 'Des portions un peu ajustées, sans frustration',
+  maintenir: 'Garder ton équilibre actuel',
+  energie: 'Des repas qui donnent la pêche',
+};
+
+export const GOAL_EMOJIS: Readonly<Record<Goal, string>> = {
+  reequilibrer: '⚖️',
+  'perdre-en-douceur': '🍃',
+  maintenir: '🌿',
+  energie: '⚡',
+};
+
+export const RATING_REASON_LABELS: Readonly<Record<RatingReason, string>> = {
+  'trop-long': 'Trop long',
+  'pas-aime': 'Pas aimé le goût',
+  'trop-copieux': 'Trop copieux',
+  autre: 'Autre',
+};
+
+export const SLOT_LABELS: Readonly<Record<MealSlot, string>> = {
+  'petit-dejeuner': 'Petit-déjeuner',
+  dejeuner: 'Déjeuner',
+  diner: 'Dîner',
+};
+
+export const DAY_LABELS: Readonly<Record<DayIndex, string>> = {
+  0: 'Lundi',
+  1: 'Mardi',
+  2: 'Mercredi',
+  3: 'Jeudi',
+  4: 'Vendredi',
+  5: 'Samedi',
+  6: 'Dimanche',
+};
+
+export const SLOT_EMOJIS: Readonly<Record<MealSlot, string>> = {
+  'petit-dejeuner': '☕',
+  dejeuner: '☀️',
+  diner: '🌙',
+};
+
+export const QUIZ_CATEGORY_LABELS: Readonly<Record<QuizCategory, string>> = {
+  histoire: 'Histoire',
+  geographie: 'Géographie',
+  sciences: 'Sciences',
+  arts: 'Arts',
+  sport: 'Sport',
+  nature: 'Nature',
+  cuisine: 'Cuisine',
+};
+
+export const THEME_LABELS: Readonly<Record<Theme, string>> = {
+  system: 'Comme mon téléphone',
+  light: 'Clair',
+  dark: 'Sombre',
+};
+
+export const SEASON_LABELS: Readonly<Record<Season, string>> = {
+  printemps: 'Printemps',
+  ete: 'Été',
+  automne: 'Automne',
+  hiver: 'Hiver',
+};
+
+/** Durées proposées par repas (minutes). */
+export const TIME_OPTIONS = [15, 20, 30, 45, 60, 90] as const;
+
+export function formatMinutes(minutes: number): string {
+  if (minutes < 60) return `${minutes} min`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m === 0 ? `${h} h` : `${h} h ${String(m).padStart(2, '0')}`;
+}
+
+const DATE_LONG = new Intl.DateTimeFormat('fr-FR', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'UTC',
+});
+const DATE_SHORT = new Intl.DateTimeFormat('fr-FR', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: 'UTC',
+});
+const DATE_FULL = new Intl.DateTimeFormat('fr-FR', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+const toDate = (iso: string): Date => new Date(`${iso.slice(0, 10)}T00:00:00Z`);
+const capitalize = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** « Lundi 23 novembre ». */
+export function formatDayLong(iso: string): string {
+  return capitalize(DATE_LONG.format(toDate(iso)));
+}
+
+/** « 23 nov. ». */
+export function formatDayShort(iso: string): string {
+  return DATE_SHORT.format(toDate(iso));
+}
+
+/** « 23 novembre 2026 ». */
+export function formatDateFull(iso: string): string {
+  return DATE_FULL.format(toDate(iso));
+}
+
+/** Nombre décimal à la française (« 72,5 »). */
+export function formatDecimal(value: number, digits = 1): string {
+  return value.toLocaleString('fr-FR', { maximumFractionDigits: digits });
+}
+
+/** Accord simple : « 1 repas », « 2 personnes ». */
+export function plural(count: number, singular: string, pluralForm = `${singular}s`): string {
+  return `${count} ${count > 1 ? pluralForm : singular}`;
+}
