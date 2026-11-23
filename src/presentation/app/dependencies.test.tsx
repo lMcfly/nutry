@@ -10,7 +10,7 @@ function Today() {
 describe('DependenciesProvider', () => {
   it('fournit les dépendances injectées', () => {
     const deps: AppDependencies = {
-      clock: { now: () => new Date('2026-11-23T10:00:00Z') },
+      clock: { now: () => new Date('2026-11-23T10:00:00Z'), today: () => '2026-11-23' },
       sharer: { share: () => Promise.resolve('copied') },
     };
     render(

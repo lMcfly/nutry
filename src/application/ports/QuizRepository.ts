@@ -1,9 +1,13 @@
 import type { QuizQuestion, QuizState } from '@domain/quiz';
 
+/** Banque de questions (embarquée, lecture seule, disponible hors ligne). */
 export interface QuizRepository {
-  /** Banque de questions (embarquée, disponible hors ligne). */
   getQuestions(): Promise<readonly QuizQuestion[]>;
-  /** État persistant : questions déjà vues, série en cours. */
-  getState(): Promise<QuizState>;
-  saveState(state: QuizState): Promise<void>;
+}
+
+/** État persistant du quiz : questions déjà vues, série en cours, question du jour. */
+export interface QuizStateRepository {
+  /** `INITIAL_QUIZ_STATE` si rien n'est encore enregistré. */
+  get(): Promise<QuizState>;
+  save(state: QuizState): Promise<void>;
 }
