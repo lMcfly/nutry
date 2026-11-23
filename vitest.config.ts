@@ -24,6 +24,8 @@ export default mergeConfig(
             environment: 'jsdom',
             include: ['src/presentation/**/*.test.{ts,tsx}', 'src/main.test.tsx'],
             setupFiles: ['./src/presentation/test-setup.ts'],
+            // Les jetons sont lus en texte brut (`?raw`) par le test de contraste.
+            css: { include: [/tokens\.css/] },
           },
         },
       ],

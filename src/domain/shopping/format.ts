@@ -1,5 +1,5 @@
 import type { ShoppingList } from './shopping.types';
-import { formatQuantity } from './units';
+import { formatIngredientText } from './units';
 
 export interface FormatShoppingOptions {
   readonly title?: string;
@@ -9,7 +9,7 @@ export interface FormatShoppingOptions {
 
 /**
  * Texte de la liste pour le partage (Web Share ou presse-papiers) :
- * un titre, puis chaque rayon et ses lignes « - nom : quantité ». Liste vide : un mot
+ * un titre, puis chaque rayon et ses lignes (« - ail : 7 gousses », « - 2 concombres »). Liste vide : un mot
  * neutre ; tout coché : un bravo.
  */
 export function formatShoppingListText(
@@ -20,13 +20,11 @@ export function formatShoppingListText(
   for (const section of list.sections) {
     const items = section.items.filter((i) => (options.includeChecked ?? false) || !i.checked);
     if (items.length === 0) continue;
-    const lines = items.map((i) => {
-      const qty =
-        i.quantity !== undefined && i.unit !== undefined
-          ? ` : ${formatQuantity(i.quantity, i.unit)}`
-          : '';
-      return `- ${i.name}${qty}`;
-    });
+    const lines = items.map((i) =>
+      i.quantity !== undefined && i.unit !== undefined
+        ? `- ${formatIngredientText(i.name, i.quantity, i.unit)}`
+        : `- ${i.name}`,
+    );
     blocks.push([section.label, ...lines].join('\n'));
   }
   if (blocks.length === 1) {

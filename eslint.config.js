@@ -159,6 +159,24 @@ export default tseslint.config(
     },
   },
   {
+    // La date du jour vient du port Clock, via le cas d'usage `today()`.
+    files: ['src/presentation/**/*.{ts,tsx}'],
+    ignores: ['**/*.test.{ts,tsx}'],
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        { object: 'Date', property: 'now', message: 'Utilise le cas d’usage today().' },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "NewExpression[callee.name='Date'][arguments.length=0]",
+          message: 'Utilise le cas d’usage today() (horloge injectée).',
+        },
+      ],
+    },
+  },
+  {
     files: ['src/presentation/**/*.tsx', 'src/main.tsx'],
     plugins: { 'react-hooks': reactHooks, 'react-refresh': reactRefresh },
     rules: {

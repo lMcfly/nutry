@@ -20,4 +20,14 @@ export {
 export type { BuildShoppingListInput } from './list';
 export { formatShoppingListText } from './format';
 export type { FormatShoppingOptions } from './format';
-export { formatNumberFr, formatQuantity, roundForShopping, toBaseUnit } from './units';
+export {
+  formatIngredient,
+  formatIngredientText,
+  formatNumberFr,
+  formatQuantity,
+  pluralizeFr,
+  roundForRecipe,
+  roundForShopping,
+  toBaseUnit,
+} from './units';
+export type { IngredientDisplay } from './units';

@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { FIXTURE_RECIPES, fixture } from '../testing/fixtures';
 import type { PlannedMeal, WeeklyPlan } from '../mealplan';
 import {
+  formatIngredient,
+  formatIngredientText,
+  pluralizeFr,
+  roundForRecipe,
   EMPTY_SHOPPING_STATE,
   SHOPPING_SECTIONS,
   addManualItem,
@@ -66,8 +70,10 @@ describe('unités et arrondis', () => {
     [1.2, 'boite', 2, 'boite'],
     [2, 'botte', 2, 'botte'],
     [0.2, 'pincee', 1, 'pincee'],
-    [1.2, 'piece', 1.5, 'piece'],
-    [0.1, 'gousse', 0.5, 'gousse'],
+    [1.2, 'piece', 2, 'piece'],
+    [0.1, 'gousse', 1, 'gousse'],
+    [6.5, 'gousse', 7, 'gousse'],
+    [1.2, 'tranche', 1.5, 'tranche'],
   ] as const)('%s %s → %s %s', (q, unit, expectedQ, expectedUnit) => {
     const r = roundForShopping(q, unit);
     expect(r.unit).toBe(expectedUnit);
@@ -214,6 +220,65 @@ describe('buildShoppingList', () => {
   });
 });
 
+describe('quantités lisibles', () => {
+  it.each([
+    ['concombre', 'concombres'],
+    ['oignon rouge', 'oignons rouges'],
+    ['pomme de terre', 'pommes de terre'],
+    ['côtelettes d’agneau', 'côtelettes d’agneau'],
+    ['poireau', 'poireaux'],
+    ['yaourt nature', 'yaourts nature'],
+    ['pak choï', 'pak choï'],
+    ['oeufs', 'oeufs'],
+  ])('pluriel de « %s » : « %s »', (name, expected) => {
+    expect(pluralizeFr(name)).toBe(expected);
+  });
+
+  it('refuse un pluriel déraisonnable', () => {
+    expect(pluralizeFr('steaks hachés 5 %')).toBeUndefined();
+    expect(pluralizeFr('')).toBeUndefined();
+  });
+
+  it('affiche quantité et nom sans nombre nu', () => {
+    expect(formatIngredient('concombre', 1.5, 'piece')).toEqual({
+      amount: '1,5',
+      label: 'concombre',
+      amountFirst: true,
+    });
+    expect(formatIngredient('concombre', 2, 'piece')).toMatchObject({ label: 'concombres' });
+    expect(formatIngredient('steaks hachés 5 %', 2, 'piece')).toEqual({
+      amount: '× 2',
+      label: 'steaks hachés 5 %',
+      amountFirst: false,
+    });
+    expect(formatIngredient('ail', 7, 'gousse')).toEqual({
+      amount: '7 gousses',
+      label: 'ail',
+      amountFirst: false,
+    });
+    expect(formatIngredientText('échalote', 3, 'piece')).toBe('3 échalotes');
+    expect(formatIngredientText('ail', 7, 'gousse')).toBe('ail : 7 gousses');
+    expect(formatIngredientText('steaks hachés 5 %', 2, 'piece')).toBe('steaks hachés 5 % × 2');
+  });
+
+  it('liste de courses : on achète entier ; recette : quantité exacte', () => {
+    expect(roundForShopping(1.5, 'piece')).toEqual({ quantity: 2, unit: 'piece' });
+    expect(roundForShopping(4.2, 'piece')).toEqual({ quantity: 5, unit: 'piece' });
+    expect(roundForShopping(6.5, 'gousse')).toEqual({ quantity: 7, unit: 'gousse' });
+    expect(roundForRecipe(1.5, 'piece')).toEqual({ quantity: 1.5, unit: 'piece' });
+    expect(roundForRecipe(1.2, 'gousse')).toEqual({ quantity: 1.5, unit: 'gousse' });
+    expect(roundForRecipe(6.5, 'gousse')).toEqual({ quantity: 7, unit: 'gousse' });
+    expect(roundForRecipe(2, 'gousse')).toEqual({ quantity: 2, unit: 'gousse' });
+    expect(roundForRecipe(1.2, 'boite')).toEqual({ quantity: 1.5, unit: 'boite' });
+    expect(roundForRecipe(0.2, 'pincee')).toEqual({ quantity: 1, unit: 'pincee' });
+    expect(roundForRecipe(123, 'g')).toEqual({ quantity: 125, unit: 'g' });
+    expect(roundForRecipe(1.2, 'cuillere-soupe')).toEqual({
+      quantity: 1.5,
+      unit: 'cuillere-soupe',
+    });
+  });
+});
+
 describe('formatShoppingListText', () => {
   const state = toggleChecked(
     addManualItem(EMPTY_SHOPPING_STATE, { id: 'x', label: 'Café' }),
@@ -236,7 +301,7 @@ describe('formatShoppingListText', () => {
         '- haricots verts : 300 g',
         '',
         'Boucherie et poissonnerie',
-        '- pavé de saumon : 2',
+        '- 2 pavés de saumon',
         '',
         'Épicerie',
         '- huile d’olive : 1 c. à soupe',
@@ -250,7 +315,7 @@ describe('formatShoppingListText', () => {
 
   it('peut inclure les articles cochés', () => {
     expect(formatShoppingListText(list, { includeChecked: true })).toMatch(
-      /^Liste de courses\n[\s\S]*- citron : 1\n/,
+      /^Liste de courses\n[\s\S]*- 1 citron\n/,
     );
   });
 

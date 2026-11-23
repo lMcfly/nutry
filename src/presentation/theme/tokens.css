@@ -1,41 +1,159 @@
 /*
- * Jetons de design (variables CSS). Version minimale posée en phase 1 :
- * l'agent ui-ux complète palette, typographie et espacements en phase 5.
- * Voir docs/adr/0004-css-modules-variables.md.
+ * Jetons de design Nutry (ADR 0004) : une identité végétale et chaleureuse.
+ * Vert sauge (primaire), terracotta doux (accent), fond crème. Typographie système
+ * (aucune police externe : hors ligne et confidentialité).
+ *
+ * Les couleurs sont vérifiées WCAG AA par `contrast.test.ts` (paires texte/fond) :
+ * toute modification doit garder ce test vert. Les jetons sombres sont dupliqués dans
+ * le bloc `prefers-color-scheme` et dans `[data-theme='dark']` (le test vérifie qu'ils
+ * restent identiques).
  */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
-  --color-bg: #ffffff;
-  --color-surface: #f7f7f5;
-  --color-text: #1f2328;
-  --color-text-muted: #59636e;
-  --color-border: #d8dee4;
-  --color-primary: #2f855a;
+  /* Couleurs — thème clair */
+  --color-bg: #fbf7f0;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f3ece0;
+  --color-text: #2b2620;
+  --color-text-muted: #5e554a;
+  --color-border: #e5dccd;
+  --color-border-strong: #857a6a;
+  --color-primary: #3d6b4f;
+  --color-primary-hover: #2f5740;
+  --color-on-primary: #ffffff;
+  --color-primary-soft: #e4eee3;
+  --color-on-primary-soft: #2a4d37;
+  --color-accent: #a9502f;
+  --color-on-accent: #ffffff;
+  --color-accent-soft: #f8e4da;
+  --color-on-accent-soft: #7f3a20;
+  --color-success: #2f6b3f;
+  --color-success-soft: #e2f0e1;
+  --color-warning: #7a5200;
+  --color-warning-soft: #fbefd5;
+  --color-danger: #a8312a;
+  --color-on-danger: #ffffff;
+  --color-danger-soft: #fbe5e2;
+  --color-focus: #2c5f8a;
+  --color-backdrop: rgb(43 38 32 / 45%);
 
+  /* Espacements (base 4 px) */
+  --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
 
-  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Rayons */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 999px;
+
+  /* Ombres */
+  --shadow-sm: 0 1px 2px rgb(60 45 25 / 8%);
+  --shadow-md: 0 4px 14px rgb(60 45 25 / 10%);
+  --shadow-lg: 0 12px 32px rgb(60 45 25 / 18%);
+
+  /* Typographie (système) */
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-size-xs: 0.8125rem;
+  --font-size-sm: 0.9375rem;
+  --font-size-md: 1.0625rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.875rem;
+  --line-height: 1.5;
+  --font-weight-medium: 550;
+  --font-weight-bold: 700;
+
+  /* Tactile */
+  --touch-min: 48px;
+  --content-max: 40rem;
+  --tabbar-height: 4.25rem;
+
+  /* Plans */
+  --z-tabbar: 10;
+  --z-sheet: 100;
+  --z-toast: 200;
+
+  /* Mouvement */
+  --duration-fast: 150ms;
+  --duration-medium: 250ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #15181c;
-    --color-surface: #1e2227;
-    --color-text: #e6e8eb;
-    --color-text-muted: #a3acb6;
-    --color-border: #343a42;
-    --color-primary: #68d391;
+    color-scheme: dark;
+    --color-bg: #161a15;
+    --color-surface: #1f241e;
+    --color-surface-alt: #293027;
+    --color-text: #efeae0;
+    --color-text-muted: #bdb5a7;
+    --color-border: #394136;
+    --color-border-strong: #85907f;
+    --color-primary: #9dcaa6;
+    --color-primary-hover: #b4d8ba;
+    --color-on-primary: #132419;
+    --color-primary-soft: #2a3b2d;
+    --color-on-primary-soft: #cfe6d2;
+    --color-accent: #e9a487;
+    --color-on-accent: #2b140b;
+    --color-accent-soft: #3d2a21;
+    --color-on-accent-soft: #f4c9b6;
+    --color-success: #9dcaa6;
+    --color-success-soft: #22362a;
+    --color-warning: #f0c36d;
+    --color-warning-soft: #3a2f17;
+    --color-danger: #f2a39b;
+    --color-on-danger: #2e0d0a;
+    --color-danger-soft: #3d2220;
+    --color-focus: #8cc3f0;
+    --color-backdrop: rgb(0 0 0 / 60%);
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+    --shadow-md: 0 4px 14px rgb(0 0 0 / 35%);
+    --shadow-lg: 0 12px 32px rgb(0 0 0 / 50%);
   }
 }
 
 :root[data-theme='dark'] {
-  --color-bg: #15181c;
-  --color-surface: #1e2227;
-  --color-text: #e6e8eb;
-  --color-text-muted: #a3acb6;
-  --color-border: #343a42;
-  --color-primary: #68d391;
+  color-scheme: dark;
+  --color-bg: #161a15;
+  --color-surface: #1f241e;
+  --color-surface-alt: #293027;
+  --color-text: #efeae0;
+  --color-text-muted: #bdb5a7;
+  --color-border: #394136;
+  --color-border-strong: #85907f;
+  --color-primary: #9dcaa6;
+  --color-primary-hover: #b4d8ba;
+  --color-on-primary: #132419;
+  --color-primary-soft: #2a3b2d;
+  --color-on-primary-soft: #cfe6d2;
+  --color-accent: #e9a487;
+  --color-on-accent: #2b140b;
+  --color-accent-soft: #3d2a21;
+  --color-on-accent-soft: #f4c9b6;
+  --color-success: #9dcaa6;
+  --color-success-soft: #22362a;
+  --color-warning: #f0c36d;
+  --color-warning-soft: #3a2f17;
+  --color-danger: #f2a39b;
+  --color-on-danger: #2e0d0a;
+  --color-danger-soft: #3d2220;
+  --color-focus: #8cc3f0;
+  --color-backdrop: rgb(0 0 0 / 60%);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md: 0 4px 14px rgb(0 0 0 / 35%);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 50%);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+  }
 }

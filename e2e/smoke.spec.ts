@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-test('l’application se charge sur la page Semaine', async ({ page }) => {
+test('l’application se charge sur l’onboarding au premier lancement', async ({ page }) => {
   await page.goto('./');
-  await expect(page).toHaveTitle('Nutry');
-  await expect(page).toHaveURL(/#\/semaine$/);
-  await expect(page.getByRole('heading', { name: 'Ma semaine' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'Navigation principale' })).toBeVisible();
+  await expect(page).toHaveTitle('Bienvenue · Nutry');
+  await expect(page).toHaveURL(/#\/bienvenue$/);
+  await expect(page.getByRole('heading', { name: 'Faisons connaissance' })).toBeVisible();
+  await expect(page.getByRole('progressbar', { name: 'Progression' })).toBeVisible();
 });

@@ -99,7 +99,8 @@ describe('replaceMeal', () => {
   });
 
   it('utilise le niveau demandé si la recette n’est plus au catalogue', () => {
-    const target = meal('1-dejeuner');
+    const target = plan.meals.find((m) => !m.isLeftover && m.requestedLevel !== undefined);
+    if (!target) throw new Error('aucun repas cuisiné');
     const recipes = FIXTURE_RECIPES.filter((r) => r.id !== target.recipeId);
     const alternatives = replaceMeal({ plan, mealId: target.id, profile, recipes });
     expect(alternatives.every((a) => a.recipe.level === target.requestedLevel)).toBe(true);
@@ -162,21 +163,31 @@ const explain = (f: Partial<ScoreFacts>, isLeftover = false) =>
   explainMeal({ isLeftover, score: { total: 0, components: [], facts: facts(f) } });
 
 describe('explainMeal', () => {
-  it('compose une ligne chaleureuse', () => {
+  it('compose une ligne chaleureuse et naturelle', () => {
     expect(explain({ seasonMatch: true, likedTerms: ['saumon'] })).toBe(
-      'De saison, saumon au menu comme tu aimes, 15 min',
+      'Avec du saumon, que tu aimes · un plat de saison · prêt en 15 min',
     );
+    expect(explain({ likedTerms: ['tomate', 'Épinards'] })).toBe(
+      'Avec de la tomate et des épinards, que tu aimes · prêt en 15 min',
+    );
+    expect(explain({ likedTerms: ['épicé'] })).toBe('Épicé, comme tu aimes · prêt en 15 min');
+    expect(explain({ likedTerms: ['avocat', 'épicé'] })).toBe(
+      'Avec de l’avocat, que tu aimes, et épicé · prêt en 15 min',
+    );
+    expect(explain({ likedTerms: ['panais'] })).toBe('Avec panais, que tu aimes · prêt en 15 min');
     expect(
       explain({
-        seasonalProduce: ['poireaux'],
+        seasonalProduce: ['poireaux', 'carottes', 'céleri'],
         ratedPositively: true,
         batchFriendly: true,
         totalMinutes: 45,
       }),
-    ).toBe('De saison, tu avais aimé ce plat, se prépare à l’avance, 45 min');
-    expect(explain({ newProtein: true })).toBe('Pour varier les plaisirs, 15 min');
-    expect(explain({})).toBe('15 min');
-    expect(explain({ totalMinutes: 0 })).toBe('Sans cuisson ni attente');
+    ).toBe(
+      'Tu avais aimé ce plat · poireaux et carottes de saison · se prépare à l’avance · prêt en 45 min',
+    );
+    expect(explain({ newProtein: true })).toBe('Pour varier les plaisirs · prêt en 15 min');
+    expect(explain({})).toBe('Prêt en 15 min');
+    expect(explain({ totalMinutes: 0 })).toBe('Sans cuisson');
     expect(explain({}, true)).toMatch(/^Les restes d’hier soir/);
   });
 

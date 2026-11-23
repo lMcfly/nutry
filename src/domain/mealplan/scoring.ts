@@ -1,10 +1,10 @@
-import { monthOf } from '../shared';
+import { containsAnyTerm, monthOf } from '../shared';
 import type { IsoDate } from '../shared';
 import { hasTag, recipeMentions, totalMinutes } from '../recipe';
 import type { Level, ProteinType, Recipe } from '../recipe';
 import { NEUTRAL_WEIGHTS, ratingScore } from '../preferences';
 import type { LearnedWeights } from '../preferences';
-import { isProduceInSeason, seasonOf } from '../season';
+import { SEASONS, isProduceInSeason, seasonOf } from '../season';
 import type { ScoreBreakdown, ScoreComponent } from './mealplan.types';
 
 /** Barème du score (points). Voir docs/adr/0006-moteur-de-menu.md. */
@@ -47,6 +47,30 @@ export interface ScoringContext {
   readonly jitter?: number;
 }
 
+/** Conserves, surgelés, produits secs ou transformés : jamais « de saison ». */
+const PRESERVED_TERMS = [
+  'boite',
+  'conserve',
+  'surgele',
+  'surgelee',
+  'seche',
+  'sechee',
+  'concentre',
+  'concentree',
+  'coulis',
+  'confit',
+  'confite',
+  'puree',
+  'jus',
+  'poudre',
+  'pelees',
+  'concassees',
+] as const;
+
+export function isPreservedIngredient(name: string): boolean {
+  return containsAnyTerm(name, PRESERVED_TERMS);
+}
+
 /** Score explicable d'une recette dans un contexte de repas. */
 export function scoreRecipe(recipe: Recipe, ctx: ScoringContext): ScoreBreakdown {
   const R = SCORE_RULES;
@@ -56,9 +80,12 @@ export function scoreRecipe(recipe: Recipe, ctx: ScoringContext): ScoreBreakdown
   const rating = ratingScore(recipe, ctx.weights ?? NEUTRAL_WEIGHTS);
 
   const month = monthOf(ctx.date);
-  const seasonMatch = recipe.seasons.includes(seasonOf(ctx.date));
+  // « De saison » seulement pour une recette réellement saisonnière (pas les 4 saisons)…
+  const seasonMatch =
+    recipe.seasons.length < SEASONS.length && recipe.seasons.includes(seasonOf(ctx.date));
+  // … ou pour un produit FRAIS du calendrier, de saison ce mois-ci (pas une conserve).
   const seasonalProduce = recipe.ingredients
-    .filter((i) => isProduceInSeason(i.name, month))
+    .filter((i) => !isPreservedIngredient(i.name) && isProduceInSeason(i.name, month))
     .map((i) => i.name);
   const season =
     (seasonMatch ? R.seasonMatch : 0) +

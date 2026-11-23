@@ -1,0 +1,56 @@
+.figure {
+  margin: 0;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.grid {
+  stroke: var(--color-border);
+  stroke-dasharray: 4 4;
+}
+
+.axis {
+  fill: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.dot {
+  fill: var(--color-accent);
+}
+
+.trend {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.legendTrend {
+  display: inline-block;
+  width: 1.25rem;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-primary);
+}
+
+.legendDot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-left: var(--space-2);
+  border-radius: 50%;
+  background: var(--color-accent);
+}
