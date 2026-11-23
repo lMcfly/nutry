@@ -86,6 +86,20 @@ export const ANIMAL_FLESH_TERMS = [
   'gélatine',
 ] as const;
 
+/** Boissons alcoolisées utilisées en cuisine : la recette doit porter l'étiquette `alcool`. */
+export const ALCOHOL_TERMS = [
+  'vin',
+  'bière',
+  'cidre',
+  'rhum',
+  'cognac',
+  'calvados',
+  'porto',
+  'kirsch',
+  'saké',
+  'liqueur',
+] as const;
+
 /** Produits animaux non carnés interdits en végan en plus des allergènes (lait, œufs…). */
 export const VEGAN_EXTRA_TERMS = ['miel'] as const;
 

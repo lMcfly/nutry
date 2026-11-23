@@ -10,6 +10,8 @@ export {
   PORTION_FACTOR_MAX,
   PORTION_FACTOR_MIN,
   REFERENCE_KCAL,
+  SENIOR_AGE,
+  SENIOR_BMI_LOW_THRESHOLD,
   SEXES,
   WAIST_TO_HEIGHT_ALERT_THRESHOLD,
 } from './profile.constants';
@@ -18,9 +20,20 @@ export type { Profile } from './profile.types';
 export { computeBmi, computeWaistToHeightRatio, isWaistToHeightAlert } from './body';
 export { computeBmr, computeEnergyNeeds, computeGentleLossTarget } from './energy';
 export type { BmrInput } from './energy';
-export { HEALTH_MESSAGES, assessEnergy, isPregnancyRelevant } from './guards';
+export {
+  HEALTH_MESSAGES,
+  assessEnergy,
+  isWeightTrackingEnabledByDefault,
+  lowBmiThreshold,
+} from './guards';
+export { isPregnancyRelevant } from '../recipe';
 export type { EnergyAssessment, HealthMessage, HealthMessageCode } from './guards';
-export { computePortionFactor, factorForCategory, scaleRecipeForHousehold } from './portions';
+export {
+  computePortionFactor,
+  computeUserPortionFactor,
+  factorForCategory,
+  scaleRecipeForHousehold,
+} from './portions';
 export type { HouseholdPortions } from './portions';
 export { validateProfile } from './validate';
 export type { ProfileField, ProfileIssue } from './validate';

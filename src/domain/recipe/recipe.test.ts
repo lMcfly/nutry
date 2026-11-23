@@ -2,18 +2,21 @@ import { describe, expect, it } from 'vitest';
 import { FIXTURE_RECIPES, fixture, ing, makeRecipe } from '../testing/fixtures';
 import {
   ALLERGENS,
+  PREGNANCY_EXCLUDED_TAGS,
   auditRecipe,
   categorizeIngredient,
   checkDietCompleteness,
   checkDietConsistency,
   checkLevel,
   checkNutrition,
+  checkSafetyTags,
   containsAllergen,
   declaredAllergensIn,
   dislikedIn,
   filterCompatibleRecipes,
   isBasicIngredient,
   isBreakfastRecipe,
+  isPregnancyRelevant,
   isRecipeCompatible,
   matchesDiets,
   recipeMentions,
@@ -232,6 +235,63 @@ describe('audit de contenu', () => {
     ).toEqual(['niveau-temps']);
     expect(
       codes(makeRecipe({ id: 'e', level: 'experiment', prepMinutes: 60, cookMinutes: 120 })),
+    ).toEqual([]);
+  });
+});
+
+describe('grossesse et allaitement : ni alcool ni cru', () => {
+  const tartare = makeRecipe({
+    id: 'tartare-saumon',
+    diets: ['omnivore', 'flexitarien'],
+    allergens: ['poissons'],
+    mainProtein: 'poisson',
+    tags: ['cru'],
+  });
+  const moules = fixture('moules-marinieres');
+  const pregnant = { ...none, pregnantOrBreastfeeding: true, sex: 'femme' } as const;
+
+  it('expose les étiquettes exclues', () => {
+    expect(PREGNANCY_EXCLUDED_TAGS).toEqual(['alcool', 'cru']);
+  });
+
+  it.each(['femme', 'autre'] as const)('exclut alcool et cru (%s)', (sex) => {
+    const c = { ...pregnant, sex };
+    expect(isPregnancyRelevant(c)).toBe(true);
+    expect(isRecipeCompatible(tartare, c)).toBe(false);
+    expect(isRecipeCompatible(moules, c)).toBe(false);
+    expect(isRecipeCompatible(fixture('dahl-lentilles-corail'), c)).toBe(true);
+  });
+
+  it('s’applique si le sexe n’est pas renseigné, pas pour un homme ni sans grossesse', () => {
+    expect(isRecipeCompatible(tartare, { ...none, pregnantOrBreastfeeding: true })).toBe(false);
+    expect(isRecipeCompatible(tartare, { ...pregnant, sex: 'homme' })).toBe(true);
+    expect(isRecipeCompatible(tartare, { ...pregnant, pregnantOrBreastfeeding: false })).toBe(true);
+    expect(isRecipeCompatible(tartare, none)).toBe(true);
+  });
+
+  it('filtre un catalogue', () => {
+    const ids = filterCompatibleRecipes([...FIXTURE_RECIPES, tartare], pregnant).map((r) => r.id);
+    expect(ids).not.toContain('tartare-saumon');
+    expect(ids).not.toContain('moules-marinieres');
+    expect(ids).not.toContain('risotto-courge');
+  });
+
+  it('l’audit exige l’étiquette « alcool » pour un ingrédient alcoolisé', () => {
+    const wine = makeRecipe({ id: 'w', ingredients: [ing('vin rouge', 20, 'cl', 'epicerie')] });
+    expect(checkSafetyTags(wine).map((i) => i.code)).toEqual(['etiquette-alcool-manquante']);
+    expect(checkSafetyTags({ ...wine, tags: ['alcool'] })).toEqual([]);
+    const vinegar = makeRecipe({
+      id: 'v',
+      ingredients: [ing('vinaigre de vin', 1, 'cuillere-soupe', 'epicerie')],
+    });
+    expect(checkSafetyTags(vinegar)).toEqual([]);
+    expect(
+      checkSafetyTags(
+        makeRecipe({
+          id: 'x',
+          ingredients: [ing('vinaigre balsamique', 1, 'cuillere-soupe', 'epicerie')],
+        }),
+      ),
     ).toEqual([]);
   });
 });

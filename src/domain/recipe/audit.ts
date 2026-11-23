@@ -1,6 +1,11 @@
 import { containsAnyTerm } from '../shared';
-import { isBreakfastRecipe, totalMinutes } from './compatibility';
-import { ANIMAL_FLESH_TERMS, VEGAN_EXTRA_TERMS, isBasicIngredient } from './ingredients';
+import { hasTag, isBreakfastRecipe, totalMinutes } from './compatibility';
+import {
+  ALCOHOL_TERMS,
+  ANIMAL_FLESH_TERMS,
+  VEGAN_EXTRA_TERMS,
+  isBasicIngredient,
+} from './ingredients';
 import type { Allergen, ProteinType } from './recipe.constants';
 import type { Recipe } from './recipe.types';
 
@@ -21,7 +26,8 @@ export type RecipeIssueCode =
   | 'nutrition-hors-plage'
   | 'proteines-faibles'
   | 'niveau-temps'
-  | 'niveau-ingredients';
+  | 'niveau-ingredients'
+  | 'etiquette-alcool-manquante';
 
 export interface RecipeIssue {
   readonly code: RecipeIssueCode;
@@ -196,6 +202,25 @@ export function checkLevel(recipe: Recipe): RecipeIssue[] {
   return issues;
 }
 
+/**
+ * Étiquettes de sécurité : un ingrédient alcoolisé (vin, bière…) impose l'étiquette
+ * `alcool`, exclue pendant la grossesse. L'étiquette `cru` (poisson, viande ou œuf
+ * crus, lait cru) ne se déduit pas des noms : elle reste à la charge du contenu.
+ */
+export function checkSafetyTags(recipe: Recipe): RecipeIssue[] {
+  // Le vinaigre (« vinaigre de vin ») ne contient pas d'alcool.
+  const alcoholic = recipe.ingredients.filter(
+    (i) => containsAnyTerm(i.name, ALCOHOL_TERMS) && !containsAnyTerm(i.name, ['vinaigre']),
+  );
+  if (alcoholic.length === 0 || hasTag(recipe, 'alcool')) return [];
+  return [
+    warning(
+      'etiquette-alcool-manquante',
+      `étiquette « alcool » attendue (${alcoholic.map((i) => i.name).join(', ')})`,
+    ),
+  ];
+}
+
 /** Tous les contrôles d'une recette. */
 export function auditRecipe(recipe: Recipe): RecipeIssue[] {
   return [
@@ -203,5 +228,6 @@ export function auditRecipe(recipe: Recipe): RecipeIssue[] {
     ...checkDietCompleteness(recipe),
     ...checkNutrition(recipe),
     ...checkLevel(recipe),
+    ...checkSafetyTags(recipe),
   ];
 }

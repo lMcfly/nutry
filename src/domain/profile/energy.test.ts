@@ -130,7 +130,7 @@ describe('assessEnergy (garde-fous)', () => {
   it('n’applique aucun déficit si les besoins sont déjà sous le plancher', () => {
     const a = assessEnergy(
       makeProfile({
-        age: 70,
+        age: 69,
         heightCm: 150,
         weightKg: 45,
         activity: 'sedentaire',

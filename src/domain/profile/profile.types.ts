@@ -31,4 +31,9 @@ export interface Profile {
   readonly batchCooking: boolean;
   /** Pris en compte si le sexe est 'femme' ou 'autre'. */
   readonly pregnantOrBreastfeeding: boolean;
+  /**
+   * Condition de santé particulière déclarée (trouble du comportement alimentaire,
+   * diabète, maladie rénale, traitement en cours…). Facultatif, `false` par défaut.
+   */
+  readonly healthCondition?: boolean;
 }

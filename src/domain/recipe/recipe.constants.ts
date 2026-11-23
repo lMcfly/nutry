@@ -86,6 +86,10 @@ export type Aisle = (typeof AISLES)[number];
  * - `batch` : se prépare à l'avance pendant la session du dimanche ;
  * - `restes` : cuisiné au dîner, peut alimenter le déjeuner du lendemain ;
  * - `petit-dejeuner` : proposé uniquement au petit-déjeuner ;
+ * - `alcool` : contient du vin, de la bière ou un autre alcool (même cuit) ;
+ * - `cru` : poisson ou viande crus ou peu cuits, œuf cru ou peu cuit (jaune coulant),
+ *   fromage au lait cru. Ces deux étiquettes excluent la recette pendant la grossesse
+ *   ou l'allaitement (ADR 0007) ;
  * - les autres sont informatives (affichage, filtres de l'UI).
  */
 export const RECIPE_TAGS = [
@@ -97,5 +101,7 @@ export const RECIPE_TAGS = [
   'rapide',
   'four',
   'plat-unique',
+  'alcool',
+  'cru',
 ] as const;
 export type RecipeTag = (typeof RECIPE_TAGS)[number];

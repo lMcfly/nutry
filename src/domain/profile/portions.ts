@@ -16,6 +16,20 @@ export function computePortionFactor(targetKcal: number, learnedMultiplier = 1):
 }
 
 /**
+ * Facteur de portion effectif de l'utilisateur. Profil protégé (mineur, grossesse,
+ * condition de santé, IMC bas) : jamais réduit (≥ 1) et l'ajustement « trop copieux »
+ * est ignoré. Sinon : `computePortionFactor(cible, ajustement appris)`.
+ */
+export function computeUserPortionFactor(
+  assessment: { readonly targetKcal: number; readonly protectedProfile: boolean },
+  learnedMultiplier = 1,
+): number {
+  return assessment.protectedProfile
+    ? Math.max(1, computePortionFactor(assessment.targetKcal))
+    : computePortionFactor(assessment.targetKcal, learnedMultiplier);
+}
+
+/**
  * Facteur appliqué à un ingrédient pour une personne : les légumes ne sont jamais
  * réduits (≥ 1), protéines et féculents suivent le facteur, condiments inchangés.
  */

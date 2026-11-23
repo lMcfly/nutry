@@ -24,6 +24,9 @@ export const MEDICAL_DISCLAIMER =
 
 export const ADULT_AGE = 18;
 export const BMI_LOW_THRESHOLD = 18.5;
+/** À partir de cet âge, le seuil d'IMC bas passe à 22 (repère HAS chez la personne âgée). */
+export const SENIOR_AGE = 70;
+export const SENIOR_BMI_LOW_THRESHOLD = 22;
 export const WAIST_TO_HEIGHT_ALERT_THRESHOLD = 0.5;
 /** Déficit maximal appliqué pour « perdre en douceur » (15 % des besoins). */
 export const MAX_DEFICIT_RATIO = 0.15;

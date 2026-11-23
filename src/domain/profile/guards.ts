@@ -1,9 +1,21 @@
 import { computeBmi, computeWaistToHeightRatio, isWaistToHeightAlert } from './body';
 import { computeBmr, computeEnergyNeeds, computeGentleLossTarget } from './energy';
-import { ADULT_AGE, BMI_LOW_THRESHOLD } from './profile.constants';
+import { isPregnancyRelevant } from '../recipe';
+import {
+  ADULT_AGE,
+  BMI_LOW_THRESHOLD,
+  SENIOR_AGE,
+  SENIOR_BMI_LOW_THRESHOLD,
+} from './profile.constants';
 import type { Profile } from './profile.types';
 
-export type HealthMessageCode = 'mineur' | 'grossesse-allaitement' | 'imc-bas' | 'tour-de-taille';
+export type HealthMessageCode =
+  | 'mineur'
+  | 'grossesse-allaitement'
+  | 'condition-sante'
+  | 'imc-bas'
+  | 'imc-bas-senior'
+  | 'tour-de-taille';
 
 /** Message bienveillant à afficher dans le profil (jamais culpabilisant). */
 export interface HealthMessage {
@@ -22,6 +34,16 @@ export const HEALTH_MESSAGES: Readonly<Record<HealthMessageCode, HealthMessage>>
   'grossesse-allaitement': {
     code: 'grossesse-allaitement',
     text: 'Pendant la grossesse ou l’allaitement, tes besoins sont particuliers : ici, pas de restriction. Consulte un professionnel de santé (médecin, sage-femme, diététicien) pour un accompagnement adapté.',
+    suggestProfessional: true,
+  },
+  'condition-sante': {
+    code: 'condition-sante',
+    text: 'Avec une condition de santé particulière, ton alimentation mérite un accompagnement sur mesure : ici, pas de restriction. Parles-en à ton médecin ou à un diététicien, ils sauront te conseiller.',
+    suggestProfessional: true,
+  },
+  'imc-bas-senior': {
+    code: 'imc-bas-senior',
+    text: 'Avec les années, bien manger aide à garder force et énergie : ici, pas de restriction, on mise sur des assiettes généreuses et variées. Parles-en à ton médecin lors de ta prochaine visite, il saura t’accompagner.',
     suggestProfessional: true,
   },
   'imc-bas': {
@@ -49,20 +71,36 @@ export interface EnergyAssessment {
   readonly deficitApplied: boolean;
   /** Faux si l'objectif « perdre en douceur » doit être grisé dans l'UI. */
   readonly perteAutorisee: boolean;
+  /**
+   * Profil protégé (mineur, grossesse/allaitement, condition de santé, IMC bas) :
+   * portions jamais réduites, avis « trop copieux » ignorés.
+   */
+  readonly protectedProfile: boolean;
+  /** Suivi du poids activé par défaut (faux avant 18 ans ou avec une condition de santé). */
+  readonly weightTrackingEnabledByDefault: boolean;
   readonly messages: readonly HealthMessage[];
 }
 
-/** Grossesse / allaitement n'est pris en compte que pour 'femme' et 'autre'. */
-export function isPregnancyRelevant(
-  profile: Pick<Profile, 'sex' | 'pregnantOrBreastfeeding'>,
+/** Seuil d'IMC bas selon l'âge : 22 à partir de 70 ans, 18,5 sinon. */
+export function lowBmiThreshold(age: number): number {
+  return age >= SENIOR_AGE ? SENIOR_BMI_LOW_THRESHOLD : BMI_LOW_THRESHOLD;
+}
+
+/**
+ * Suivi du poids proposé par défaut ? Non avant 18 ans ni en cas de condition de
+ * santé déclarée (la personne peut toujours l'activer elle-même).
+ */
+export function isWeightTrackingEnabledByDefault(
+  profile: Pick<Profile, 'age' | 'healthCondition'>,
 ): boolean {
-  return profile.sex !== 'homme' && profile.pregnantOrBreastfeeding;
+  return profile.age >= ADULT_AGE && profile.healthCondition !== true;
 }
 
 /**
  * Applique les garde-fous de santé et calcule la cible énergétique :
- * - moins de 18 ans, grossesse ou allaitement → aucun déficit, invitation à consulter ;
- * - IMC < 18,5 → perte désactivée, message bienveillant ;
+ * - moins de 18 ans, grossesse ou allaitement, condition de santé → aucun déficit,
+ *   invitation à consulter ;
+ * - IMC < 18,5 (< 22 à partir de 70 ans) → perte désactivée, message bienveillant ;
  * - rapport tour de taille / taille ≥ 0,5 → message bienveillant, objectif inchangé ;
  * - sinon « perdre en douceur » → déficit plafonné à 15 % et plancher 1 500 / 1 200 kcal.
  * Les messages sont renvoyés quel que soit l'objectif choisi.
@@ -75,7 +113,10 @@ export function assessEnergy(profile: Profile): EnergyAssessment {
 
   if (profile.age < ADULT_AGE) messages.push(HEALTH_MESSAGES.mineur);
   if (isPregnancyRelevant(profile)) messages.push(HEALTH_MESSAGES['grossesse-allaitement']);
-  if (bmi < BMI_LOW_THRESHOLD) messages.push(HEALTH_MESSAGES['imc-bas']);
+  if (profile.healthCondition === true) messages.push(HEALTH_MESSAGES['condition-sante']);
+  if (bmi < lowBmiThreshold(profile.age)) {
+    messages.push(HEALTH_MESSAGES[profile.age >= SENIOR_AGE ? 'imc-bas-senior' : 'imc-bas']);
+  }
 
   let waistToHeightRatio: number | undefined;
   if (profile.waistCm !== undefined) {
@@ -95,6 +136,8 @@ export function assessEnergy(profile: Profile): EnergyAssessment {
     targetKcal,
     deficitApplied: targetKcal < needsKcal,
     perteAutorisee,
+    protectedProfile: !perteAutorisee,
+    weightTrackingEnabledByDefault: isWeightTrackingEnabledByDefault(profile),
     messages,
   };
 }

@@ -18,12 +18,14 @@ export type {
 } from './recipe.constants';
 export type { NutritionPerServing, PlateBalance, Recipe, RecipeIngredient } from './recipe.types';
 export {
+  PREGNANCY_EXCLUDED_TAGS,
   containsAllergen,
   declaredAllergensIn,
   dislikedIn,
   filterCompatibleRecipes,
   hasTag,
   isBreakfastRecipe,
+  isPregnancyRelevant,
   isRecipeCompatible,
   matchesDiets,
   recipeMentions,
@@ -31,6 +33,7 @@ export {
 } from './compatibility';
 export type { DietaryConstraints } from './compatibility';
 export {
+  ALCOHOL_TERMS,
   AROMATICS,
   ANIMAL_FLESH_TERMS,
   BASIC_INGREDIENTS,
@@ -49,5 +52,6 @@ export {
   checkDietConsistency,
   checkLevel,
   checkNutrition,
+  checkSafetyTags,
 } from './audit';
 export type { RecipeIssue, RecipeIssueCode, RecipeIssueSeverity } from './audit';

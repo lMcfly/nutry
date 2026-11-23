@@ -8,6 +8,19 @@ export interface DietaryConstraints {
   readonly allergens: readonly Allergen[];
   /** Ingrédients ou protéines principales à exclure (saisie libre). */
   readonly dislikes: readonly string[];
+  /** Grossesse ou allaitement (pris en compte si `sex` n'est pas 'homme'). */
+  readonly pregnantOrBreastfeeding?: boolean;
+  readonly sex?: 'homme' | 'femme' | 'autre';
+}
+
+/** Étiquettes exclues pendant la grossesse ou l'allaitement (alcool, produits crus). */
+export const PREGNANCY_EXCLUDED_TAGS: readonly RecipeTag[] = ['alcool', 'cru'];
+
+/** Grossesse / allaitement n'est pris en compte que pour 'femme' et 'autre'. */
+export function isPregnancyRelevant(
+  person: Pick<DietaryConstraints, 'pregnantOrBreastfeeding' | 'sex'>,
+): boolean {
+  return person.sex !== 'homme' && person.pregnantOrBreastfeeding === true;
 }
 
 export function hasTag(recipe: Recipe, tag: RecipeTag): boolean {
@@ -54,13 +67,17 @@ export function dislikedIn(recipe: Recipe, dislikes: readonly string[]): string[
 /**
  * Filtre DUR appliqué par toutes les fonctions qui proposent une recette (menu,
  * remplacement, frigo vide) : aucun allergène déclaré, tous les régimes respectés,
- * aucun aliment détesté.
+ * aucun aliment détesté et, pendant la grossesse ou l'allaitement, ni alcool ni cru.
  */
 export function isRecipeCompatible(recipe: Recipe, constraints: DietaryConstraints): boolean {
   return (
     !containsAllergen(recipe, constraints.allergens) &&
     matchesDiets(recipe, constraints.diets) &&
-    dislikedIn(recipe, constraints.dislikes).length === 0
+    dislikedIn(recipe, constraints.dislikes).length === 0 &&
+    !(
+      isPregnancyRelevant(constraints) &&
+      PREGNANCY_EXCLUDED_TAGS.some((tag) => recipe.tags.includes(tag))
+    )
   );
 }
 

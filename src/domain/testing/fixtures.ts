@@ -229,6 +229,7 @@ const BASE_RECIPES: Recipe[] = [
     allergens: ['mollusques', 'lait', 'sulfites'],
     mainProtein: 'fruits-de-mer',
     seasons: ['ete', 'automne', 'hiver'],
+    tags: ['alcool'],
     ingredients: [
       ing('moules', 1.5, 'kg', BP),
       ing('échalotes', 2, 'piece', FL),
@@ -338,6 +339,7 @@ const BASE_RECIPES: Recipe[] = [
     allergens: ['lait', 'sulfites'],
     mainProtein: 'fromage',
     seasons: ['automne', 'hiver'],
+    tags: ['alcool'],
     ingredients: [
       ing('riz arborio', 200, 'g', EP),
       ing('courge butternut', 600, 'g', FL),
