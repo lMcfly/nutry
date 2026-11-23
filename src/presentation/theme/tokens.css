@@ -1,0 +1,41 @@
+/*
+ * Jetons de design (variables CSS). Version minimale posée en phase 1 :
+ * l'agent ui-ux complète palette, typographie et espacements en phase 5.
+ * Voir docs/adr/0004-css-modules-variables.md.
+ */
+:root {
+  color-scheme: light dark;
+
+  --color-bg: #ffffff;
+  --color-surface: #f7f7f5;
+  --color-text: #1f2328;
+  --color-text-muted: #59636e;
+  --color-border: #d8dee4;
+  --color-primary: #2f855a;
+
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #15181c;
+    --color-surface: #1e2227;
+    --color-text: #e6e8eb;
+    --color-text-muted: #a3acb6;
+    --color-border: #343a42;
+    --color-primary: #68d391;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #15181c;
+  --color-surface: #1e2227;
+  --color-text: #e6e8eb;
+  --color-text-muted: #a3acb6;
+  --color-border: #343a42;
+  --color-primary: #68d391;
+}
