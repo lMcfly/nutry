@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#2f855a"/><path d="M20 40c4-14 14-20 26-22-2 12-8 22-22 26" fill="#c6f6d5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>Nutry</title>
+  <rect id="fond" width="512" height="512" rx="112" fill="#3d6b4f"/>
+  <circle cx="256" cy="256" r="156" fill="#fbf7f0"/>
+  <circle cx="256" cy="256" r="118" fill="#f3ece0"/>
+  <path d="M176 336 L204 308" stroke="#3d6b4f" stroke-width="16" stroke-linecap="round"/>
+  <path d="M200 312 C188 236 232 192 324 188 C328 280 284 324 200 312 Z" fill="#3d6b4f"/>
+  <path d="M212 300 L298 214" stroke="#fbf7f0" stroke-width="10" stroke-linecap="round"/>
+</svg>
