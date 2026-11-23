@@ -1,11 +1,4468 @@
 [
   {
-    "id": "geo-plus-long-fleuve-france",
-    "question": "Quel est le plus long fleuve entièrement situé en France ?",
-    "choices": ["La Loire", "La Seine", "Le Rhône", "La Garonne"],
+    "id": "q-001",
+    "question": "Comment s'appelle la galaxie qui abrite le système solaire ?",
+    "choices": [
+      "La Voie lactée",
+      "La galaxie du Sombrero",
+      "Le Grand Nuage de Magellan",
+      "Andromède"
+    ],
     "correctIndex": 0,
-    "explanation": "La Loire parcourt un peu plus de 1 000 km, du mont Gerbier-de-Jonc (Ardèche) jusqu'à l'océan Atlantique.",
+    "explanation": "Son nom vient de la traînée laiteuse qu'elle dessine dans un ciel bien noir.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-002",
+    "question": "Quel compositeur français a écrit « Le Carnaval des animaux » ?",
+    "choices": ["Camille Saint-Saëns", "Jules Massenet", "Georges Bizet", "Gabriel Fauré"],
+    "correctIndex": 0,
+    "explanation": "Il en avait interdit la publication de son vivant, à l'exception du célèbre « Cygne ».",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-003",
+    "question": "Quel est l'animal le plus haut du monde ?",
+    "choices": ["L'éléphant", "L'autruche", "La girafe", "Le chameau"],
+    "correctIndex": 2,
+    "explanation": "Malgré son long cou, elle n'a que sept vertèbres cervicales, comme nous !",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-004",
+    "question": "De quoi se nourrit principalement le panda géant ?",
+    "choices": ["De poisson", "De bambou", "De fruits", "D'insectes"],
+    "correctIndex": 1,
+    "explanation": "Il peut en manger plusieurs dizaines de kilos par jour !",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-005",
+    "question": "Sur quelle île se trouve le Piton de la Fournaise ?",
+    "choices": ["La Guadeloupe", "La Martinique", "La Réunion", "Tahiti"],
+    "correctIndex": 2,
+    "explanation": "C'est l'un des volcans les plus actifs du monde, avec des éruptions fréquentes.",
     "category": "geographie",
     "difficulty": "facile"
+  },
+  {
+    "id": "q-006",
+    "question": "Quelle ville était la capitale de l'Empire byzantin ?",
+    "choices": ["Rome", "Constantinople", "Antioche", "Alexandrie"],
+    "correctIndex": 1,
+    "explanation": "Fondée par Constantin sur le site de Byzance, la ville s'appelle aujourd'hui Istanbul.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-007",
+    "question": "Quelle est la planète la plus chaude du système solaire ?",
+    "choices": ["Vénus", "Mars", "Mercure", "Jupiter"],
+    "correctIndex": 0,
+    "explanation": "Son épaisse atmosphère de CO₂ piège la chaleur : plus de 450 °C en surface !",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-008",
+    "question": "Quelle cité antique était célèbre pour ses jardins suspendus ?",
+    "choices": ["Ur", "Ninive", "Babylone", "Persépolis"],
+    "correctIndex": 2,
+    "explanation": "Ces jardins figurent parmi les Sept Merveilles du monde antique, même si leur existence reste un mystère.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-009",
+    "question": "De quelle ville le calisson est-il la spécialité ?",
+    "choices": ["Arles", "Nîmes", "Avignon", "Aix-en-Provence"],
+    "correctIndex": 3,
+    "explanation": "Cette confiserie en losange mêle amandes et melon confit, sous un glaçage blanc.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-010",
+    "question": "Combien d'anneaux figurent sur le drapeau olympique ?",
+    "choices": ["6", "4", "5", "7"],
+    "correctIndex": 2,
+    "explanation": "Imaginés par Coubertin, les cinq anneaux entrelacés symbolisent l'union des continents.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-011",
+    "question": "Quel type de croûte recouvre le camembert ?",
+    "choices": ["Une croûte lavée", "Une croûte fleurie", "Une croûte cendrée", "Une croûte cirée"],
+    "correctIndex": 1,
+    "explanation": "Ce duvet blanc est une moisissure naturelle, le Penicillium camemberti.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-012",
+    "question": "Quelle planète est surnommée « la planète rouge » ?",
+    "choices": ["Vénus", "Jupiter", "Mars", "Saturne"],
+    "correctIndex": 2,
+    "explanation": "Sa couleur vient de l'oxyde de fer, autrement dit de la rouille, présent dans son sol.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-013",
+    "question": "Quel félin d'Europe a des pinceaux de poils au bout des oreilles ?",
+    "choices": ["Le chat sauvage", "Le lynx", "Le puma", "Le léopard"],
+    "correctIndex": 1,
+    "explanation": "Discret, le lynx boréal vit notamment dans le Jura, les Vosges et les Alpes.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-014",
+    "question": "Quel est le plus haut sommet d'Afrique ?",
+    "choices": ["Le Kilimandjaro", "Le mont Kenya", "Le Toubkal", "Le mont Stanley"],
+    "correctIndex": 0,
+    "explanation": "Ce volcan de Tanzanie dépasse les 5 800 m et porte des glaciers près de l'équateur.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-015",
+    "question": "Quel architecte a conçu la Cité radieuse de Marseille ?",
+    "choices": ["Robert Mallet-Stevens", "Le Corbusier", "Jean Prouvé", "Auguste Perret"],
+    "correctIndex": 1,
+    "explanation": "Achevée en 1952, elle fait partie des œuvres de Le Corbusier inscrites au patrimoine mondial de l'Unesco.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-016",
+    "question": "Quel est le plus grand oiseau vivant ?",
+    "choices": ["Le condor des Andes", "L'albatros hurleur", "L'émeu", "L'autruche"],
+    "correctIndex": 3,
+    "explanation": "Elle ne vole pas, mais court très vite et pond les plus gros œufs de tous les oiseaux actuels.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-017",
+    "question": "Comment s'appelle le chien de Tintin ?",
+    "choices": ["Rantanplan", "Idéfix", "Milou", "Pif"],
+    "correctIndex": 2,
+    "explanation": "Idéfix est le chien d'Obélix, et Rantanplan fait le pitre dans les aventures de Lucky Luke !",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-018",
+    "question": "Dans quel musée parisien « La Joconde » est-elle exposée ?",
+    "choices": ["Le musée de l'Orangerie", "Le Centre Pompidou", "Le musée d'Orsay", "Le Louvre"],
+    "correctIndex": 3,
+    "explanation": "Elle y a été volée en 1911 et n'a été retrouvée que deux ans plus tard, en Italie.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-019",
+    "question": "Quel était le vrai nom de Molière ?",
+    "choices": [
+      "Pierre Corneille",
+      "Jean-Baptiste Poquelin",
+      "Jean-Baptiste Lully",
+      "François-Marie Arouet"
+    ],
+    "correctIndex": 1,
+    "explanation": "François-Marie Arouet, c'est le vrai nom de Voltaire !",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-020",
+    "question": "Quel pigment donne leur couleur verte aux feuilles ?",
+    "choices": ["La chlorophylle", "La mélanine", "Le carotène", "L'hémoglobine"],
+    "correctIndex": 0,
+    "explanation": "C'est elle qui capte l'énergie de la lumière pour la photosynthèse.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-021",
+    "question": "En cuisine, que désigne une « mirepoix » ?",
+    "choices": [
+      "Un gâteau de Noël",
+      "Une garniture aromatique de légumes taillés en dés",
+      "Une sauce au poivre vert",
+      "Une cuisson en papillote"
+    ],
+    "correctIndex": 1,
+    "explanation": "Carotte, oignon et parfois céleri : elle tient son nom d'un duc de Lévis-Mirepoix.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-022",
+    "question": "Dans quel département se trouve le mont Ventoux ?",
+    "choices": ["Les Bouches-du-Rhône", "Les Alpes-de-Haute-Provence", "Le Vaucluse", "La Drôme"],
+    "correctIndex": 2,
+    "explanation": "Surnommé le « Géant de Provence », il est souvent au programme du Tour de France.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-023",
+    "question": "Quelle épice est tirée des stigmates d'une fleur de crocus ?",
+    "choices": ["Le safran", "La muscade", "La cardamome", "Le paprika"],
+    "correctIndex": 0,
+    "explanation": "Il faut cueillir à la main une très grande quantité de fleurs pour obtenir quelques grammes de safran.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-024",
+    "question": "À quelle famille de fromages appartient le comté ?",
+    "choices": [
+      "Les pâtes persillées",
+      "Les pâtes molles à croûte fleurie",
+      "Les pâtes pressées non cuites",
+      "Les pâtes pressées cuites"
+    ],
+    "correctIndex": 3,
+    "explanation": "Une meule de comté pèse en moyenne une quarantaine de kilos.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-025",
+    "question": "Quel organe permet à de nombreux poissons de régler leur flottaison ?",
+    "choices": ["La vessie natatoire", "La ligne latérale", "Les branchies", "L'opercule"],
+    "correctIndex": 0,
+    "explanation": "En la gonflant ou en la dégonflant de gaz, le poisson monte ou descend sans effort.",
+    "category": "nature",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-026",
+    "question": "Quel volcan est le point culminant du Japon ?",
+    "choices": ["Le Sakurajima", "Le mont Aso", "Le mont Fuji", "Le mont Ontake"],
+    "correctIndex": 2,
+    "explanation": "Haut de 3 776 m, il est inscrit au patrimoine mondial de l'Unesco.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-027",
+    "question": "Quel traité de 1494 a partagé le Nouveau Monde entre l'Espagne et le Portugal ?",
+    "choices": [
+      "Le traité de Paris",
+      "Les traités de Westphalie",
+      "Le traité d'Utrecht",
+      "Le traité de Tordesillas"
+    ],
+    "correctIndex": 3,
+    "explanation": "Ce partage explique en partie pourquoi on parle portugais au Brésil et espagnol dans le reste de l'Amérique du Sud.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-028",
+    "question": "Dans quel pays le rugby est-il né ?",
+    "choices": ["La France", "L'Irlande", "La Nouvelle-Zélande", "L'Angleterre"],
+    "correctIndex": 3,
+    "explanation": "Il doit son nom à la ville de Rugby, où se trouve la célèbre école qui l'a vu naître.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-029",
+    "question": "Quelle est la capitale de la Colombie ?",
+    "choices": ["Caracas", "Quito", "Bogota", "Medellín"],
+    "correctIndex": 2,
+    "explanation": "Bogota est perchée à environ 2 600 m d'altitude dans les Andes.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-030",
+    "question": "Quel peintre néerlandais a peint « La Jeune Fille à la perle » ?",
+    "choices": ["Johannes Vermeer", "Rembrandt", "Frans Hals", "Jérôme Bosch"],
+    "correctIndex": 0,
+    "explanation": "Le tableau est conservé au musée Mauritshuis, à La Haye.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-031",
+    "question": "Sous quelle dynastie chinoise la Cité interdite de Pékin a-t-elle été construite ?",
+    "choices": ["Les Ming", "Les Qing", "Les Tang", "Les Han"],
+    "correctIndex": 0,
+    "explanation": "Elle fut bâtie au début du XVe siècle ; les empereurs y ont résidé pendant près de cinq siècles.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-032",
+    "question": "Quelle est la capitale de la Slovénie ?",
+    "choices": ["Skopje", "Bratislava", "Zagreb", "Ljubljana"],
+    "correctIndex": 3,
+    "explanation": "Son emblème est un dragon, que l'on retrouve sur l'un de ses ponts les plus célèbres.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-033",
+    "question": "Qui a écrit « Roméo et Juliette » ?",
+    "choices": ["Molière", "Victor Hugo", "Jean Racine", "William Shakespeare"],
+    "correctIndex": 3,
+    "explanation": "La pièce se déroule à Vérone, en Italie, où l'on peut visiter le « balcon de Juliette ».",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-034",
+    "question": "Avec quel lait le crottin de Chavignol est-il fabriqué ?",
+    "choices": [
+      "Le lait de chèvre",
+      "Un mélange vache et brebis",
+      "Le lait de brebis",
+      "Le lait de vache"
+    ],
+    "correctIndex": 0,
+    "explanation": "Ce petit fromage vient du Sancerrois, dans le Cher.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-035",
+    "question": "Qui est l'auteur d'« À la recherche du temps perdu » ?",
+    "choices": ["Louis-Ferdinand Céline", "Marcel Proust", "Colette", "André Gide"],
+    "correctIndex": 1,
+    "explanation": "C'est dans cette œuvre en sept volumes que figure le célèbre épisode de la madeleine.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-036",
+    "question": "Avec quelle farine prépare-t-on les galettes bretonnes ?",
+    "choices": [
+      "La farine de châtaigne",
+      "La farine de sarrasin",
+      "La farine de maïs",
+      "La farine de riz"
+    ],
+    "correctIndex": 1,
+    "explanation": "On appelle aussi le sarrasin « blé noir ».",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-037",
+    "question": "Quel mathématicien a démontré le grand théorème de Fermat ?",
+    "choices": ["Henri Poincaré", "Grigori Perelman", "Kurt Gödel", "Andrew Wiles"],
+    "correctIndex": 3,
+    "explanation": "L'énigme posée par Fermat au XVIIe siècle a résisté plus de 350 ans avant sa démonstration, dans les années 1990.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-038",
+    "question": "Quelle bataille de 1815 marqua la défaite finale de Napoléon ?",
+    "choices": ["Wagram", "Austerlitz", "Iéna", "Waterloo"],
+    "correctIndex": 3,
+    "explanation": "Waterloo se trouve en Belgique, au sud de Bruxelles ; la bataille eut lieu le 18 juin 1815.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-039",
+    "question": "Combien de cavités compte le cœur humain ?",
+    "choices": ["Quatre", "Trois", "Six", "Deux"],
+    "correctIndex": 0,
+    "explanation": "Deux oreillettes et deux ventricules travaillent ensemble à chaque battement.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-040",
+    "question": "Quel est l'ingrédient principal du houmous ?",
+    "choices": ["Les pois chiches", "Les haricots rouges", "Les fèves", "Les lentilles"],
+    "correctIndex": 0,
+    "explanation": "En arabe, « houmous » signifie justement « pois chiche ».",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-041",
+    "question": "Quelle planète est célèbre pour ses spectaculaires anneaux ?",
+    "choices": ["Saturne", "Mars", "Vénus", "Mercure"],
+    "correctIndex": 0,
+    "explanation": "Ses anneaux sont faits de milliards de morceaux de glace et de roche.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-042",
+    "question": "Quel gaz les plantes absorbent-elles pour réaliser la photosynthèse ?",
+    "choices": ["L'azote", "Le dioxyde de carbone", "L'hélium", "L'oxygène"],
+    "correctIndex": 1,
+    "explanation": "Grâce à la lumière, elles transforment ce CO₂ en sucres et rejettent de l'oxygène.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-043",
+    "question": "En quelle année s'est disputé le premier Tour de France ?",
+    "choices": ["1903", "1896", "1919", "1910"],
+    "correctIndex": 0,
+    "explanation": "Il a été remporté par Maurice Garin, au terme de six étapes très longues.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-044",
+    "question": "Qui a peint « La Liberté guidant le peuple » ?",
+    "choices": ["Eugène Delacroix", "Théodore Géricault", "Jacques-Louis David", "Gustave Courbet"],
+    "correctIndex": 0,
+    "explanation": "Le tableau célèbre les Trois Glorieuses, les journées révolutionnaires de juillet 1830.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-045",
+    "question": "Quel compositeur a écrit la Neuvième Symphonie et son « Ode à la joie » ?",
+    "choices": ["Johann Sebastian Bach", "Ludwig van Beethoven", "Mozart", "Franz Schubert"],
+    "correctIndex": 1,
+    "explanation": "Son « Ode à la joie » est devenue l'hymne européen. Beethoven était alors presque entièrement sourd.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-046",
+    "question": "Quelle civilisation a bâti la cité de Machu Picchu ?",
+    "choices": ["Les Mayas", "Les Olmèques", "Les Aztèques", "Les Incas"],
+    "correctIndex": 3,
+    "explanation": "Perchée dans les Andes péruviennes, la cité est inscrite au patrimoine mondial de l'Unesco.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-047",
+    "question": "Quel compositeur a écrit l'opéra « La Flûte enchantée » ?",
+    "choices": ["Beethoven", "Haydn", "Verdi", "Mozart"],
+    "correctIndex": 3,
+    "explanation": "Créé à Vienne en 1791, quelques semaines avant la mort de Mozart, il fut un grand succès populaire.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-048",
+    "question": "Quel moine a découvert les lois de l'hérédité en étudiant des petits pois ?",
+    "choices": ["Jean-Baptiste de Lamarck", "Charles Darwin", "Gregor Mendel", "Louis Pasteur"],
+    "correctIndex": 2,
+    "explanation": "Ses travaux, publiés en 1866, n'ont été vraiment reconnus qu'au début du XXe siècle.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-049",
+    "question": "Quelle partie colorée de l'œil entoure la pupille ?",
+    "choices": ["Le cristallin", "La cornée", "La rétine", "L'iris"],
+    "correctIndex": 3,
+    "explanation": "L'iris agit comme un diaphragme : il règle la quantité de lumière qui entre dans l'œil.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-050",
+    "question": "Quel pays a offert la statue de la Liberté aux États-Unis ?",
+    "choices": ["L'Espagne", "Le Royaume-Uni", "L'Italie", "La France"],
+    "correctIndex": 3,
+    "explanation": "Elle a été inaugurée à New York en 1886 ; sa structure interne a été conçue par Gustave Eiffel.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-051",
+    "question": "Quel organe produit l'insuline ?",
+    "choices": ["Le pancréas", "La rate", "Le foie", "Les reins"],
+    "correctIndex": 0,
+    "explanation": "L'insuline aide le corps à faire entrer le sucre du sang dans les cellules.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-052",
+    "question": "Quel dessert se reconnaît à sa fine croûte de sucre caramélisé ?",
+    "choices": ["La mousse au chocolat", "L'île flottante", "Le clafoutis", "La crème brûlée"],
+    "correctIndex": 3,
+    "explanation": "On caramélise le sucre au chalumeau juste avant de servir.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-053",
+    "question": "Qu'est-ce que le Vendée Globe ?",
+    "choices": [
+      "Un tour du monde à la voile, en solitaire et sans escale",
+      "Un rallye automobile autour du monde",
+      "Une course cycliste en Vendée",
+      "Une traversée de l'Atlantique à la rame"
+    ],
+    "correctIndex": 0,
+    "explanation": "Il part des Sables-d'Olonne tous les quatre ans ; les marins naviguent sans assistance pendant plusieurs mois.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-054",
+    "question": "Quel tsar a fondé la ville de Saint-Pétersbourg en 1703 ?",
+    "choices": ["Pierre le Grand", "Ivan le Terrible", "Alexandre Ier", "Catherine II"],
+    "correctIndex": 0,
+    "explanation": "Il voulait offrir à la Russie une « fenêtre sur l'Europe » au bord de la mer Baltique.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-055",
+    "question": "Quel empereur romain a fait bâtir un mur à travers le nord de la Grande-Bretagne ?",
+    "choices": ["Marc Aurèle", "Hadrien", "Auguste", "Trajan"],
+    "correctIndex": 1,
+    "explanation": "Long d'environ 117 km, le mur d'Hadrien est inscrit au patrimoine mondial de l'Unesco.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-056",
+    "question": "Quelle est, environ, la vitesse de la lumière dans le vide ?",
+    "choices": ["300 000 km/s", "3 000 km/s", "30 000 km/s", "3 000 000 km/s"],
+    "correctIndex": 0,
+    "explanation": "À cette vitesse, on ferait plus de sept fois le tour de la Terre en une seconde.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-057",
+    "question": "À quoi ressemblent les pâtes orecchiette ?",
+    "choices": ["À des rubans", "À de petites oreilles", "À des coquillages", "À des papillons"],
+    "correctIndex": 1,
+    "explanation": "Elles sont typiques des Pouilles, dans le sud de l'Italie.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-058",
+    "question": "Quelle est la capitale de la Mongolie ?",
+    "choices": ["Tachkent", "Achgabat", "Oulan-Bator", "Bichkek"],
+    "correctIndex": 2,
+    "explanation": "C'est l'une des capitales les plus froides du monde en hiver.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-059",
+    "question": "De quoi est principalement composé le noyau de la Terre ?",
+    "choices": [
+      "D'or et de cuivre",
+      "De granite et de basalte",
+      "De fer et de nickel",
+      "De silicium et d'oxygène"
+    ],
+    "correctIndex": 2,
+    "explanation": "Le noyau interne est solide, tandis que le noyau externe est liquide.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-060",
+    "question": "Au hockey sur glace, combien de joueurs par équipe sont sur la glace, gardien compris ?",
+    "choices": ["5", "11", "6", "7"],
+    "correctIndex": 2,
+    "explanation": "Les changements de joueurs se font très souvent, même en cours de jeu !",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-061",
+    "question": "Quelle reine a régné sur le Royaume-Uni de 1837 à 1901 ?",
+    "choices": ["Marie II", "Élisabeth Ire", "Anne", "Victoria"],
+    "correctIndex": 3,
+    "explanation": "Son règne a donné son nom à toute une époque : l'ère victorienne.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-062",
+    "question": "Combien de touches compte un piano standard ?",
+    "choices": ["88", "100", "76", "64"],
+    "correctIndex": 0,
+    "explanation": "Il y a 52 touches blanches et 36 touches noires.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-063",
+    "question": "En cuisine, que désigne une « chiffonnade » ?",
+    "choices": [
+      "Une pâte froissée",
+      "Des feuilles taillées en fines lanières",
+      "Une omelette roulée",
+      "Un torchon de cuisine"
+    ],
+    "correctIndex": 1,
+    "explanation": "On la pratique souvent avec la laitue, l'oseille ou le basilic.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-064",
+    "question": "Combien de manches compte un match de baseball réglementaire ?",
+    "choices": ["12", "9", "10", "7"],
+    "correctIndex": 1,
+    "explanation": "En cas d'égalité, on ajoute des manches supplémentaires.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-065",
+    "question": "En quelle année la France a-t-elle remporté sa première Coupe du monde de football ?",
+    "choices": ["1984", "2006", "1998", "2002"],
+    "correctIndex": 2,
+    "explanation": "La finale s'est jouée au Stade de France, à Saint-Denis, contre le Brésil (3-0).",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-066",
+    "question": "Quelle est la masse du poids lancé par les athlètes masculins ?",
+    "choices": ["5 kg", "6 kg", "7,26 kg", "8 kg"],
+    "correctIndex": 2,
+    "explanation": "Ce chiffre curieux correspond à 16 livres anglaises. Chez les femmes, le poids pèse 4 kg.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-067",
+    "question": "Quelle est la longueur d'un tour de piste standard en athlétisme ?",
+    "choices": ["500 mètres", "400 mètres", "300 mètres", "200 mètres"],
+    "correctIndex": 1,
+    "explanation": "Le 1 500 m correspond donc à trois tours trois quarts de piste.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-068",
+    "question": "Quel compositeur russe a écrit le ballet « Le Lac des cygnes » ?",
+    "choices": [
+      "Modeste Moussorgski",
+      "Sergueï Prokofiev",
+      "Igor Stravinsky",
+      "Piotr Ilitch Tchaïkovski"
+    ],
+    "correctIndex": 3,
+    "explanation": "Tchaïkovski a aussi composé « Casse-Noisette » et « La Belle au bois dormant ».",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-069",
+    "question": "Quel pays est entièrement enclavé dans l'Afrique du Sud ?",
+    "choices": ["Le Botswana", "L'Eswatini", "Le Lesotho", "La Namibie"],
+    "correctIndex": 2,
+    "explanation": "Tout son territoire se situe à plus de 1 000 m d'altitude, d'où son surnom de « royaume dans le ciel ».",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-070",
+    "question": "Qui a peint le plafond de la chapelle Sixtine ?",
+    "choices": ["Raphaël", "Botticelli", "Léonard de Vinci", "Michel-Ange"],
+    "correctIndex": 3,
+    "explanation": "Il y a travaillé de 1508 à 1512, souvent perché sur un échafaudage.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-071",
+    "question": "Quelle est la distance officielle d'un marathon ?",
+    "choices": ["45,5 km", "42 km", "40 km", "42,195 km"],
+    "correctIndex": 3,
+    "explanation": "Ces 195 mètres de plus viennent du parcours des Jeux de Londres en 1908.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-072",
+    "question": "Quelle fête du 2 février est traditionnellement associée aux crêpes ?",
+    "choices": ["Mardi gras", "La Chandeleur", "L'Épiphanie", "La Saint-Jean"],
+    "correctIndex": 1,
+    "explanation": "Selon la coutume, on fait sauter la première crêpe en tenant une pièce dans l'autre main.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-073",
+    "question": "En combien de points se joue une manche au tennis de table ?",
+    "choices": ["15", "25", "21", "11"],
+    "correctIndex": 3,
+    "explanation": "Il faut tout de même deux points d'écart pour la remporter.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-074",
+    "question": "Combien d'os compte le squelette d'un adulte ?",
+    "choices": ["206", "156", "256", "306"],
+    "correctIndex": 0,
+    "explanation": "Un nouveau-né en a davantage : certains os se soudent en grandissant.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-075",
+    "question": "Quelle célèbre broderie raconte la conquête de l'Angleterre par les Normands en 1066 ?",
+    "choices": [
+      "La tapisserie de Bayeux",
+      "La tenture de l'Apocalypse",
+      "Le Chant du monde",
+      "La Dame à la licorne"
+    ],
+    "correctIndex": 0,
+    "explanation": "Longue d'environ 70 mètres, c'est en réalité une broderie de laine sur toile de lin.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-076",
+    "question": "Combien de cases compte un échiquier ?",
+    "choices": ["64", "36", "49", "100"],
+    "correctIndex": 0,
+    "explanation": "Huit rangées de huit cases, alternativement claires et foncées.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-077",
+    "question": "À la pétanque, comment appelle-t-on la petite boule à approcher ?",
+    "choices": ["Le palet", "La quille", "Le cochonnet", "Le bouchon"],
+    "correctIndex": 2,
+    "explanation": "On l'appelle aussi « le but » ou « le petit ».",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-078",
+    "question": "À partir de quoi le couscous est-il préparé ?",
+    "choices": ["Du riz", "De la semoule de blé dur", "Du sarrasin", "De la farine de maïs"],
+    "correctIndex": 1,
+    "explanation": "Les savoir-faire du couscous sont inscrits au patrimoine immatériel de l'Unesco depuis 2020.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-079",
+    "question": "Quel recueil de lois fut gravé sur une stèle par un roi de Babylone ?",
+    "choices": [
+      "La loi des Douze Tables",
+      "Le code de Hammurabi",
+      "Les lois de Dracon",
+      "Le code de Justinien"
+    ],
+    "correctIndex": 1,
+    "explanation": "Cette stèle de basalte, haute de plus de 2 mètres, est conservée au musée du Louvre.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-080",
+    "question": "Au volley-ball, en combien de points se joue un set (hors set décisif) ?",
+    "choices": ["15", "25", "21", "30"],
+    "correctIndex": 1,
+    "explanation": "Le cinquième set, s'il a lieu, se joue en 15 points.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-081",
+    "question": "En quelle année le mur de Berlin est-il tombé ?",
+    "choices": ["1989", "1985", "1961", "1991"],
+    "correctIndex": 0,
+    "explanation": "Le mur est tombé le 9 novembre 1989, après 28 ans d'existence.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-082",
+    "question": "Dans quelles caves naturelles le roquefort est-il affiné ?",
+    "choices": [
+      "Les caves de Lascaux",
+      "Les caves de Saumur",
+      "Les caves de Chablis",
+      "Les caves du Combalou"
+    ],
+    "correctIndex": 3,
+    "explanation": "Des failles naturelles, les « fleurines », y font circuler un air frais et humide.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-083",
+    "question": "Dans quelle ville se court la célèbre course automobile des 24 Heures ?",
+    "choices": ["Spa", "Le Mans", "Monaco", "Magny-Cours"],
+    "correctIndex": 1,
+    "explanation": "La première édition a eu lieu en 1923.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-084",
+    "question": "Comment appelle-t-on la larve de la grenouille ?",
+    "choices": ["La nymphe", "L'alevin", "L'asticot", "Le têtard"],
+    "correctIndex": 3,
+    "explanation": "Le têtard perd sa queue et développe des pattes lors de sa métamorphose.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-085",
+    "question": "Qu'est-ce qui distingue un fond brun d'un fond blanc ?",
+    "choices": [
+      "Les os et légumes sont d'abord colorés",
+      "Il est épaissi à la farine de seigle",
+      "On y ajoute du chocolat",
+      "Il cuit sans aucun liquide"
+    ],
+    "correctIndex": 0,
+    "explanation": "Les os et la garniture aromatique sont d'abord rôtis, ce qui donne couleur et saveur au fond.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-086",
+    "question": "Quelle est la capitale du Maroc ?",
+    "choices": ["Fès", "Casablanca", "Marrakech", "Rabat"],
+    "correctIndex": 3,
+    "explanation": "Casablanca est la plus grande ville du pays, mais c'est bien Rabat la capitale.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-087",
+    "question": "Quelle ville est traversée par le détroit du Bosphore ?",
+    "choices": ["Ankara", "Athènes", "Istanbul", "Izmir"],
+    "correctIndex": 2,
+    "explanation": "Istanbul s'étend ainsi sur deux continents, l'Europe et l'Asie.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-088",
+    "question": "Dans quelle ville se trouve le célèbre stade Maracanã ?",
+    "choices": ["Rio de Janeiro", "São Paulo", "Brasília", "Buenos Aires"],
+    "correctIndex": 0,
+    "explanation": "Il a été inauguré pour la Coupe du monde de football de 1950.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-089",
+    "question": "Comment appelle-t-on le cri du cerf ?",
+    "choices": ["Le barrissement", "Le hennissement", "Le glapissement", "Le brame"],
+    "correctIndex": 3,
+    "explanation": "On l'entend surtout en automne, à la saison des amours.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-090",
+    "question": "Quel royaume d'Afrique de l'Ouest avait pour capitale Kumasi ?",
+    "choices": ["L'empire du Mali", "Le royaume zoulou", "L'empire songhaï", "Le royaume ashanti"],
+    "correctIndex": 3,
+    "explanation": "Les Ashantis, dans l'actuel Ghana, étaient réputés pour leur orfèvrerie en or.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-091",
+    "question": "Quel est l'os le plus long du corps humain ?",
+    "choices": ["L'humérus", "Le fémur", "Le tibia", "Le péroné"],
+    "correctIndex": 1,
+    "explanation": "Le fémur est l'os de la cuisse ; il est aussi l'un des plus solides.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-092",
+    "question": "Quelle ville est le chef-lieu de la région Grand Est ?",
+    "choices": ["Nancy", "Reims", "Metz", "Strasbourg"],
+    "correctIndex": 3,
+    "explanation": "Strasbourg accueille aussi le Parlement européen.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-093",
+    "question": "Dans quel sport utilise-t-on un volant ?",
+    "choices": ["Le squash", "Le tennis de table", "Le badminton", "Le padel"],
+    "correctIndex": 2,
+    "explanation": "Le volant traditionnel est fait de plumes d'oie fixées sur une base en liège.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-094",
+    "question": "En cuisine, qu'est-ce qu'une « brunoise » ?",
+    "choices": [
+      "Une sauce à base de beurre noisette",
+      "Des légumes taillés en tout petits dés",
+      "Un dessert au chocolat",
+      "Une cuisson au four"
+    ],
+    "correctIndex": 1,
+    "explanation": "Elle sert souvent de base aromatique pour les sauces ou les farces.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-095",
+    "question": "Quel est le seul nombre premier pair ?",
+    "choices": ["1", "2", "0", "4"],
+    "correctIndex": 1,
+    "explanation": "Tous les autres nombres pairs sont divisibles par 2, donc ils ne peuvent pas être premiers.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-096",
+    "question": "Quel canal relie la mer Méditerranée à la mer Rouge ?",
+    "choices": [
+      "Le canal de Panama",
+      "Le canal de Kiel",
+      "Le canal de Suez",
+      "Le canal de Corinthe"
+    ],
+    "correctIndex": 2,
+    "explanation": "Inauguré en 1869, il évite aux navires de contourner toute l'Afrique.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-097",
+    "question": "Quelles disciplines enchaîne-t-on lors d'un triathlon ?",
+    "choices": [
+      "Natation, aviron, vélo",
+      "Course, saut, lancer",
+      "Vélo, ski, course à pied",
+      "Natation, vélo, course à pied"
+    ],
+    "correctIndex": 3,
+    "explanation": "On les enchaîne dans cet ordre, sans pause : le chronomètre tourne même pendant les transitions !",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-098",
+    "question": "Quel est le pH de l'eau pure à 25 °C ?",
+    "choices": ["5", "0", "7", "14"],
+    "correctIndex": 2,
+    "explanation": "Un pH de 7 est dit neutre : en dessous, c'est acide, au-dessus, c'est basique.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-099",
+    "question": "Quel régime a été proclamé en France le 4 septembre 1870 ?",
+    "choices": ["Le Second Empire", "La Restauration", "La IIe République", "La IIIe République"],
+    "correctIndex": 3,
+    "explanation": "Proclamée après la défaite de Sedan, elle a duré jusqu'en 1940.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-100",
+    "question": "Quel astre a perdu son statut de planète en 2006 ?",
+    "choices": ["Cérès", "Pluton", "Mercure", "Neptune"],
+    "correctIndex": 1,
+    "explanation": "Il est désormais classé comme planète naine, comme Cérès ou Éris.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-101",
+    "question": "Qui a réalisé et interprété le film « Les Temps modernes » (1936) ?",
+    "choices": ["Charlie Chaplin", "Jacques Tati", "Harold Lloyd", "Buster Keaton"],
+    "correctIndex": 0,
+    "explanation": "C'est la dernière apparition de son personnage de Charlot à l'écran.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-102",
+    "question": "Quel petit oiseau est capable de voler en marche arrière ?",
+    "choices": ["L'hirondelle", "Le colibri", "La mésange", "Le moineau"],
+    "correctIndex": 1,
+    "explanation": "Ses ailes battent si vite qu'elles produisent un léger bourdonnement.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-103",
+    "question": "Dans quelle chaîne de montagnes le quinoa est-il cultivé depuis des millénaires ?",
+    "choices": ["L'Atlas", "Les Andes", "L'Himalaya", "Les Alpes"],
+    "correctIndex": 1,
+    "explanation": "Les Incas le surnommaient « la mère de toutes les graines ».",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-104",
+    "question": "Aux échecs, quelle pièce se déplace en forme de « L » ?",
+    "choices": ["Le cavalier", "Le fou", "Le roi", "La tour"],
+    "correctIndex": 0,
+    "explanation": "C'est la seule pièce qui peut sauter par-dessus les autres.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-105",
+    "question": "Quel peintre norvégien a peint « Le Cri » ?",
+    "choices": ["Edvard Munch", "Ernst Ludwig Kirchner", "Gustav Klimt", "Egon Schiele"],
+    "correctIndex": 0,
+    "explanation": "Munch en a réalisé plusieurs versions, en peinture, au pastel et en lithographie.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-106",
+    "question": "Quel roi de France était surnommé le « Roi-Soleil » ?",
+    "choices": ["Louis XVI", "François Ier", "Louis XIII", "Louis XIV"],
+    "correctIndex": 3,
+    "explanation": "Louis XIV a régné 72 ans, le plus long règne de l'histoire de France.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-107",
+    "question": "Qu'est-ce que le pain perdu ?",
+    "choices": [
+      "Du pain rassis trempé dans du lait et des œufs, puis doré",
+      "Un pain sans levure",
+      "Une brioche fourrée à la confiture",
+      "Du pain oublié trop longtemps au four"
+    ],
+    "correctIndex": 0,
+    "explanation": "Une délicieuse recette anti-gaspillage pour redonner vie au pain de la veille !",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-108",
+    "question": "Pourquoi le saumon remonte-t-il les rivières ?",
+    "choices": [
+      "Pour hiberner",
+      "Pour fuir les prédateurs marins",
+      "Pour se reproduire",
+      "Pour chercher de l'eau plus chaude"
+    ],
+    "correctIndex": 2,
+    "explanation": "Il retrouve souvent la rivière même où il est né, guidé notamment par l'odorat.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-109",
+    "question": "Quel peuple buvait déjà le cacao avant l'arrivée des Européens en Amérique ?",
+    "choices": ["Les Vikings", "Les Mongols", "Les Aztèques", "Les Incas"],
+    "correctIndex": 2,
+    "explanation": "Ils le préparaient en boisson amère et épicée, bien loin de notre chocolat chaud sucré.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-110",
+    "question": "Quelle couleur de maillot porte le leader du classement général du Tour de France ?",
+    "choices": ["Rouge", "Blanc", "Vert", "Jaune"],
+    "correctIndex": 3,
+    "explanation": "Le jaune rappelle la couleur des pages du journal L'Auto, organisateur des premières éditions.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-111",
+    "question": "Quel physicien français a découvert la radioactivité en 1896 ?",
+    "choices": ["Pierre Curie", "Paul Langevin", "André-Marie Ampère", "Henri Becquerel"],
+    "correctIndex": 3,
+    "explanation": "Il a partagé le prix Nobel de physique 1903 avec Pierre et Marie Curie.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-112",
+    "question": "Quel auteur a publié en 1697 des contes comme « Le Petit Chaperon rouge » ?",
+    "choices": [
+      "Les frères Grimm",
+      "Hans Christian Andersen",
+      "Jean de La Fontaine",
+      "Charles Perrault"
+    ],
+    "correctIndex": 3,
+    "explanation": "Les frères Grimm ont publié leur propre version plus d'un siècle plus tard.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-113",
+    "question": "Quel fruit est l'ingrédient principal du guacamole ?",
+    "choices": ["La tomate", "L'avocat", "Le citron vert", "La mangue"],
+    "correctIndex": 1,
+    "explanation": "Le guacamole vient du Mexique ; son nom provient d'un mot aztèque.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-114",
+    "question": "Qui fut le premier président des États-Unis ?",
+    "choices": ["Thomas Jefferson", "Abraham Lincoln", "George Washington", "John Adams"],
+    "correctIndex": 2,
+    "explanation": "Il a pris ses fonctions en 1789 ; la capitale fédérale porte son nom.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-115",
+    "question": "Dans quel animal le poisson-clown trouve-t-il refuge ?",
+    "choices": ["L'éponge", "La méduse", "L'oursin", "L'anémone de mer"],
+    "correctIndex": 3,
+    "explanation": "Un mucus protecteur lui permet de vivre entre les tentacules urticants de l'anémone.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-116",
+    "question": "Combien d'épreuves compte le décathlon ?",
+    "choices": ["7", "10", "8", "12"],
+    "correctIndex": 1,
+    "explanation": "Les athlètes les disputent sur deux jours consécutifs.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-117",
+    "question": "De quelle région le piment d'Espelette est-il originaire ?",
+    "choices": ["Le Pays basque", "La Provence", "La Corse", "Le Roussillon"],
+    "correctIndex": 0,
+    "explanation": "À l'automne, on fait sécher les piments en guirlandes sur les façades des maisons.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-118",
+    "question": "Dans quelle couche de l'atmosphère se trouve l'essentiel de la couche d'ozone ?",
+    "choices": ["La troposphère", "La thermosphère", "La mésosphère", "La stratosphère"],
+    "correctIndex": 3,
+    "explanation": "Cette couche nous protège d'une grande partie des rayons ultraviolets du Soleil.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-119",
+    "question": "Qu'était le garum des Romains ?",
+    "choices": [
+      "Un fromage de chèvre",
+      "Un pain de seigle",
+      "Une sauce de poisson fermenté",
+      "Un vin épicé au miel"
+    ],
+    "correctIndex": 2,
+    "explanation": "Très apprécié dans l'Antiquité, il servait à relever de nombreux plats, un peu comme le sel.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-120",
+    "question": "Avant de devenir roi d'Angleterre en 1066, Guillaume le Conquérant était…",
+    "choices": ["roi d'Écosse", "comte de Flandre", "duc de Bretagne", "duc de Normandie"],
+    "correctIndex": 3,
+    "explanation": "Sa victoire à Hastings, le 14 octobre 1066, lui a ouvert le trône d'Angleterre.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-121",
+    "question": "Comment s'appelle la science qui étudie les champignons ?",
+    "choices": ["L'ornithologie", "L'herpétologie", "La mycologie", "L'entomologie"],
+    "correctIndex": 2,
+    "explanation": "L'entomologie étudie les insectes, l'ornithologie les oiseaux et l'herpétologie les reptiles et amphibiens.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-122",
+    "question": "Quelle fleur jaune est célèbre pour se tourner vers le soleil ?",
+    "choices": ["Le pissenlit", "Le tournesol", "La jonquille", "Le bouton-d'or"],
+    "correctIndex": 1,
+    "explanation": "Ce sont surtout les jeunes plants qui suivent la course du soleil au fil de la journée.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-123",
+    "question": "Quel souverain fut couronné empereur à Rome le jour de Noël de l'an 800 ?",
+    "choices": ["Pépin le Bref", "Charlemagne", "Clovis", "Louis le Pieux"],
+    "correctIndex": 1,
+    "explanation": "Roi des Francs, il devint ce jour-là empereur d'Occident.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-124",
+    "question": "Quel peintre surréaliste est célèbre pour ses montres molles ?",
+    "choices": ["Max Ernst", "Salvador Dalí", "René Magritte", "Joan Miró"],
+    "correctIndex": 1,
+    "explanation": "Le tableau s'intitule « La Persistance de la mémoire » (1931).",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-125",
+    "question": "Quelle chaîne de montagnes marque, par convention, la limite entre l'Europe et l'Asie ?",
+    "choices": ["L'Oural", "Les Carpates", "Le Caucase", "L'Altaï"],
+    "correctIndex": 0,
+    "explanation": "L'Oural s'étire sur environ 2 500 km du nord au sud de la Russie.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-126",
+    "question": "Quel est le plus petit État du monde ?",
+    "choices": ["Saint-Marin", "Le Liechtenstein", "Le Vatican", "Monaco"],
+    "correctIndex": 2,
+    "explanation": "Avec moins d'un demi-kilomètre carré, il tient entièrement dans la ville de Rome.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-127",
+    "question": "Comment appelle-t-on la femelle du sanglier ?",
+    "choices": ["La laie", "La hase", "La louve", "La biche"],
+    "correctIndex": 0,
+    "explanation": "Ses petits, rayés comme des pyjamas, s'appellent des marcassins.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-128",
+    "question": "De quel pays le sumo est-il le sport national ?",
+    "choices": ["La Mongolie", "La Corée du Sud", "La Chine", "Le Japon"],
+    "correctIndex": 3,
+    "explanation": "Les lutteurs s'affrontent dans un cercle de terre battue appelé dohyō.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-129",
+    "question": "Quel arbre fournit le liège des bouchons ?",
+    "choices": ["Le chêne-liège", "Le bouleau", "Le platane", "Le pin maritime"],
+    "correctIndex": 0,
+    "explanation": "On récolte son écorce environ tous les neuf ans, sans abattre l'arbre.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-130",
+    "question": "Quel pharaon a vu son tombeau, presque intact, découvert en 1922 ?",
+    "choices": ["Khéops", "Akhenaton", "Toutânkhamon", "Ramsès II"],
+    "correctIndex": 2,
+    "explanation": "C'est l'archéologue Howard Carter qui l'a découvert dans la Vallée des Rois.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-131",
+    "question": "Quel fleuve forme une partie de la frontière entre la France et l'Allemagne ?",
+    "choices": ["La Meuse", "Le Danube", "Le Rhin", "La Moselle"],
+    "correctIndex": 2,
+    "explanation": "Le Rhin prend sa source dans les Alpes suisses et se jette dans la mer du Nord.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-132",
+    "question": "De quelle ville le canelé est-il la spécialité ?",
+    "choices": ["Lyon", "Bordeaux", "Nantes", "Toulouse"],
+    "correctIndex": 1,
+    "explanation": "Parfumé au rhum et à la vanille, il est caramélisé dehors et moelleux dedans.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-133",
+    "question": "Quel fleuve traverse Bordeaux ?",
+    "choices": ["Le Lot", "La Loire", "La Garonne", "La Dordogne"],
+    "correctIndex": 2,
+    "explanation": "Ses quais en forme de croissant valent à Bordeaux le surnom de « port de la Lune ».",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-134",
+    "question": "Quel conquérant macédonien a fondé Alexandrie, en Égypte ?",
+    "choices": ["Darius III", "Ptolémée Ier", "Alexandre le Grand", "Philippe II"],
+    "correctIndex": 2,
+    "explanation": "Il a fondé de nombreuses Alexandrie, mais celle d'Égypte est de loin la plus célèbre.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-135",
+    "question": "Quelle chaîne de montagnes sépare la France de l'Espagne ?",
+    "choices": ["Les Pyrénées", "Les Vosges", "Les Alpes", "Le Jura"],
+    "correctIndex": 0,
+    "explanation": "Leur point culminant, l'Aneto, se trouve côté espagnol.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-136",
+    "question": "Quelle reine d'Égypte fut l'alliée de Marc Antoine ?",
+    "choices": ["Cléopâtre", "Hatchepsout", "Néfertari", "Néfertiti"],
+    "correctIndex": 0,
+    "explanation": "Cléopâtre VII fut la dernière souveraine de l'Égypte ptolémaïque avant la conquête romaine.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-137",
+    "question": "Quelle ville française a accueilli les Jeux olympiques d'hiver de 1992 ?",
+    "choices": ["Chamonix", "Albertville", "Annecy", "Grenoble"],
+    "correctIndex": 1,
+    "explanation": "Les épreuves se sont réparties dans plusieurs stations de Savoie.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-138",
+    "question": "De quelle ville les « bêtises » sont-elles la spécialité ?",
+    "choices": ["Lille", "Amiens", "Arras", "Cambrai"],
+    "correctIndex": 3,
+    "explanation": "Selon la légende, ces bonbons à la menthe seraient nés d'une erreur d'un apprenti confiseur.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-139",
+    "question": "Quelle herbe aromatique est la base du pesto génois ?",
+    "choices": ["La menthe", "Le basilic", "Le persil", "La coriandre"],
+    "correctIndex": 1,
+    "explanation": "On l'écrase traditionnellement au mortier avec ail, pignons, parmesan et huile d'olive.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-140",
+    "question": "À quelle température l'eau bout-elle au niveau de la mer ?",
+    "choices": ["120 °C", "90 °C", "100 °C", "80 °C"],
+    "correctIndex": 2,
+    "explanation": "En montagne, la pression est plus faible : l'eau y bout à une température un peu plus basse.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-141",
+    "question": "Quel peintre a inventé le cubisme aux côtés de Pablo Picasso ?",
+    "choices": ["Fernand Léger", "Paul Cézanne", "Georges Braque", "Henri Matisse"],
+    "correctIndex": 2,
+    "explanation": "Les deux amis travaillaient si proches qu'on confondait parfois leurs toiles.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-142",
+    "question": "Combien de cordes compte une guitare classique ?",
+    "choices": ["Quatre", "Six", "Cinq", "Huit"],
+    "correctIndex": 1,
+    "explanation": "Du grave à l'aigu, on les accorde traditionnellement en mi, la, ré, sol, si, mi.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-143",
+    "question": "Quel pays, qui arbore une feuille d'érable sur son drapeau, est le premier producteur de sirop d'érable ?",
+    "choices": ["La Norvège", "Le Canada", "La Suisse", "Les États-Unis"],
+    "correctIndex": 1,
+    "explanation": "Il faut environ 40 litres de sève pour obtenir un litre de sirop.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-144",
+    "question": "Comment qualifie-t-on une plante dont les fleurs mâles et femelles poussent sur des pieds séparés ?",
+    "choices": ["Dioïque", "Annuelle", "Hermaphrodite", "Monoïque"],
+    "correctIndex": 0,
+    "explanation": "Le houx et le kiwi sont dioïques : seuls les pieds femelles portent des fruits.",
+    "category": "nature",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-145",
+    "question": "Quel est le plus grand désert chaud du monde ?",
+    "choices": ["Le Kalahari", "Le désert de Gobi", "Le désert d'Arabie", "Le Sahara"],
+    "correctIndex": 3,
+    "explanation": "Le Sahara s'étend sur une dizaine de pays d'Afrique du Nord.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-146",
+    "question": "Quel champignon est responsable de la plupart des intoxications mortelles en France ?",
+    "choices": [
+      "L'amanite phalloïde",
+      "La girolle",
+      "Le cèpe de Bordeaux",
+      "La trompette-de-la-mort"
+    ],
+    "correctIndex": 0,
+    "explanation": "En cas de doute, faites toujours vérifier votre cueillette par un pharmacien ou une association de mycologie.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-147",
+    "question": "Dans quel massif se trouve le puy de Dôme ?",
+    "choices": ["Les Vosges", "Le Jura", "Le Massif central", "Les Alpes"],
+    "correctIndex": 2,
+    "explanation": "La chaîne des Puys est inscrite au patrimoine mondial de l'Unesco depuis 2018.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-148",
+    "question": "Quel fleuve traverse Bagdad ?",
+    "choices": ["L'Euphrate", "Le Tigre", "Le Jourdain", "L'Indus"],
+    "correctIndex": 1,
+    "explanation": "Avec l'Euphrate, le Tigre délimite la Mésopotamie, « le pays entre les fleuves ».",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-149",
+    "question": "Le tajine est un plat traditionnel de quel pays ?",
+    "choices": ["Le Maroc", "Le Liban", "La Turquie", "La Grèce"],
+    "correctIndex": 0,
+    "explanation": "Le mot désigne aussi le plat en terre cuite à couvercle conique dans lequel il mijote.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-150",
+    "question": "Comment appelle-t-on le petit du cheval ?",
+    "choices": ["Le chevreau", "L'ânon", "Le veau", "Le poulain"],
+    "correctIndex": 3,
+    "explanation": "Une jeune femelle s'appelle une pouliche.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-151",
+    "question": "Comment qualifie-t-on le feuillage d'un arbre qui perd ses feuilles chaque automne ?",
+    "choices": ["Sempervirent", "Pérenne", "Caduc", "Persistant"],
+    "correctIndex": 2,
+    "explanation": "Le chêne, le hêtre et l'érable ont un feuillage caduc ; le houx, lui, est persistant.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-152",
+    "question": "Quelle est l'unité de mesure de la résistance électrique ?",
+    "choices": ["Le volt", "Le watt", "L'ohm", "L'ampère"],
+    "correctIndex": 2,
+    "explanation": "Elle porte le nom du physicien allemand Georg Simon Ohm.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-153",
+    "question": "Quel pharmacien a popularisé la pomme de terre en France au XVIIIe siècle ?",
+    "choices": ["Antoine Parmentier", "Antoine Lavoisier", "Nicolas Appert", "Louis Pasteur"],
+    "correctIndex": 0,
+    "explanation": "Il a laissé son nom au hachis Parmentier !",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-154",
+    "question": "En quelle année a eu lieu la prise de la Bastille ?",
+    "choices": ["1789", "1792", "1769", "1799"],
+    "correctIndex": 0,
+    "explanation": "C'était le 14 juillet 1789 ! Cette date est devenue la fête nationale française en 1880.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-155",
+    "question": "Quel tournoi de tennis se dispute sur terre battue à Paris ?",
+    "choices": ["l'US Open", "Roland-Garros", "l'Open d'Australie", "Wimbledon"],
+    "correctIndex": 1,
+    "explanation": "Le stade porte le nom d'un aviateur, premier à traverser la Méditerranée en avion en 1913.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-156",
+    "question": "Quel pays a pour capitale Hanoï ?",
+    "choices": ["Le Viêt Nam", "La Thaïlande", "Le Laos", "Le Cambodge"],
+    "correctIndex": 0,
+    "explanation": "Hanoï est réputée pour ses nombreux lacs, dont le célèbre lac Hoàn Kiếm.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-157",
+    "question": "Quel roi de France était surnommé « le Bien-Aimé » ?",
+    "choices": ["Louis XIV", "Louis XV", "Louis XIII", "Louis XVI"],
+    "correctIndex": 1,
+    "explanation": "Arrière-petit-fils de Louis XIV, il devint roi à seulement 5 ans, en 1715.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-158",
+    "question": "Quel pays a remporté la première Coupe du monde de football, en 1930 ?",
+    "choices": ["Le Brésil", "L'Italie", "L'Uruguay", "L'Argentine"],
+    "correctIndex": 2,
+    "explanation": "L'Uruguay était aussi le pays organisateur ; il a battu l'Argentine en finale.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-159",
+    "question": "Dans quelle ville se trouve la Sagrada Família, imaginée par Gaudí ?",
+    "choices": ["Séville", "Madrid", "Barcelone", "Valence"],
+    "correctIndex": 2,
+    "explanation": "Son chantier a commencé en 1882 et se poursuit encore aujourd'hui.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-160",
+    "question": "Quelle est la capitale du Canada ?",
+    "choices": ["Montréal", "Toronto", "Vancouver", "Ottawa"],
+    "correctIndex": 3,
+    "explanation": "Située en Ontario, Ottawa fait face à la ville québécoise de Gatineau, de l'autre côté de la rivière des Outaouais.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-161",
+    "question": "Quel peintre a réalisé « Le Radeau de la Méduse » ?",
+    "choices": [
+      "Jacques-Louis David",
+      "Eugène Delacroix",
+      "Jean-Auguste-Dominique Ingres",
+      "Théodore Géricault"
+    ],
+    "correctIndex": 3,
+    "explanation": "Inspirée d'un vrai naufrage de 1816, cette toile géante est exposée au Louvre.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-162",
+    "question": "Quel roi a lancé la construction du château de Chambord ?",
+    "choices": ["Louis XIV", "François Ier", "Henri II", "Louis XII"],
+    "correctIndex": 1,
+    "explanation": "Commencé en 1519, Chambord est célèbre pour son escalier à double révolution.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-163",
+    "question": "Sur quels ingrédients repose principalement le dal indien ?",
+    "choices": [
+      "Le poulet et la crème",
+      "Les pommes de terre et les épinards",
+      "Les lentilles et autres légumineuses",
+      "Le riz et le lait"
+    ],
+    "correctIndex": 2,
+    "explanation": "En Inde, le dal accompagne très souvent le riz ou les chapatis.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-164",
+    "question": "Lequel de ces animaux est un marsupial ?",
+    "choices": ["Le hérisson", "Le raton laveur", "Le lapin", "Le kangourou"],
+    "correctIndex": 3,
+    "explanation": "Le petit, appelé joey, termine son développement dans la poche ventrale de sa mère.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-165",
+    "question": "Quel sport associe ski de fond et tir à la carabine ?",
+    "choices": ["Le skeleton", "Le combiné nordique", "Le biathlon", "Le slalom"],
+    "correctIndex": 2,
+    "explanation": "Le combiné nordique, lui, associe ski de fond et saut à ski.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-166",
+    "question": "En quelle année a commencé la Première Guerre mondiale ?",
+    "choices": ["1914", "1918", "1916", "1912"],
+    "correctIndex": 0,
+    "explanation": "Elle a duré de 1914 à 1918 ; l'armistice a été signé le 11 novembre 1918.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-167",
+    "question": "Quel élément a été repéré dans la lumière du Soleil avant d'être trouvé sur Terre ?",
+    "choices": ["Le néon", "L'argon", "L'hélium", "Le krypton"],
+    "correctIndex": 2,
+    "explanation": "Observé dans le spectre solaire en 1868, il tire son nom du grec hêlios, le Soleil.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-168",
+    "question": "Combien de pattes possède une araignée ?",
+    "choices": ["6", "12", "8", "10"],
+    "correctIndex": 2,
+    "explanation": "Les araignées ne sont pas des insectes, mais des arachnides, comme les scorpions.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-169",
+    "question": "Au golf, comment appelle-t-on un trou réussi en un coup de moins que le par ?",
+    "choices": ["Un albatros", "Un eagle", "Un bogey", "Un birdie"],
+    "correctIndex": 3,
+    "explanation": "Birdie signifie « petit oiseau » ; l'eagle, c'est deux coups sous le par.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-170",
+    "question": "Combien de compartiments compte l'estomac d'une vache ?",
+    "choices": ["Deux", "Quatre", "Un", "Six"],
+    "correctIndex": 1,
+    "explanation": "La panse, le bonnet, le feuillet et la caillette permettent de digérer l'herbe.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-171",
+    "question": "Combien de haies les coureurs franchissent-ils lors d'un 110 m haies ?",
+    "choices": ["12", "11", "8", "10"],
+    "correctIndex": 3,
+    "explanation": "Les haies masculines mesurent 1,067 m de haut, soit 42 pouces.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-172",
+    "question": "Comment s'appelle la réaction qui fait dorer la croûte du pain ou d'une viande grillée ?",
+    "choices": [
+      "La caramélisation de Pasteur",
+      "L'oxydation de Lavoisier",
+      "La fermentation lactique",
+      "La réaction de Maillard"
+    ],
+    "correctIndex": 3,
+    "explanation": "Elle porte le nom du chimiste français Louis-Camille Maillard, qui l'a décrite en 1912.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-173",
+    "question": "Quelle ville a accueilli les tout premiers Jeux olympiques d'hiver, en 1924 ?",
+    "choices": ["Saint-Moritz", "Lake Placid", "Chamonix", "Oslo"],
+    "correctIndex": 2,
+    "explanation": "On parlait alors de « Semaine internationale des sports d'hiver » ; le titre olympique est venu après.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-174",
+    "question": "Quelle est la longueur d'une piscine olympique ?",
+    "choices": ["25 mètres", "33 mètres", "100 mètres", "50 mètres"],
+    "correctIndex": 3,
+    "explanation": "Les bassins de 25 mètres sont dits « petit bain » en compétition.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-175",
+    "question": "Quel est le nom scientifique du loup gris ?",
+    "choices": ["Vulpes vulpes", "Canis lupus", "Ursus arctos", "Felis silvestris"],
+    "correctIndex": 1,
+    "explanation": "Le chien domestique descend du loup ; il est souvent classé comme sa sous-espèce.",
+    "category": "nature",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-176",
+    "question": "Quelle île est surnommée « l'île de Beauté » ?",
+    "choices": ["La Corse", "Belle-Île-en-Mer", "La Sardaigne", "La Réunion"],
+    "correctIndex": 0,
+    "explanation": "Montagne, maquis et plages : la Corse porte bien son surnom !",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-177",
+    "question": "Quel fruit garnit une tarte Tatin ?",
+    "choices": ["La poire", "L'abricot", "La pomme", "La pêche"],
+    "correctIndex": 2,
+    "explanation": "Cette tarte renversée porte le nom des sœurs Tatin, aubergistes à Lamotte-Beuvron.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-178",
+    "question": "Quel écrivain russe a écrit « Guerre et Paix » ?",
+    "choices": ["Fiodor Dostoïevski", "Léon Tolstoï", "Anton Tchekhov", "Nicolas Gogol"],
+    "correctIndex": 1,
+    "explanation": "Ce roman-fleuve suit plusieurs familles russes pendant les guerres napoléoniennes.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-179",
+    "question": "Qui a fondé le judo au Japon en 1882 ?",
+    "choices": ["Gichin Funakoshi", "Yasuhiro Yamashita", "Jigoro Kano", "Morihei Ueshiba"],
+    "correctIndex": 2,
+    "explanation": "Le mot judo signifie « la voie de la souplesse ».",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-180",
+    "question": "Quelle est la capitale de la Nouvelle-Zélande ?",
+    "choices": ["Wellington", "Christchurch", "Auckland", "Queenstown"],
+    "correctIndex": 0,
+    "explanation": "Auckland est plus peuplée, mais Wellington est la capitale depuis 1865.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-181",
+    "question": "Combien de temps dure environ la gestation d'une éléphante d'Afrique ?",
+    "choices": ["9 mois", "12 mois", "22 mois", "36 mois"],
+    "correctIndex": 2,
+    "explanation": "C'est l'une des plus longues gestations du règne animal.",
+    "category": "nature",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-182",
+    "question": "De quel pays le goulash est-il originaire ?",
+    "choices": ["La Pologne", "La Hongrie", "La Roumanie", "L'Autriche"],
+    "correctIndex": 1,
+    "explanation": "Il est relevé de paprika, l'épice star de la cuisine hongroise.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-183",
+    "question": "Quel peuple scandinave naviguait à bord de drakkars ?",
+    "choices": ["Les Wisigoths", "Les Vikings", "Les Huns", "Les Celtes"],
+    "correctIndex": 1,
+    "explanation": "Leurs navires légers pouvaient traverser la mer comme remonter les fleuves, jusqu'à Paris !",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-184",
+    "question": "Quel Français est à l'origine des Jeux olympiques modernes ?",
+    "choices": ["Jules Rimet", "Pierre de Coubertin", "Henri Desgrange", "Jean Bouin"],
+    "correctIndex": 1,
+    "explanation": "Jules Rimet, lui, est à l'origine de la Coupe du monde de football.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-185",
+    "question": "Dans quelle région de France est fabriqué le maroilles ?",
+    "choices": ["La Bourgogne", "Les Hauts-de-France", "La Savoie", "La Normandie"],
+    "correctIndex": 1,
+    "explanation": "Ce fromage à croûte orangée vient de la Thiérache, à la frontière belge.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-186",
+    "question": "Qu'ajoute-t-on à un croque-monsieur pour en faire un croque-madame ?",
+    "choices": ["Une tranche de tomate", "Des cornichons", "Du fromage bleu", "Un œuf"],
+    "correctIndex": 3,
+    "explanation": "On dit que l'œuf au plat posé dessus rappelle un chapeau de dame.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-187",
+    "question": "Combien de joueurs une équipe de football aligne-t-elle sur le terrain ?",
+    "choices": ["12", "10", "11", "9"],
+    "correctIndex": 2,
+    "explanation": "Dix joueurs de champ et un gardien de but. Le football moderne a été codifié en Angleterre en 1863.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-188",
+    "question": "Que signifie « déglacer » une poêle ?",
+    "choices": [
+      "La faire chauffer à vide",
+      "La passer sous l'eau froide",
+      "La graisser avant cuisson",
+      "Dissoudre les sucs de cuisson avec un liquide"
+    ],
+    "correctIndex": 3,
+    "explanation": "Un trait de vin, de vinaigre ou de bouillon suffit pour obtenir une sauce savoureuse.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-189",
+    "question": "D'un point de vue botanique, la tomate est…",
+    "choices": ["Une tige", "Un légume-racine", "Une feuille", "Un fruit"],
+    "correctIndex": 3,
+    "explanation": "Elle contient les graines de la plante, comme tous les fruits.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-190",
+    "question": "Quel empire était dirigé par Soliman le Magnifique ?",
+    "choices": ["L'Empire byzantin", "L'Empire ottoman", "L'Empire moghol", "L'Empire perse"],
+    "correctIndex": 1,
+    "explanation": "Sous son règne, au XVIe siècle, l'Empire ottoman a atteint l'apogée de sa puissance.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-191",
+    "question": "Quelle est la planète la plus proche du Soleil ?",
+    "choices": ["La Terre", "Mercure", "Mars", "Vénus"],
+    "correctIndex": 1,
+    "explanation": "Mercure boucle son tour du Soleil en seulement 88 jours environ.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-192",
+    "question": "À quelle famille botanique appartient le sarrasin ?",
+    "choices": ["Les graminées", "Les crucifères", "Les polygonacées", "Les légumineuses"],
+    "correctIndex": 2,
+    "explanation": "Malgré son surnom de « blé noir », ce n'est pas une céréale : il est cousin de l'oseille et de la rhubarbe.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-193",
+    "question": "Quel savant américain a inventé le paratonnerre ?",
+    "choices": ["Benjamin Franklin", "Nikola Tesla", "Thomas Edison", "Alexander Graham Bell"],
+    "correctIndex": 0,
+    "explanation": "Il a mené au XVIIIe siècle de célèbres expériences sur l'électricité des orages.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-194",
+    "question": "Quels parfums associe le gâteau Opéra ?",
+    "choices": [
+      "Café et chocolat",
+      "Fraise et pistache",
+      "Citron et framboise",
+      "Vanille et caramel"
+    ],
+    "correctIndex": 0,
+    "explanation": "Il superpose biscuit imbibé de café, crème au beurre et ganache au chocolat.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-195",
+    "question": "Comment appelle-t-on trois buts marqués par le même joueur dans un match ?",
+    "choices": [
+      "Un grand chelem",
+      "Un coup du chapeau",
+      "Un triplé de bronze",
+      "Une triple couronne"
+    ],
+    "correctIndex": 1,
+    "explanation": "En anglais, on dit « hat-trick », une expression venue à l'origine du cricket.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-196",
+    "question": "Quel physicien a formulé la théorie de la relativité ?",
+    "choices": ["Niels Bohr", "Albert Einstein", "Max Planck", "Isaac Newton"],
+    "correctIndex": 1,
+    "explanation": "Sa célèbre formule E = mc² relie la masse et l'énergie.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-197",
+    "question": "Quel fromage AOP est produit en Auvergne ?",
+    "choices": ["Le comté", "Le munster", "Le cantal", "Le maroilles"],
+    "correctIndex": 2,
+    "explanation": "C'est l'un des plus anciens fromages de France : Pline l'Ancien l'évoquait déjà.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-198",
+    "question": "Quel légume donne sa couleur rouge au bortsch ?",
+    "choices": ["La tomate", "Le poivron", "Le chou rouge", "La betterave"],
+    "correctIndex": 3,
+    "explanation": "Cette soupe est très populaire en Europe de l'Est.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-199",
+    "question": "Quel compositeur français a écrit le « Boléro » ?",
+    "choices": ["Claude Debussy", "Hector Berlioz", "Erik Satie", "Maurice Ravel"],
+    "correctIndex": 3,
+    "explanation": "Créé en 1928, le « Boléro » répète le même thème en l'enrichissant d'un crescendo continu.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-200",
+    "question": "Quelle plante carnivore referme ses feuilles comme un piège ?",
+    "choices": ["La dionée", "Le rossolis", "Le népenthès", "La sarracénie"],
+    "correctIndex": 0,
+    "explanation": "On la surnomme aussi « attrape-mouche » : ses feuilles se referment en une fraction de seconde.",
+    "category": "nature",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-201",
+    "question": "Quelle poudre est la base des coques de macarons ?",
+    "choices": [
+      "La poudre de noisette",
+      "La poudre d'amande",
+      "La poudre de cacao",
+      "La poudre de coco"
+    ],
+    "correctIndex": 1,
+    "explanation": "On la mélange à du sucre glace et à des blancs d'œufs.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-202",
+    "question": "Quelle pâte sert à confectionner les éclairs ?",
+    "choices": ["La pâte feuilletée", "La pâte brisée", "La pâte sablée", "La pâte à choux"],
+    "correctIndex": 3,
+    "explanation": "La pâte à choux sert aussi pour les profiteroles, les chouquettes et la religieuse.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-203",
+    "question": "Quelle vitamine notre peau fabrique-t-elle grâce au soleil ?",
+    "choices": ["La vitamine B12", "La vitamine A", "La vitamine C", "La vitamine D"],
+    "correctIndex": 3,
+    "explanation": "Quelques minutes de lumière naturelle suffisent souvent à lancer sa production.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-204",
+    "question": "Quel monument a été construit pour l'Exposition universelle de 1889 à Paris ?",
+    "choices": ["Le Grand Palais", "La tour Eiffel", "Le pont Alexandre-III", "L'Arc de Triomphe"],
+    "correctIndex": 1,
+    "explanation": "Elle ne devait rester debout que 20 ans… et elle est devenue le symbole de Paris !",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-205",
+    "question": "Quel musée new-yorkais en forme de spirale a été conçu par Frank Lloyd Wright ?",
+    "choices": ["Le Metropolitan Museum", "Le MoMA", "Le Whitney Museum", "Le musée Guggenheim"],
+    "correctIndex": 3,
+    "explanation": "On y visite les œuvres en descendant une longue rampe hélicoïdale.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-206",
+    "question": "Combien de trous compte un parcours de golf classique ?",
+    "choices": ["24", "9", "12", "18"],
+    "correctIndex": 3,
+    "explanation": "Le chiffre de 18 trous s'est imposé à partir du parcours de St Andrews, en Écosse.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-207",
+    "question": "Quelle ville a accueilli les premiers Jeux paralympiques d'été, en 1960 ?",
+    "choices": ["Munich", "Londres", "Rome", "Tokyo"],
+    "correctIndex": 2,
+    "explanation": "Ils se sont déroulés quelques jours après les Jeux olympiques, dans la même ville.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-208",
+    "question": "Dans le ceviche péruvien, dans quoi le poisson cru est-il mariné ?",
+    "choices": ["De la sauce soja", "Du lait de coco", "Du vinaigre de riz", "Du jus d'agrumes"],
+    "correctIndex": 3,
+    "explanation": "L'acidité du citron vert « cuit » la chair du poisson sans chaleur.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-209",
+    "question": "De quelle région française la choucroute garnie est-elle une spécialité ?",
+    "choices": ["L'Alsace", "Le Pays basque", "La Bretagne", "La Provence"],
+    "correctIndex": 0,
+    "explanation": "Le chou y est finement émincé puis fermenté dans du sel, ce qui le rend acidulé.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-210",
+    "question": "Que signifie « panna cotta » en italien ?",
+    "choices": ["Crème glacée", "Crème cuite", "Pain de crème", "Crème fouettée"],
+    "correctIndex": 1,
+    "explanation": "Ce dessert piémontais se prépare avec de la crème et du sucre, figés par de la gélatine.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-211",
+    "question": "Quel peintre a réalisé « Guernica » en 1937 ?",
+    "choices": ["Pablo Picasso", "Francisco de Goya", "Joan Miró", "Salvador Dalí"],
+    "correctIndex": 0,
+    "explanation": "Cette immense toile en noir et blanc est exposée au musée Reina Sofía, à Madrid.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-212",
+    "question": "Qui fut le premier homme à marcher sur la Lune ?",
+    "choices": ["Michael Collins", "Neil Armstrong", "Buzz Aldrin", "Youri Gagarine"],
+    "correctIndex": 1,
+    "explanation": "C'était en juillet 1969, lors de la mission Apollo 11 ; Buzz Aldrin l'a rejoint peu après.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-213",
+    "question": "Qui a peint « La Joconde » ?",
+    "choices": ["Michel-Ange", "Raphaël", "Titien", "Léonard de Vinci"],
+    "correctIndex": 3,
+    "explanation": "Léonard l'a gardée auprès de lui jusqu'à la fin de sa vie, en France, à Amboise.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-214",
+    "question": "Quel désert occupe une grande partie du nord du Chili ?",
+    "choices": [
+      "Le désert du Namib",
+      "Le désert de Sonora",
+      "Le désert d'Atacama",
+      "Le désert de Patagonie"
+    ],
+    "correctIndex": 2,
+    "explanation": "Son ciel très pur en fait l'un des meilleurs endroits au monde pour observer les étoiles.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-215",
+    "question": "Quel physicien allemand a découvert les rayons X en 1895 ?",
+    "choices": ["Heinrich Hertz", "Max Planck", "Werner Heisenberg", "Wilhelm Röntgen"],
+    "correctIndex": 3,
+    "explanation": "Il a reçu le tout premier prix Nobel de physique, en 1901.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-216",
+    "question": "Quelle cité romaine fut ensevelie par l'éruption du Vésuve en 79 ?",
+    "choices": ["Syracuse", "Pompéi", "Ostie", "Carthage"],
+    "correctIndex": 1,
+    "explanation": "Les cendres ont figé la ville pendant des siècles, ce qui en fait un trésor archéologique unique.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-217",
+    "question": "Quel mammifère est capable de voler activement ?",
+    "choices": ["L'écureuil volant", "La chauve-souris", "Le colugo", "Le phalanger volant"],
+    "correctIndex": 1,
+    "explanation": "Les autres « volants » ne font que planer ; la chauve-souris, elle, bat des ailes.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-218",
+    "question": "Quel écrivain a publié « Le Rouge et le Noir » en 1830 ?",
+    "choices": ["Honoré de Balzac", "Guy de Maupassant", "Stendhal", "Gustave Flaubert"],
+    "correctIndex": 2,
+    "explanation": "Stendhal est un pseudonyme : il s'appelait en réalité Henri Beyle.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-219",
+    "question": "Quel savant français a mis au point le vaccin contre la rage en 1885 ?",
+    "choices": ["Louis Pasteur", "Antoine Lavoisier", "Claude Bernard", "Marie Curie"],
+    "correctIndex": 0,
+    "explanation": "Le premier patient sauvé fut un jeune garçon alsacien, Joseph Meister.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-220",
+    "question": "Combien de bosses a un dromadaire ?",
+    "choices": ["Aucune", "Une", "Trois", "Deux"],
+    "correctIndex": 1,
+    "explanation": "Le chameau de Bactriane, lui, en a deux. Ses bosses stockent de la graisse, pas de l'eau !",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-221",
+    "question": "Quelle est la plus grande planète du système solaire ?",
+    "choices": ["Uranus", "Neptune", "Saturne", "Jupiter"],
+    "correctIndex": 3,
+    "explanation": "On pourrait loger plus de 1 000 Terre à l'intérieur de Jupiter !",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-222",
+    "question": "Quel est le plus haut sommet des Alpes ?",
+    "choices": ["Le mont Rose", "Le Cervin", "Le mont Blanc", "La Barre des Écrins"],
+    "correctIndex": 2,
+    "explanation": "Il culmine à environ 4 800 m, à la frontière entre la France et l'Italie.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-223",
+    "question": "Dans quel sport les nations s'affrontent-elles pour la Coupe Davis ?",
+    "choices": ["La voile", "Le golf", "Le tennis", "L'aviron"],
+    "correctIndex": 2,
+    "explanation": "Créée en 1900, c'est l'une des plus anciennes compétitions internationales par équipes.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-224",
+    "question": "Quel instrument mesure la pression atmosphérique ?",
+    "choices": ["Le baromètre", "L'anémomètre", "L'hygromètre", "Le thermomètre"],
+    "correctIndex": 0,
+    "explanation": "Le premier baromètre à mercure a été mis au point par Evangelista Torricelli en 1643.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-225",
+    "question": "Comment s'appelle la cuisson douce dans un récipient posé sur de l'eau chaude ?",
+    "choices": ["Le pochage", "La cuisson à l'étouffée", "La friture", "Le bain-marie"],
+    "correctIndex": 3,
+    "explanation": "Idéal pour faire fondre le chocolat sans le brûler !",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-226",
+    "question": "Quel traité, signé en 1919, a mis fin à la Première Guerre mondiale avec l'Allemagne ?",
+    "choices": [
+      "Le traité de Versailles",
+      "Le traité de Rome",
+      "Le traité d'Utrecht",
+      "Le traité de Vienne"
+    ],
+    "correctIndex": 0,
+    "explanation": "Il a été signé dans la galerie des Glaces du château de Versailles.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-227",
+    "question": "Quel légume est au cœur de la moussaka grecque ?",
+    "choices": ["Le poireau", "Le chou", "L'aubergine", "La courgette"],
+    "correctIndex": 2,
+    "explanation": "Elle est recouverte d'une sauce béchamel gratinée.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-228",
+    "question": "Quel est le plus long serpent du monde ?",
+    "choices": ["Le python réticulé", "Le boa constricteur", "Le cobra royal", "L'anaconda vert"],
+    "correctIndex": 0,
+    "explanation": "L'anaconda est plus lourd, mais le python réticulé est le plus long : il peut dépasser 6 mètres.",
+    "category": "nature",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-229",
+    "question": "Combien de cœurs possède une pieuvre ?",
+    "choices": ["3", "8", "2", "1"],
+    "correctIndex": 0,
+    "explanation": "Deux cœurs irriguent les branchies et le troisième le reste du corps ; son sang est bleu.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-230",
+    "question": "Quelle est la capitale de la Turquie ?",
+    "choices": ["Antalya", "Izmir", "Ankara", "Istanbul"],
+    "correctIndex": 2,
+    "explanation": "Ankara est devenue capitale en 1923, même si Istanbul reste la plus grande ville du pays.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-231",
+    "question": "Quelle est la formule chimique de l'eau ?",
+    "choices": ["H₂O", "H₂O₂", "CO₂", "O₂"],
+    "correctIndex": 0,
+    "explanation": "Deux atomes d'hydrogène et un d'oxygène ; H₂O₂, c'est l'eau oxygénée !",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-232",
+    "question": "Quelle région est le berceau de la ratatouille ?",
+    "choices": ["La Bourgogne", "La Normandie", "La Provence", "L'Auvergne"],
+    "correctIndex": 2,
+    "explanation": "Elle mijote aubergines, courgettes, poivrons, tomates et oignons à l'huile d'olive.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-233",
+    "question": "Quel fromage italien entre dans la crème du tiramisu ?",
+    "choices": ["Le parmesan", "Le mascarpone", "La mozzarella", "La ricotta"],
+    "correctIndex": 1,
+    "explanation": "Tiramisu signifie « remonte-moi », sans doute grâce au café qu'il contient.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-234",
+    "question": "Quelle est la capitale de l'Argentine ?",
+    "choices": ["Montevideo", "Córdoba", "Buenos Aires", "Santiago"],
+    "correctIndex": 2,
+    "explanation": "Elle se trouve sur l'estuaire du Río de la Plata, face à l'Uruguay.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-235",
+    "question": "Sur le Tour de France, que récompense le maillot à pois rouges ?",
+    "choices": [
+      "Le coureur le plus combatif",
+      "Le meilleur grimpeur",
+      "Le meilleur sprinteur",
+      "Le meilleur jeune"
+    ],
+    "correctIndex": 1,
+    "explanation": "Les points se gagnent au sommet des cols et des côtes du parcours.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-236",
+    "question": "Quel explorateur a atteint le premier le pôle Sud, en 1911 ?",
+    "choices": ["Roald Amundsen", "Ernest Shackleton", "Robert Falcon Scott", "Robert Peary"],
+    "correctIndex": 0,
+    "explanation": "Le Norvégien y est arrivé le 14 décembre 1911, environ un mois avant l'équipe de Scott.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-237",
+    "question": "Quel est le plus long fleuve d'Asie ?",
+    "choices": ["Le Gange", "Le Yangzi Jiang", "Le fleuve Jaune", "Le Mékong"],
+    "correctIndex": 1,
+    "explanation": "Aussi appelé Yangtsé ou fleuve Bleu, il traverse toute la Chine d'ouest en est.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-238",
+    "question": "Qu'est-ce qu'un sabayon ?",
+    "choices": [
+      "Un sorbet aux agrumes",
+      "Une sauce au poivre",
+      "Une pâte à pain sans levure",
+      "Une crème mousseuse de jaunes d'œufs fouettés à chaud"
+    ],
+    "correctIndex": 3,
+    "explanation": "Il vient de l'italien zabaione et accompagne souvent des fruits gratinés.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-239",
+    "question": "De quel instrument Frédéric Chopin était-il un virtuose ?",
+    "choices": ["Le violon", "Le piano", "Le violoncelle", "La harpe"],
+    "correctIndex": 1,
+    "explanation": "Né en Pologne en 1810, il a passé la seconde moitié de sa vie à Paris.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-240",
+    "question": "Quelle galaxie spirale devrait entrer en collision avec la Voie lactée dans quelques milliards d'années ?",
+    "choices": [
+      "La galaxie du Sombrero",
+      "La galaxie du Tourbillon",
+      "La galaxie du Triangle",
+      "Andromède"
+    ],
+    "correctIndex": 3,
+    "explanation": "Elle est visible à l'œil nu par ciel très sombre, comme une petite tache floue.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-241",
+    "question": "Quel est l'animal terrestre le plus rapide ?",
+    "choices": ["Le guépard", "L'antilope", "Le lévrier", "Le lion"],
+    "correctIndex": 0,
+    "explanation": "Il peut atteindre environ 100 km/h, mais seulement sur de courtes distances.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-242",
+    "question": "Entre quels pays le lac Titicaca est-il partagé ?",
+    "choices": [
+      "Le Pérou et la Bolivie",
+      "L'Équateur et le Pérou",
+      "Le Chili et l'Argentine",
+      "La Bolivie et le Paraguay"
+    ],
+    "correctIndex": 0,
+    "explanation": "Situé à plus de 3 800 m d'altitude, c'est l'un des lacs les plus hauts du monde.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-243",
+    "question": "Quel navigateur portugais a ouvert la route maritime vers l'Inde en 1498 ?",
+    "choices": ["Bartolomeu Dias", "Fernand de Magellan", "Pedro Álvares Cabral", "Vasco de Gama"],
+    "correctIndex": 3,
+    "explanation": "En contournant l'Afrique par le cap de Bonne-Espérance, il a atteint Calicut, sur la côte indienne.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-244",
+    "question": "Quelle grande ville italienne se trouve au pied du Vésuve ?",
+    "choices": ["Rome", "Bari", "Palerme", "Naples"],
+    "correctIndex": 3,
+    "explanation": "Naples est aussi la patrie de la pizza, rien que ça !",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-245",
+    "question": "Quel chef gaulois a capitulé face à Jules César après le siège d'Alésia ?",
+    "choices": ["Vercingétorix", "Dumnorix", "Brennus", "Ambiorix"],
+    "correctIndex": 0,
+    "explanation": "C'était en 52 av. J.-C. ; quelques mois plus tôt, il avait battu César à Gergovie.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-246",
+    "question": "Combien de minutes dure un match de football, hors prolongations et arrêts de jeu ?",
+    "choices": ["100", "80", "60", "90"],
+    "correctIndex": 3,
+    "explanation": "Deux mi-temps de 45 minutes, séparées par une pause d'environ 15 minutes.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-247",
+    "question": "Quelle duchesse fut successivement l'épouse des rois Charles VIII et Louis XII ?",
+    "choices": [
+      "Anne de Bretagne",
+      "Marguerite de Valois",
+      "Catherine de Médicis",
+      "Claude de France"
+    ],
+    "correctIndex": 0,
+    "explanation": "Ces deux mariages ont préparé le rattachement de la Bretagne au royaume de France.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-248",
+    "question": "Comment appelle-t-on un vers de douze syllabes ?",
+    "choices": ["Un hexamètre", "Un octosyllabe", "Un alexandrin", "Un décasyllabe"],
+    "correctIndex": 2,
+    "explanation": "Son nom viendrait du « Roman d'Alexandre », un poème du XIIe siècle.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-249",
+    "question": "Par quelle ville anglaise passe le méridien de référence des longitudes ?",
+    "choices": ["Douvres", "Oxford", "Greenwich", "Cambridge"],
+    "correctIndex": 2,
+    "explanation": "Ce méridien a été choisi comme référence internationale en 1884.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-250",
+    "question": "Quel fromage savoyard a été surnommé « le prince des gruyères » ?",
+    "choices": ["Le comté", "Le beaufort", "L'abondance", "L'emmental"],
+    "correctIndex": 1,
+    "explanation": "On attribue ce surnom au gastronome Brillat-Savarin ; sa meule a un talon concave caractéristique.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-251",
+    "question": "Quelle est la capitale du Brésil ?",
+    "choices": ["Rio de Janeiro", "Brasília", "São Paulo", "Salvador"],
+    "correctIndex": 1,
+    "explanation": "Brasília a été inaugurée en 1960 ; l'architecte Oscar Niemeyer y a dessiné de nombreux bâtiments.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-252",
+    "question": "À quel style architectural appartient la cathédrale Notre-Dame de Paris ?",
+    "choices": ["Le gothique", "Le baroque", "Le roman", "Le néoclassique"],
+    "correctIndex": 0,
+    "explanation": "Ses arcs-boutants et ses grandes rosaces sont typiques de l'art gothique.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-253",
+    "question": "De quelle région le kouign-amann est-il une spécialité ?",
+    "choices": ["Le Pays basque", "L'Alsace", "La Bretagne", "La Normandie"],
+    "correctIndex": 2,
+    "explanation": "En breton, kouign-amann signifie « gâteau au beurre » : le nom dit tout !",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-254",
+    "question": "Quel fleuve européen se jette dans la mer Noire par un vaste delta ?",
+    "choices": ["Le Pô", "Le Rhin", "Le Danube", "L'Elbe"],
+    "correctIndex": 2,
+    "explanation": "Le Danube traverse ou longe dix pays, plus que tout autre fleuve au monde.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-255",
+    "question": "À quoi le Paris-Brest doit-il sa forme de roue ?",
+    "choices": [
+      "À une course cycliste",
+      "À une locomotive",
+      "À une montgolfière",
+      "À un carrosse royal"
+    ],
+    "correctIndex": 0,
+    "explanation": "Il a été créé au début du XXe siècle en hommage à la course cycliste Paris-Brest-Paris.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-256",
+    "question": "Quel écrivain a imaginé le capitaine Nemo et son sous-marin, le Nautilus ?",
+    "choices": ["Alexandre Dumas", "H. G. Wells", "Victor Hugo", "Jules Verne"],
+    "correctIndex": 3,
+    "explanation": "On les découvre dans « Vingt Mille Lieues sous les mers », publié en 1869-1870.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-257",
+    "question": "Qui a déchiffré les hiéroglyphes égyptiens en 1822 ?",
+    "choices": [
+      "Howard Carter",
+      "Auguste Mariette",
+      "Jean-François Champollion",
+      "Samuel de Champlain"
+    ],
+    "correctIndex": 2,
+    "explanation": "Il s'est notamment appuyé sur la pierre de Rosette, qui porte un même texte en trois écritures.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-258",
+    "question": "Quel gaz est le plus abondant dans l'air que nous respirons ?",
+    "choices": ["Le dioxyde de carbone", "L'azote", "L'oxygène", "L'argon"],
+    "correctIndex": 1,
+    "explanation": "L'air contient environ 78 % d'azote et seulement 21 % d'oxygène.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-259",
+    "question": "De quel arbre proviennent les marrons d'Inde, qui ne se mangent pas ?",
+    "choices": ["Le châtaignier", "Le marronnier", "Le noyer", "Le noisetier"],
+    "correctIndex": 1,
+    "explanation": "Les marrons que l'on grille en hiver sont en fait des châtaignes !",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-260",
+    "question": "Quel président américain a prononcé le célèbre discours de Gettysburg en 1863 ?",
+    "choices": ["Thomas Jefferson", "Abraham Lincoln", "George Washington", "Theodore Roosevelt"],
+    "correctIndex": 1,
+    "explanation": "Ce discours très court, moins de 300 mots, est l'un des plus célèbres de l'histoire américaine.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-261",
+    "question": "De quelle ville la socca est-elle la spécialité ?",
+    "choices": ["Nice", "Lyon", "Lille", "Strasbourg"],
+    "correctIndex": 0,
+    "explanation": "Cette grande galette fine est préparée à la farine de pois chiches.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-262",
+    "question": "Quelle est la capitale de l'Écosse ?",
+    "choices": ["Inverness", "Glasgow", "Édimbourg", "Aberdeen"],
+    "correctIndex": 2,
+    "explanation": "Son château, perché sur un ancien volcan, domine toute la ville.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-263",
+    "question": "Qui fut le premier chancelier de l'Empire allemand, proclamé en 1871 ?",
+    "choices": [
+      "Klemens von Metternich",
+      "Paul von Hindenburg",
+      "Guillaume Ier",
+      "Otto von Bismarck"
+    ],
+    "correctIndex": 3,
+    "explanation": "Surnommé le « chancelier de fer », il a dirigé le gouvernement jusqu'en 1890.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-264",
+    "question": "Combien de temps met la lumière du Soleil pour atteindre la Terre ?",
+    "choices": ["Environ 1 heure", "Environ 1 jour", "Environ 8 secondes", "Environ 8 minutes"],
+    "correctIndex": 3,
+    "explanation": "Quand on regarde le Soleil, on le voit donc tel qu'il était il y a environ 8 minutes.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-265",
+    "question": "Combien de joueurs par équipe sont sur le terrain au handball, gardien compris ?",
+    "choices": ["6", "11", "7", "9"],
+    "correctIndex": 2,
+    "explanation": "Six joueurs de champ et un gardien, qui seul peut entrer dans la zone des 6 mètres.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-266",
+    "question": "Qui fut le premier humain à voyager dans l'espace ?",
+    "choices": ["Neil Armstrong", "John Glenn", "Alexeï Leonov", "Youri Gagarine"],
+    "correctIndex": 3,
+    "explanation": "Le 12 avril 1961, il a fait le tour de la Terre en moins de deux heures à bord de Vostok 1.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-267",
+    "question": "Quel est le plus grand organe du corps humain ?",
+    "choices": ["Le foie", "Le cerveau", "La peau", "Les poumons"],
+    "correctIndex": 2,
+    "explanation": "Elle nous protège, régule notre température et se renouvelle en permanence.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-268",
+    "question": "À quel mouvement artistique le poète André Breton est-il associé ?",
+    "choices": ["Le surréalisme", "Le dadaïsme", "Le symbolisme", "Le romantisme"],
+    "correctIndex": 0,
+    "explanation": "Il en a rédigé le premier Manifeste en 1924.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-269",
+    "question": "Quelle immense île arctique fait partie du royaume de Danemark ?",
+    "choices": ["Le Svalbard", "L'Islande", "L'île de Baffin", "Le Groenland"],
+    "correctIndex": 3,
+    "explanation": "Son nom signifie « terre verte », alors qu'elle est couverte en majeure partie de glace !",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-270",
+    "question": "Dans quel pays se trouve la ville historique de Tombouctou ?",
+    "choices": ["Le Mali", "La Mauritanie", "Le Niger", "Le Burkina Faso"],
+    "correctIndex": 0,
+    "explanation": "Ses mosquées de terre et ses manuscrits anciens sont inscrits au patrimoine mondial de l'Unesco.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-271",
+    "question": "Quel cétacé est surnommé « la licorne des mers » ?",
+    "choices": ["Le narval", "L'orque", "Le dauphin", "Le béluga"],
+    "correctIndex": 0,
+    "explanation": "Sa « corne » est en réalité une dent qui peut dépasser deux mètres.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-272",
+    "question": "Quel désert s'étend sur la Mongolie et le nord de la Chine ?",
+    "choices": ["Le Kalahari", "L'Atacama", "Le Namib", "Le désert de Gobi"],
+    "correctIndex": 3,
+    "explanation": "C'est un désert froid où l'on a découvert de nombreux fossiles de dinosaures.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-273",
+    "question": "Quel arbre produit des glands ?",
+    "choices": ["Le châtaignier", "Le noisetier", "Le hêtre", "Le chêne"],
+    "correctIndex": 3,
+    "explanation": "Les glands régalent écureuils, geais et sangliers à l'automne.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-274",
+    "question": "Quel peintre a consacré une célèbre série de toiles aux « Nymphéas » ?",
+    "choices": ["Auguste Renoir", "Edgar Degas", "Camille Pissarro", "Claude Monet"],
+    "correctIndex": 3,
+    "explanation": "Il les a peints dans son jardin de Giverny ; les plus grands panneaux sont au musée de l'Orangerie.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-275",
+    "question": "Qui a écrit « Madame Bovary » ?",
+    "choices": ["Stendhal", "Gustave Flaubert", "Guy de Maupassant", "George Sand"],
+    "correctIndex": 1,
+    "explanation": "À sa publication en 1857, le roman a valu à Flaubert un procès… qu'il a gagné.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-276",
+    "question": "Quel écrivain a créé Sherlock Holmes ?",
+    "choices": ["Charles Dickens", "Maurice Leblanc", "Edgar Allan Poe", "Arthur Conan Doyle"],
+    "correctIndex": 3,
+    "explanation": "Holmes habite au 221B Baker Street, à Londres. Maurice Leblanc, lui, a créé Arsène Lupin.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-277",
+    "question": "Avec quel lait fabrique-t-on la mozzarella di bufala campana ?",
+    "choices": [
+      "Le lait de brebis",
+      "Le lait de chèvre",
+      "Le lait de bufflonne",
+      "Le lait d'ânesse"
+    ],
+    "correctIndex": 2,
+    "explanation": "Elle est produite principalement en Campanie, la région de Naples.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-278",
+    "question": "En Grand Chelem, combien de sets un joueur doit-il gagner pour remporter un match masculin ?",
+    "choices": ["2", "3", "4", "5"],
+    "correctIndex": 1,
+    "explanation": "Les matchs masculins s'y jouent au meilleur des cinq sets.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-279",
+    "question": "Quel paquebot a coulé en 1912 lors de son voyage inaugural ?",
+    "choices": ["Le Titanic", "Le Queen Mary", "Le Lusitania", "Le Britannic"],
+    "correctIndex": 0,
+    "explanation": "Il a heurté un iceberg dans la nuit du 14 au 15 avril 1912, dans l'Atlantique Nord.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-280",
+    "question": "Comment appelle-t-on le long sommeil hivernal de certains animaux ?",
+    "choices": ["L'hibernation", "L'estivation", "La migration", "La mue"],
+    "correctIndex": 0,
+    "explanation": "La marmotte et le loir sont de grands champions de l'hibernation.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-281",
+    "question": "Dans quel sport parle-t-on de « strike » et de « spare » ?",
+    "choices": ["Le curling", "Le cricket", "Le baseball", "Le bowling"],
+    "correctIndex": 3,
+    "explanation": "Un strike, c'est faire tomber les dix quilles du premier lancer !",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-282",
+    "question": "Quelle ville de la Drôme est célèbre pour son nougat ?",
+    "choices": ["Montélimar", "Valence", "Romans-sur-Isère", "Nyons"],
+    "correctIndex": 0,
+    "explanation": "Le nougat associe miel, amandes et blancs d'œufs montés.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-283",
+    "question": "Quelle romancière a créé le détective Hercule Poirot ?",
+    "choices": ["P. D. James", "Agatha Christie", "Fred Vargas", "Mary Higgins Clark"],
+    "correctIndex": 1,
+    "explanation": "Ce détective belge à la célèbre moustache apparaît dans plus de trente romans.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-284",
+    "question": "Quel oiseau est l'emblème de la France ?",
+    "choices": ["La colombe", "Le coq", "Le paon", "L'aigle"],
+    "correctIndex": 1,
+    "explanation": "Le jeu de mots vient du latin gallus, qui veut dire à la fois « coq » et « Gaulois ».",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-285",
+    "question": "Quel écrivain espagnol a écrit « Don Quichotte » ?",
+    "choices": ["Miguel de Cervantès", "Federico García Lorca", "Lope de Vega", "Pablo Neruda"],
+    "correctIndex": 0,
+    "explanation": "Don Quichotte se bat contre des moulins à vent qu'il prend pour des géants !",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-286",
+    "question": "Sur quelle surface se joue le tournoi de Wimbledon ?",
+    "choices": ["Le gazon", "La moquette", "La terre battue", "Le dur"],
+    "correctIndex": 0,
+    "explanation": "C'est le plus ancien tournoi de tennis du monde, créé en 1877.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-287",
+    "question": "La sauce hollandaise est une émulsion de jaunes d'œufs et de…",
+    "choices": ["Crème fraîche", "Beurre", "Lait", "Huile d'olive"],
+    "correctIndex": 1,
+    "explanation": "On l'ajoute progressivement aux jaunes, en fouettant doucement à chaleur douce.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-288",
+    "question": "Au large de quel pays se trouve la Grande Barrière de corail ?",
+    "choices": ["L'Indonésie", "La Nouvelle-Zélande", "L'Australie", "Les Philippines"],
+    "correctIndex": 2,
+    "explanation": "Elle s'étend sur plus de 2 000 km et abrite une biodiversité exceptionnelle.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-289",
+    "question": "Dans quel liquide le bœuf bourguignon mijote-t-il ?",
+    "choices": ["Du cidre", "De la bière", "Du vin rouge", "Du lait"],
+    "correctIndex": 2,
+    "explanation": "On y ajoute souvent lardons, champignons et petits oignons.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-290",
+    "question": "Quel est le plus grand mammifère terrestre ?",
+    "choices": ["La girafe", "Le rhinocéros blanc", "L'éléphant d'Afrique", "L'hippopotame"],
+    "correctIndex": 2,
+    "explanation": "Un mâle adulte peut peser plus de six tonnes.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-291",
+    "question": "Quelle région française est célèbre pour sa volaille AOP aux pattes bleues ?",
+    "choices": ["Le Périgord", "La Bresse", "La Normandie", "Les Landes"],
+    "correctIndex": 1,
+    "explanation": "Plumes blanches, crête rouge, pattes bleues : les couleurs du drapeau français !",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-292",
+    "question": "De quel pays le chutney est-il originaire ?",
+    "choices": ["L'Inde", "Le Mexique", "Le Royaume-Uni", "La Jamaïque"],
+    "correctIndex": 0,
+    "explanation": "Ce condiment aigre-doux a ensuite été adopté par la cuisine britannique.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-293",
+    "question": "Quel territoire français se trouve en Amérique du Sud ?",
+    "choices": ["La Martinique", "Mayotte", "La Réunion", "La Guyane"],
+    "correctIndex": 3,
+    "explanation": "La Guyane partage des frontières avec le Brésil et le Suriname ; elle est couverte en grande partie de forêt amazonienne.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-294",
+    "question": "Quel oiseau peut tourner la tête d'environ 270 degrés ?",
+    "choices": ["Le canard", "Le moineau", "Le pigeon", "La chouette"],
+    "correctIndex": 3,
+    "explanation": "Ses yeux étant fixes dans leurs orbites, elle compense en tournant la tête.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-295",
+    "question": "De quel pays vient le jambon serrano ?",
+    "choices": ["La France", "L'Italie", "L'Espagne", "Le Portugal"],
+    "correctIndex": 2,
+    "explanation": "Son nom signifie « de la sierra » : il sèche traditionnellement en montagne.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-296",
+    "question": "Quelle est la plus grande île de la Méditerranée ?",
+    "choices": ["La Corse", "La Sicile", "La Sardaigne", "Chypre"],
+    "correctIndex": 1,
+    "explanation": "Elle abrite l'Etna, l'un des volcans les plus actifs d'Europe.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-297",
+    "question": "Combien de planètes compte le système solaire ?",
+    "choices": ["Huit", "Neuf", "Sept", "Dix"],
+    "correctIndex": 0,
+    "explanation": "Depuis 2006, Pluton est classée parmi les planètes naines.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-298",
+    "question": "Quel est le plus grand poisson du monde ?",
+    "choices": [
+      "Le requin pèlerin",
+      "Le requin-baleine",
+      "Le poisson-lune",
+      "Le grand requin blanc"
+    ],
+    "correctIndex": 1,
+    "explanation": "Malgré sa taille, il se nourrit surtout de plancton et ne présente aucun danger pour l'homme.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-299",
+    "question": "Quel pays a pour capitale Windhoek ?",
+    "choices": ["Le Botswana", "L'Angola", "La Zambie", "La Namibie"],
+    "correctIndex": 3,
+    "explanation": "La Namibie abrite le désert du Namib, aux dunes parmi les plus hautes du monde.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-300",
+    "question": "À quelle classe d'animaux appartient le dauphin ?",
+    "choices": ["Les reptiles", "Les mammifères", "Les poissons", "Les amphibiens"],
+    "correctIndex": 1,
+    "explanation": "Il respire de l'air grâce à un évent situé sur le dessus de sa tête.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-301",
+    "question": "Dans quelle ville se sont déroulés les premiers Jeux olympiques modernes, en 1896 ?",
+    "choices": ["Athènes", "Londres", "Paris", "Rome"],
+    "correctIndex": 0,
+    "explanation": "Un clin d'œil à la Grèce antique, berceau des Jeux d'Olympie.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-302",
+    "question": "Quel légume se marie au yaourt dans le tzatziki grec ?",
+    "choices": ["Le concombre", "La courgette", "Le poivron", "L'aubergine"],
+    "correctIndex": 0,
+    "explanation": "On y ajoute de l'ail, un filet d'huile d'olive et parfois un peu d'aneth.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-303",
+    "question": "Quel peintre flamand a réalisé « Les Époux Arnolfini » en 1434 ?",
+    "choices": ["Hans Memling", "Pieter Bruegel l'Ancien", "Pierre Paul Rubens", "Jan van Eyck"],
+    "correctIndex": 3,
+    "explanation": "Le petit miroir convexe au fond du tableau reflète toute la pièce, avec une précision étonnante.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-304",
+    "question": "Le miso japonais est une pâte fermentée à base de…",
+    "choices": ["Soja", "Poisson séché", "Sésame", "Châtaigne"],
+    "correctIndex": 0,
+    "explanation": "Il sert notamment à préparer la célèbre soupe miso.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-305",
+    "question": "Quel peintre de la Renaissance a peint « La Naissance de Vénus » ?",
+    "choices": ["Le Caravage", "Titien", "Raphaël", "Sandro Botticelli"],
+    "correctIndex": 3,
+    "explanation": "Le tableau est exposé à la galerie des Offices, à Florence.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-306",
+    "question": "Sur quel continent vit le manchot empereur ?",
+    "choices": ["L'Arctique", "L'Amérique du Nord", "L'Océanie", "L'Antarctique"],
+    "correctIndex": 3,
+    "explanation": "Le mâle couve l'œuf sur ses pattes pendant tout l'hiver austral.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-307",
+    "question": "Quel compositeur italien a écrit « Les Quatre Saisons » ?",
+    "choices": ["Giacomo Puccini", "Gioachino Rossini", "Antonio Vivaldi", "Giuseppe Verdi"],
+    "correctIndex": 2,
+    "explanation": "Ces quatre concertos pour violon évoquent le chant des oiseaux, l'orage ou la glace.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-308",
+    "question": "En quelle année a eu lieu le débarquement allié en Normandie ?",
+    "choices": ["1945", "1944", "1940", "1942"],
+    "correctIndex": 1,
+    "explanation": "Le 6 juin 1944, le « D-Day », des milliers de navires ont abordé les plages normandes.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-309",
+    "question": "Quelle est la capitale de l'Australie ?",
+    "choices": ["Melbourne", "Canberra", "Perth", "Sydney"],
+    "correctIndex": 1,
+    "explanation": "Canberra a été choisie comme compromis entre les deux grandes rivales, Sydney et Melbourne.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-310",
+    "question": "De quel massif montagneux le munster est-il originaire ?",
+    "choices": ["Le Jura", "Les Vosges", "Les Pyrénées", "Les Alpes"],
+    "correctIndex": 1,
+    "explanation": "Il est produit sur les deux versants, en Alsace comme en Lorraine.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-311",
+    "question": "Quel roi de France fut guillotiné en janvier 1793 ?",
+    "choices": ["Louis XV", "Charles X", "Louis XVIII", "Louis XVI"],
+    "correctIndex": 3,
+    "explanation": "Il fut exécuté le 21 janvier 1793 sur l'actuelle place de la Concorde, à Paris.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-312",
+    "question": "Quelle reine a régné comme pharaon et fait bâtir le temple de Deir el-Bahari ?",
+    "choices": ["Hatchepsout", "Néfertari", "Cléopâtre", "Néfertiti"],
+    "correctIndex": 0,
+    "explanation": "Elle régna au XVe siècle av. J.-C. et se faisait parfois représenter avec une barbe postiche, symbole du pouvoir royal.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-313",
+    "question": "De quelle région du monde la pomme de terre est-elle originaire ?",
+    "choices": [
+      "Les Andes, en Amérique du Sud",
+      "L'Irlande",
+      "Le bassin méditerranéen",
+      "L'Asie centrale"
+    ],
+    "correctIndex": 0,
+    "explanation": "Elle a été rapportée en Europe par les Espagnols au XVIe siècle.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-314",
+    "question": "Quel navigateur a atteint l'Amérique en 1492 ?",
+    "choices": ["Amerigo Vespucci", "Christophe Colomb", "Vasco de Gama", "Fernand de Magellan"],
+    "correctIndex": 1,
+    "explanation": "Il cherchait une route vers les Indes par l'ouest ; l'Amérique doit d'ailleurs son nom à Amerigo Vespucci.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-315",
+    "question": "Que signifie « blanchir » des légumes ?",
+    "choices": [
+      "Les plonger brièvement dans l'eau bouillante",
+      "Les cuire au four à basse température",
+      "Les faire tremper dans du lait",
+      "Les éplucher entièrement"
+    ],
+    "correctIndex": 0,
+    "explanation": "On les refroidit souvent ensuite dans de l'eau glacée pour garder leur belle couleur.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-316",
+    "question": "Quel naturaliste a publié « L'Origine des espèces » en 1859 ?",
+    "choices": ["Gregor Mendel", "Buffon", "Alexander von Humboldt", "Charles Darwin"],
+    "correctIndex": 3,
+    "explanation": "Son voyage à bord du Beagle, notamment aux Galápagos, a nourri sa réflexion.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-317",
+    "question": "Quel théorème relie les côtés d'un triangle rectangle ?",
+    "choices": [
+      "Le théorème de Pythagore",
+      "Le théorème de Bayes",
+      "Le théorème de Fermat",
+      "Le théorème de Thalès"
+    ],
+    "correctIndex": 0,
+    "explanation": "Dans un triangle rectangle, le carré de l'hypoténuse est égal à la somme des carrés des deux autres côtés.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-318",
+    "question": "Quel ingrédient trouve-t-on dans une quiche lorraine traditionnelle ?",
+    "choices": ["Des lardons", "Du chèvre", "Du saumon", "Des épinards"],
+    "correctIndex": 0,
+    "explanation": "La recette classique se limite à des lardons, des œufs et de la crème sur une pâte.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-319",
+    "question": "Que signifie l'expression « al dente » pour des pâtes ?",
+    "choices": [
+      "Cuites mais encore fermes sous la dent",
+      "Crues",
+      "Très cuites et fondantes",
+      "Cuites dans du bouillon"
+    ],
+    "correctIndex": 0,
+    "explanation": "En italien, « al dente » veut dire littéralement « à la dent ».",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-320",
+    "question": "Avec quelle pâte prépare-t-on les croissants ?",
+    "choices": ["La pâte levée feuilletée", "La pâte brisée", "La pâte à choux", "La pâte sablée"],
+    "correctIndex": 0,
+    "explanation": "C'est une pâte levée dans laquelle on incorpore du beurre par pliages successifs.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-321",
+    "question": "Quel instrument enregistre les secousses sismiques ?",
+    "choices": ["Le pluviomètre", "Le sismographe", "Le spectroscope", "Le gyroscope"],
+    "correctIndex": 1,
+    "explanation": "Il trace les vibrations du sol, ce qui permet de localiser l'origine d'un séisme.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-322",
+    "question": "Quel mammifère d'Amérique du Sud est célèbre pour sa lenteur ?",
+    "choices": ["Le tapir", "Le paresseux", "Le tatou", "Le fourmilier"],
+    "correctIndex": 1,
+    "explanation": "Il passe la plupart de son temps suspendu aux branches, la tête en bas.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-323",
+    "question": "Quelle sauce mère s'obtient en liant un fond blanc avec un roux ?",
+    "choices": ["La béchamel", "Le velouté", "La sauce espagnole", "La sauce hollandaise"],
+    "correctIndex": 1,
+    "explanation": "La béchamel se fait avec du lait, l'espagnole avec un fond brun.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-324",
+    "question": "La vanille est le fruit de quelle plante ?",
+    "choices": ["Une liane de poivrier", "Un laurier", "Un palmier", "Une orchidée"],
+    "correctIndex": 3,
+    "explanation": "Originaire du Mexique, elle est souvent pollinisée à la main là où elle est cultivée.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-325",
+    "question": "Quel est le plus grand félin du monde ?",
+    "choices": ["Le lion", "Le léopard", "Le tigre", "Le jaguar"],
+    "correctIndex": 2,
+    "explanation": "Le tigre de Sibérie peut peser plus de 250 kg.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-326",
+    "question": "Quel château devint la résidence de la cour de Louis XIV en 1682 ?",
+    "choices": ["Versailles", "Saint-Germain-en-Laye", "Chambord", "Fontainebleau"],
+    "correctIndex": 0,
+    "explanation": "Avant de devenir un palais grandiose, Versailles était un simple pavillon de chasse de Louis XIII.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-327",
+    "question": "Quel détroit sépare l'Asie de l'Amérique du Nord ?",
+    "choices": [
+      "Le détroit de Béring",
+      "Le détroit de Magellan",
+      "Le détroit d'Hudson",
+      "Le détroit de Davis"
+    ],
+    "correctIndex": 0,
+    "explanation": "Il porte le nom du navigateur Vitus Béring, au service de la Russie.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-328",
+    "question": "Quel réseau de routes commerciales reliait la Chine au monde méditerranéen ?",
+    "choices": ["La route de l'ambre", "La route de la soie", "La route 66", "La voie Appia"],
+    "correctIndex": 1,
+    "explanation": "Ce nom poétique a été popularisé au XIXe siècle par le géographe allemand Ferdinand von Richthofen.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-329",
+    "question": "Quel fromage garnit la salade grecque traditionnelle ?",
+    "choices": ["La feta", "La ricotta", "Le halloumi", "La mozzarella"],
+    "correctIndex": 0,
+    "explanation": "La feta est un fromage AOP grec, fabriqué surtout avec du lait de brebis.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-330",
+    "question": "Dans quel sport utilise-t-on un fleuret, une épée ou un sabre ?",
+    "choices": ["Le pentathlon", "Le tir à l'arc", "Le kendo", "L'escrime"],
+    "correctIndex": 3,
+    "explanation": "Le vocabulaire de l'escrime est en français : « En garde ! Prêts ? Allez ! »",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-331",
+    "question": "Lequel de ces animaux est un proche parent de l'éléphant ?",
+    "choices": ["Le daman", "Le rhinocéros", "Le tapir", "L'hippopotame"],
+    "correctIndex": 0,
+    "explanation": "Ce petit mammifère ressemblant à une marmotte partage un ancêtre commun avec les éléphants.",
+    "category": "nature",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-332",
+    "question": "Quelle est l'unité de mesure de la fréquence ?",
+    "choices": ["Le hertz", "Le décibel", "Le pascal", "Le joule"],
+    "correctIndex": 0,
+    "explanation": "Un hertz correspond à une oscillation par seconde.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-333",
+    "question": "Quelle légumineuse est au cœur du cassoulet ?",
+    "choices": ["Le haricot blanc", "La fève", "La lentille", "Le pois cassé"],
+    "correctIndex": 0,
+    "explanation": "Castelnaudary, Carcassonne et Toulouse revendiquent chacune leur version du cassoulet.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-334",
+    "question": "Combien de joueurs par équipe sont sur le terrain au basket-ball ?",
+    "choices": ["4", "7", "6", "5"],
+    "correctIndex": 3,
+    "explanation": "Le basket a été inventé en 1891 par James Naismith, un professeur d'éducation physique.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-335",
+    "question": "Quelle grotte ornée a été découverte en 1940 en Dordogne ?",
+    "choices": ["Altamira", "Lascaux", "Niaux", "Chauvet"],
+    "correctIndex": 1,
+    "explanation": "Ce sont des adolescents qui l'ont découverte ; ses peintures datent du Paléolithique supérieur.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-336",
+    "question": "Quelle était la capitale de l'Empire aztèque ?",
+    "choices": ["Chichén Itzá", "Tenochtitlan", "Teotihuacan", "Cuzco"],
+    "correctIndex": 1,
+    "explanation": "Elle était bâtie sur une île du lac Texcoco ; Mexico s'élève aujourd'hui à son emplacement.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-337",
+    "question": "Quelle ville a accueilli les Jeux olympiques d'été de 1924 ?",
+    "choices": ["Amsterdam", "Paris", "Anvers", "Londres"],
+    "correctIndex": 1,
+    "explanation": "Paris a accueilli les Jeux d'été trois fois : en 1900, en 1924 et en 2024.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-338",
+    "question": "Combien de chromosomes compte une cellule humaine ordinaire ?",
+    "choices": ["44", "23", "46", "48"],
+    "correctIndex": 2,
+    "explanation": "Ils vont par paires : 23 viennent de la mère, 23 du père.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-339",
+    "question": "Quel poète a publié « Les Fleurs du mal » en 1857 ?",
+    "choices": ["Alfred de Musset", "Arthur Rimbaud", "Paul Verlaine", "Charles Baudelaire"],
+    "correctIndex": 3,
+    "explanation": "Comme « Madame Bovary » la même année, le recueil a valu un procès à son auteur.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-340",
+    "question": "Quelle épice donne sa couleur jaune orangé à de nombreux currys ?",
+    "choices": ["Le cumin", "Le poivre", "La cannelle", "Le curcuma"],
+    "correctIndex": 3,
+    "explanation": "Le curcuma est une racine de la famille du gingembre.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-341",
+    "question": "À quelle hauteur est fixé un panier de basket-ball ?",
+    "choices": ["3,50 mètres", "2,75 mètres", "2,50 mètres", "3,05 mètres"],
+    "correctIndex": 3,
+    "explanation": "Cela correspond à 10 pieds, la hauteur choisie par l'inventeur du basket en 1891.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-342",
+    "question": "Avec quel lait le roquefort est-il fabriqué ?",
+    "choices": [
+      "Le lait de brebis",
+      "Le lait de chèvre",
+      "Le lait de bufflonne",
+      "Le lait de vache"
+    ],
+    "correctIndex": 0,
+    "explanation": "En 1925, le roquefort est devenu le premier fromage français à obtenir une appellation d'origine.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-343",
+    "question": "Combien de paires de côtes possède habituellement un être humain ?",
+    "choices": ["12", "11", "10", "14"],
+    "correctIndex": 0,
+    "explanation": "Les deux dernières paires sont dites « flottantes », car elles ne sont pas reliées au sternum.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-344",
+    "question": "Quel est le symbole chimique du fer ?",
+    "choices": ["Fr", "F", "Fe", "Ir"],
+    "correctIndex": 2,
+    "explanation": "Il vient du latin ferrum, qui a aussi donné les mots « ferrure » et « ferroviaire ».",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-345",
+    "question": "À quelle température correspond le zéro absolu ?",
+    "choices": ["−100 °C", "−459,67 °C", "−373,15 °C", "−273,15 °C"],
+    "correctIndex": 3,
+    "explanation": "C'est la température la plus basse possible : 0 kelvin. Le chiffre −459,67 correspond, lui, à des degrés Fahrenheit.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-346",
+    "question": "Quel grand oiseau migrateur est le symbole de l'Alsace ?",
+    "choices": ["La cigogne blanche", "Le cygne", "Le héron cendré", "La grue cendrée"],
+    "correctIndex": 0,
+    "explanation": "Elle niche volontiers sur les toits et les clochers alsaciens.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-347",
+    "question": "Avec quelle graine prépare-t-on le tahini ?",
+    "choices": ["La courge", "Le lin", "Le tournesol", "Le sésame"],
+    "correctIndex": 3,
+    "explanation": "Cette crème de sésame entre dans la recette du houmous.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-348",
+    "question": "Quel est le symbole chimique de l'or ?",
+    "choices": ["Ag", "Or", "Au", "Go"],
+    "correctIndex": 2,
+    "explanation": "Il vient du latin aurum ; Ag, lui, désigne l'argent (argentum).",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-349",
+    "question": "Parmi ces rapaces, lequel est le plus grand d'Europe ?",
+    "choices": ["La buse variable", "Le milan royal", "Le vautour moine", "Le faucon pèlerin"],
+    "correctIndex": 2,
+    "explanation": "Son envergure peut approcher les trois mètres ; il a été réintroduit dans les Grands Causses.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-350",
+    "question": "Quel roi de France était surnommé « le Bel » ?",
+    "choices": ["Louis IX", "Charles V", "Philippe IV", "Philippe Auguste"],
+    "correctIndex": 2,
+    "explanation": "Il a régné de 1285 à 1314 et a renforcé le pouvoir royal face aux grands seigneurs.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-351",
+    "question": "Que mesure l'échelle de Scoville ?",
+    "choices": [
+      "La dureté des fromages",
+      "L'acidité des agrumes",
+      "Le piquant des piments",
+      "La teneur en sucre des fruits"
+    ],
+    "correctIndex": 2,
+    "explanation": "Elle a été inventée en 1912 par le pharmacien américain Wilbur Scoville.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-352",
+    "question": "Quel cinéaste a réalisé « Le Voyage dans la Lune » en 1902 ?",
+    "choices": ["Charles Pathé", "Louis Lumière", "Georges Méliès", "Abel Gance"],
+    "correctIndex": 2,
+    "explanation": "L'image de la fusée plantée dans l'œil de la Lune est l'une des plus célèbres du cinéma.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-353",
+    "question": "Quel métal est liquide à température ambiante ?",
+    "choices": ["Le mercure", "Le plomb", "L'aluminium", "L'étain"],
+    "correctIndex": 0,
+    "explanation": "On l'utilisait autrefois dans les thermomètres ; il est aujourd'hui interdit dans ceux-ci car toxique.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-354",
+    "question": "Quel reptile change de couleur et attrape ses proies avec sa langue ?",
+    "choices": ["Le varan", "L'iguane", "Le caméléon", "Le gecko"],
+    "correctIndex": 2,
+    "explanation": "Sa langue peut être plus longue que son propre corps !",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-355",
+    "question": "Qui fut sacré empereur des Français en 1804 ?",
+    "choices": ["Charles X", "Napoléon III", "Napoléon Ier", "Louis XVIII"],
+    "correctIndex": 2,
+    "explanation": "Le sacre eut lieu le 2 décembre 1804 à Notre-Dame de Paris ; David l'a immortalisé dans un immense tableau.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-356",
+    "question": "Qui a mis au point l'imprimerie à caractères mobiles en Europe, vers 1450 ?",
+    "choices": ["Léonard de Vinci", "Copernic", "Gutenberg", "Galilée"],
+    "correctIndex": 2,
+    "explanation": "Johannes Gutenberg travaillait à Mayence ; son invention a révolutionné la diffusion des livres.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-357",
+    "question": "De quel pays le kiwi est-il originaire ?",
+    "choices": ["L'Australie", "La Nouvelle-Zélande", "La Chine", "Le Brésil"],
+    "correctIndex": 2,
+    "explanation": "Les Néo-Zélandais l'ont développé et rebaptisé du nom de leur oiseau emblématique.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-358",
+    "question": "De quelles feuilles le koala se nourrit-il ?",
+    "choices": ["De bambou", "De palmier", "De chêne", "D'eucalyptus"],
+    "correctIndex": 3,
+    "explanation": "Ces feuilles étant peu nourrissantes, il dort jusqu'à 20 heures par jour.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-359",
+    "question": "Quelle est la capitale de l'Islande ?",
+    "choices": ["Oslo", "Reykjavik", "Helsinki", "Nuuk"],
+    "correctIndex": 1,
+    "explanation": "C'est la capitale d'État souverain la plus septentrionale du monde.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-360",
+    "question": "Dans quelle ville se trouve le siège du Comité international olympique ?",
+    "choices": ["Athènes", "Genève", "Paris", "Lausanne"],
+    "correctIndex": 3,
+    "explanation": "Coubertin y a installé le CIO en 1915 ; on y trouve aussi le Musée olympique.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-361",
+    "question": "Quel savant anglais a énoncé la loi de la gravitation universelle ?",
+    "choices": ["Charles Darwin", "Isaac Newton", "Galilée", "Johannes Kepler"],
+    "correctIndex": 1,
+    "explanation": "La légende dit qu'une pomme tombée d'un arbre l'aurait mis sur la voie.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-362",
+    "question": "Quel est le point culminant de l'Espagne ?",
+    "choices": ["Le Mulhacén", "L'Aneto", "Le Teide", "Le Veleta"],
+    "correctIndex": 2,
+    "explanation": "Ce volcan de l'île de Tenerife, aux Canaries, culmine à plus de 3 700 m.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-363",
+    "question": "À quelle famille de fromages appartient le gorgonzola ?",
+    "choices": [
+      "Les pâtes molles à croûte lavée",
+      "Les fromages frais",
+      "Les pâtes pressées cuites",
+      "Les pâtes persillées"
+    ],
+    "correctIndex": 3,
+    "explanation": "Comme le roquefort, il doit ses veines bleu-vert à une moisissure noble.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-364",
+    "question": "Quel architecte a conçu la pyramide du Louvre ?",
+    "choices": ["Jean Nouvel", "Renzo Piano", "Ieoh Ming Pei", "Le Corbusier"],
+    "correctIndex": 2,
+    "explanation": "Inaugurée en 1989, elle a d'abord fait débat avant de devenir un symbole de Paris.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-365",
+    "question": "Combien de joueurs par équipe sont sur le terrain au volley-ball ?",
+    "choices": ["7", "5", "6", "8"],
+    "correctIndex": 2,
+    "explanation": "Les joueurs tournent d'une position à chaque fois que leur équipe récupère le service.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-366",
+    "question": "Quel conifère perd ses aiguilles en hiver ?",
+    "choices": ["Le mélèze", "Le sapin", "L'épicéa", "Le pin"],
+    "correctIndex": 0,
+    "explanation": "Ses aiguilles deviennent dorées à l'automne avant de tomber : un spectacle dans les Alpes.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-367",
+    "question": "Quel écrivain a raconté la vie des mineurs du Nord dans « Germinal » ?",
+    "choices": ["Émile Zola", "Guy de Maupassant", "Honoré de Balzac", "Victor Hugo"],
+    "correctIndex": 0,
+    "explanation": "Pour l'écrire, Zola est allé observer les mines d'Anzin et a pris des pages de notes.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-368",
+    "question": "Dans quel sport frappe-t-on la balle avec une batte sur un terrain en forme de diamant ?",
+    "choices": ["Le golf", "Le baseball", "Le cricket", "Le hockey sur gazon"],
+    "correctIndex": 1,
+    "explanation": "Le terrain intérieur est un carré posé sur la pointe, d'où son surnom de « diamant ».",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-369",
+    "question": "Quel grand chef a publié « Le Guide culinaire » en 1903 ?",
+    "choices": ["Auguste Escoffier", "Joël Robuchon", "Paul Bocuse", "Marie-Antoine Carême"],
+    "correctIndex": 0,
+    "explanation": "Ce livre de référence est encore étudié dans les écoles de cuisine.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-370",
+    "question": "Combien de points rapporte un essai au rugby à XV ?",
+    "choices": ["3", "5", "4", "7"],
+    "correctIndex": 1,
+    "explanation": "Après l'essai, la transformation peut ajouter 2 points de plus.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-371",
+    "question": "Combien de pattes possède un insecte adulte ?",
+    "choices": ["10", "8", "6", "4"],
+    "correctIndex": 2,
+    "explanation": "Le corps d'un insecte se divise en trois parties : la tête, le thorax et l'abdomen.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-372",
+    "question": "Quelle mer fermée est la plus grande étendue d'eau intérieure du monde ?",
+    "choices": ["La mer Morte", "La mer Caspienne", "La mer d'Aral", "La mer Noire"],
+    "correctIndex": 1,
+    "explanation": "Malgré son nom de « mer », c'est en fait un immense lac à l'eau légèrement salée.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-373",
+    "question": "Quel pays est surnommé « le pays du Soleil-Levant » ?",
+    "choices": ["Le Japon", "La Corée du Sud", "La Thaïlande", "La Chine"],
+    "correctIndex": 0,
+    "explanation": "Son nom japonais, Nihon, signifie littéralement « origine du soleil ».",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-374",
+    "question": "Quel élément chimique porte le numéro atomique 1 ?",
+    "choices": ["L'hélium", "Le carbone", "L'oxygène", "L'hydrogène"],
+    "correctIndex": 3,
+    "explanation": "C'est l'élément le plus léger et le plus abondant de l'Univers.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-375",
+    "question": "De quel pays la paella est-elle originaire ?",
+    "choices": ["L'Espagne", "Le Mexique", "L'Italie", "Le Portugal"],
+    "correctIndex": 0,
+    "explanation": "Elle est née dans la région de Valence ; son nom désigne la grande poêle dans laquelle on la cuit.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-376",
+    "question": "À quelle déesse le Parthénon d'Athènes était-il dédié ?",
+    "choices": ["Artémis", "Héra", "Aphrodite", "Athéna"],
+    "correctIndex": 3,
+    "explanation": "Ce temple du Ve siècle av. J.-C. domine l'Acropole et honorait la protectrice de la cité.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-377",
+    "question": "Dans quelle ville se trouve le pont du Rialto ?",
+    "choices": ["Venise", "Florence", "Amsterdam", "Vérone"],
+    "correctIndex": 0,
+    "explanation": "C'est le plus ancien des ponts qui enjambent le Grand Canal.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-378",
+    "question": "Quel insecte naît d'une chenille ?",
+    "choices": ["La coccinelle", "L'abeille", "Le papillon", "La libellule"],
+    "correctIndex": 2,
+    "explanation": "Entre les deux, la chenille se transforme dans une chrysalide.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-379",
+    "question": "Quelle tradition française est inscrite au patrimoine immatériel de l'Unesco depuis 2010 ?",
+    "choices": [
+      "Le goûter de 16 heures",
+      "Le repas gastronomique des Français",
+      "La galette des rois",
+      "Le pique-nique du dimanche"
+    ],
+    "correctIndex": 1,
+    "explanation": "L'Unesco y salue l'art de bien manger ensemble, de l'apéritif au digestif, en passant par le choix des mets.",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-380",
+    "question": "Quelle ville française est surnommée « la Ville rose » ?",
+    "choices": ["Toulouse", "Nantes", "Lyon", "Montpellier"],
+    "correctIndex": 0,
+    "explanation": "Elle doit ce surnom à la brique de terre cuite de ses façades.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-381",
+    "question": "Qui a peint « La Nuit étoilée » ?",
+    "choices": ["Paul Cézanne", "Paul Gauguin", "Vincent van Gogh", "Claude Monet"],
+    "correctIndex": 2,
+    "explanation": "Il l'a peinte en 1889 depuis sa chambre de Saint-Rémy-de-Provence.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-382",
+    "question": "Quel mouvement pictural doit son nom à une toile de Claude Monet ?",
+    "choices": ["Le pointillisme", "Le fauvisme", "Le cubisme", "L'impressionnisme"],
+    "correctIndex": 3,
+    "explanation": "Le tableau « Impression, soleil levant » a inspiré ce nom, d'abord moqueur, à un critique en 1874.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-383",
+    "question": "Qui a écrit « Les Misérables » ?",
+    "choices": ["Alexandre Dumas", "Émile Zola", "Victor Hugo", "Honoré de Balzac"],
+    "correctIndex": 2,
+    "explanation": "Publié en 1862, le roman suit le destin de Jean Valjean, ancien forçat au grand cœur.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-384",
+    "question": "Combien d'yeux possède une abeille ?",
+    "choices": ["4", "8", "2", "5"],
+    "correctIndex": 3,
+    "explanation": "Deux grands yeux composés et trois petits yeux simples, appelés ocelles, sur le dessus de la tête.",
+    "category": "nature",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-385",
+    "question": "Quel est le plus long fleuve de France ?",
+    "choices": ["La Seine", "La Loire", "Le Rhône", "La Garonne"],
+    "correctIndex": 1,
+    "explanation": "La Loire parcourt plus de 1 000 km, du mont Gerbier-de-Jonc jusqu'à l'Atlantique.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-386",
+    "question": "Quel animal construit des barrages sur les cours d'eau ?",
+    "choices": ["Le rat musqué", "La loutre", "Le ragondin", "Le castor"],
+    "correctIndex": 3,
+    "explanation": "Ses barrages créent des zones humides très utiles à de nombreuses espèces.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-387",
+    "question": "Quel est le plus petit os du corps humain ?",
+    "choices": ["L'enclume", "Le marteau", "L'étrier", "Le coccyx"],
+    "correctIndex": 2,
+    "explanation": "Situé dans l'oreille moyenne, il mesure à peine 3 millimètres.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-388",
+    "question": "Quelle est la plus grande forêt tropicale du monde ?",
+    "choices": ["La forêt de Sumatra", "L'Amazonie", "La forêt du Congo", "La forêt de Bornéo"],
+    "correctIndex": 1,
+    "explanation": "Elle s'étend sur neuf pays et territoires, dont la Guyane française.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-389",
+    "question": "Quelle clé sert habituellement à écrire la partie aiguë au piano ?",
+    "choices": ["La clé d'ut", "La clé de la", "La clé de sol", "La clé de fa"],
+    "correctIndex": 2,
+    "explanation": "La clé de fa, elle, est généralement utilisée pour la main gauche, dans le grave.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-390",
+    "question": "Quel insecte chante l'été dans les pins de Provence ?",
+    "choices": ["La sauterelle", "La cigale", "Le criquet", "Le grillon"],
+    "correctIndex": 1,
+    "explanation": "Seuls les mâles chantent, grâce à des membranes appelées cymbales.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-391",
+    "question": "Quelle invention de 1895 doit-on aux frères Lumière ?",
+    "choices": ["La télévision", "Le cinématographe", "Le téléphone", "Le phonographe"],
+    "correctIndex": 1,
+    "explanation": "Leur première projection publique payante eut lieu à Paris le 28 décembre 1895.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-392",
+    "question": "Quel est le plus vaste océan du monde ?",
+    "choices": ["L'océan Indien", "L'océan Atlantique", "L'océan Arctique", "L'océan Pacifique"],
+    "correctIndex": 3,
+    "explanation": "Il couvre à lui seul environ un tiers de la surface de la Terre.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-393",
+    "question": "Quelle rivière rejoint le Rhône à Lyon ?",
+    "choices": ["L'Isère", "La Saône", "La Durance", "La Loire"],
+    "correctIndex": 1,
+    "explanation": "Leur confluent se trouve au sud de la presqu'île lyonnaise.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-394",
+    "question": "Quel mammifère australien pond des œufs ?",
+    "choices": ["Le koala", "Le wombat", "Le kangourou", "L'ornithorynque"],
+    "correctIndex": 3,
+    "explanation": "Avec son bec de canard et sa queue de castor, il a d'abord été pris pour un canular !",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-395",
+    "question": "Quel fromage est indispensable à une tartiflette ?",
+    "choices": ["Le comté", "Le reblochon", "Le beaufort", "La raclette"],
+    "correctIndex": 1,
+    "explanation": "Plat savoyard d'allure ancestrale, la tartiflette a en fait été popularisée dans les années 1980.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-396",
+    "question": "Sur quelle île Napoléon est-il mort en 1821 ?",
+    "choices": ["La Corse", "Malte", "L'île d'Elbe", "Sainte-Hélène"],
+    "correctIndex": 3,
+    "explanation": "Après Waterloo, il fut exilé sur cette île isolée de l'Atlantique Sud.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-397",
+    "question": "De quelle ville italienne la pizza est-elle originaire ?",
+    "choices": ["Rome", "Florence", "Naples", "Milan"],
+    "correctIndex": 2,
+    "explanation": "Selon la tradition, la pizza Margherita a été baptisée en l'honneur de la reine Marguerite de Savoie.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-398",
+    "question": "Combien de temps dure une mi-temps au rugby à XV ?",
+    "choices": ["40 minutes", "35 minutes", "30 minutes", "45 minutes"],
+    "correctIndex": 0,
+    "explanation": "Un match dure donc 80 minutes, plus les arrêts de jeu.",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-399",
+    "question": "Qui a écrit « Les Trois Mousquetaires » ?",
+    "choices": ["Gustave Flaubert", "Jules Verne", "Victor Hugo", "Alexandre Dumas"],
+    "correctIndex": 3,
+    "explanation": "Le héros, d'Artagnan, est inspiré d'un vrai mousquetaire gascon du XVIIe siècle.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-400",
+    "question": "En cuisine, qu'est-ce qu'une « julienne » de légumes ?",
+    "choices": [
+      "Des légumes taillés en fins bâtonnets",
+      "Une purée de légumes",
+      "Des légumes en rondelles",
+      "Des légumes coupés en gros cubes"
+    ],
+    "correctIndex": 0,
+    "explanation": "Une julienne cuit en quelques instants et apporte de la couleur à l'assiette.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-401",
+    "question": "Quel liquide ajoute-t-on au roux pour préparer une béchamel ?",
+    "choices": ["De l'eau", "Du vin blanc", "Du lait", "Du bouillon"],
+    "correctIndex": 2,
+    "explanation": "Le roux, lui, est un mélange de beurre et de farine cuits ensemble.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-402",
+    "question": "Quel est le point culminant du Massif central ?",
+    "choices": ["Le mont Mézenc", "Le puy de Dôme", "Le puy de Sancy", "Le Plomb du Cantal"],
+    "correctIndex": 2,
+    "explanation": "Il culmine à 1 886 m ; la Dordogne prend sa source sur ses pentes.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-403",
+    "question": "Quel est le plus grand pays d'Amérique du Sud ?",
+    "choices": ["La Colombie", "Le Pérou", "L'Argentine", "Le Brésil"],
+    "correctIndex": 3,
+    "explanation": "Le Brésil occupe à lui seul près de la moitié du continent.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-404",
+    "question": "Que signifie le sigle AOP ?",
+    "choices": [
+      "Aliment d'origine prestigieuse",
+      "Appellation officielle de production",
+      "Appellation d'origine protégée",
+      "Agriculture d'origine paysanne"
+    ],
+    "correctIndex": 2,
+    "explanation": "Ce label européen garantit qu'un produit est élaboré dans une zone géographique précise, selon un savoir-faire reconnu.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-405",
+    "question": "Quelle algue entoure les makis ?",
+    "choices": ["Le wakamé", "La nori", "Le kombu", "La spiruline"],
+    "correctIndex": 1,
+    "explanation": "Ces fines feuilles sont séchées puis légèrement grillées.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-406",
+    "question": "De quelle ville la bouillabaisse est-elle la spécialité ?",
+    "choices": ["Nice", "Brest", "Bordeaux", "Marseille"],
+    "correctIndex": 3,
+    "explanation": "On sert traditionnellement le bouillon d'un côté et les poissons de l'autre, avec de la rouille.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-407",
+    "question": "Quel arbre figure sur le drapeau du Liban ?",
+    "choices": ["Le cèdre", "Le palmier", "L'olivier", "Le pin"],
+    "correctIndex": 0,
+    "explanation": "Le cèdre du Liban est un symbole de force et de longévité.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-408",
+    "question": "Quel détroit sépare l'Espagne du Maroc ?",
+    "choices": [
+      "Le détroit de Messine",
+      "Le Bosphore",
+      "Le détroit de Gibraltar",
+      "Le détroit d'Ormuz"
+    ],
+    "correctIndex": 2,
+    "explanation": "À son point le plus étroit, seuls 14 km environ séparent l'Europe de l'Afrique.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-409",
+    "question": "Dans quel pays le curling est-il né ?",
+    "choices": ["L'Écosse", "La Suède", "La Suisse", "Le Canada"],
+    "correctIndex": 0,
+    "explanation": "Les pierres de curling de compétition sont souvent taillées dans un granit d'une île écossaise, Ailsa Craig.",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-410",
+    "question": "Quel sculpteur a réalisé « Le Penseur » ?",
+    "choices": ["Antoine Bourdelle", "Aristide Maillol", "Auguste Rodin", "Camille Claudel"],
+    "correctIndex": 2,
+    "explanation": "À l'origine, la statue devait couronner « La Porte de l'Enfer », une œuvre monumentale de Rodin.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-411",
+    "question": "Quel compositeur a écrit l'opéra « Pelléas et Mélisande » ?",
+    "choices": ["Maurice Ravel", "Jules Massenet", "Claude Debussy", "Gabriel Fauré"],
+    "correctIndex": 2,
+    "explanation": "Créé en 1902 à l'Opéra-Comique, il s'inspire d'une pièce de Maurice Maeterlinck.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-412",
+    "question": "Quel archipel français se trouve au large de Terre-Neuve ?",
+    "choices": [
+      "Saint-Pierre-et-Miquelon",
+      "Les îles Chausey",
+      "Les îles Kerguelen",
+      "Wallis-et-Futuna"
+    ],
+    "correctIndex": 0,
+    "explanation": "Ce petit bout de France se trouve en Amérique du Nord, près des côtes canadiennes.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-413",
+    "question": "Qui a découvert la pénicilline en 1928 ?",
+    "choices": ["Edward Jenner", "Louis Pasteur", "Robert Koch", "Alexander Fleming"],
+    "correctIndex": 3,
+    "explanation": "Il l'a remarquée par hasard : une moisissure avait tué les bactéries d'une de ses cultures.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-414",
+    "question": "Quel est le plus grand animal vivant actuellement sur Terre ?",
+    "choices": ["Le cachalot", "L'éléphant d'Afrique", "Le requin-baleine", "La baleine bleue"],
+    "correctIndex": 3,
+    "explanation": "Elle peut dépasser 25 mètres de long, et son cœur peut peser plus de 150 kg !",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-415",
+    "question": "Quel peuple a fondé la cité de Carthage ?",
+    "choices": ["Les Grecs", "Les Phéniciens", "Les Romains", "Les Égyptiens"],
+    "correctIndex": 1,
+    "explanation": "Selon la tradition, des colons venus de Tyr l'ont fondée ; ses ruines se trouvent près de Tunis.",
+    "category": "histoire",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-416",
+    "question": "Quel est le plus long fleuve d'Europe ?",
+    "choices": ["Le Dniepr", "La Volga", "Le Rhin", "Le Danube"],
+    "correctIndex": 1,
+    "explanation": "Elle coule entièrement en Russie et se jette dans la mer Caspienne.",
+    "category": "geographie",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-417",
+    "question": "De quelle ville proviennent des lentilles vertes célèbres, protégées par une AOP ?",
+    "choices": ["Aurillac", "Rodez", "Clermont-Ferrand", "Le Puy-en-Velay"],
+    "correctIndex": 3,
+    "explanation": "Elles ont été les premières légumineuses françaises à obtenir une appellation d'origine.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-418",
+    "question": "Au tennis, comment appelle-t-on le score de 40 partout ?",
+    "choices": ["Jeu blanc", "Avantage", "Égalité", "Balle de set"],
+    "correctIndex": 2,
+    "explanation": "Il faut ensuite gagner deux points d'affilée pour remporter le jeu.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-419",
+    "question": "Qui a écrit « Le Petit Prince » ?",
+    "choices": ["Antoine de Saint-Exupéry", "Jean de La Fontaine", "Marcel Pagnol", "Jules Verne"],
+    "correctIndex": 0,
+    "explanation": "Publié en 1943 à New York, c'est l'un des livres les plus traduits au monde.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-420",
+    "question": "Combien vaut la somme des angles d'un triangle ?",
+    "choices": ["180°", "90°", "270°", "360°"],
+    "correctIndex": 0,
+    "explanation": "C'est vrai pour tous les triangles dessinés sur une surface plane.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-421",
+    "question": "Qui sont les créateurs d'Astérix ?",
+    "choices": [
+      "Morris et Goscinny",
+      "Hergé et Edgar P. Jacobs",
+      "Franquin et Peyo",
+      "René Goscinny et Albert Uderzo"
+    ],
+    "correctIndex": 3,
+    "explanation": "Le petit Gaulois est apparu pour la première fois en 1959 dans le journal Pilote.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-422",
+    "question": "Quelle est la capitale de la Norvège ?",
+    "choices": ["Bergen", "Copenhague", "Oslo", "Stockholm"],
+    "correctIndex": 2,
+    "explanation": "Oslo se trouve au fond d'un fjord, l'Oslofjord.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-423",
+    "question": "Quelle unité du Système international mesure la quantité de matière ?",
+    "choices": ["La mole", "La candela", "Le coulomb", "Le kelvin"],
+    "correctIndex": 0,
+    "explanation": "Une mole contient environ 6,022 × 10²³ entités : c'est le nombre d'Avogadro.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-424",
+    "question": "Comment appelle-t-on un groupe de loups ?",
+    "choices": ["Une harde", "Une meute", "Une nuée", "Un banc"],
+    "correctIndex": 1,
+    "explanation": "La harde désigne un groupe de cerfs, et le banc un groupe de poissons.",
+    "category": "nature",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-425",
+    "question": "Quel est le plus haut sommet du monde ?",
+    "choices": ["Le K2", "L'Everest", "Le Kangchenjunga", "L'Aconcagua"],
+    "correctIndex": 1,
+    "explanation": "Il dépasse les 8 800 m, à la frontière entre le Népal et la Chine.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-426",
+    "question": "Le phở est une soupe emblématique de quel pays ?",
+    "choices": ["Le Japon", "La Corée du Sud", "La Thaïlande", "Le Viêt Nam"],
+    "correctIndex": 3,
+    "explanation": "Ce bouillon parfumé à l'anis étoilé est souvent servi avec des nouilles de riz et des herbes fraîches.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-427",
+    "question": "Qui a écrit la pièce « Cyrano de Bergerac » ?",
+    "choices": ["Georges Feydeau", "Victor Hugo", "Edmond Rostand", "Alfred de Musset"],
+    "correctIndex": 2,
+    "explanation": "Créée en 1897, la pièce a connu un triomphe immédiat.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-428",
+    "question": "Tous les combien d'années ont lieu les Jeux olympiques d'été ?",
+    "choices": ["Tous les 4 ans", "Tous les 3 ans", "Tous les 5 ans", "Tous les 2 ans"],
+    "correctIndex": 0,
+    "explanation": "Cette période de quatre ans s'appelle une olympiade.",
+    "category": "sport",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-429",
+    "question": "Quelle scientifique a reçu un prix Nobel de physique puis un de chimie ?",
+    "choices": ["Irène Joliot-Curie", "Rosalind Franklin", "Lise Meitner", "Marie Curie"],
+    "correctIndex": 3,
+    "explanation": "Prix Nobel en 1903 puis en 1911, elle reste la seule personne récompensée dans deux sciences différentes.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-430",
+    "question": "Quelle est la formule chimique du sel de table ?",
+    "choices": ["NaCl", "CaCO₃", "KCl", "NaOH"],
+    "correctIndex": 0,
+    "explanation": "C'est du chlorure de sodium : un atome de sodium pour un atome de chlore.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-431",
+    "question": "Quel long conflit a opposé la France et l'Angleterre de 1337 à 1453 ?",
+    "choices": [
+      "La guerre de Sept Ans",
+      "La guerre de Cent Ans",
+      "Les guerres d'Italie",
+      "La guerre de Trente Ans"
+    ],
+    "correctIndex": 1,
+    "explanation": "Malgré son nom, elle a duré 116 ans, entrecoupée de longues trêves.",
+    "category": "histoire",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-432",
+    "question": "Quel général romain a franchi le Rubicon avec ses légions en 49 av. J.-C. ?",
+    "choices": ["Auguste", "Pompée", "Jules César", "Néron"],
+    "correctIndex": 2,
+    "explanation": "« Le sort en est jeté ! » aurait-il dit en traversant cette petite rivière.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-433",
+    "question": "Quelle cité grecque était célèbre pour l'éducation militaire très stricte de ses citoyens ?",
+    "choices": ["Thèbes", "Sparte", "Corinthe", "Athènes"],
+    "correctIndex": 1,
+    "explanation": "On en a tiré l'adjectif « spartiate », qui signifie austère et rigoureux.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-434",
+    "question": "Quel ingrédient est la base de la tapenade ?",
+    "choices": ["Les aubergines", "Les tomates séchées", "Les olives", "Les poivrons"],
+    "correctIndex": 2,
+    "explanation": "Son nom vient de « tapeno », qui signifie câpre en provençal.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-435",
+    "question": "Comment appelle-t-on l'élevage des abeilles ?",
+    "choices": ["L'ostréiculture", "L'apiculture", "L'aviculture", "La sériciculture"],
+    "correctIndex": 1,
+    "explanation": "La sériciculture, c'est l'élevage des vers à soie, et l'ostréiculture celui des huîtres.",
+    "category": "nature",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-436",
+    "question": "Quel État américain est un archipel du Pacifique ?",
+    "choices": ["La Floride", "L'Alaska", "La Californie", "Hawaï"],
+    "correctIndex": 3,
+    "explanation": "Hawaï est devenu le 50e État des États-Unis en 1959.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-437",
+    "question": "Dans quel pays se trouve le Taj Mahal ?",
+    "choices": ["L'Iran", "Le Pakistan", "Le Népal", "L'Inde"],
+    "correctIndex": 3,
+    "explanation": "Ce mausolée de marbre blanc se trouve à Agra ; l'empereur Shah Jahan l'a fait bâtir pour son épouse.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-438",
+    "question": "Combien de dents compte la dentition complète d'un adulte ?",
+    "choices": ["32", "36", "28", "24"],
+    "correctIndex": 0,
+    "explanation": "Ce chiffre inclut les quatre dents de sagesse, qui ne poussent pas chez tout le monde.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-439",
+    "question": "Quel savant grec se serait écrié « Eurêka ! » dans son bain ?",
+    "choices": ["Euclide", "Thalès", "Archimède", "Pythagore"],
+    "correctIndex": 2,
+    "explanation": "Il venait de comprendre comment mesurer le volume d'un objet grâce à l'eau déplacée.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-440",
+    "question": "Quel pays est surnommé « le pays des mille lacs » ?",
+    "choices": ["La Finlande", "La Suède", "La Norvège", "Le Canada"],
+    "correctIndex": 0,
+    "explanation": "En réalité, la Finlande compte bien plus de mille lacs : on en recense des dizaines de milliers !",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-441",
+    "question": "Quel chimiste a publié en 1869 un célèbre tableau périodique des éléments ?",
+    "choices": ["John Dalton", "Ernest Rutherford", "Antoine Lavoisier", "Dmitri Mendeleïev"],
+    "correctIndex": 3,
+    "explanation": "Il avait laissé des cases vides pour des éléments encore inconnus… qui ont été découverts ensuite !",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-442",
+    "question": "Quelle est la capitale du Kenya ?",
+    "choices": ["Addis-Abeba", "Nairobi", "Kampala", "Mombasa"],
+    "correctIndex": 1,
+    "explanation": "Nairobi possède un parc national où l'on peut voir girafes et lions, avec les gratte-ciel en arrière-plan !",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-443",
+    "question": "En quelle année les Françaises ont-elles voté pour la première fois ?",
+    "choices": ["1958", "1936", "1945", "1918"],
+    "correctIndex": 2,
+    "explanation": "Le droit de vote leur fut accordé en 1944 ; elles l'ont exercé pour la première fois aux municipales d'avril 1945.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-444",
+    "question": "Quel gaz donne leur lumière rouge-orangé aux enseignes lumineuses classiques ?",
+    "choices": ["Le radon", "L'hydrogène", "Le néon", "L'hélium"],
+    "correctIndex": 2,
+    "explanation": "Le Français Georges Claude a mis au point les tubes au néon au début du XXe siècle.",
+    "category": "sciences",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-445",
+    "question": "Quelle ville lorraine a rendu célèbres les madeleines ?",
+    "choices": ["Metz", "Commercy", "Épinal", "Nancy"],
+    "correctIndex": 1,
+    "explanation": "Elles ont aussi été immortalisées par Marcel Proust dans « Du côté de chez Swann ».",
+    "category": "cuisine",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-446",
+    "question": "À la purée de pommes de terre, quel ingrédient ajoute-t-on pour faire un aligot ?",
+    "choices": ["De la tomme fraîche", "Du roquefort", "De l'emmental", "Du fromage de chèvre"],
+    "correctIndex": 0,
+    "explanation": "Spécialité de l'Aubrac, l'aligot doit « filer » quand on le soulève à la cuillère.",
+    "category": "cuisine",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-447",
+    "question": "Quel monument parisien abrite le tombeau de Napoléon Ier ?",
+    "choices": ["La Conciergerie", "Le Panthéon", "Les Invalides", "L'Arc de Triomphe"],
+    "correctIndex": 2,
+    "explanation": "Ses cendres ont été rapatriées de Sainte-Hélène en 1840, lors du « retour des cendres ».",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-448",
+    "question": "Quel peintre a réalisé « Un dimanche après-midi à l'île de la Grande Jatte » ?",
+    "choices": ["Camille Pissarro", "Georges Seurat", "Auguste Renoir", "Paul Signac"],
+    "correctIndex": 1,
+    "explanation": "Ce chef-d'œuvre du pointillisme est composé de milliers de petits points de couleur.",
+    "category": "arts",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-449",
+    "question": "Quelle ville bourguignonne a donné son nom à une célèbre moutarde ?",
+    "choices": ["Auxerre", "Dijon", "Beaune", "Mâcon"],
+    "correctIndex": 1,
+    "explanation": "La « moutarde de Dijon » désigne une recette, et non l'origine des graines.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-450",
+    "question": "Combien de joueurs compte une équipe de cricket sur le terrain ?",
+    "choices": ["15", "13", "9", "11"],
+    "correctIndex": 3,
+    "explanation": "Une partie de cricket peut durer de quelques heures à cinq jours !",
+    "category": "sport",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-451",
+    "question": "Quelles cellules sanguines transportent l'oxygène ?",
+    "choices": ["Les plaquettes", "Les globules rouges", "Les globules blancs", "Les neurones"],
+    "correctIndex": 1,
+    "explanation": "Leur couleur vient de l'hémoglobine, une protéine riche en fer.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-452",
+    "question": "Quel peintre post-impressionniste est parti vivre à Tahiti ?",
+    "choices": ["Henri de Toulouse-Lautrec", "Paul Gauguin", "Paul Cézanne", "Georges Seurat"],
+    "correctIndex": 1,
+    "explanation": "Il a fini sa vie aux îles Marquises, où il est enterré.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-453",
+    "question": "Quel est le plus grand lac d'Afrique ?",
+    "choices": ["Le lac Tchad", "Le lac Tanganyika", "Le lac Victoria", "Le lac Malawi"],
+    "correctIndex": 2,
+    "explanation": "Il est partagé entre l'Ouganda, le Kenya et la Tanzanie.",
+    "category": "geographie",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-454",
+    "question": "Quel écrivain a publié « L'Étranger » en 1942 ?",
+    "choices": ["Albert Camus", "Boris Vian", "Jean-Paul Sartre", "André Malraux"],
+    "correctIndex": 0,
+    "explanation": "Camus a reçu le prix Nobel de littérature en 1957 : l'un des plus jeunes lauréats de l'histoire du prix.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-455",
+    "question": "Quel fleuve traverse Le Caire ?",
+    "choices": ["L'Euphrate", "Le Tigre", "Le Nil", "Le Congo"],
+    "correctIndex": 2,
+    "explanation": "Le Nil a permis à la civilisation égyptienne de prospérer en plein désert.",
+    "category": "geographie",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-456",
+    "question": "Combien de joueurs par équipe sont dans l'eau au water-polo ?",
+    "choices": ["5", "9", "6", "7"],
+    "correctIndex": 3,
+    "explanation": "Six joueurs de champ et un gardien… qui n'ont pas le droit de toucher le fond du bassin !",
+    "category": "sport",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-457",
+    "question": "Quel navigateur a dirigé l'expédition du premier tour du monde, sans pouvoir l'achever ?",
+    "choices": ["Vasco de Gama", "James Cook", "Fernand de Magellan", "Francis Drake"],
+    "correctIndex": 2,
+    "explanation": "Magellan mourut aux Philippines en 1521 ; c'est Elcano qui ramena le dernier navire en Espagne en 1522.",
+    "category": "histoire",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-458",
+    "question": "Quel est le symbole chimique du potassium ?",
+    "choices": ["P", "Pt", "K", "Po"],
+    "correctIndex": 2,
+    "explanation": "Il vient de son nom latin, kalium ; P désigne le phosphore.",
+    "category": "sciences",
+    "difficulty": "difficile"
+  },
+  {
+    "id": "q-459",
+    "question": "Combien de vers compte un sonnet ?",
+    "choices": ["10", "14", "12", "16"],
+    "correctIndex": 1,
+    "explanation": "Il se compose de deux quatrains suivis de deux tercets.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-460",
+    "question": "Quelle particule de l'atome porte une charge électrique négative ?",
+    "choices": ["Le proton", "Le neutron", "L'électron", "Le photon"],
+    "correctIndex": 2,
+    "explanation": "Les électrons tournent autour du noyau, formé de protons et de neutrons.",
+    "category": "sciences",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-461",
+    "question": "Quel auteur a écrit la fable « Le Corbeau et le Renard » ?",
+    "choices": ["Ésope", "Charles Perrault", "Jean de La Fontaine", "Molière"],
+    "correctIndex": 2,
+    "explanation": "La Fontaine a écrit plus de 240 fables, souvent inspirées d'Ésope.",
+    "category": "arts",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-462",
+    "question": "Quel opéra de Georges Bizet a pour héroïne une cigarière de Séville ?",
+    "choices": ["La Traviata", "Carmen", "Tosca", "Aida"],
+    "correctIndex": 1,
+    "explanation": "Mal accueilli à sa création en 1875, « Carmen » est devenu l'un des opéras les plus joués au monde.",
+    "category": "arts",
+    "difficulty": "moyen"
+  },
+  {
+    "id": "q-463",
+    "question": "De quel pays le kimchi est-il un plat emblématique ?",
+    "choices": ["La Corée", "La Thaïlande", "Le Japon", "Le Viêt Nam"],
+    "correctIndex": 0,
+    "explanation": "Il s'agit de légumes fermentés et épicés, le plus souvent du chou chinois.",
+    "category": "cuisine",
+    "difficulty": "facile"
+  },
+  {
+    "id": "q-464",
+    "question": "À quelle famille de plantes le wasabi appartient-il ?",
+    "choices": [
+      "Celle du gingembre",
+      "Celle de la menthe",
+      "Celle du chou et de la moutarde",
+      "Celle de l'ail"
+    ],
+    "correctIndex": 2,
+    "explanation": "Comme la moutarde, il libère son piquant au moment où on le râpe.",
+    "category": "cuisine",
+    "difficulty": "difficile"
   }
 ]
