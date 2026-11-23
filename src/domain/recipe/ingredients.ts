@@ -131,6 +131,29 @@ export const VEGETARIAN_CHEESE_EXCEPTIONS = [
   'sans présure animale',
 ] as const;
 
+/**
+ * Fruits surgelés : consommés sans cuisson, ils exposent au virus de l'hépatite A et aux
+ * norovirus. Une recette sans cuisson qui en contient doit porter l'étiquette `cru`.
+ */
+export const FROZEN_FRUIT_TERMS = [
+  'framboise',
+  'fraise',
+  'myrtille',
+  'mûre',
+  'cassis',
+  'groseille',
+  'fruits rouges',
+  'fruits des bois',
+  'cerise',
+  'mangue',
+  'ananas',
+  'pêche',
+  'abricot',
+] as const;
+
+/** Mentions d'un produit surgelé (le rayon `surgeles` suffit aussi). */
+export const FROZEN_TERMS = ['surgelé', 'surgelée'] as const;
+
 /** Produits animaux non carnés interdits en végan en plus des allergènes (lait, œufs…). */
 export const VEGAN_EXTRA_TERMS = ['miel'] as const;
 

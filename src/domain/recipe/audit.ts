@@ -5,6 +5,8 @@ import {
   ALCOHOL_TERMS,
   ANIMAL_FLESH_TERMS,
   ANIMAL_RENNET_CHEESES,
+  FROZEN_FRUIT_TERMS,
+  FROZEN_TERMS,
   VEGAN_EXTRA_TERMS,
   VEGETARIAN_CHEESE_EXCEPTIONS,
   isBasicIngredient,
@@ -31,6 +33,7 @@ export type RecipeIssueCode =
   | 'niveau-temps'
   | 'niveau-ingredients'
   | 'etiquette-alcool-manquante'
+  | 'etiquette-cru-manquante'
   | 'allergene-non-declare';
 
 export interface RecipeIssue {
@@ -221,23 +224,49 @@ export function checkLevel(recipe: Recipe): RecipeIssue[] {
   return issues;
 }
 
+/** Fruits surgelés d'une recette sans cuisson (consommés crus). */
+function rawFrozenFruits(recipe: Recipe): string[] {
+  if (recipe.cookMinutes > 0 && !hasTag(recipe, 'sans-cuisson')) return [];
+  return recipe.ingredients
+    .filter(
+      (i) =>
+        containsAnyTerm(i.name, FROZEN_FRUIT_TERMS) &&
+        (i.aisle === 'surgeles' || containsAnyTerm(i.name, FROZEN_TERMS)),
+    )
+    .map((i) => i.name);
+}
+
 /**
  * Étiquettes de sécurité : un ingrédient alcoolisé (vin, bière…) impose l'étiquette
- * `alcool`, exclue pendant la grossesse. L'étiquette `cru` (poisson, viande ou œuf
- * crus, lait cru) ne se déduit pas des noms : elle reste à la charge du contenu.
+ * `alcool` (avertissement), exclue pendant la grossesse. Des fruits surgelés dans une
+ * recette sans cuisson imposent l'étiquette `cru` (erreur, ADR 0008). Les autres cas de
+ * `cru` (poisson, viande ou œuf crus, lait cru) ne se déduisent pas des noms : ils restent
+ * à la charge du contenu.
  */
 export function checkSafetyTags(recipe: Recipe): RecipeIssue[] {
+  const issues: RecipeIssue[] = [];
+  const frozen = rawFrozenFruits(recipe);
+  if (frozen.length > 0 && !hasTag(recipe, 'cru')) {
+    issues.push(
+      error(
+        'etiquette-cru-manquante',
+        `étiquette « cru » attendue : fruits surgelés non cuits (${frozen.join(', ')})`,
+      ),
+    );
+  }
   // Le vinaigre (« vinaigre de vin ») ne contient pas d'alcool.
   const alcoholic = recipe.ingredients.filter(
     (i) => containsAnyTerm(i.name, ALCOHOL_TERMS) && !containsAnyTerm(i.name, ['vinaigre']),
   );
-  if (alcoholic.length === 0 || hasTag(recipe, 'alcool')) return [];
-  return [
-    warning(
-      'etiquette-alcool-manquante',
-      `étiquette « alcool » attendue (${alcoholic.map((i) => i.name).join(', ')})`,
-    ),
-  ];
+  if (alcoholic.length > 0 && !hasTag(recipe, 'alcool')) {
+    issues.push(
+      warning(
+        'etiquette-alcool-manquante',
+        `étiquette « alcool » attendue (${alcoholic.map((i) => i.name).join(', ')})`,
+      ),
+    );
+  }
+  return issues;
 }
 
 /**

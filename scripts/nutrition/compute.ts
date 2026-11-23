@@ -44,6 +44,11 @@ const mappingEntrySchema = z
     gramsPerUnit: z.record(z.string(), z.number().positive()).optional(),
     /** Part comestible quand la quantité est pesée brute (moules en coquille, courge entière). */
     ediblePortion: z.number().positive().max(1).optional(),
+    /**
+     * Part de l'aliment Ciqual dans l'ingrédient, le reste étant de l'eau (0 kcal) : produit
+     * « allégé » obtenu par dilution (lait de coco allégé = lait de coco à 50 %).
+     */
+    dilution: z.number().positive().max(1).optional(),
     /** Correspondance approchée : raison et aliment retenu (affichée dans les rapports). */
     approx: z.string().min(1).optional(),
   })
@@ -164,10 +169,10 @@ export function computeNutritionPerServing(
     const mapping = mappings[ingredient.name];
     const food = mapping ? foods.get(mapping.ciqualCode) : undefined;
     const grams = mapping ? ingredientGrams(ingredient, mapping) : undefined;
-    if (!food || grams === undefined) {
+    if (!mapping || !food || grams === undefined) {
       throw new Error(`${recipe.id} : données manquantes pour « ${ingredient.name} »`);
     }
-    const ratio = grams / 100;
+    const ratio = (grams * (mapping.dilution ?? 1)) / 100;
     total.kcal += food.kcal * ratio;
     total.proteinG += food.proteinesG * ratio;
     total.carbsG += food.glucidesG * ratio;

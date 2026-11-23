@@ -22,6 +22,7 @@ Clé = nom d'ingrédient **exactement** tel qu'écrit dans `recipes.json`.
 | `gramsPerUnit`  | grammes de partie comestible par unité non massique (`piece`, `cuillere-soupe`, `cl`, …)      |
 | `ediblePortion` | part comestible quand la quantité est pesée brute (moules en coquille : 0,25 ; potiron : 0,7) |
 | `approx`        | correspondance approchée : raison et aliment retenu                                           |
+| `dilution`      | part de l'aliment Ciqual, le reste étant de l'eau (lait de coco allégé : 0,5)                 |
 
 ## Conventions
 
