@@ -26,12 +26,14 @@
 
 .hero {
   position: relative;
-  flex: 0 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
+  height: clamp(9rem, 28dvh, 15rem);
 }
 
-.heroImage {
-  max-height: 30dvh;
+.recipe .heroImage {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
   border-radius: var(--radius-xl);
 }
 
@@ -176,22 +178,10 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* Tablette et ordinateur : illustration et titre à gauche, onglets à droite. */
+/* Tablette en portrait : grande image en tête, titre, puis les onglets qui remplissent le reste. */
 @media (min-width: 768px) and (min-height: 540px) {
-  .recipe {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    grid-template-rows: minmax(0, 1fr);
-    gap: var(--space-6);
-  }
-
-  .left {
-    gap: var(--space-3);
-    align-self: start;
-  }
-
-  .heroImage {
-    max-height: none;
+  .hero {
+    height: clamp(14rem, 36dvh, 26rem);
   }
 
   .title {
@@ -205,6 +195,28 @@
 
   .panel {
     padding-right: 0;
+  }
+}
+
+/* Paysage et ordinateur : image (qui remplit la hauteur) et titre à gauche, onglets à droite. */
+@media (min-width: 1000px) and (min-height: 540px) {
+  .recipe {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .left {
+    flex: 1;
+    gap: var(--space-3);
+    min-height: 0;
+  }
+
+  .hero {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 12rem;
   }
 }
 

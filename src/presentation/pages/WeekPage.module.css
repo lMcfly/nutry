@@ -47,7 +47,60 @@
   flex: 1;
 }
 
-/* Tablette en portrait : bandeau de jours en haut, grande carte dessous. */
+/* Tablette et ordinateur : les repas du jour sont affichés ensemble (sans onglets). */
+.dayMeals {
+  display: grid;
+  flex: 1;
+  grid-auto-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  min-height: 0;
+}
+
+.dayMeals > * {
+  min-height: 0;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  min-height: 0;
+  padding-top: var(--space-1);
+}
+
+.asideTitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.asideNutry {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.asideStreak {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: var(--font-weight-medium);
+}
+
+.asideStreak svg {
+  color: var(--color-accent);
+}
+
+.asideGauges {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+/* Tablette en portrait : bandeau de jours en haut, cartes horizontales empilées. */
 @media (min-width: 768px) and (min-height: 540px) {
   .layout {
     gap: var(--space-5);
@@ -58,14 +111,24 @@
   }
 }
 
-/* Paysage et ordinateur : la semaine à gauche (jours, repas), la carte du repas à droite. */
+/* Paysage et ordinateur : jours à gauche, cartes verticales côte à côte. */
 @media (min-width: 1000px) and (min-height: 540px) {
   .layout {
     display: grid;
-    grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr);
+    grid-template-columns: minmax(12rem, 14rem) minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
     align-items: stretch;
     gap: var(--space-6);
+  }
+
+  .layout.withAside {
+    grid-template-columns: minmax(12rem, 14rem) minmax(0, 1fr) minmax(14rem, 17rem);
+  }
+
+  .dayMeals {
+    grid-template-columns: repeat(var(--meals, 2), minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    grid-auto-rows: auto;
   }
 
   .side {
@@ -89,10 +152,6 @@
 
   .side .days [role='tab'] > :first-child {
     min-width: 2.25rem;
-  }
-
-  .mealRow {
-    justify-content: space-between;
   }
 }
 

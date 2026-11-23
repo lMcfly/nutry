@@ -187,12 +187,21 @@
   }
 }
 
-/* Tablette et ordinateur : repères à gauche, liste à droite. */
-@media (min-width: 768px) and (min-height: 540px) {
+/* Paysage et ordinateur : repères à gauche, équilibre et liste à droite. */
+@media (min-width: 1000px) and (min-height: 540px) {
   .layout {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     align-items: start;
     gap: var(--space-6);
+  }
+}
+
+/* Tablette : une colonne de largeur de lecture, centrée. */
+@media (min-width: 768px) and (max-width: 999px) and (min-height: 540px) {
+  .layout {
+    width: 100%;
+    max-width: 44rem;
+    margin-inline: auto;
   }
 }

@@ -1,20 +1,22 @@
-/* Carte du repas : épurée, centrée, toute la surface mène à la recette. */
+/*
+ * Carte du repas : l'image du plat occupe toute la largeur (et la hauteur que lui laisse le
+ * texte), puis le nom, une ligne de méta, « Pourquoi ce plat ? » et trois actions au trait.
+ * Toute la surface mène à la recette (lien étiré sur le nom).
+ * Téléphone : verticale ; tablette en portrait : horizontale (image à gauche) ; paysage et
+ * ordinateur : verticale, plusieurs cartes côte à côte.
+ */
 .card {
   position: relative;
   display: flex;
-  flex: 0 1 auto;
+  flex: 1;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-4);
   min-height: 0;
-  margin-block: auto;
-  padding: var(--space-5) var(--space-4);
-  overflow-y: auto;
+  padding: 0;
+  overflow: hidden auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   background: var(--color-surface);
-  text-align: center;
+  text-align: left;
   scrollbar-width: thin;
 }
 
@@ -22,29 +24,29 @@
   flex: none;
 }
 
-.art {
-  width: clamp(9rem, 56%, 17rem);
-  border-radius: var(--radius-lg);
+.card .art {
+  flex: 1 1 8rem;
+  min-height: 8rem;
+  border-radius: 0;
 }
 
 .text {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-2);
-  width: 100%;
   min-width: 0;
+  padding: var(--space-4);
 }
 
 .title {
   display: -webkit-box;
-  max-width: 24rem;
   overflow: hidden;
   font-size: var(--font-size-lg);
   font-weight: 600;
   line-height: 1.3;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
 }
 
 /* Lien étiré : toute la carte est cliquable ; les boutons passent au-dessus. */
@@ -110,15 +112,13 @@
 .why {
   display: block;
   width: 100%;
-  max-width: 26rem;
-  padding: var(--space-1) var(--space-2);
+  padding: 0;
   border: 0;
-  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--color-text-muted);
   font-size: var(--font-size-xs);
   line-height: 1.5;
-  text-align: center;
+  text-align: left;
   cursor: pointer;
 }
 
@@ -137,9 +137,8 @@
 .actions {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--space-2);
-  margin-top: var(--space-1);
+  margin-left: calc(-1 * var(--space-2));
 }
 
 .rating {
@@ -149,74 +148,69 @@
 
 /* Écrans bas : on resserre pour que tout tienne sans défiler. */
 @media (max-height: 760px) {
-  .card {
-    gap: var(--space-2);
-  }
-
-  .art {
-    width: clamp(7rem, 38%, 11rem);
-  }
-
-  .title {
-    font-size: var(--font-size-md);
-    -webkit-line-clamp: 2;
+  .card .art {
+    flex-basis: 6rem;
+    min-height: 6rem;
   }
 
   .text {
     gap: var(--space-1);
-  }
-}
-
-/* Tablette : illustration plus grande, texte plus aéré. */
-@media (min-width: 768px) and (min-height: 540px) {
-  .art {
-    width: clamp(12rem, 52%, 22rem);
+    padding: var(--space-3) var(--space-4);
   }
 
   .title {
-    max-width: 32rem;
-    font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
+    font-size: var(--font-size-md);
+  }
+}
+
+/* Tablette en portrait : carte horizontale, image à gauche (~45 %), texte à droite. */
+@media (min-width: 768px) and (min-height: 540px) {
+  .card {
+    flex-direction: row;
+    align-items: stretch;
   }
 
+  .card .art {
+    flex: 0 0 45%;
+    min-height: 0;
+  }
+
+  .text {
+    flex: 1;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-5);
+  }
+
+  .title {
+    font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
+    -webkit-line-clamp: 3;
+  }
+
+  .meta,
   .why {
-    max-width: 32rem;
     font-size: var(--font-size-sm);
   }
 }
 
-/* Paysage et ordinateur : illustration à gauche, texte à droite. */
+/* Paysage et ordinateur : cartes verticales côte à côte, grande image. */
 @media (min-width: 1000px) and (min-height: 540px) {
   .card {
-    flex-direction: row;
-    justify-content: center;
-    gap: var(--space-6);
-    padding: var(--space-6);
-    text-align: left;
+    flex-direction: column;
   }
 
-  .art {
-    flex: 0 0 min(44%, 24rem);
-    width: min(44%, 24rem);
+  .card .art {
+    flex: 1 1 10rem;
+    min-height: 10rem;
   }
 
   .text {
-    align-items: flex-start;
-    flex: 1;
-    gap: var(--space-3);
+    justify-content: flex-start;
+    padding: var(--space-5);
   }
 
   .title {
-    max-width: none;
-    font-size: clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
-  }
-
-  .why {
-    padding-left: 0;
-    text-align: left;
-  }
-
-  .actions {
-    justify-content: flex-start;
-    margin-left: calc(-1 * var(--space-2));
+    font-size: var(--font-size-lg);
+    -webkit-line-clamp: 4;
   }
 }

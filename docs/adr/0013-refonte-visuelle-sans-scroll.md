@@ -113,12 +113,18 @@ couleur, de densité et de pictogrammes de la première version.
 
 ### Points de rupture
 
-| Format                        | Condition                                         | Navigation             | Mise en page                                                                                                                                                       |
-| ----------------------------- | ------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Téléphone portrait (≤ 767 px) | défaut                                            | barre d'onglets en bas | une colonne, pas de scroll de page                                                                                                                                 |
-| Téléphone paysage             | `orientation: landscape` et hauteur ≤ 539 px      | rail compact           | `main` défile, chaque écran garde une hauteur de lecture                                                                                                           |
-| Tablette portrait             | ≥ 768 px et hauteur ≥ 540 px                      | rail latéral           | une colonne plus large (contenu ≤ 64 rem), feuilles en dialogue centré, réglages en panneau à droite                                                               |
-| Tablette paysage, ordinateur  | ≥ 1000 px (profil, recette, progrès : dès 768 px) | rail latéral           | deux colonnes : Semaine (jours à gauche, carte à droite), Courses (rayons / liste), Recette (illustration / onglets), Profil (Nutry / réglages) ; contenu ≤ 74 rem |
+| Format                        | Condition                                    | Navigation             | Mise en page                                                                                                                                                                                                                                                       |
+| ----------------------------- | -------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Téléphone portrait (≤ 767 px) | défaut                                       | barre d'onglets en bas | une colonne, pas de scroll de page ; carte du repas ancrée sous les onglets, image pleine largeur qui prend l'espace restant                                                                                                                                       |
+| Téléphone paysage             | `orientation: landscape` et hauteur ≤ 539 px | rail compact           | mise en page téléphone ; `main` défile, chaque écran garde une hauteur de lecture                                                                                                                                                                                  |
+| Tablette portrait             | ≥ 768 px et hauteur ≥ 540 px                 | rail latéral           | Semaine : bandeau de jours, puis **les repas du jour empilés** (cartes horizontales, image ~45 %), sans onglets ; Recette : grande image puis onglets ; Progrès : une colonne avec l'équilibre affiché ; feuilles en dialogue centré, réglages en panneau à droite |
+| Tablette paysage, ordinateur  | ≥ 1000 px                                    | rail latéral           | Semaine : jours à gauche et **repas du jour côte à côte** (cartes verticales, grande image) ; Courses : rayons / liste ; Recette : image qui remplit la hauteur / onglets ; Profil : Nutry / réglages ; Progrès : deux colonnes                                    |
+| Très grand écran              | ≥ 1280 px                                    | rail latéral           | colonne « Ta semaine » à droite de la Semaine (Nutry et série, équilibre, cuisiner en avance) ; contenu centré, 80 rem au plus                                                                                                                                     |
+
+`WeekPage` choisit sa structure avec `useMediaQuery` (onglets repas au téléphone, repas du jour
+ensemble dès 768 px, colonne latérale dès 1280 px) ; le reste est du CSS. `DishImage` a un mode
+`fill` : le cadre prend la hauteur de son conteneur (hauteur minimale réservée, donc aucun décalage
+quand une photo remplace l'illustration), l'image est posée en absolu avec `object-fit: cover`.
 
 Tailles fluides (`clamp()` pour le titre, les marges, Nutry et les illustrations), unités en `rem`
 (le texte suit la taille système), `viewport-fit=cover` et `env(safe-area-inset-*)` sur la barre,

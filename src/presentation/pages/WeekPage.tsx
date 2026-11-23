@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import type { PlanOrigin, PlanView } from '@application/usecases';
+import type { CompanionView, PlanOrigin, PlanView } from '@application/usecases';
 import { MEAL_SLOTS } from '@domain/mealplan';
 import type {
   BalanceGauge,
@@ -25,6 +26,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   DatabaseIcon,
+  FlameIcon,
   FridgeIcon,
   HomeIcon,
   InfoIcon,
@@ -48,6 +50,7 @@ import { useBackupReminder } from '../features/data/useBackupReminder';
 import { MealCard } from '../features/week/MealCard';
 import { ReplaceSheet } from '../features/week/ReplaceSheet';
 import { useAsync } from '../hooks/useAsync';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import {
   DAY_LABELS,
   DAY_SHORT_LABELS,
@@ -56,6 +59,7 @@ import {
   SLOT_SHORT_LABELS,
   formatDayLong,
   formatDayOfMonth,
+  plural,
 } from '../i18n/labels';
 import styles from './WeekPage.module.css';
 
@@ -250,6 +254,10 @@ export function WeekPage() {
           busy={busy}
           onReplace={setReplacing}
           onRate={onRate(data.view)}
+          companion={companion}
+          onShowBatch={() => {
+            setShowBatch(true);
+          }}
         />
       )}
 
@@ -403,10 +411,27 @@ interface WeekContentProps {
   readonly busy: boolean;
   readonly onReplace: (meal: PlannedMeal) => void;
   readonly onRate: (meal: PlannedMeal, verdict: RatingVerdict) => void;
+  readonly companion: CompanionView | undefined;
+  readonly onShowBatch: () => void;
 }
 
-function WeekContent({ data, origin, busy, onReplace, onRate }: WeekContentProps) {
+/** Tablette et ordinateur : les repas du jour sont affichés ensemble, sans onglets. */
+const DAY_VIEW_QUERY = '(min-width: 768px) and (min-height: 540px)';
+/** Très grand écran : colonne « Ta semaine » à droite. */
+const ASIDE_QUERY = '(min-width: 1280px) and (min-height: 540px)';
+
+function WeekContent({
+  data,
+  origin,
+  busy,
+  onReplace,
+  onRate,
+  companion,
+  onShowBatch,
+}: WeekContentProps) {
   const { view } = data;
+  const dayView = useMediaQuery(DAY_VIEW_QUERY);
+  const withAside = useMediaQuery(ASIDE_QUERY);
   const { today: getToday } = useDependencies();
   const today = getToday();
 
@@ -469,6 +494,24 @@ function WeekContent({ data, origin, busy, onReplace, onRate }: WeekContentProps
   const dayMeals = ordered.filter((m) => m.dayIndex === meal.dayIndex);
   const dayLabel = `${formatDayLong(meal.date)}${meal.date === today ? ', aujourd’hui' : ''}`;
 
+  const renderCard = (m: PlannedMeal) => (
+    <MealCard
+      key={m.id}
+      meal={m}
+      recipe={view.recipes[m.recipeId]}
+      explanation={view.explanations[m.id]}
+      rating={view.ratings[m.id]}
+      leftoverSource={m.leftoverOf ? byId.get(m.leftoverOf) : undefined}
+      feedsLeftover={leftoverBySource.get(m.id)}
+      busy={busy}
+      onReplace={onReplace}
+      onRate={onRate}
+      onGoTo={(id) => {
+        goTo(id);
+      }}
+    />
+  );
+
   return (
     <>
       {origin === 'regenerated' && (
@@ -477,7 +520,11 @@ function WeekContent({ data, origin, busy, onReplace, onRate }: WeekContentProps
         </Notice>
       )}
 
-      <div className={styles.layout}>
+      <div
+        className={[styles.layout, dayView ? styles.dayView : '', withAside ? styles.withAside : '']
+          .filter(Boolean)
+          .join(' ')}
+      >
         <div className={styles.side}>
           <DayStrip
             idPrefix="jour"
@@ -495,71 +542,125 @@ function WeekContent({ data, origin, busy, onReplace, onRate }: WeekContentProps
             }))}
           />
 
-          <div className={styles.mealRow}>
-            <RoundIconButton
-              icon={<ChevronLeftIcon size={22} />}
-              label="Repas précédent"
-              disabled={index === 0}
-              onClick={() => {
-                step('prev');
-              }}
-            />
-            <SegmentedTabs
-              idPrefix="repas"
-              label={`Repas de ${DAY_LABELS[meal.dayIndex].toLowerCase()}`}
-              value={meal.slot}
-              onChange={pickSlot}
-              tabs={dayMeals.map((m) => ({
-                id: m.slot,
-                ariaLabel: SLOT_LABELS[m.slot],
-                label: SLOT_SHORT_LABELS[m.slot],
-              }))}
-            />
-            <RoundIconButton
-              icon={<ChevronRightIcon size={22} />}
-              label="Repas suivant"
-              disabled={index === ordered.length - 1}
-              onClick={() => {
-                step('next');
-              }}
-            />
-          </div>
+          {!dayView && (
+            <div className={styles.mealRow}>
+              <RoundIconButton
+                icon={<ChevronLeftIcon size={22} />}
+                label="Repas précédent"
+                disabled={index === 0}
+                onClick={() => {
+                  step('prev');
+                }}
+              />
+              <SegmentedTabs
+                idPrefix="repas"
+                label={`Repas de ${DAY_LABELS[meal.dayIndex].toLowerCase()}`}
+                value={meal.slot}
+                onChange={pickSlot}
+                tabs={dayMeals.map((m) => ({
+                  id: m.slot,
+                  ariaLabel: SLOT_LABELS[m.slot],
+                  label: SLOT_SHORT_LABELS[m.slot],
+                }))}
+              />
+              <RoundIconButton
+                icon={<ChevronRightIcon size={22} />}
+                label="Repas suivant"
+                disabled={index === ordered.length - 1}
+                onClick={() => {
+                  step('next');
+                }}
+              />
+            </div>
+          )}
         </div>
 
         <p className="visually-hidden" aria-live="polite">
-          {dayLabel}, {SLOT_LABELS[meal.slot].toLowerCase()}
+          {dayLabel}
+          {dayView ? '' : `, ${SLOT_LABELS[meal.slot].toLowerCase()}`}
         </p>
 
-        <div
-          role="tabpanel"
-          id={panelId('repas', meal.slot)}
-          aria-labelledby={tabId('repas', meal.slot)}
-          className={styles.panel}
-        >
-          <Swipeable
-            className={styles.swipe}
-            itemKey={meal.id}
-            direction={direction}
-            onSwipe={step}
+        {dayView ? (
+          <section
+            className={styles.dayMeals}
+            style={{ '--meals': dayMeals.length } as CSSProperties}
+            aria-label={`Repas : ${dayLabel}`}
           >
-            <MealCard
-              meal={meal}
-              recipe={view.recipes[meal.recipeId]}
-              explanation={view.explanations[meal.id]}
-              rating={view.ratings[meal.id]}
-              leftoverSource={meal.leftoverOf ? byId.get(meal.leftoverOf) : undefined}
-              feedsLeftover={leftoverBySource.get(meal.id)}
-              busy={busy}
-              onReplace={onReplace}
-              onRate={onRate}
-              onGoTo={(id) => {
-                goTo(id);
-              }}
-            />
-          </Swipeable>
-        </div>
+            {dayMeals.map(renderCard)}
+          </section>
+        ) : (
+          <div
+            role="tabpanel"
+            id={panelId('repas', meal.slot)}
+            aria-labelledby={tabId('repas', meal.slot)}
+            className={styles.panel}
+          >
+            <Swipeable
+              className={styles.swipe}
+              itemKey={meal.id}
+              direction={direction}
+              onSwipe={step}
+            >
+              {renderCard(meal)}
+            </Swipeable>
+          </div>
+        )}
+
+        {withAside && (
+          <WeekAside
+            companion={companion}
+            balance={data.balance}
+            hasBatch={data.batch.length > 0}
+            onShowBatch={onShowBatch}
+          />
+        )}
       </div>
     </>
+  );
+}
+
+interface WeekAsideProps {
+  readonly companion: CompanionView | undefined;
+  readonly balance: readonly BalanceGauge[];
+  readonly hasBatch: boolean;
+  readonly onShowBatch: () => void;
+}
+
+/** Colonne discrète des très grands écrans : Nutry et la série, l'équilibre, le dimanche. */
+function WeekAside({ companion, balance, hasBatch, onShowBatch }: WeekAsideProps) {
+  return (
+    <aside className={styles.aside} aria-labelledby="aside-title">
+      <h2 id="aside-title" className={styles.asideTitle}>
+        Ta semaine
+      </h2>
+      {companion && (
+        <div className={styles.asideNutry}>
+          <Nutry look={companion.look} mood={companion.mood} size="m" />
+          <p className={styles.asideStreak}>
+            <FlameIcon size={18} />
+            {companion.streak > 0
+              ? `${plural(companion.streak, 'jour')} de suite`
+              : 'Pas de série en cours'}
+          </p>
+        </div>
+      )}
+      <div className={styles.asideGauges}>
+        {balance.map((g) => (
+          <Gauge
+            key={g.key}
+            label={g.label}
+            count={g.count}
+            target={g.target}
+            tone={BALANCE_TONES[g.key]}
+          />
+        ))}
+      </div>
+      {hasBatch && (
+        <Button variant="ghost" small icon={<PotIcon size={20} />} onClick={onShowBatch}>
+          Cuisiner en avance le dimanche
+        </Button>
+      )}
+    </aside>
   );
 }
 

@@ -17,7 +17,25 @@ for (const wide of WIDE) {
     }) => {
       await page.goto('./');
       await completeOnboarding(page);
-      await expect(page.getByTestId('meal')).toHaveCount(1);
+      // Les repas du jour sont ensemble (déjeuner et dîner), sans onglets.
+      await expect(page.getByTestId('meal')).toHaveCount(2);
+      await expect(page.getByRole('tab', { name: 'Dîner' })).toHaveCount(0);
+      const [first, second] = await page.getByTestId('meal').all();
+      const a = await first?.boundingBox();
+      const b = await second?.boundingBox();
+      if (wide.size.width >= 1000) {
+        // Côte à côte : même hauteur, deuxième carte à droite.
+        expect(Math.abs((a?.y ?? 0) - (b?.y ?? 1))).toBeLessThan(2);
+        expect(b?.x ?? 0).toBeGreaterThan((a?.x ?? 0) + (a?.width ?? 0) - 2);
+      } else {
+        // Empilées : même colonne, la deuxième sous la première.
+        expect(Math.abs((a?.x ?? 0) - (b?.x ?? 1))).toBeLessThan(2);
+        expect(b?.y ?? 0).toBeGreaterThan((a?.y ?? 0) + (a?.height ?? 0) - 2);
+      }
+      // Colonne « Ta semaine » : seulement à partir de 1280 px.
+      await expect(page.getByRole('complementary', { name: 'Ta semaine' })).toHaveCount(
+        wide.size.width >= 1280 ? 1 : 0,
+      );
 
       const nav = page.getByRole('navigation', { name: 'Navigation principale' });
       const box = await nav.boundingBox();
@@ -33,7 +51,7 @@ for (const wide of WIDE) {
       report['semaine-menu'] = await seriousViolations(page);
       await page.keyboard.press('Escape');
 
-      await page.getByTestId('meal').getByRole('link').first().click();
+      await page.getByTestId('meal').first().getByRole('link').first().click();
       await expect(page.getByRole('tab', { name: 'Ingrédients' })).toBeVisible();
       report['recette'] = await seriousViolations(page);
 

@@ -99,7 +99,7 @@ export function RecipePage() {
     <div className={styles.recipe}>
       <div className={styles.left}>
         <div className={styles.hero}>
-          <DishImage recipe={recipe} ratio="16 / 10" priority className={styles.heroImage} />
+          <DishImage recipe={recipe} ratio="16 / 10" fill priority className={styles.heroImage} />
           <Link to="/semaine" className={styles.back} aria-label="Retour : Ma semaine">
             <ArrowLeftIcon />
           </Link>

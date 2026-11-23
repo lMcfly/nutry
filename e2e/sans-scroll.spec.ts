@@ -109,7 +109,7 @@ for (const viewport of VIEWPORTS) {
       await completeOnboarding(page);
 
       // Semaine : le repas du jour, puis chaque jour du bandeau (illustration et titres variés).
-      await expect(page.getByTestId('meal')).toHaveCount(1);
+      await expect(page.getByTestId('meal').first()).toBeVisible();
       await expectFits(page, 'Semaine');
       const days = page.getByRole('tablist', { name: 'Jours de la semaine' }).getByRole('tab');
       for (let i = 0; i < (await days.count()); i += 1) {
@@ -117,8 +117,11 @@ for (const viewport of VIEWPORTS) {
         await expect(days.nth(i)).toHaveAttribute('aria-selected', 'true');
         await expectFits(page, `Semaine, jour ${i + 1}`);
       }
-      await page.getByRole('tab', { name: 'Dîner' }).click();
-      await expectFits(page, 'Semaine, dîner');
+      // Téléphone : onglets repas ; tablette et ordinateur : les repas du jour sont ensemble.
+      if (!viewport.rail) {
+        await page.getByRole('tab', { name: 'Dîner' }).click();
+        await expectFits(page, 'Semaine, dîner');
+      }
 
       await page.getByRole('link', { name: 'Courses' }).click();
       await expect(page.getByRole('heading', { name: 'Mes courses', level: 1 })).toBeVisible();

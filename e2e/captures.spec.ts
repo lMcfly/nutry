@@ -62,10 +62,13 @@ test('captures tablette (iPad) et ordinateur (1440 × 900) : Semaine', async ({ 
   await page.setViewportSize({ width: 820, height: 1180 });
   await page.goto('./');
   await completeOnboarding(page);
-  await expect(page.getByTestId('meal')).toHaveCount(1);
-  await page.getByRole('tab', { name: 'Dîner' }).click();
+  await expect(page.getByTestId('meal')).toHaveCount(2);
   await page.waitForTimeout(500);
   await page.screenshot({ path: 'docs/captures/tablette.png' });
+
+  await page.setViewportSize({ width: 1180, height: 820 });
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/tablette-paysage.png' });
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.waitForTimeout(500);

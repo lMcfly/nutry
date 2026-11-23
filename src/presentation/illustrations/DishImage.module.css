@@ -27,3 +27,14 @@
   background: linear-gradient(to top, rgb(20 28 22 / 55%), transparent);
   pointer-events: none;
 }
+
+/* Remplissage : le cadre prend la hauteur du conteneur, l'image y est posée en absolu. */
+.fill {
+  min-height: 8rem;
+}
+
+.fill .photo,
+.fill .art {
+  position: absolute;
+  inset: 0;
+}

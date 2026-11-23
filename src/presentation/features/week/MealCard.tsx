@@ -62,7 +62,7 @@ export function MealCard({
       data-testid="meal"
       data-meal-id={meal.id}
     >
-      <DishImage recipe={recipe} ratio="4 / 3" priority className={styles.art} />
+      <DishImage recipe={recipe} ratio="4 / 3" fill priority className={styles.art} />
 
       <div className={styles.text}>
         <h2 id={titleId} className={styles.title}>

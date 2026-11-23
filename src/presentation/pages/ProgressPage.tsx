@@ -30,6 +30,7 @@ import { useCompanion } from '../features/companion/useCompanion';
 import { BALANCE_TONES } from '../features/plate/balanceTones';
 import { TrendChart } from '../features/progress/TrendChart';
 import { useAsync } from '../hooks/useAsync';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { formatDateFull, formatDayShort, formatDecimal, plural } from '../i18n/labels';
 import styles from './ProgressPage.module.css';
 
@@ -55,6 +56,8 @@ export function ProgressPage() {
   }, [getProgressSummary, getPlanHistory, getFavorites, getWeekBalance]);
   const { state, reload } = useAsync(load);
   const { companion } = useCompanion();
+  // Tablette et ordinateur : la place existe, l'équilibre de la semaine s'affiche directement.
+  const wide = useMediaQuery('(min-width: 768px) and (min-height: 540px)');
   const data = state.status === 'ready' ? state.data : undefined;
   const [sheet, setSheet] = useState<SheetId | undefined>();
   const { setWeightTracking } = useDependencies();
@@ -149,31 +152,55 @@ export function ProgressPage() {
               </section>
             </div>
 
-            <ListGroup className={styles.links} label="Mes repères">
-              <ListRow
-                icon={<CalendarIcon />}
-                title="L’équilibre de ta semaine"
-                onClick={() => {
-                  setSheet('equilibre');
-                }}
-              />
-              <ListRow
-                icon={<HeartIcon />}
-                title="Favoris"
-                hint={plural(data.favorites.length, 'recette')}
-                onClick={() => {
-                  setSheet('favoris');
-                }}
-              />
-              <ListRow
-                icon={<BookIcon />}
-                title="Historique"
-                hint={plural(data.history.plans.length, 'menu passé', 'menus passés')}
-                onClick={() => {
-                  setSheet('historique');
-                }}
-              />
-            </ListGroup>
+            <div className={styles.column}>
+              {wide && (
+                <section className={styles.tile} aria-labelledby="balance-title">
+                  <h2 id="balance-title" className={styles.tileTitle}>
+                    <CalendarIcon size={20} />
+                    L’équilibre de ta semaine
+                  </h2>
+                  <p className={styles.small}>De la variété, sans rien compter.</p>
+                  <div className={styles.gauges}>
+                    {data.balance.map((g) => (
+                      <Gauge
+                        key={g.key}
+                        label={g.label}
+                        count={g.count}
+                        target={g.target}
+                        tone={BALANCE_TONES[g.key]}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+              <ListGroup className={styles.links} label="Mes repères">
+                {!wide && (
+                  <ListRow
+                    icon={<CalendarIcon />}
+                    title="L’équilibre de ta semaine"
+                    onClick={() => {
+                      setSheet('equilibre');
+                    }}
+                  />
+                )}
+                <ListRow
+                  icon={<HeartIcon />}
+                  title="Favoris"
+                  hint={plural(data.favorites.length, 'recette')}
+                  onClick={() => {
+                    setSheet('favoris');
+                  }}
+                />
+                <ListRow
+                  icon={<BookIcon />}
+                  title="Historique"
+                  hint={plural(data.history.plans.length, 'menu passé', 'menus passés')}
+                  onClick={() => {
+                    setSheet('historique');
+                  }}
+                />
+              </ListGroup>
+            </div>
           </div>
 
           <Sheet
