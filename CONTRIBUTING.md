@@ -71,6 +71,9 @@ Nutry suit une Clean Architecture (voir le [README](README.md#architecture) et
   l'application ; seul `src/main.tsx` assemble le tout.
 - Le `domain` et l'`application` n'importent **aucune** bibliothèque ni API du navigateur
   (`window`, `fetch`, `Date.now()`, `Math.random()`…) : ESLint le refuse.
+- La `presentation` n'importe que React et `react-router-dom` (plus ses propres fichiers et
+  les couches autorisées) ; aucune API réseau (`fetch`, `WebSocket`, `sendBeacon`…) nulle
+  part dans `src/`. Ces règles ne se désactivent pas par commentaire `eslint-disable`.
 - Les ports (`src/application/ports/`) ne contiennent que des types.
 - Une décision structurante s'écrit dans un nouvel ADR (`docs/adr/NNNN-titre.md`).
 - TypeScript strict : pas de `any`, pas de `@ts-ignore`.

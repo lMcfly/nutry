@@ -52,4 +52,11 @@ La règle de dépendance est aussi verrouillée contre les contournements suivan
 - **Globals du navigateur** : `tsconfig.core.json` compile `src/domain` et `src/application` sans lib DOM ni types, et ESLint interdit `window`, `document`, `navigator`, `localStorage`, `indexedDB`, `fetch`…
 - **Temps et aléa** : `Date.now()`, `new Date()` sans argument et `Math.random()` sont interdits dans le cœur ; ils passent par les ports `Clock` et `RandomSource`.
 - **Imports dynamiques** (`import('…')`) et **fichiers `.tsx`** interdits dans le cœur.
-- **Ports** : ils ne déclarent que des types (règle ESLint), ce qui justifie leur seule exclusion de la couverture.
+- **Ports** : ils ne déclarent que des types (règle ESLint), ce qui justifie leur exclusion de la couverture (avec les doublures de `src/domain/testing` et `src/application/testing`).
+
+## Complément (revue finale)
+
+- **Présentation en liste blanche** : `src/presentation` n'importe que `react`, `react-dom`, `react-dom/client`, `react-router-dom`, les alias `@domain`, `@application`, `@presentation` et des chemins relatifs (CSS compris), y compris par `import()` dynamique. Ses tests ajoutent `vitest` et Testing Library. Tout autre paquet (`dexie`, `zod`…) passe par un cas d'usage.
+- **Confidentialité** : dans tout `src/`, `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource` sont interdits, en global comme via `window.`, `globalThis.` ou `self.`, ainsi que `navigator.sendBeacon` ; `indexedDB` n'est permis que dans `src/infrastructure/db`.
+- **Cœur** : `globalThis`, `self`, `performance`, `setTimeout` et `setInterval` rejoignent les globals interdits. `tsconfig.core.json` exclut tests et doublures (`*.test.ts`, `testing/`), typés par `tsconfig.core-tests.json` avec les mêmes contraintes (ni DOM ni Node).
+- **Pas de contournement par commentaire** : `@eslint-community/eslint-comments` refuse tout `eslint-disable` visant `boundaries/*` ou `no-restricted-*`, les `eslint-disable` sans nom de règle et les commentaires de configuration (`/* eslint règle: off */`, `/* global */`).

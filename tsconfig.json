@@ -5,6 +5,9 @@
       "path": "./tsconfig.core.json"
     },
     {
+      "path": "./tsconfig.core-tests.json"
+    },
+    {
       "path": "./tsconfig.app.json"
     },
     {

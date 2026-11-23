@@ -6,5 +6,7 @@
     "lib": ["ES2022"],
     "types": []
   },
-  "include": ["src/domain", "src/application"]
+  "include": ["src/domain", "src/application"],
+  // Tests et doublures : typés à part (tsconfig.core-tests.json), jamais dans le cœur livré.
+  "exclude": ["src/**/*.test.ts", "src/**/testing/**"]
 }
