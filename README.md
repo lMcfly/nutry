@@ -71,8 +71,9 @@ navigateurs, Nutry s'utilise aussi très bien dans un onglet.
 ### Mises à jour
 
 Quand une nouvelle version est publiée, elle se télécharge en arrière-plan et s'applique
-**quand tu fermes l'app ou que tu passes à autre chose** : jamais pendant que tu remplis un
-écran. Tes données ne sont pas touchées par une mise à jour.
+**à la prochaine ouverture de l'app** : jamais pendant que tu l'utilises, donc rien de ce
+que tu es en train de saisir n'est perdu. Tes données ne sont pas touchées par une mise à
+jour.
 
 ## Lancer le projet en local
 

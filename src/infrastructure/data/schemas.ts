@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from './zod';
 import { QUIZ_CATEGORIES, QUIZ_DIFFICULTIES, type QuizQuestion } from '@domain/quiz';
 import {
   AISLES,

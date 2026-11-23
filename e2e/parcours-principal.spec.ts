@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { completeOnboarding, dismissQuiz, seriousViolations } from './helpers';
 
 test('parcours principal : onboarding → menu → remplacement → courses → rechargement', async ({

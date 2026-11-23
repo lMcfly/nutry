@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '../data/zod';
 import type { BackupParseResult, EncryptedPayload } from '@application/ports';
 import { MEAL_SLOTS } from '@domain/mealplan';
 import type {

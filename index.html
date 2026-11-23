@@ -2,6 +2,15 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <!--
+      CSP : tout vient de l'app elle-même, aucun script ni style en ligne, aucune connexion
+      tierce. Retirée par vite.config.ts en `npm run dev` seulement (préambule React Refresh
+      en ligne) ; le build et `vite preview` l'appliquent. Voir docs/DEPLOIEMENT.md.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Nutry</title>
     <meta
@@ -25,22 +34,7 @@
     </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script type="module">
-      // Service worker : hors ligne et mise à jour douce (voir vite.config.ts).
-      import { registerSW } from 'virtual:pwa-register';
-
-      let updatePending = false;
-      const applyUpdateWhenHidden = () => {
-        if (updatePending && document.visibilityState === 'hidden') void updateSW(true);
-      };
-      const updateSW = registerSW({
-        immediate: true,
-        onNeedRefresh() {
-          updatePending = true;
-          applyUpdateWhenHidden();
-        },
-      });
-      document.addEventListener('visibilitychange', applyUpdateWhenHidden);
-    </script>
+    <!-- Service worker : fichier séparé, la CSP interdit les scripts en ligne. -->
+    <script type="module" src="/src/infrastructure/pwa/register.ts"></script>
   </body>
 </html>

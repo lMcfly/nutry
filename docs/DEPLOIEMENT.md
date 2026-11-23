@@ -102,15 +102,43 @@ il n'accepte que la branche par défaut (`main`) : c'est voulu.
 
 ## 4. Mettre à jour
 
-Chaque push sur `main` dont la CI est entièrement verte redéploie automatiquement. Le service worker de la nouvelle version
-se télécharge en arrière-plan chez les personnes qui ont déjà l'app, puis s'active quand
-elles ferment l'app ou la passent en arrière-plan (voir `vite.config.ts`). Leurs données
-(IndexedDB) ne sont jamais touchées par un déploiement.
+Chaque push sur `main` dont la CI est entièrement verte redéploie automatiquement. Leurs
+données (IndexedDB) ne sont jamais touchées par un déploiement.
+
+### Mise à jour du service worker chez les personnes qui ont déjà l'app
+
+`registerType: 'prompt'` (vite.config.ts), enregistrement dans
+`src/infrastructure/pwa/serviceWorker.ts` :
+
+1. Le navigateur revérifie `sw.js` à chaque ouverture ; une nouvelle version se télécharge
+   et se précache **en arrière-plan**, puis **attend** (`waiting`). Aucun `skipWaiting`
+   automatique, aucun rechargement pendant l'utilisation (même quand l'app passe en
+   arrière-plan) : une saisie en cours n'est jamais perdue.
+2. Quand l'app est fermée (plus aucun onglet ni fenêtre), le navigateur active de lui-même
+   la version en attente : **elle s'applique à la prochaine ouverture**.
+3. Cas particulier : si une version attend encore **au lancement** (page rechargée sans
+   avoir été fermée), l'app l'active aussitôt (`skipWaiting`) et se recharge une fois, avant
+   toute saisie.
+
+Conséquence : après un déploiement, il faut en général **deux ouvertures** pour voir la
+nouvelle version (la première la télécharge, la suivante l'applique). Une app installée que
+le système garde en mémoire en arrière-plan n'est mise à jour qu'une fois réellement fermée.
 
 Pour annuler une mise en ligne : `git revert <commit>` puis push sur `main` ; le
 déploiement suivant remplace la version fautive.
 
 ## Notes techniques
+
+- **Content Security Policy** : une balise `<meta http-equiv="Content-Security-Policy">`
+  dans `index.html` (GitHub Pages ne permet pas d'en-têtes HTTP) :
+  `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:;
+connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none';
+base-uri 'self'; form-action 'none'`. Aucun script ni style en ligne : l'enregistrement
+  du service worker est dans `src/infrastructure/pwa/register.ts`, et Zod tourne en mode
+  `jitless` (`src/infrastructure/data/zod.ts`) pour ne pas sonder `new Function`. Elle est
+  retirée en `npm run dev` uniquement (préambule React Refresh en ligne) ; `vite build` et
+  `vite preview` l'appliquent, et l'e2e échoue sur toute violation (`e2e/fixtures.ts`,
+  `e2e/csp.spec.ts`). `frame-ancestors` est sans effet dans une balise meta.
 
 - **`base: '/nutry/'`** est fixé dans `vite.config.ts`. Si le dépôt est renommé, mettre à
   jour cette constante (le manifest en dérive) et `BASE_PATH` dans `playwright.config.ts`
