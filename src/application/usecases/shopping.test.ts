@@ -68,7 +68,10 @@ describe('liste de courses', () => {
     if (!coffee) throw new Error('café attendu');
     await uc.toggleShoppingItem(coffee.key);
 
-    await uc.generateWeeklyPlan();
+    // Le menu change (remplacement d'un repas) : la base de la liste change.
+    const [alternative] = await uc.getMealAlternatives('0-dejeuner');
+    if (!alternative) throw new Error('alternative attendue');
+    await uc.replaceMeal({ mealId: '0-dejeuner', recipeId: alternative.recipe.id });
     const view = ready(await uc.getShoppingList());
     expect(view.reset).toBe(true);
     expect(

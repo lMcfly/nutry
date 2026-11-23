@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { FIXTURE_RECIPES, fixture } from '../testing/fixtures';
+import { FIXTURE_RECIPES, fixture, ing, makeRecipe } from '../testing/fixtures';
 import { learnWeights } from '../preferences';
 import type { MealRating } from '../preferences';
 import { SCORE_RULES, isConsecutiveProtein, rankRecipes, scoreRecipe } from './index';
+import { isPreservedIngredient } from './scoring';
 import type { ScoringContext } from './index';
 
 const ctx: ScoringContext = {
@@ -52,6 +53,40 @@ describe('scoreRecipe', () => {
     const gaspacho = scoreRecipe(fixture('gaspacho-pois-chiches'), ctx);
     // Recette d'été, tomates, concombre, poivron et ail hors saison en novembre.
     expect(points(gaspacho, 'saison')).toBe(0);
+  });
+
+  it('saison : une recette des 4 saisons sans produit frais de saison n’est pas « de saison »', () => {
+    // Chili aux tomates en boîte, en novembre : rien de saison.
+    const chili = makeRecipe({
+      id: 'chili',
+      ingredients: [
+        ing('haricots rouges', 1, 'boite', 'epicerie'),
+        ing('tomates concassées en boîte', 400, 'g', 'epicerie'),
+        ing('oignon', 1, 'piece', 'fruits-legumes'),
+      ],
+    });
+    const nov = scoreRecipe(chili, ctx);
+    expect(nov.facts.seasonMatch).toBe(false);
+    expect(nov.facts.seasonalProduce).toEqual([]);
+    expect(points(nov, 'saison')).toBe(0);
+    // En été, les tomates en boîte ne deviennent pas « de saison » pour autant.
+    const july = scoreRecipe(chili, { ...ctx, date: '2026-07-01' });
+    expect(july.facts.seasonalProduce).not.toContain('tomates concassées en boîte');
+    // Sans aucun produit frais de saison : aucun point de saison.
+    const pantry = makeRecipe({
+      id: 'placard',
+      ingredients: [ing('lentilles', 150, 'g', 'epicerie'), ing('riz', 100, 'g', 'epicerie')],
+    });
+    expect(points(scoreRecipe(pantry, ctx), 'saison')).toBe(0);
+    expect(scoreRecipe(pantry, ctx).facts.seasonMatch).toBe(false);
+  });
+
+  it('reconnaît les produits transformés', () => {
+    expect(isPreservedIngredient('tomates concassées')).toBe(true);
+    expect(isPreservedIngredient('petits pois surgelés')).toBe(true);
+    expect(isPreservedIngredient('tomates séchées')).toBe(true);
+    expect(isPreservedIngredient('jus de citron')).toBe(true);
+    expect(isPreservedIngredient('poireaux')).toBe(false);
   });
 
   it('temps : bonus de rapidité, malus de dépassement, bonus batch en semaine', () => {

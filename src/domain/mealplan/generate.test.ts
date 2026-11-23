@@ -34,7 +34,9 @@ function mainMeals(plan: WeeklyPlan) {
 }
 
 describe('generateWeeklyPlan : structure', () => {
-  const plan = generate();
+  // Graine pour laquelle le petit jeu de recettes de test permet une semaine sans
+  // assouplissement (le catalogue réel n'en demande aucun, voir les tests QA).
+  const plan = generate(makeProfile(), 3);
 
   it('couvre 7 jours × déjeuner + dîner à partir du lundi', () => {
     expect(plan.weekStart).toBe('2026-11-23');
@@ -89,7 +91,7 @@ describe('generateWeeklyPlan : structure', () => {
   });
 
   it('est déterministe pour une même graine et varie selon la graine', () => {
-    expect(generate(makeProfile(), 1)).toEqual(plan);
+    expect(generate(makeProfile(), 3)).toEqual(plan);
     const signatures = new Set(
       [1, 2, 3, 4, 5, 6].map((seed) =>
         generate(makeProfile(), seed)
