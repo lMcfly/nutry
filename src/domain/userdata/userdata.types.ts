@@ -60,7 +60,7 @@ export interface ShoppingRecord {
 }
 
 /** Version courante du format des données exportées. */
-export const SNAPSHOT_SCHEMA_VERSION = 1;
+export const SNAPSHOT_SCHEMA_VERSION = 2;
 
 /** Toutes les données de la personne, telles qu'exportées ou importées. */
 export interface UserDataSnapshot {

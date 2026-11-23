@@ -6,7 +6,7 @@ import type { ProfileStatus } from './appState';
 import { TabBar } from '../components/TabBar';
 import type { Tab } from '../components/TabBar';
 import { ToastProvider } from '../components/Toast';
-import { DailyQuiz } from '../features/quiz/DailyQuiz';
+import { QuizCard } from '../features/quiz/QuizCard';
 import { applyTheme } from '../hooks/theme';
 import { ShoppingPage } from '../pages/ShoppingPage';
 import { WeekPage } from '../pages/WeekPage';
@@ -130,7 +130,7 @@ function Shell() {
           )}
         </main>
         {ready && <TabBar tabs={TABS} />}
-        {ready && <DailyQuiz />}
+        {ready && <QuizCard />}
       </div>
     </AppStateContext.Provider>
   );

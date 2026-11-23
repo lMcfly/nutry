@@ -33,10 +33,13 @@ app, fonctionne **hors ligne** et garde **toutes tes données sur ton appareil**
 - **Mode « frigo vide »** : coche ce que tu as, Nutry propose les recettes possibles.
 - **Tes avis comptent** : un 👍 ou un 👎 après un repas ajuste les propositions suivantes, de
   façon simple et explicable.
-- **Quiz du jour** : une question de culture générale à chaque ouverture, avec explication et
-  série de bonnes réponses.
+- **La question du moment** : à chaque ouverture de l'app, une nouvelle question de culture
+  générale (dont 20 % de cuisine), jamais deux fois la même avant d'avoir fait le tour, avec
+  explication et série de bonnes réponses d'affilée.
 - **Progrès** : suivi facultatif du poids et du tour de taille, une fois par semaine au plus,
-  avec une tendance lissée qui valorise la régularité.
+  avec une tendance lissée qui valorise la régularité. Le poids n'est pas proposé par défaut
+  aux profils à protéger (mineurs, grossesse, condition de santé, poids bas), qui peuvent
+  l'activer eux-mêmes.
 - **Thème clair et sombre**, interface mobile d'abord, gros boutons, quatre onglets :
   Semaine, Courses, Profil, Progrès.
 
@@ -167,6 +170,8 @@ Les garde-fous sont codés dans le `domain` et testés
 - **aucun déficit** avant 18 ans, pendant une grossesse ou l'allaitement, ou en cas de
   condition de santé déclarée, avec une invitation à consulter ;
 - perte désactivée si l'IMC est bas (moins de 18,5, ou de 22 à partir de 70 ans) ;
+- pour tous ces profils protégés, le **suivi du poids** est masqué par défaut (la personne
+  peut l'activer elle-même) ;
 - pendant une grossesse ou l'allaitement, aucune recette avec alcool ou produit cru ;
 - **allergies** : exclusion stricte, vérifiée par un test sur l'ensemble des recettes ;
 - les calories ne sont pas mises en avant dans l'interface.

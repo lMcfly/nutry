@@ -6,8 +6,13 @@ import type { ResolvedPorts, SerialRunner } from './context';
 export const DEVICE_KEYS = {
   /** Copie du thème (portée `local`) : appliquée avant que la base ne réponde. */
   theme: 'theme',
-  /** Question du jour déjà montrée dans cette session (portée `session`). */
+  /** Carte de la question du moment déjà ouverte dans cette session (portée `session`). */
   quizShown: 'quiz.session',
+  /**
+   * Identifiant de la session (ouverture de l'app) pour le quiz (portée `session`) : une
+   * nouvelle ouverture n'en a pas encore, donc tire une nouvelle question.
+   */
+  quizSessionId: 'quiz.session-id',
   /** Rappel de sauvegarde masqué pour cette session (portée `session`). */
   backupReminderDismissed: 'backup-reminder.dismissed',
 } as const;
@@ -22,12 +27,13 @@ export interface SettingsUseCases {
   /** Copie du thème gardée sur l'appareil, lisible tout de suite (synchrone). */
   readonly cachedTheme: () => Theme | undefined;
   /**
-   * Vrai la première fois dans la session de navigateur, et le note : la question du
-   * jour s'affiche une fois par session, pas à chaque changement d'onglet.
+   * Vrai la première fois dans la session de navigateur, et le note : la carte de la
+   * question du moment s'ouvre une fois par ouverture de l'app, pas à chaque changement
+   * d'onglet ni à chaque rechargement.
    */
-  readonly claimDailyQuizForSession: () => boolean;
-  /** Note la question du jour comme montrée (fin de l'onboarding : place au menu). */
-  readonly markDailyQuizShown: () => void;
+  readonly claimQuizForSession: () => boolean;
+  /** Note la carte du quiz comme montrée (fin de l'onboarding : place au menu). */
+  readonly markQuizShown: () => void;
   /**
    * Demande au navigateur de ne pas évincer les données. À appeler APRÈS l'onboarding,
    * dans le gestionnaire du clic final (jamais au premier chargement).
@@ -48,7 +54,7 @@ export function createSettingsUseCases(
       return next;
     });
 
-  const markDailyQuizShown = () => {
+  const markQuizShown = () => {
     ports.device.set('session', DEVICE_KEYS.quizShown, '1');
   };
 
@@ -65,13 +71,13 @@ export function createSettingsUseCases(
       return isTheme(value) ? value : undefined;
     },
 
-    claimDailyQuizForSession() {
+    claimQuizForSession() {
       if (ports.device.get('session', DEVICE_KEYS.quizShown) === '1') return false;
-      markDailyQuizShown();
+      markQuizShown();
       return true;
     },
 
-    markDailyQuizShown,
+    markQuizShown,
 
     async requestPersistentStorage() {
       const granted = await ports.persistence.request();

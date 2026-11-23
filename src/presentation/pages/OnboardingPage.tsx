@@ -58,13 +58,8 @@ const STEPS: readonly Step[] = [
 ];
 
 export function OnboardingPage() {
-  const {
-    previewProfile,
-    saveProfile,
-    requestPersistentStorage,
-    getCurrentPlan,
-    markDailyQuizShown,
-  } = useDependencies();
+  const { previewProfile, saveProfile, requestPersistentStorage, getCurrentPlan, markQuizShown } =
+    useDependencies();
   const { setProfileStatus } = useAppState();
   const navigate = useNavigate();
   const toast = useToast();
@@ -120,8 +115,8 @@ export function OnboardingPage() {
       // Fin de l'onboarding, dans le gestionnaire du clic (ADR 0009).
       if (result.firstProfile) void requestPersistentStorage();
       await getCurrentPlan();
-      // La question du jour attendra la prochaine ouverture : place au menu.
-      markDailyQuizShown();
+      // La question du moment attendra la prochaine ouverture : place au menu.
+      markQuizShown();
       setProfileStatus('ready');
       void navigate('/semaine', { replace: true });
     } catch {

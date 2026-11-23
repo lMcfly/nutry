@@ -26,6 +26,7 @@ testées, jamais construites dans un composant :
 | `domain/mealplan/generate.ts`             | `PLAN_NOTICES`                                                 |
 | `domain/mealplan/batch.ts`                | `BATCH_PREP_TEXTS` (cuisiner en avance le dimanche)            |
 | `domain/progress/progress.ts`             | messages de régularité et de saisie                            |
+| `domain/quiz/quiz.ts`                     | encouragements après une réponse au quiz                       |
 | `domain/shopping/*`                       | rayons (`SECTION_LABELS`), pluriels, texte de partage          |
 | `application/usecases/data.ts`            | `IMPORT_MESSAGES`, `STORAGE_FAILURE_MESSAGES`                  |
 | `application/usecases/progress.ts`        | `WEIGHT_TRACKING_DISABLED_MESSAGE`                             |

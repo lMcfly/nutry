@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import type { DailyQuizView, QuizAnswerView } from '@application/usecases';
+import type { QuizAnswerView, QuizView } from '@application/usecases';
 import { useDependencies } from '../../app/dependencies';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { Sheet } from '../../components/Sheet';
 import { QUIZ_CATEGORY_LABELS, plural } from '../../i18n/labels';
-import styles from './DailyQuiz.module.css';
+import styles from './QuizCard.module.css';
 
 const LETTERS = ['A', 'B', 'C', 'D'] as const;
 
 /**
- * Carte « question du jour » : à l'ouverture de l'app, une fois par session de
- * navigateur (pas à chaque changement d'onglet). Fermable par ✕, Échap ou glissement.
+ * Carte « question du moment » : une nouvelle question à chaque ouverture de l'app, la
+ * carte s'ouvrant une fois par session (pas à chaque changement d'onglet ni rechargement).
+ * Fermable par ✕, Échap ou glissement ; fermée sans réponse, la question pourra revenir.
  */
-export function DailyQuiz() {
-  const { getDailyQuiz, answerQuiz, claimDailyQuizForSession } = useDependencies();
-  const [quiz, setQuiz] = useState<DailyQuizView | undefined>();
+export function QuizCard() {
+  const { getQuiz, answerQuiz, claimQuizForSession } = useDependencies();
+  const [quiz, setQuiz] = useState<QuizView | undefined>();
   const [answer, setAnswer] = useState<QuizAnswerView | undefined>();
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
@@ -30,14 +31,14 @@ export function DailyQuiz() {
 
   useEffect(() => {
     // Marqué avant la réponse : le double effet du mode strict ne la redemande pas.
-    if (!claimDailyQuizForSession()) return;
-    void getDailyQuiz().then((view) => {
+    if (!claimQuizForSession()) return;
+    void getQuiz().then((view) => {
       if (!mounted.current || !view) return;
       setQuiz(view);
       setAnswer(view.answer);
       setOpen(true);
     });
-  }, [getDailyQuiz, claimDailyQuizForSession]);
+  }, [getQuiz, claimQuizForSession]);
 
   if (!quiz) return null;
 
@@ -62,10 +63,10 @@ export function DailyQuiz() {
       onClose={close}
       title={
         <>
-          <span aria-hidden="true">💡 </span>La question du jour
+          <span aria-hidden="true">💡 </span>La question du moment
         </>
       }
-      closeLabel="Fermer la question du jour"
+      closeLabel="Fermer la question du moment"
       footer={
         answer ? (
           <Button onClick={close} block>
@@ -124,7 +125,7 @@ export function DailyQuiz() {
                 <span aria-hidden="true">🔥 </span>
                 {answer.streak > 0
                   ? `Série : ${plural(answer.streak, 'bonne réponse', 'bonnes réponses')}`
-                  : 'Nouvelle série demain !'}
+                  : 'Nouvelle série à la prochaine question !'}
                 {answer.bestStreak > 0 && (
                   <span className={styles.best}> · record : {answer.bestStreak}</span>
                 )}

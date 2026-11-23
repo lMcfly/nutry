@@ -14,7 +14,6 @@ interface Raw {
   plans: { weekStart: string; generatedAt: string; meals: { id: string; date: string }[] }[];
   ratings: { ratedAt: string; weekStart?: string }[];
   progress: { date: string }[];
-  quiz: { daily?: { date: string } };
   shopping: { weekStart: string }[];
   settings: Record<string, unknown>;
 }
@@ -83,10 +82,6 @@ describe('QA imports durcis', () => {
       [
         'plans.0.generatedAt',
         { ...raw, plans: [{ ...plan, generatedAt: '2026-12-01T00:00:00.000Z' }] },
-      ],
-      [
-        'quiz.daily.date',
-        { ...raw, quiz: { ...raw.quiz, daily: { date: '2026-12-01', questionId: 'q' } } },
       ],
       [
         'shopping.0.weekStart',

@@ -1,4 +1,5 @@
 import type { Transaction } from 'dexie';
+import { migrateQuizStateToSessions } from '../migrations/quizSessions';
 
 /**
  * Schéma versionné de la base IndexedDB `nutry` (voir docs/adr/0009).
@@ -36,6 +37,28 @@ export const DB_VERSIONS: readonly DbVersion[] = [
       quiz: 'id',
       shopping: 'weekStart',
       settings: 'id',
+    },
+  },
+  {
+    // Quiz : « question du jour » (`daily`) → une question à chaque ouverture (`current`).
+    // Tables et index inchangés ; seule la ligne du quiz est transformée (ADR 0011).
+    version: 2,
+    stores: {
+      profile: 'id',
+      plans: 'weekStart',
+      ratings: 'id, ratedAt',
+      progress: 'date',
+      quiz: 'id',
+      shopping: 'weekStart',
+      settings: 'id',
+    },
+    upgrade: async (tx) => {
+      await tx
+        .table<{ id: string; state: unknown }>('quiz')
+        .toCollection()
+        .modify((row) => {
+          row.state = migrateQuizStateToSessions(row.state);
+        });
     },
   },
 ];

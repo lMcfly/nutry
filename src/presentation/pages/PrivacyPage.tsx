@@ -33,7 +33,7 @@ const PROMISES: readonly { emoji: string; title: string; text: string }[] = [
   {
     emoji: '🎨',
     title: 'Ton thème, mémorisé dans le navigateur',
-    text: 'Le thème choisi (et quelques repères de session, comme la question du jour déjà vue) est gardé dans ce navigateur pour un affichage immédiat. « Tout effacer » le supprime aussi.',
+    text: 'Le thème choisi (et quelques repères de session, comme la question du quiz de cette ouverture) est gardé dans ce navigateur pour un affichage immédiat. « Tout effacer » le supprime aussi.',
   },
   {
     emoji: '🍪',

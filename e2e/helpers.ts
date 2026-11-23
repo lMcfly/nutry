@@ -31,7 +31,7 @@ export async function completeOnboarding(page: Page): Promise<void> {
 
 /** Ferme la carte quiz si elle est ouverte. */
 export async function dismissQuiz(page: Page): Promise<void> {
-  const quiz = page.getByRole('dialog', { name: /La question du jour/ });
+  const quiz = page.getByRole('dialog', { name: /La question du moment/ });
   if (await quiz.isVisible().catch(() => false)) {
     await page.keyboard.press('Escape');
     await expect(quiz).toBeHidden();

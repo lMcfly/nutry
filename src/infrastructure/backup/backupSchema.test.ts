@@ -11,6 +11,7 @@ import {
   parseEncryptedPayload,
 } from './backupSchema';
 import { ZodBackupValidator } from './ZodBackupValidator';
+import { SNAPSHOT_SCHEMA_VERSION } from '@domain/userdata';
 
 /** Une vraie sauvegarde, produite par les cas d'usage. */
 async function realBackup(): Promise<Record<string, unknown>> {
@@ -42,7 +43,7 @@ async function realBackup(): Promise<Record<string, unknown>> {
   });
   await uc.addShoppingItem({ label: 'Café', aisle: 'epicerie' });
   await uc.logProgress({ weightKg: 62, waistCm: 70 });
-  const quiz = await uc.getDailyQuiz();
+  const quiz = await uc.getQuiz();
   await uc.answerQuiz({ questionId: quiz?.questionId ?? '', answerIndex: 0 });
   await uc.setTheme('dark');
   await uc.exportData();
@@ -83,7 +84,9 @@ describe('schéma de sauvegarde', () => {
   });
 
   it('signale une sauvegarde d’une version future', () => {
-    expect(parseBackupFile({ app: 'nutry', schemaVersion: 2 })).toMatchObject({
+    expect(
+      parseBackupFile({ app: 'nutry', schemaVersion: SNAPSHOT_SCHEMA_VERSION + 1 }),
+    ).toMatchObject({
       ok: false,
       reason: 'version-future',
     });
@@ -128,6 +131,43 @@ describe('schéma de sauvegarde', () => {
 });
 
 describe('migrations des exports', () => {
+  it('v1 → v2 : la question du jour devient la question de la dernière session', async () => {
+    const v2 = await realBackup();
+    const v1 = {
+      ...v2,
+      schemaVersion: 1,
+      quiz: {
+        seenIds: ['q1'],
+        streak: 1,
+        bestStreak: 2,
+        daily: { date: '2026-11-23', questionId: 'q1' },
+      },
+    };
+    const result = parseBackupFile(v1);
+    expect(result.ok && result.snapshot.schemaVersion).toBe(SNAPSHOT_SCHEMA_VERSION);
+    expect(result.ok && result.snapshot.quiz).toEqual({
+      seenIds: [],
+      streak: 1,
+      bestStreak: 2,
+      current: { sessionId: 'jour-2026-11-23', questionId: 'q1' },
+    });
+    // Un `daily` illisible est ignoré ; un état v1 sans `daily` passe tel quel.
+    const noDaily = parseBackupFile({ ...v1, quiz: { seenIds: [], streak: 0, bestStreak: 0 } });
+    expect(noDaily.ok && noDaily.snapshot.quiz).toEqual({ seenIds: [], streak: 0, bestStreak: 0 });
+    // Le format v2 n'accepte plus `daily` (clé inconnue ignorée, jamais recopiée).
+    const stray = parseBackupFile({ ...v2, quiz: { ...v1.quiz } });
+    expect(stray.ok && stray.snapshot.quiz).toEqual({ seenIds: ['q1'], streak: 1, bestStreak: 2 });
+  });
+
+  it('v2 : refuse une question courante mal formée', async () => {
+    const v2 = await realBackup();
+    const bad = {
+      ...v2,
+      quiz: { seenIds: [], streak: 0, bestStreak: 0, current: { questionId: 'q1' } },
+    };
+    expect(errorsOf(bad).join('\n')).toContain('quiz.current.sessionId');
+  });
+
   it('applique les migrations successives jusqu’à la version courante', () => {
     const migrations = {
       1: (raw: Record<string, unknown>) => ({ ...raw, schemaVersion: 2, renamed: raw['old'] }),

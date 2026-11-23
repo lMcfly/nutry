@@ -8,7 +8,7 @@ import type { ReactElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { createInMemoryPorts } from '@application/testing';
 import type { InMemoryPorts } from '@application/testing';
-import { createUseCases } from '@application/usecases';
+import { DEVICE_KEYS, createUseCases } from '@application/usecases';
 import type { ShareResult, UseCases } from '@application/usecases';
 import type { Profile } from '@domain/profile';
 import type { QuizQuestion, QuizState } from '@domain/quiz';
@@ -53,6 +53,8 @@ export interface SetupOptions {
   readonly quiz?: boolean;
   readonly shareResult?: ShareResult;
   readonly quizState?: QuizState;
+  /** Session de quiz déjà ouverte (portée `session` de l'appareil) : même ouverture. */
+  readonly quizSessionId?: string;
 }
 
 export interface Setup {
@@ -72,6 +74,9 @@ export function createTestUseCases(options: SetupOptions = {}): {
   });
   if (options.profile) ports.state.profile = options.profile;
   if (options.quizState) ports.state.quiz = options.quizState;
+  if (options.quizSessionId) {
+    ports.device.set('session', DEVICE_KEYS.quizSessionId, options.quizSessionId);
+  }
   return { ports, useCases: createUseCases(ports) };
 }
 
@@ -79,7 +84,7 @@ export function createTestUseCases(options: SetupOptions = {}): {
 export function renderApp(options: SetupOptions = {}): Setup {
   const { ports, useCases } = createTestUseCases(options);
   window.location.hash = options.route ?? '';
-  if (!options.quiz) useCases.markDailyQuizShown();
+  if (!options.quiz) useCases.markQuizShown();
   const user = userEvent.setup();
   render(
     <DependenciesProvider value={useCases}>

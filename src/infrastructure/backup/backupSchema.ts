@@ -1,4 +1,5 @@
 import { z } from '../data/zod';
+import { migrateQuizStateToSessions } from '../migrations/quizSessions';
 import type { BackupParseResult, EncryptedPayload } from '@application/ports';
 import { MEAL_SLOTS } from '@domain/mealplan';
 import type {
@@ -198,9 +199,9 @@ const quizSchema = z.object({
   seenIds: list(text(), BACKUP_LIMITS.quizSeen),
   streak: count,
   bestStreak: count,
-  daily: z
+  current: z
     .object({
-      date: isoDate,
+      sessionId: text(),
       questionId: text(),
       answerIndex: z.number().int().min(0).max(3).optional(),
     })
@@ -301,7 +302,6 @@ function checkCoherence(backup: ParsedBackup, ctx: z.RefinementCtx): void {
   backup.progress.forEach((e, i) => {
     day(e.date, ['progress', i, 'date']);
   });
-  day(backup.quiz.daily?.date, ['quiz', 'daily', 'date']);
   backup.shopping.forEach((s, i) => {
     day(s.weekStart, ['shopping', i, 'weekStart']);
   });
@@ -364,11 +364,15 @@ type RawBackup = Record<string, unknown>;
 export type SnapshotMigration = (raw: RawBackup) => RawBackup;
 
 /**
- * Migrations des formats d'export, indexées par version de DÉPART. Vide : la version 1 est
- * la première. Pour un format v2 : incrémenter `SNAPSHOT_SCHEMA_VERSION`, adapter le schéma
- * ci-dessus et ajouter ici `1: (raw) => ({ ...raw, schemaVersion: 2, … })`.
+ * Migrations des formats d'export, indexées par version de DÉPART (n → n + 1). Pour un
+ * nouveau format : incrémenter `SNAPSHOT_SCHEMA_VERSION`, adapter le schéma ci-dessus et
+ * ajouter ici `n: (raw) => ({ ...raw, schemaVersion: n + 1, … })`. Chaque migration reçoit
+ * un fichier NON FIABLE : elle ne lève jamais (le schéma valide le résultat).
  */
-export const SNAPSHOT_MIGRATIONS: Readonly<Record<number, SnapshotMigration>> = {};
+export const SNAPSHOT_MIGRATIONS: Readonly<Record<number, SnapshotMigration>> = {
+  // v1 → v2 : quiz « question du jour » (`daily`) → question à chaque ouverture (`current`).
+  1: (raw) => ({ ...raw, schemaVersion: 2, quiz: migrateQuizStateToSessions(raw['quiz']) }),
+};
 
 const MAX_ERRORS = 5;
 

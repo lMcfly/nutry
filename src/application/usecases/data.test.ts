@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SNAPSHOT_SCHEMA_VERSION } from '@domain/userdata';
 import { createInMemoryPorts } from '../testing';
 import { IMPORT_MAX_LENGTH, IMPORT_MESSAGES, PASSPHRASE_MIN_LENGTH, createUseCases } from '.';
 import { FIXTURE_RECIPES, makeProfile } from '@domain/testing/fixtures';
@@ -33,7 +34,7 @@ describe('export', () => {
     const content = JSON.parse(file.content) as Record<string, unknown>;
     expect(content).toMatchObject({
       app: 'nutry',
-      schemaVersion: 1,
+      schemaVersion: SNAPSHOT_SCHEMA_VERSION,
       exportedAt: '2026-11-23T10:00:00.000Z',
     });
     expect(ports.state.settings.lastBackupAt).toBe('2026-11-23T10:00:00.000Z');
@@ -158,7 +159,7 @@ describe('effacement et rappel de sauvegarde', () => {
   it('efface aussi les valeurs gardées sur l’appareil (thème, session)', async () => {
     const { uc, ports } = await setup();
     await uc.setTheme('dark');
-    uc.markDailyQuizShown();
+    uc.markQuizShown();
     await uc.wipeAllData();
     expect(ports.device.values.local.size).toBe(0);
     expect(ports.device.values.session.size).toBe(0);

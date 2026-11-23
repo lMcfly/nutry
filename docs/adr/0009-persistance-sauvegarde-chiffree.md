@@ -46,7 +46,8 @@ navigateur n'évince les données. Le cœur (domain, application) reste sans bib
 ### IndexedDB (Dexie)
 
 - Base `nutry`, tables `profile`, `plans`, `ratings`, `progress`, `quiz`, `shopping`,
-  `settings`. Le schéma est la liste `DB_VERSIONS` (`infrastructure/db/schema.ts`).
+  `settings`. Le schéma est la liste `DB_VERSIONS` (`infrastructure/db/schema.ts`) ;
+  version 2 : état du quiz par session (ADR 0011).
 - **Ajouter une migration** : ajouter une entrée `{ version: n + 1, stores, upgrade }` à la
   fin (ne jamais modifier une version publiée), `stores` décrivant le schéma complet ;
   `upgrade` transforme les données dans la transaction de montée de version (échec →

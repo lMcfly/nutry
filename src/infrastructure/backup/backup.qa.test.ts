@@ -52,6 +52,15 @@ const QUESTIONS: readonly QuizQuestion[] = [
     category: 'geographie',
     difficulty: 'facile',
   },
+  ...(['q2', 'q3'] as const).map((id): QuizQuestion => ({
+    id,
+    question: `Question ${id} ?`,
+    choices: ['a', 'b', 'c', 'd'],
+    correctIndex: 1,
+    explanation: 'Parce que.',
+    category: 'histoire',
+    difficulty: 'facile',
+  })),
 ];
 
 const dbs: NutryDatabase[] = [];
@@ -112,7 +121,7 @@ async function populate({ uc, ports }: Env): Promise<void> {
   await uc.toggleShoppingItem(list.list.sections[0]?.items[0]?.key ?? '');
   await uc.addShoppingItem({ label: 'Café', aisle: 'epicerie' });
   await uc.logProgress({ weightKg: 62, waistCm: 72 });
-  const quiz = await uc.getDailyQuiz();
+  const quiz = await uc.getQuiz();
   await uc.answerQuiz({ questionId: quiz?.questionId ?? '', answerIndex: 0 });
   // Semaine suivante : un deuxième menu, une deuxième mesure.
   ports.clock.set('2026-12-01T09:00:00.000Z');
@@ -145,7 +154,7 @@ describe('QA sauvegarde : aller-retour avec les vrais adaptateurs', () => {
     expect(before.ratings).toHaveLength(2);
     expect(before.progress).toHaveLength(2);
     expect(before.shopping[0]?.state.manualItems).toHaveLength(1);
-    expect(before.quiz.seenIds).toEqual(['q1']);
+    expect(before.quiz.seenIds).toHaveLength(1);
     expect(before.settings).toMatchObject({ theme: 'dark', persistenceGranted: true });
 
     await env.uc.wipeAllData();
@@ -188,6 +197,56 @@ describe('QA sauvegarde : aller-retour avec les vrais adaptateurs', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { persistenceGranted, ...settings } = before.settings;
     expect(after).toEqual({ ...before, settings });
+  });
+});
+
+describe('QA sauvegarde : import d’un ancien fichier (v1, « question du jour »)', () => {
+  /** Fichier v1 tel qu'exporté avant le quiz « à chaque ouverture ». */
+  async function v1File(daily: Record<string, unknown>): Promise<string> {
+    const env = realEnv();
+    await populate(env);
+    await env.uc.exportData();
+    const current = JSON.parse(lastFile(env).content) as Record<string, unknown>;
+    return JSON.stringify({
+      ...current,
+      schemaVersion: 1,
+      quiz: { seenIds: ['q1', 'q2'], streak: 4, bestStreak: 6, daily },
+    });
+  }
+
+  it('question du jour sans réponse : migrée, redevenue « non vue », série conservée', async () => {
+    const target = realEnv();
+    const content = await v1File({ date: '2026-12-01', questionId: 'q2' });
+    await expect(target.uc.importData({ content })).resolves.toMatchObject({
+      status: 'imported',
+    });
+    const { quiz } = await snapshotOf(target);
+    expect(quiz).toEqual({
+      seenIds: ['q1'],
+      streak: 4,
+      bestStreak: 6,
+      current: { sessionId: 'jour-2026-12-01', questionId: 'q2' },
+    });
+    // La prochaine ouverture tire une question jamais répondue, autre que l'ancienne.
+    const next = await target.uc.getQuiz();
+    expect(next?.questionId).toBe('q3');
+    expect(next?.streak).toBe(4);
+  });
+
+  it('question du jour répondue : la réponse est gardée ; une v1 invalide reste refusée', async () => {
+    const target = realEnv();
+    const content = await v1File({ date: '2026-12-01', questionId: 'q2', answerIndex: 1 });
+    await expect(target.uc.importData({ content })).resolves.toMatchObject({
+      status: 'imported',
+    });
+    expect((await snapshotOf(target)).quiz).toMatchObject({
+      seenIds: ['q1', 'q2'],
+      current: { sessionId: 'jour-2026-12-01', questionId: 'q2', answerIndex: 1 },
+    });
+    const invalid = await v1File({ date: '2026-12-01', questionId: 'q2', answerIndex: 9 });
+    await expect(target.uc.importData({ content: invalid })).resolves.toMatchObject({
+      status: 'invalid',
+    });
   });
 });
 

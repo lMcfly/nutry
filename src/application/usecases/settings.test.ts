@@ -21,13 +21,13 @@ describe('réglages', () => {
     expect(uc.cachedTheme()).toBeUndefined();
   });
 
-  it('montre la question du jour une fois par session', () => {
+  it('ouvre la carte de la question du moment une fois par session', () => {
     const uc = createUseCases(createInMemoryPorts());
-    expect(uc.claimDailyQuizForSession()).toBe(true);
-    expect(uc.claimDailyQuizForSession()).toBe(false);
+    expect(uc.claimQuizForSession()).toBe(true);
+    expect(uc.claimQuizForSession()).toBe(false);
     const other = createUseCases(createInMemoryPorts());
-    other.markDailyQuizShown();
-    expect(other.claimDailyQuizForSession()).toBe(false);
+    other.markQuizShown();
+    expect(other.claimQuizForSession()).toBe(false);
   });
 
   it('demande le stockage persistant et retient la réponse', async () => {
