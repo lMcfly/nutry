@@ -1,0 +1,65 @@
+name: Question de quiz
+description: Propose une question pour le quiz du jour.
+title: '[Quiz] '
+labels: [contenu, quiz]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      placeholder: Quel fleuve traverse Lyon avec la Saône ?
+    validations:
+      required: true
+  - type: input
+    id: bonne
+    attributes:
+      label: Bonne réponse
+    validations:
+      required: true
+  - type: textarea
+    id: mauvaises
+    attributes:
+      label: Trois mauvaises réponses plausibles
+      placeholder: |
+        La Loire
+        La Garonne
+        La Seine
+    validations:
+      required: true
+  - type: textarea
+    id: explication
+    attributes:
+      label: Explication (1 à 2 phrases)
+    validations:
+      required: true
+  - type: dropdown
+    id: categorie
+    attributes:
+      label: Catégorie
+      options:
+        - Histoire
+        - Géographie
+        - Sciences
+        - Arts
+        - Sport
+        - Nature
+        - Cuisine
+    validations:
+      required: true
+  - type: dropdown
+    id: difficulte
+    attributes:
+      label: Difficulté
+      options:
+        - Facile
+        - Moyen
+        - Difficile
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source fiable
+      description: Lien vers une source qui confirme le fait (encyclopédie, institution, article de référence).
+    validations:
+      required: true

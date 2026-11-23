@@ -1,0 +1,67 @@
+name: Bug
+description: Quelque chose ne fonctionne pas comme prévu.
+title: '[Bug] '
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler ce problème !
+        **N'indique aucune donnée personnelle** (poids, mesures, santé) : décris la situation de façon générale.
+  - type: checkboxes
+    id: gravite
+    attributes:
+      label: Santé et sécurité
+      options:
+        - label: Le bug concerne une allergie, un régime, un garde-fou de santé ou un conseil potentiellement dangereux.
+  - type: textarea
+    id: description
+    attributes:
+      label: Que se passe-t-il ?
+      placeholder: Une recette contenant des noix m'est proposée alors que j'ai indiqué une allergie aux fruits à coque.
+    validations:
+      required: true
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Étapes pour reproduire
+      placeholder: |
+        1. Aller dans Profil
+        2. …
+    validations:
+      required: true
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Ce qui était attendu
+    validations:
+      required: true
+  - type: dropdown
+    id: appareil
+    attributes:
+      label: Appareil
+      options:
+        - Android
+        - iPhone ou iPad
+        - Ordinateur
+    validations:
+      required: true
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Utilisation
+      options:
+        - App installée (écran d'accueil)
+        - Dans le navigateur
+    validations:
+      required: true
+  - type: input
+    id: navigateur
+    attributes:
+      label: Navigateur et version
+      placeholder: Chrome 131, Safari iOS 18…
+  - type: textarea
+    id: captures
+    attributes:
+      label: Captures d'écran
+      description: Facultatif. Masque toute information personnelle.

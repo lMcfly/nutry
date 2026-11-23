@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Faille de sécurité
+    url: https://github.com/lMcfly/nutry/security/advisories/new
+    about: Signale une faille en privé plutôt que dans une issue publique.
+  - name: Comment contribuer
+    url: https://github.com/lMcfly/nutry/blob/main/CONTRIBUTING.md
+    about: Prérequis, conventions et règles du projet.

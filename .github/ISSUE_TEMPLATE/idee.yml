@@ -1,0 +1,32 @@
+name: Idée
+description: Propose une amélioration ou une nouvelle fonctionnalité.
+title: '[Idée] '
+labels: [idée]
+body:
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Quel besoin ou quelle difficulté ?
+      description: Décris la situation vécue plutôt que la solution.
+      placeholder: Le dimanche soir, j'aimerais savoir quoi préparer à l'avance pour la semaine…
+    validations:
+      required: true
+  - type: textarea
+    id: proposition
+    attributes:
+      label: Ta proposition
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Autres pistes envisagées
+  - type: checkboxes
+    id: principes
+    attributes:
+      label: Esprit du projet
+      options:
+        - label: L'idée reste bienveillante (pas de culpabilisation ni de comptage de calories mis en avant).
+          required: true
+        - label: L'idée ne nécessite ni compte, ni serveur, ni envoi de données.
+          required: true

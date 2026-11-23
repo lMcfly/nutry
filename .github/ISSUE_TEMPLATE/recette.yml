@@ -1,0 +1,95 @@
+name: Recette
+description: Propose une recette pour le catalogue.
+title: '[Recette] '
+labels: [contenu, recette]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci pour ta recette ! Les valeurs nutritionnelles sont calculées automatiquement depuis la table Ciqual : inutile de les fournir.
+  - type: input
+    id: nom
+    attributes:
+      label: Nom de la recette
+      placeholder: Dahl de lentilles corail au lait de coco
+    validations:
+      required: true
+  - type: dropdown
+    id: niveau
+    attributes:
+      label: Niveau
+      description: Simple = 20 min max et 6 ingrédients max ; Médium = 20 à 45 min ; Expérimenter = saveurs ou techniques nouvelles.
+      options:
+        - Simple
+        - Médium
+        - Expérimenter
+    validations:
+      required: true
+  - type: input
+    id: temps
+    attributes:
+      label: Temps de préparation et de cuisson (minutes)
+      placeholder: 10 min de préparation, 20 min de cuisson
+    validations:
+      required: true
+  - type: input
+    id: portions
+    attributes:
+      label: Nombre de portions
+      placeholder: '2'
+    validations:
+      required: true
+  - type: textarea
+    id: ingredients
+    attributes:
+      label: Ingrédients (quantité, unité, nom)
+      placeholder: |
+        200 g de lentilles corail
+        1 oignon
+        20 cl de lait de coco
+    validations:
+      required: true
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Étapes
+      description: Phrases courtes, au tutoiement.
+    validations:
+      required: true
+  - type: checkboxes
+    id: regimes
+    attributes:
+      label: Régimes compatibles
+      options:
+        - label: Végétarien
+        - label: Végan
+        - label: Sans gluten
+        - label: Sans lactose
+  - type: input
+    id: allergenes
+    attributes:
+      label: Allergènes présents
+      description: Parmi les 14 allergènes réglementaires (gluten, lait, œufs, fruits à coque, arachide, soja, poissons, crustacés, mollusques, céleri, moutarde, sésame, sulfites, lupin). En cas de doute, indique-le.
+    validations:
+      required: true
+  - type: checkboxes
+    id: etiquettes
+    attributes:
+      label: Particularités
+      options:
+        - label: Contient de l'alcool (même cuit)
+        - label: Contient un produit cru (poisson, viande, œuf cru, lait cru…)
+        - label: Adaptée au batch cooking
+        - label: Donne des restes pour un autre repas
+  - type: input
+    id: saisons
+    attributes:
+      label: Saisons
+      placeholder: Automne, hiver
+  - type: checkboxes
+    id: droits
+    attributes:
+      label: Droits
+      options:
+        - label: Cette recette est la mienne ou librement réutilisable, et j'accepte qu'elle soit publiée sous licence MIT.
+          required: true
