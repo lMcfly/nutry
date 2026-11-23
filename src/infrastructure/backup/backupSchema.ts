@@ -55,7 +55,11 @@ const isoDateTime = z
   .string()
   .max(40)
   .regex(/^\d{4}-\d{2}-\d{2}T/, 'date et heure ISO attendues')
-  .refine((s) => !Number.isNaN(Date.parse(s)), 'date et heure ISO attendues');
+  // `Date.parse` accepte le 30 février (reporté au 2 mars) : on vérifie aussi le jour.
+  .refine(
+    (s) => isIsoDate(s.slice(0, 10)) && !Number.isNaN(Date.parse(s)),
+    'date et heure ISO attendues',
+  );
 
 function unique<T>(key: (item: T) => string, label: string) {
   return (items: readonly T[], ctx: z.RefinementCtx) => {
