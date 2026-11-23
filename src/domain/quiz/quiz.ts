@@ -43,8 +43,10 @@ export function pickDailyQuestion(
   let seen = state.seenIds.filter((id) => byId.has(id));
   let remaining = questions.filter((q) => !seen.includes(q.id));
   if (remaining.length === 0) {
+    // Nouveau cycle : la dernière question posée n'est pas reposée dès le lendemain.
+    const last = seen.at(-1);
     seen = [];
-    remaining = [...questions];
+    remaining = questions.length > 1 ? questions.filter((q) => q.id !== last) : [...questions];
   }
   const cuisineSeen = seen.filter((id) => byId.get(id)?.category === 'cuisine').length;
   const wantCuisine = cuisineSeen < CUISINE_SHARE * (seen.length + 1);
