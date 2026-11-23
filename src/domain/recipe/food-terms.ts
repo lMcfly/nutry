@@ -79,6 +79,10 @@ export const CHEESES = [
   'raclette',
   'halloumi',
   'pecorino',
+  'paneer',
+  'grana padano',
+  'gorgonzola',
+  'beaufort',
 ];
 const PULSES = [
   'légumineuses',

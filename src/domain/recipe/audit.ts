@@ -4,7 +4,9 @@ import { hasTag, isBreakfastRecipe, totalMinutes } from './compatibility';
 import {
   ALCOHOL_TERMS,
   ANIMAL_FLESH_TERMS,
+  ANIMAL_RENNET_CHEESES,
   VEGAN_EXTRA_TERMS,
+  VEGETARIAN_CHEESE_EXCEPTIONS,
   isBasicIngredient,
 } from './ingredients';
 import type { Allergen, ProteinType } from './recipe.constants';
@@ -78,7 +80,8 @@ const warning = (code: RecipeIssueCode, message: string): RecipeIssue => ({
  * - végan : ni lait, œufs, poissons, crustacés, mollusques ; protéine végétale ou aucune ;
  *   ni chair animale ni miel ;
  * - végétarien : ni poissons, crustacés, mollusques ; pas de viande ni poisson en protéine ;
- *   aucune chair animale ni gélatine dans les ingrédients ;
+ *   aucune chair animale ni gélatine dans les ingrédients, ni fromage d'appellation à
+ *   présure animale (parmesan, comté…) sauf version dite « végétarienne » ;
  * - sans lactose : aucun allergène `lait` (strict, fromages affinés compris) ;
  * - sans gluten : aucun allergène `gluten`.
  */
@@ -92,10 +95,18 @@ export function checkDietConsistency(recipe: Recipe): RecipeIssue[] {
       );
     }
   };
-  const forbidTerms = (diet: string, terms: readonly string[]) => {
-    for (const ingredient of recipe.ingredients.filter((i) => containsAnyTerm(i.name, terms))) {
+  const forbidTerms = (
+    diet: string,
+    terms: readonly string[],
+    except: readonly string[] = [],
+    reason = 'l’ingrédient',
+  ) => {
+    const forbidden = recipe.ingredients.filter(
+      (i) => containsAnyTerm(i.name, terms) && !containsAnyTerm(i.name, except),
+    );
+    for (const ingredient of forbidden) {
       issues.push(
-        error('regime-ingredient', `${diet} incompatible avec l’ingrédient « ${ingredient.name} »`),
+        error('regime-ingredient', `${diet} incompatible avec ${reason} « ${ingredient.name} »`),
       );
     }
   };
@@ -119,6 +130,12 @@ export function checkDietConsistency(recipe: Recipe): RecipeIssue[] {
       );
     }
     forbidTerms('vegetarien', ANIMAL_FLESH_TERMS);
+    forbidTerms(
+      'vegetarien',
+      ANIMAL_RENNET_CHEESES,
+      VEGETARIAN_CHEESE_EXCEPTIONS,
+      'fromage à présure animale',
+    );
   }
   if (has('sans-lactose')) forbidAllergens('sans-lactose', ['lait']);
   if (has('sans-gluten')) forbidAllergens('sans-gluten', ['gluten']);

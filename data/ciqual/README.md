@@ -43,3 +43,14 @@ Clé = nom d'ingrédient **exactement** tel qu'écrit dans `recipes.json`.
 - L'alcool du vin est compté en entier (pas de perte à la cuisson) : choix conservateur.
 - Une fiche dont l'énergie vaut 0 alors que des macronutriments sont renseignés est incomplète
   (valeur manquante convertie en 0 par la source) : elle est refusée par le test.
+
+## Allergènes, régimes et grossesse
+
+Les règles de déclaration des allergènes des produits du commerce (moutarde → sulfites,
+ketchup → céleri, avoine → gluten…), la règle « végétarien » pour les fromages à présure
+animale (parmesan, comté…) et les cas qui imposent l'étiquette `cru` sont décrits dans
+`docs/adr/0008-regles-contenu-allergenes-regimes.md`. En résumé : en cas de doute sur la
+composition d'un produit courant, l'allergène est déclaré.
+
+Les fromages des recettes sont supposés **pasteurisés**, sauf les pâtes pressées cuites
+(parmesan, emmental), compatibles avec la grossesse selon l'Anses.

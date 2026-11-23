@@ -156,6 +156,34 @@ describe('cohérence régime ↔ allergènes', () => {
     expect(checkDietConsistency(gelatine)[0]?.code).toBe('regime-ingredient');
   });
 
+  it('végétarien ⇒ pas de fromage d’appellation à présure animale, sauf version végétarienne', () => {
+    const veggie = makeRecipe({
+      id: 'r',
+      diets: ['omnivore', 'flexitarien', 'vegetarien'],
+      allergens: ['lait'],
+      mainProtein: 'fromage',
+    });
+    const withCheese = (name: string) => ({
+      ...veggie,
+      ingredients: [ing(name, 50, 'g', 'frais')],
+    });
+    for (const name of ['parmesan', 'Parmigiano Reggiano', 'comté râpé', 'pecorino', 'gruyère']) {
+      const issues = checkDietConsistency(withCheese(name));
+      expect(
+        issues.map((i) => [i.code, i.severity]),
+        name,
+      ).toEqual([['regime-ingredient', 'erreur']]);
+      expect(issues[0]?.message).toContain('présure animale');
+    }
+    for (const name of ['parmesan végétarien', 'mozzarella', 'feta', 'chèvre frais', 'paneer']) {
+      expect(checkDietConsistency(withCheese(name)), name).toEqual([]);
+    }
+    // Hors végétarien (flexitarien, omnivore), le parmesan reste possible.
+    expect(
+      checkDietConsistency({ ...withCheese('parmesan'), diets: ['omnivore', 'flexitarien'] }),
+    ).toEqual([]);
+  });
+
   it('sans lactose ⇒ pas de lait (même fromage affiné) ; sans gluten ⇒ pas de gluten', () => {
     const r = makeRecipe({ id: 's', diets: ['omnivore', 'sans-lactose', 'sans-gluten'] });
     expect(checkDietConsistency({ ...r, allergens: ['lait'] })).toHaveLength(1);
@@ -285,6 +313,13 @@ describe('grossesse et allaitement : ni alcool ni cru', () => {
       ingredients: [ing('vinaigre de vin', 1, 'cuillere-soupe', 'epicerie')],
     });
     expect(checkSafetyTags(vinegar)).toEqual([]);
+    for (const name of ['marsala', 'mirin', 'xérès']) {
+      const recipe = makeRecipe({ id: name, ingredients: [ing(name, 5, 'cl', 'epicerie')] });
+      expect(
+        checkSafetyTags(recipe).map((i) => i.code),
+        name,
+      ).toEqual(['etiquette-alcool-manquante']);
+    }
     expect(
       checkSafetyTags(
         makeRecipe({

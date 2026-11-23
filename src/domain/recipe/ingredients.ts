@@ -98,6 +98,37 @@ export const ALCOHOL_TERMS = [
   'kirsch',
   'saké',
   'liqueur',
+  'champagne',
+  'xérès',
+  'madère',
+  'marsala',
+  'mirin',
+] as const;
+
+/**
+ * Fromages dont l'appellation (AOP) impose une présure animale (caillette de veau ou
+ * d'agneau) : refusés en végétarien, sauf si le nom précise une version végétarienne.
+ * Les autres fromages (mozzarella, feta, chèvre frais, emmental, paneer…) existent
+ * couramment avec un coagulant microbien et restent acceptés (étiquette à vérifier).
+ */
+export const ANIMAL_RENNET_CHEESES = [
+  'parmesan',
+  'parmigiano',
+  'grana padano',
+  'pecorino',
+  'gorgonzola',
+  'comté',
+  'beaufort',
+  'gruyère',
+  'reblochon',
+  'roquefort',
+] as const;
+
+/** Mentions qui lèvent la règle de présure animale (« parmesan végétarien »…). */
+export const VEGETARIAN_CHEESE_EXCEPTIONS = [
+  'végétarien',
+  'végétarienne',
+  'sans présure animale',
 ] as const;
 
 /** Produits animaux non carnés interdits en végan en plus des allergènes (lait, œufs…). */
