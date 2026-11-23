@@ -31,8 +31,8 @@ export default mergeConfig(
         provider: 'v8',
         reporter: ['text', 'html', 'lcov'],
         include: ['src/domain/**/*.ts', 'src/application/**/*.ts'],
-        // Fichiers sans code exécutable : types purs, ports (interfaces), barrels.
-        exclude: ['**/*.types.ts', 'src/application/ports/**', '**/index.ts', '**/*.test.ts'],
+        // Seuls les ports (interfaces pures, garanties par ESLint) et les tests sont exclus.
+        exclude: ['src/application/ports/**', '**/*.test.ts'],
         thresholds: {
           'src/domain/**': { lines: 90, functions: 90, branches: 90, statements: 90 },
           'src/application/**': { lines: 90, functions: 90, branches: 90, statements: 90 },

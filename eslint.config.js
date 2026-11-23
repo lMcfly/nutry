@@ -52,6 +52,20 @@ const PURE_CORE_RESTRICTIONS = {
   ],
 };
 
+/** Globals navigateur interdits dans le cœur (domain, application). */
+const BROWSER_GLOBALS = [
+  'window',
+  'document',
+  'navigator',
+  'localStorage',
+  'sessionStorage',
+  'indexedDB',
+  'fetch',
+  'XMLHttpRequest',
+  'location',
+  'crypto',
+].map((name) => ({ name, message: 'Le cœur ne dépend pas du navigateur (ADR 0001).' }));
+
 export default tseslint.config(
   {
     ignores: ['dist', 'dev-dist', 'coverage', 'playwright-report', 'test-results', 'node_modules'],
@@ -88,9 +102,53 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/domain/**/*.ts', 'src/application/**/*.ts'],
+    files: ['src/domain/**/*.{ts,tsx}', 'src/application/**/*.{ts,tsx}'],
     ignores: ['**/*.test.ts'],
-    rules: { 'no-restricted-imports': ['error', PURE_CORE_RESTRICTIONS] },
+    rules: {
+      'no-restricted-imports': ['error', PURE_CORE_RESTRICTIONS],
+      // Aucun accès au navigateur : le cœur reçoit tout par ses ports.
+      'no-restricted-globals': ['error', ...BROWSER_GLOBALS],
+      // Le temps et l'aléa passent par les ports Clock et RandomSource.
+      'no-restricted-properties': [
+        'error',
+        { object: 'Date', property: 'now', message: 'Utilise le port Clock.' },
+        { object: 'Math', property: 'random', message: 'Utilise le port RandomSource.' },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "NewExpression[callee.name='Date'][arguments.length=0]",
+          message: 'Utilise le port Clock (new Date() sans argument interdit dans le cœur).',
+        },
+        {
+          selector: 'ImportExpression',
+          message: 'Import dynamique interdit dans le domain et l’application.',
+        },
+      ],
+    },
+  },
+  {
+    // Pas de JSX dans le cœur.
+    files: ['src/domain/**/*.tsx', 'src/application/**/*.tsx'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        { selector: 'Program', message: 'Aucun fichier .tsx dans le domain ou l’application.' },
+      ],
+    },
+  },
+  {
+    // Les ports ne contiennent que des types : rien d’exécutable (exclus de la couverture).
+    files: ['src/application/ports/**/*.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: ':matches(FunctionDeclaration, ClassDeclaration, VariableDeclaration)',
+          message: 'Un port ne déclare que des types et interfaces.',
+        },
+      ],
+    },
   },
   {
     files: ['src/presentation/**/*.tsx', 'src/main.tsx'],

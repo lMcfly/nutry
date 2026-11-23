@@ -43,3 +43,12 @@ Quatre couches sous `src/`, avec des alias `@domain`, `@application`, `@infrastr
 - Ajouter une bibliothèque au cœur demande un nouvel ADR (ex. une lib de dates : préférer des
   fonctions pures maison).
 - Les schémas Zod restent dans l'infrastructure, jamais dans le domain.
+
+## Complément (revue de phase 1)
+
+La règle de dépendance est aussi verrouillée contre les contournements suivants :
+
+- **Globals du navigateur** : `tsconfig.core.json` compile `src/domain` et `src/application` sans lib DOM ni types, et ESLint interdit `window`, `document`, `navigator`, `localStorage`, `indexedDB`, `fetch`…
+- **Temps et aléa** : `Date.now()`, `new Date()` sans argument et `Math.random()` sont interdits dans le cœur ; ils passent par les ports `Clock` et `RandomSource`.
+- **Imports dynamiques** (`import('…')`) et **fichiers `.tsx`** interdits dans le cœur.
+- **Ports** : ils ne déclarent que des types (règle ESLint), ce qui justifie leur seule exclusion de la couverture.
