@@ -556,8 +556,8 @@
     }
   },
   "paneer": {
-    "ciqualCode": "19590",
-    "approx": "Pas de paneer dans Ciqual : mozzarella au lait de vache (fromage frais non affiné comparable)."
+    "ciqualCode": "12720",
+    "approx": "Pas de paneer dans Ciqual : fromage à pâte pressée non cuite non allégé (≈ 300 kcal, 21 g de protéines et 24 g de lipides pour 100 g, proche du paneer ; la mozzarella sous-estimait l'énergie d'environ 25 %)."
   },
   "paprika": {
     "ciqualCode": "11049",

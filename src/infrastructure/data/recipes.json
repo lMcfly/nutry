@@ -42,7 +42,7 @@
     "cookMinutes": 0,
     "servings": 2,
     "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
-    "allergens": ["moutarde"],
+    "allergens": ["moutarde", "sulfites"],
     "mainProtein": "legumineuses",
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
@@ -612,7 +612,7 @@
     "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
     "allergens": ["poissons"],
     "mainProtein": "poisson",
-    "seasons": ["printemps", "ete", "automne", "hiver"],
+    "seasons": ["printemps", "ete", "automne"],
     "ingredients": [
       {
         "name": "saumon extra-frais",
@@ -622,23 +622,23 @@
       },
       { "name": "avocat", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "citron vert", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
-      { "name": "ciboulette", "quantity": 1, "unit": "botte", "aisle": "fruits-legumes" },
+      { "name": "concombre", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "riz basmati", "quantity": 120, "unit": "g", "aisle": "epicerie" },
       { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
     ],
     "steps": [
       "Fais cuire le riz 11 minutes, égoutte-le et laisse-le tiédir.",
-      "Demande au poissonnier un saumon extra-frais spécial cru, sans peau ni arêtes, et coupe-le en petits dés.",
-      "Mélange le saumon avec l'avocat en dés, le jus du citron vert, l'huile d'olive et la ciboulette ciselée.",
+      "Demande au poissonnier un saumon extra-frais spécial cru, déjà congelé (sinon, congèle-le 7 jours à −18 °C et décongèle-le au réfrigérateur), sans peau ni arêtes, et coupe-le en petits dés.",
+      "Mélange le saumon avec l'avocat et le concombre en dés, le jus du citron vert et l'huile d'olive.",
       "Sale, poivre et sers aussitôt avec le riz, en gardant le tartare bien au frais jusqu'au service."
     ],
-    "plateBalance": { "vegetables": 0.3, "proteins": 0.4, "starches": 0.3 },
+    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 670,
-      "proteinG": 31.5,
-      "carbsG": 48.1,
-      "fatG": 37.4,
-      "fiberG": 4.8
+      "kcal": 692,
+      "proteinG": 32.2,
+      "carbsG": 52.1,
+      "fatG": 37.5,
+      "fiberG": 5.3
     },
     "tags": ["cru"]
   },
@@ -839,7 +839,7 @@
     "cookMinutes": 15,
     "servings": 2,
     "diets": ["omnivore", "flexitarien", "sans-gluten", "sans-lactose"],
-    "allergens": ["moutarde"],
+    "allergens": ["moutarde", "sulfites"],
     "mainProtein": "volaille",
     "seasons": ["printemps", "automne", "hiver"],
     "ingredients": [
@@ -1233,7 +1233,7 @@
       "Coupe les pommes de terre en fines rondelles et émince les oignons.",
       "Fais-les cuire doucement 20 minutes dans l'huile d'olive, à couvert, en remuant souvent.",
       "Ajoute les épinards décongelés et bien pressés, puis verse les œufs battus salés et poivrés.",
-      "Laisse cuire 6 minutes à feu doux, retourne la tortilla à l'aide d'une assiette et poursuis 4 minutes."
+      "Laisse cuire 6 minutes à feu doux, retourne la tortilla à l'aide d'une assiette et poursuis 4 minutes, jusqu'à ce que le centre soit bien pris."
     ],
     "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
     "nutritionPerServing": {
@@ -1252,7 +1252,7 @@
     "prepMinutes": 10,
     "cookMinutes": 25,
     "servings": 4,
-    "diets": ["omnivore", "flexitarien", "vegetarien"],
+    "diets": ["omnivore", "flexitarien"],
     "allergens": ["lait", "celeri", "gluten", "sulfites"],
     "mainProtein": "fromage",
     "seasons": ["printemps", "ete", "automne", "hiver"],
@@ -1281,7 +1281,7 @@
       "fatG": 13.2,
       "fiberG": 3
     },
-    "tags": ["alcool", "cru"]
+    "tags": ["alcool"]
   },
   {
     "id": "gratin-gnocchis-tomate-mozzarella",
@@ -1333,7 +1333,7 @@
     "ingredients": [
       {
         "name": "hauts de cuisse de poulet",
-        "quantity": 8,
+        "quantity": 6,
         "unit": "piece",
         "aisle": "boucherie-poissonnerie"
       },
@@ -1352,10 +1352,10 @@
     ],
     "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 663,
-      "proteinG": 40.3,
+      "kcal": 567,
+      "proteinG": 31.6,
       "carbsG": 41.7,
-      "fatG": 35,
+      "fatG": 28.3,
       "fiberG": 8.5
     },
     "tags": ["four", "plat-unique", "batch", "restes"]
@@ -1368,7 +1368,7 @@
     "cookMinutes": 30,
     "servings": 4,
     "diets": ["omnivore", "flexitarien", "sans-gluten"],
-    "allergens": ["lait", "moutarde"],
+    "allergens": ["lait", "moutarde", "sulfites"],
     "mainProtein": "volaille",
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
@@ -1729,7 +1729,7 @@
   },
   {
     "id": "filet-mignon-porc-pommes-patate-douce",
-    "name": "Filet mignon de porc aux pommes et purée de patate douce",
+    "name": "Filet mignon de porc aux pommes, haricots verts et purée de patate douce",
     "level": "medium",
     "prepMinutes": 10,
     "cookMinutes": 30,
@@ -1749,21 +1749,22 @@
       { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
       { "name": "patates douces", "quantity": 800, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "huile d'olive", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
-      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" }
+      { "name": "thym", "quantity": 1, "unit": "cuillere-cafe", "aisle": "epicerie" },
+      { "name": "haricots verts surgelés", "quantity": 400, "unit": "g", "aisle": "surgeles" }
     ],
     "steps": [
       "Fais cuire les patates douces épluchées en morceaux 20 minutes dans l'eau bouillante, puis écrase-les avec 1 cuillère d'huile.",
       "Fais dorer le filet mignon sur toutes ses faces dans le reste de l'huile 5 minutes.",
       "Ajoute l'oignon émincé, les pommes en quartiers, le thym et un fond d'eau, puis couvre et laisse cuire 20 minutes.",
-      "Tranche la viande, cuite à cœur, et sers avec les pommes et la purée."
+      "Pendant ce temps, fais cuire les haricots verts 8 minutes dans l'eau bouillante. Tranche la viande, cuite à cœur, et sers avec les pommes, les haricots verts et la purée."
     ],
-    "plateBalance": { "vegetables": 0.35, "proteins": 0.35, "starches": 0.3 },
+    "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 450,
-      "proteinG": 30.2,
-      "carbsG": 49.4,
-      "fatG": 12.7,
-      "fiberG": 8.1
+      "kcal": 483,
+      "proteinG": 32,
+      "carbsG": 54.1,
+      "fatG": 12.9,
+      "fiberG": 10.7
     },
     "tags": []
   },
@@ -1934,7 +1935,7 @@
     "ingredients": [
       { "name": "quinoa", "quantity": 240, "unit": "g", "aisle": "epicerie" },
       { "name": "patates douces", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
-      { "name": "brocoli", "quantity": 400, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "brocoli", "quantity": 600, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "graines de courge", "quantity": 60, "unit": "g", "aisle": "epicerie" },
       { "name": "tahini", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
       { "name": "citron", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
@@ -1949,11 +1950,11 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.2, "starches": 0.35 },
     "nutritionPerServing": {
-      "kcal": 602,
-      "proteinG": 19.7,
-      "carbsG": 65.4,
-      "fatG": 24.6,
-      "fiberG": 13.3
+      "kcal": 618,
+      "proteinG": 21.2,
+      "carbsG": 66.5,
+      "fatG": 24.8,
+      "fiberG": 14.6
     },
     "tags": ["four", "plat-unique", "batch"]
   },
@@ -2169,7 +2170,7 @@
     "name": "Pad thaï au tofu et aux cacahuètes",
     "level": "experiment",
     "prepMinutes": 25,
-    "cookMinutes": 10,
+    "cookMinutes": 12,
     "servings": 4,
     "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
     "allergens": ["soja", "arachides"],
@@ -2198,7 +2199,7 @@
       "Fais tremper les nouilles de riz 10 minutes dans l'eau chaude, puis égoutte-les.",
       "Mélange la pulpe de tamarin, le sucre, le jus d'un citron vert, 3 cuillères d'eau et une pincée de sel : c'est la sauce.",
       "Au wok, fais dorer le tofu en dés dans l'huile 5 minutes, ajoute l'ail, les carottes en julienne et le blanc des oignons.",
-      "Ajoute les nouilles et la sauce, saute 2 minutes, puis les pousses de haricot mungo 1 minute.",
+      "Ajoute les nouilles et la sauce, saute 2 minutes, puis les pousses de haricot mungo 3 minutes, jusqu'à ce qu'elles soient bien chaudes (crues, elles sont déconseillées aux personnes fragiles).",
       "Sers parsemé de cacahuètes concassées, de vert d'oignon, de coriandre et de quartiers de citron vert."
     ],
     "plateBalance": { "vegetables": 0.4, "proteins": 0.25, "starches": 0.35 },
@@ -2338,7 +2339,7 @@
     "cookMinutes": 20,
     "servings": 4,
     "diets": ["omnivore", "flexitarien", "vegetarien", "sans-lactose"],
-    "allergens": ["gluten", "oeufs", "soja", "moutarde", "sesame"],
+    "allergens": ["gluten", "oeufs", "soja", "moutarde", "sesame", "celeri", "sulfites"],
     "mainProtein": "oeufs",
     "seasons": ["automne", "hiver"],
     "ingredients": [
@@ -2401,10 +2402,10 @@
     ],
     "plateBalance": { "vegetables": 0.45, "proteins": 0.3, "starches": 0.25 },
     "nutritionPerServing": {
-      "kcal": 613,
-      "proteinG": 28.3,
-      "carbsG": 59.4,
-      "fatG": 27,
+      "kcal": 689,
+      "proteinG": 33.3,
+      "carbsG": 58.7,
+      "fatG": 33.1,
       "fiberG": 7.6
     },
     "tags": ["monde"]
@@ -2500,13 +2501,13 @@
     "cookMinutes": 40,
     "servings": 4,
     "diets": ["omnivore", "sans-gluten", "sans-lactose"],
-    "allergens": ["moutarde"],
+    "allergens": ["moutarde", "sulfites"],
     "mainProtein": "volaille",
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
       {
         "name": "hauts de cuisse de poulet",
-        "quantity": 8,
+        "quantity": 6,
         "unit": "piece",
         "aisle": "boucherie-poissonnerie"
       },
@@ -2517,7 +2518,7 @@
       { "name": "piment de Cayenne", "quantity": 1, "unit": "pincee", "aisle": "epicerie" },
       { "name": "carottes", "quantity": 300, "unit": "g", "aisle": "fruits-legumes" },
       { "name": "feuilles de laurier", "quantity": 2, "unit": "piece", "aisle": "epicerie" },
-      { "name": "huile de colza", "quantity": 3, "unit": "cuillere-soupe", "aisle": "epicerie" },
+      { "name": "huile de colza", "quantity": 2, "unit": "cuillere-soupe", "aisle": "epicerie" },
       { "name": "riz basmati", "quantity": 240, "unit": "g", "aisle": "epicerie" }
     ],
     "steps": [
@@ -2529,10 +2530,10 @@
     ],
     "plateBalance": { "vegetables": 0.4, "proteins": 0.3, "starches": 0.3 },
     "nutritionPerServing": {
-      "kcal": 791,
-      "proteinG": 41.7,
+      "kcal": 664,
+      "proteinG": 33,
       "carbsG": 60.8,
-      "fatG": 40.2,
+      "fatG": 30,
       "fiberG": 5.6
     },
     "tags": ["batch", "restes", "monde"]
@@ -2611,7 +2612,7 @@
     ],
     "steps": [
       "Fais cuire les patates douces en rondelles 20 minutes à la vapeur, puis laisse refroidir.",
-      "Choisis une daurade extra-fraîche spéciale cru, retire peau et arêtes, et coupe-la en cubes de 1,5 cm.",
+      "Choisis une daurade extra-fraîche spéciale cru, déjà congelée (sinon, congèle-la 7 jours à −18 °C et décongèle-la au réfrigérateur), retire peau et arêtes et coupe-la en cubes de 1,5 cm.",
       "Couvre le poisson du jus des citrons verts avec l'oignon rouge émincé, le piment haché et du sel : laisse « cuire » 15 minutes au frais.",
       "Ajoute le concombre en dés et la coriandre.",
       "Sers bien frais avec la patate douce et le maïs égoutté."
@@ -2762,7 +2763,7 @@
     "cookMinutes": 20,
     "servings": 4,
     "diets": ["omnivore", "flexitarien"],
-    "allergens": ["lait", "gluten", "oeufs", "moutarde"],
+    "allergens": ["lait", "gluten", "oeufs", "moutarde", "sulfites"],
     "mainProtein": "boeuf",
     "seasons": ["printemps", "ete", "automne", "hiver"],
     "ingredients": [
