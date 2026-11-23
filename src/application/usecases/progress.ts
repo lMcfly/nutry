@@ -34,7 +34,10 @@ export const WEIGHT_TRACKING_DISABLED_MESSAGE =
 
 export interface ProgressUseCases {
   readonly getProgressSummary: () => Promise<ProgressView>;
-  /** Une mesure par semaine calendaire ; une saisie à la même date corrige la précédente. */
+  /**
+   * Un point d'étape par semaine calendaire : `created`, ou `updated` si la semaine en a
+   * déjà un (fusion champ par champ, les champs non ressaisis sont conservés).
+   */
   readonly logProgress: (input: LogProgressInput) => Promise<EntryCheck>;
   readonly removeProgress: (date: IsoDate) => Promise<void>;
   /** Active ou désactive le suivi du poids (choix explicite de la personne). */
@@ -77,21 +80,21 @@ export function createProgressUseCases(ports: AppPorts, serial: SerialRunner): P
           return { status: 'invalide', message: WEIGHT_TRACKING_DISABLED_MESSAGE };
         }
         const today = ports.clock.today();
-        const date = input.date ?? today;
-        const existing = await ports.progress.list();
-        // Suivi du poids désactivé : une correction ne doit pas effacer le poids masqué.
-        const hiddenWeight = enabled ? undefined : existing.find((e) => e.date === date)?.weightKg;
-        const weightKg = input.weightKg ?? hiddenWeight;
         const entry: ProgressEntry = {
-          date,
-          ...(weightKg === undefined ? {} : { weightKg }),
+          date: input.date ?? today,
+          ...(input.weightKg === undefined ? {} : { weightKg: input.weightKg }),
           ...(input.waistCm === undefined ? {} : { waistCm: input.waistCm }),
         };
-        const check = recordProgress(existing, enabled ? entry : withoutWeight(entry), today).check;
-        if (check.status === 'nouvelle' || check.status === 'correction') {
-          await ports.progress.save(entry);
+        // Fusion avec le point d'étape de la semaine : un poids masqué y est conservé.
+        const recorded = recordProgress(await ports.progress.list(), entry, today);
+        if (recorded.saved) {
+          // Écrire d'abord : un échec entre les deux ne perd jamais de mesure.
+          await ports.progress.save(recorded.saved);
+          if (recorded.replacedDate !== undefined) {
+            await ports.progress.remove(recorded.replacedDate);
+          }
         }
-        return check;
+        return recorded.check;
       }),
 
     removeProgress: (date) => serial(() => ports.progress.remove(date)),

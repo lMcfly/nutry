@@ -240,16 +240,44 @@ describe('QA progrès', () => {
   it('une mesure par semaine lundi → dimanche', async () => {
     const { ports, uc } = await setup();
     ports.clock.set('2026-11-29T20:00:00.000Z'); // dimanche
-    await expect(uc.logProgress({ weightKg: 62 })).resolves.toEqual({ status: 'nouvelle' });
+    await expect(uc.logProgress({ weightKg: 62 })).resolves.toEqual({ status: 'created' });
     ports.clock.set('2026-11-30T08:00:00.000Z'); // lundi suivant
-    await expect(uc.logProgress({ weightKg: 61.8 })).resolves.toEqual({ status: 'nouvelle' });
+    await expect(uc.logProgress({ weightKg: 61.8 })).resolves.toEqual({ status: 'created' });
     await expect(uc.logProgress({ date: '2026-12-01', weightKg: 61 })).resolves.toMatchObject({
       status: 'invalide',
     });
-    await expect(uc.logProgress({ date: '2026-11-25', weightKg: 61 })).resolves.toMatchObject({
-      status: 'refusee',
-      nextAllowedDate: '2026-11-30',
+    // Rattrapage dans la semaine précédente : complète le point du dimanche.
+    await expect(uc.logProgress({ date: '2026-11-25', waistCm: 70 })).resolves.toEqual({
+      status: 'updated',
     });
+    expect([...ports.state.progress.values()].sort((a, b) => a.date.localeCompare(b.date))).toEqual(
+      [
+        { date: '2026-11-29', weightKg: 62, waistCm: 70 },
+        { date: '2026-11-30', weightKg: 61.8 },
+      ],
+    );
+  });
+
+  it('fusion : un autre jour de la semaine complète et corrige, une seule mesure gardée', async () => {
+    const { ports, uc } = await setup();
+    await uc.logProgress({ weightKg: 62, waistCm: 75 }); // lundi 23
+    ports.clock.set('2026-11-26T08:00:00.000Z');
+    await expect(uc.logProgress({ waistCm: 74 })).resolves.toEqual({ status: 'updated' });
+    expect([...ports.state.progress.values()]).toEqual([
+      { date: '2026-11-26', weightKg: 62, waistCm: 74 },
+    ]);
+  });
+
+  it('non-régression : suivi désactivé, la saisie du tour de taille complète la semaine au poids caché', async () => {
+    const { ports, uc } = await setup();
+    await uc.logProgress({ weightKg: 62 }); // lundi 23
+    await uc.setWeightTracking(false);
+    ports.clock.set('2026-11-25T10:00:00.000Z');
+    await expect(uc.logProgress({ waistCm: 70 })).resolves.toEqual({ status: 'updated' });
+    expect([...ports.state.progress.values()]).toEqual([
+      { date: '2026-11-25', weightKg: 62, waistCm: 70 },
+    ]);
+    expect((await uc.getProgressSummary()).entries).toEqual([{ date: '2026-11-25', waistCm: 70 }]);
   });
 
   it.each<[string, Partial<Profile>]>([
