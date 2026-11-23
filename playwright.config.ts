@@ -6,8 +6,8 @@ const BASE_PATH = '/nutry/';
 
 /**
  * Chromium préinstallé localement (révision différente de celle attendue par
- * @playwright/test). En CI, `npx playwright install chromium` suffit et ce
- * chemin n'existe pas : Playwright prend alors son navigateur par défaut.
+ * @playwright/test). En CI, `npx playwright install --with-deps chromium` suffit et
+ * ce chemin n'existe pas : Playwright prend alors son navigateur par défaut.
  */
 const LOCAL_CHROMIUM = process.env['PW_CHROMIUM_PATH'] ?? '/opt/pw-browsers/chromium';
 const executablePath = existsSync(LOCAL_CHROMIUM) ? LOCAL_CHROMIUM : undefined;
@@ -17,7 +17,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
-  reporter: process.env['CI'] ? 'github' : 'list',
+  // En CI : annotations GitHub + rapport HTML (publié comme artefact si un test échoue).
+  reporter: process.env['CI'] ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: `http://localhost:${PORT}${BASE_PATH}`,
     trace: 'on-first-retry',
