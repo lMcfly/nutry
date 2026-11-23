@@ -1,0 +1,850 @@
+{
+  "agneau haché": {
+    "ciqualCode": "21504",
+    "approx": "Pas d'agneau haché dans Ciqual : épaule d'agneau crue."
+  },
+  "ail": {
+    "ciqualCode": "11000",
+    "gramsPerUnit": {
+      "gousse": 5
+    }
+  },
+  "amandes émondées": {
+    "ciqualCode": "15041"
+  },
+  "ananas": {
+    "ciqualCode": "13002"
+  },
+  "aneth": {
+    "ciqualCode": "11093",
+    "gramsPerUnit": {
+      "botte": 20
+    }
+  },
+  "anneaux de calamar": {
+    "ciqualCode": "10001"
+  },
+  "aubergine": {
+    "ciqualCode": "20053",
+    "gramsPerUnit": {
+      "piece": 300
+    }
+  },
+  "avocat": {
+    "ciqualCode": "13004",
+    "gramsPerUnit": {
+      "piece": 140
+    }
+  },
+  "banane": {
+    "ciqualCode": "13005",
+    "gramsPerUnit": {
+      "piece": 120
+    }
+  },
+  "basilic": {
+    "ciqualCode": "11033",
+    "gramsPerUnit": {
+      "botte": 25
+    }
+  },
+  "beurre": {
+    "ciqualCode": "16400"
+  },
+  "boisson au soja nature": {
+    "ciqualCode": "18900",
+    "gramsPerUnit": {
+      "cl": 10.3
+    }
+  },
+  "bouillon de légumes": {
+    "ciqualCode": "25948",
+    "gramsPerUnit": {
+      "l": 1000
+    }
+  },
+  "boulgour": {
+    "ciqualCode": "9690"
+  },
+  "brocoli": {
+    "ciqualCode": "20057"
+  },
+  "bœuf haché 5 %": {
+    "ciqualCode": "6250"
+  },
+  "cacahuètes": {
+    "ciqualCode": "15001"
+  },
+  "cannelle": {
+    "ciqualCode": "11025",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    }
+  },
+  "carottes": {
+    "ciqualCode": "20009"
+  },
+  "cerneaux de noix": {
+    "ciqualCode": "15005"
+  },
+  "champignons de Paris": {
+    "ciqualCode": "20056"
+  },
+  "chapelure": {
+    "ciqualCode": "7500"
+  },
+  "chou blanc": {
+    "ciqualCode": "20116"
+  },
+  "chou chinois": {
+    "ciqualCode": "20167"
+  },
+  "chou rouge": {
+    "ciqualCode": "20014"
+  },
+  "chou vert": {
+    "ciqualCode": "20069"
+  },
+  "chou-fleur": {
+    "ciqualCode": "20016"
+  },
+  "chèvre frais": {
+    "ciqualCode": "12805",
+    "approx": "Chèvre frais type bûchette (pas de fiche « chèvre frais à tartiner »)."
+  },
+  "ciboulette": {
+    "ciqualCode": "11003",
+    "gramsPerUnit": {
+      "botte": 20
+    }
+  },
+  "citron": {
+    "ciqualCode": "13009",
+    "gramsPerUnit": {
+      "piece": 80
+    }
+  },
+  "citron vert": {
+    "ciqualCode": "13067",
+    "gramsPerUnit": {
+      "piece": 50
+    }
+  },
+  "citronnelle": {
+    "ciqualCode": "11080",
+    "gramsPerUnit": {
+      "piece": 15
+    },
+    "approx": "Pas de citronnelle dans Ciqual : herbes aromatiques fraîches (aliment moyen), partie tendre de la tige."
+  },
+  "citrons confits": {
+    "ciqualCode": "13009",
+    "gramsPerUnit": {
+      "piece": 60
+    },
+    "approx": "Pas de citron confit dans Ciqual : chair de citron (le sel de la saumure est ignoré)."
+  },
+  "compote de pommes sans sucres ajoutés": {
+    "ciqualCode": "13187"
+  },
+  "concombre": {
+    "ciqualCode": "20019",
+    "gramsPerUnit": {
+      "piece": 300
+    }
+  },
+  "coriandre fraîche": {
+    "ciqualCode": "11094",
+    "gramsPerUnit": {
+      "botte": 30
+    }
+  },
+  "courge butternut": {
+    "ciqualCode": "20138"
+  },
+  "courgettes": {
+    "ciqualCode": "20020"
+  },
+  "crevettes crues décortiquées": {
+    "ciqualCode": "10021"
+  },
+  "crème fraîche légère": {
+    "ciqualCode": "19431",
+    "gramsPerUnit": {
+      "cl": 10
+    }
+  },
+  "cuisses de poulet": {
+    "ciqualCode": "36002",
+    "gramsPerUnit": {
+      "piece": 170
+    }
+  },
+  "cumin": {
+    "ciqualCode": "11042",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    }
+  },
+  "curcuma": {
+    "ciqualCode": "11089",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    }
+  },
+  "côtelettes d'agneau": {
+    "ciqualCode": "21500",
+    "gramsPerUnit": {
+      "piece": 50
+    }
+  },
+  "dessert au soja nature": {
+    "ciqualCode": "19693",
+    "gramsPerUnit": {
+      "piece": 125
+    }
+  },
+  "dos de cabillaud": {
+    "ciqualCode": "26043",
+    "gramsPerUnit": {
+      "piece": 140
+    }
+  },
+  "eau": {
+    "ciqualCode": "18066",
+    "gramsPerUnit": {
+      "cl": 10,
+      "l": 1000
+    }
+  },
+  "edamame surgelés": {
+    "ciqualCode": "20541",
+    "approx": "Pas d'edamame dans Ciqual : fèves pelées surgelées crues (légumineuse verte comparable)."
+  },
+  "emmental râpé": {
+    "ciqualCode": "12118"
+  },
+  "endives": {
+    "ciqualCode": "20026",
+    "gramsPerUnit": {
+      "piece": 120
+    }
+  },
+  "escalopes de dinde": {
+    "ciqualCode": "36304",
+    "gramsPerUnit": {
+      "piece": 120
+    }
+  },
+  "farine de blé": {
+    "ciqualCode": "9435"
+  },
+  "fenouil": {
+    "ciqualCode": "20028",
+    "gramsPerUnit": {
+      "piece": 250
+    }
+  },
+  "feta": {
+    "ciqualCode": "12066"
+  },
+  "feuilles de laurier": {
+    "ciqualCode": "11053",
+    "gramsPerUnit": {
+      "piece": 0.2
+    }
+  },
+  "filet mignon de porc": {
+    "ciqualCode": "28204"
+  },
+  "filets de colin": {
+    "ciqualCode": "26129",
+    "gramsPerUnit": {
+      "piece": 120
+    }
+  },
+  "filets de daurade": {
+    "ciqualCode": "26080"
+  },
+  "filets de maquereau": {
+    "ciqualCode": "26051"
+  },
+  "filets de poulet": {
+    "ciqualCode": "36017"
+  },
+  "flageolets cuits": {
+    "ciqualCode": "20508",
+    "gramsPerUnit": {
+      "boite": 265
+    }
+  },
+  "flocons d'avoine": {
+    "ciqualCode": "32140"
+  },
+  "framboises surgelées": {
+    "ciqualCode": "13015",
+    "approx": "La fiche « framboise surgelée » est incomplète (énergie manquante) : framboise crue."
+  },
+  "fromage blanc nature": {
+    "ciqualCode": "19646"
+  },
+  "galettes de sarrasin": {
+    "ciqualCode": "23801",
+    "gramsPerUnit": {
+      "piece": 50
+    }
+  },
+  "garam masala": {
+    "ciqualCode": "11005",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    },
+    "approx": "Pas de garam masala dans Ciqual : curry en poudre (mélange d’épices comparable)."
+  },
+  "gingembre frais": {
+    "ciqualCode": "11074"
+  },
+  "gingembre moulu": {
+    "ciqualCode": "11006",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    }
+  },
+  "gnocchis": {
+    "ciqualCode": "26264"
+  },
+  "graines de chia": {
+    "ciqualCode": "15047",
+    "gramsPerUnit": {
+      "cuillere-soupe": 12
+    }
+  },
+  "graines de courge": {
+    "ciqualCode": "15064"
+  },
+  "graines de moutarde": {
+    "ciqualCode": "11081",
+    "gramsPerUnit": {
+      "cuillere-cafe": 3
+    },
+    "approx": "Pas de graines de moutarde dans Ciqual : épice (aliment moyen)."
+  },
+  "graines de sésame": {
+    "ciqualCode": "15010",
+    "gramsPerUnit": {
+      "cuillere-soupe": 9
+    }
+  },
+  "haricots noirs cuits": {
+    "ciqualCode": "20524",
+    "gramsPerUnit": {
+      "boite": 250
+    },
+    "approx": "Pas de haricot noir dans Ciqual : haricot rouge appertisé égoutté."
+  },
+  "haricots rouges cuits": {
+    "ciqualCode": "20524",
+    "gramsPerUnit": {
+      "boite": 250
+    }
+  },
+  "haricots verts surgelés": {
+    "ciqualCode": "20070"
+  },
+  "hauts de cuisse de poulet": {
+    "ciqualCode": "36002",
+    "gramsPerUnit": {
+      "piece": 100
+    }
+  },
+  "herbes de Provence": {
+    "ciqualCode": "11060",
+    "gramsPerUnit": {
+      "cuillere-cafe": 1
+    }
+  },
+  "houmous": {
+    "ciqualCode": "25621"
+  },
+  "huile d'olive": {
+    "ciqualCode": "17270",
+    "gramsPerUnit": {
+      "cuillere-soupe": 14,
+      "cuillere-cafe": 4.5
+    }
+  },
+  "huile de colza": {
+    "ciqualCode": "17130",
+    "gramsPerUnit": {
+      "cuillere-soupe": 14,
+      "cuillere-cafe": 4.5
+    }
+  },
+  "huile de sésame": {
+    "ciqualCode": "17400",
+    "gramsPerUnit": {
+      "cuillere-soupe": 14
+    }
+  },
+  "jambon blanc": {
+    "ciqualCode": "28902",
+    "gramsPerUnit": {
+      "tranche": 40
+    }
+  },
+  "ketchup": {
+    "ciqualCode": "11008",
+    "gramsPerUnit": {
+      "cuillere-soupe": 17
+    }
+  },
+  "lait de coco": {
+    "ciqualCode": "18041",
+    "gramsPerUnit": {
+      "cl": 10
+    }
+  },
+  "lait demi-écrémé": {
+    "ciqualCode": "19041",
+    "gramsPerUnit": {
+      "cl": 10.3
+    }
+  },
+  "lardons fumés": {
+    "ciqualCode": "28720"
+  },
+  "lentilles corail": {
+    "ciqualCode": "20535"
+  },
+  "lentilles cuites": {
+    "ciqualCode": "20510",
+    "gramsPerUnit": {
+      "boite": 265
+    }
+  },
+  "lentilles vertes": {
+    "ciqualCode": "20585"
+  },
+  "mangue": {
+    "ciqualCode": "13025",
+    "gramsPerUnit": {
+      "piece": 300
+    }
+  },
+  "mayonnaise": {
+    "ciqualCode": "11054",
+    "gramsPerUnit": {
+      "cuillere-soupe": 14
+    }
+  },
+  "maïs doux": {
+    "ciqualCode": "20066",
+    "gramsPerUnit": {
+      "boite": 285
+    }
+  },
+  "menthe": {
+    "ciqualCode": "11027",
+    "gramsPerUnit": {
+      "botte": 25
+    }
+  },
+  "miel": {
+    "ciqualCode": "31008",
+    "gramsPerUnit": {
+      "cuillere-soupe": 21
+    }
+  },
+  "moules": {
+    "ciqualCode": "10014",
+    "ediblePortion": 0.25
+  },
+  "moutarde": {
+    "ciqualCode": "11013",
+    "gramsPerUnit": {
+      "cuillere-soupe": 15,
+      "cuillere-cafe": 5
+    }
+  },
+  "moutarde à l'ancienne": {
+    "ciqualCode": "11021",
+    "gramsPerUnit": {
+      "cuillere-soupe": 15
+    }
+  },
+  "mozzarella": {
+    "ciqualCode": "19590"
+  },
+  "muscade": {
+    "ciqualCode": "11048",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    }
+  },
+  "noix de cajou": {
+    "ciqualCode": "15054"
+  },
+  "nouilles de riz": {
+    "ciqualCode": "9900",
+    "approx": "Nouilles de riz plates : fiche « vermicelles de riz sèches, crues » (même produit, autre forme)."
+  },
+  "nuoc-mâm": {
+    "ciqualCode": "11194",
+    "gramsPerUnit": {
+      "cuillere-soupe": 18
+    }
+  },
+  "oeufs": {
+    "ciqualCode": "22000",
+    "gramsPerUnit": {
+      "piece": 55
+    }
+  },
+  "oignon": {
+    "ciqualCode": "20034",
+    "gramsPerUnit": {
+      "piece": 100
+    }
+  },
+  "oignon rouge": {
+    "ciqualCode": "20238",
+    "gramsPerUnit": {
+      "piece": 100
+    }
+  },
+  "oignons nouveaux": {
+    "ciqualCode": "20323",
+    "gramsPerUnit": {
+      "botte": 150
+    },
+    "approx": "Seule fiche « oignon nouveau » : sauté sans matière grasse."
+  },
+  "olives noires": {
+    "ciqualCode": "13032"
+  },
+  "olives vertes": {
+    "ciqualCode": "13033"
+  },
+  "orange": {
+    "ciqualCode": "13034",
+    "gramsPerUnit": {
+      "piece": 150
+    }
+  },
+  "origan": {
+    "ciqualCode": "11035",
+    "gramsPerUnit": {
+      "cuillere-cafe": 1
+    }
+  },
+  "pain complet": {
+    "ciqualCode": "7110",
+    "gramsPerUnit": {
+      "tranche": 40
+    }
+  },
+  "pak choï": {
+    "ciqualCode": "20340",
+    "gramsPerUnit": {
+      "piece": 150
+    }
+  },
+  "paneer": {
+    "ciqualCode": "19590",
+    "approx": "Pas de paneer dans Ciqual : mozzarella au lait de vache (fromage frais non affiné comparable)."
+  },
+  "paprika": {
+    "ciqualCode": "11049",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    }
+  },
+  "paprika fumé": {
+    "ciqualCode": "11049",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    }
+  },
+  "parmesan": {
+    "ciqualCode": "12120"
+  },
+  "patates douces": {
+    "ciqualCode": "4101"
+  },
+  "pavés de saumon": {
+    "ciqualCode": "26036",
+    "gramsPerUnit": {
+      "piece": 125
+    }
+  },
+  "persil": {
+    "ciqualCode": "11014",
+    "gramsPerUnit": {
+      "botte": 40
+    }
+  },
+  "petits pois surgelés": {
+    "ciqualCode": "20084"
+  },
+  "piment d'Espelette": {
+    "ciqualCode": "11088",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    },
+    "approx": "Pas de piment d'Espelette dans Ciqual : piment de Cayenne en poudre."
+  },
+  "piment de Cayenne": {
+    "ciqualCode": "11088",
+    "gramsPerUnit": {
+      "cuillere-cafe": 2,
+      "pincee": 0.3
+    }
+  },
+  "piment rouge": {
+    "ciqualCode": "20151",
+    "gramsPerUnit": {
+      "piece": 10
+    }
+  },
+  "poire": {
+    "ciqualCode": "13037",
+    "gramsPerUnit": {
+      "piece": 150
+    }
+  },
+  "poireaux": {
+    "ciqualCode": "20039"
+  },
+  "pois chiches cuits": {
+    "ciqualCode": "20532",
+    "gramsPerUnit": {
+      "boite": 265
+    }
+  },
+  "pois chiches secs": {
+    "ciqualCode": "20516"
+  },
+  "poivrons": {
+    "ciqualCode": "20041",
+    "gramsPerUnit": {
+      "piece": 150
+    }
+  },
+  "pommes": {
+    "ciqualCode": "13039",
+    "gramsPerUnit": {
+      "piece": 150
+    }
+  },
+  "pommes de terre": {
+    "ciqualCode": "4008"
+  },
+  "potiron": {
+    "ciqualCode": "20044",
+    "ediblePortion": 0.7
+  },
+  "pousses de haricot mungo": {
+    "ciqualCode": "20183"
+  },
+  "pruneaux": {
+    "ciqualCode": "13042"
+  },
+  "pulpe de tamarin": {
+    "ciqualCode": "13042",
+    "gramsPerUnit": {
+      "cuillere-soupe": 20
+    },
+    "approx": "La fiche « tamarin » est incomplète (énergie manquante) : pruneau sec (pulpe de fruit séché comparable)."
+  },
+  "purée de cacahuète": {
+    "ciqualCode": "15202",
+    "gramsPerUnit": {
+      "cuillere-soupe": 16
+    }
+  },
+  "pâte filo": {
+    "ciqualCode": "23445"
+  },
+  "pâtes complètes": {
+    "ciqualCode": "9870"
+  },
+  "quinoa": {
+    "ciqualCode": "9340"
+  },
+  "riz arborio": {
+    "ciqualCode": "9100",
+    "approx": "Riz rond pour risotto : riz blanc cru."
+  },
+  "riz basmati": {
+    "ciqualCode": "9119"
+  },
+  "riz complet": {
+    "ciqualCode": "9102"
+  },
+  "riz jasmin": {
+    "ciqualCode": "9119"
+  },
+  "riz rond": {
+    "ciqualCode": "9100"
+  },
+  "rumsteck": {
+    "ciqualCode": "6206"
+  },
+  "safran": {
+    "ciqualCode": "11039",
+    "gramsPerUnit": {
+      "pincee": 0.1
+    }
+  },
+  "salade verte": {
+    "ciqualCode": "25604",
+    "gramsPerUnit": {
+      "piece": 250
+    }
+  },
+  "sauce soja": {
+    "ciqualCode": "11104",
+    "gramsPerUnit": {
+      "cuillere-soupe": 16
+    }
+  },
+  "saumon extra-frais": {
+    "ciqualCode": "26036"
+  },
+  "semoule": {
+    "ciqualCode": "9610"
+  },
+  "semoule complète": {
+    "ciqualCode": "9610",
+    "approx": "Pas de semoule complète crue dans Ciqual : semoule de blé dur crue (fibres sous-estimées)."
+  },
+  "sirop d'érable": {
+    "ciqualCode": "31034",
+    "gramsPerUnit": {
+      "cuillere-soupe": 20
+    }
+  },
+  "spaghetti": {
+    "ciqualCode": "9810"
+  },
+  "spaghetti complets": {
+    "ciqualCode": "9870"
+  },
+  "steaks hachés 5 %": {
+    "ciqualCode": "6250",
+    "gramsPerUnit": {
+      "piece": 100
+    }
+  },
+  "sucre": {
+    "ciqualCode": "31016"
+  },
+  "sucre de canne": {
+    "ciqualCode": "31017",
+    "gramsPerUnit": {
+      "cuillere-soupe": 12,
+      "cuillere-cafe": 4
+    }
+  },
+  "tagliatelles aux œufs": {
+    "ciqualCode": "9821"
+  },
+  "tahini": {
+    "ciqualCode": "15203",
+    "gramsPerUnit": {
+      "cuillere-soupe": 15
+    }
+  },
+  "thon au naturel": {
+    "ciqualCode": "26039",
+    "gramsPerUnit": {
+      "boite": 104
+    }
+  },
+  "thym": {
+    "ciqualCode": "11038",
+    "gramsPerUnit": {
+      "cuillere-cafe": 1
+    }
+  },
+  "tofu fumé": {
+    "ciqualCode": "20912"
+  },
+  "tofu nature": {
+    "ciqualCode": "20904"
+  },
+  "tomates": {
+    "ciqualCode": "20276"
+  },
+  "tomates cerises": {
+    "ciqualCode": "20172"
+  },
+  "tomates concassées": {
+    "ciqualCode": "20169",
+    "gramsPerUnit": {
+      "boite": 400
+    }
+  },
+  "tortillas de blé": {
+    "ciqualCode": "7815",
+    "gramsPerUnit": {
+      "piece": 40
+    }
+  },
+  "tortillas de maïs": {
+    "ciqualCode": "7813",
+    "gramsPerUnit": {
+      "piece": 25
+    }
+  },
+  "vermicelles de riz": {
+    "ciqualCode": "9900"
+  },
+  "vin blanc sec": {
+    "ciqualCode": "5215",
+    "gramsPerUnit": {
+      "cl": 9.9
+    }
+  },
+  "vinaigre de riz": {
+    "ciqualCode": "11018",
+    "gramsPerUnit": {
+      "cuillere-soupe": 15
+    },
+    "approx": "Pas de vinaigre de riz dans Ciqual : vinaigre (aliment générique)."
+  },
+  "yaourt nature": {
+    "ciqualCode": "19593",
+    "gramsPerUnit": {
+      "piece": 125
+    }
+  },
+  "échalote": {
+    "ciqualCode": "20097",
+    "gramsPerUnit": {
+      "piece": 30
+    }
+  },
+  "échine de porc": {
+    "ciqualCode": "28302"
+  },
+  "épaule d'agneau désossée": {
+    "ciqualCode": "21504"
+  },
+  "épinards frais": {
+    "ciqualCode": "20059"
+  },
+  "épinards surgelés": {
+    "ciqualCode": "20059",
+    "approx": "Pas de fiche « épinard surgelé cru » : épinard cru."
+  }
+}
