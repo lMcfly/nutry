@@ -20,7 +20,7 @@ test.describe('Content Security Policy', () => {
   test('aucune violation sur tous les écrans, import de sauvegarde compris', async ({ page }) => {
     await page.goto('./');
     await completeOnboarding(page);
-    await expect(page.getByTestId('meal')).toHaveCount(14);
+    await expect(page.getByTestId('meal')).toHaveCount(1);
     // Fiche recette (catalogue validé par Zod, chargé à la demande).
     await page.getByTestId('meal').first().getByRole('link').first().click();
     await expect(page).toHaveURL(/#\/recette\//);
@@ -30,6 +30,12 @@ test.describe('Content Security Policy', () => {
       await dismissQuiz(page);
       await expect(page.locator('main')).toBeVisible();
     }
+
+    // « Mes données » : la feuille plein écran du Profil.
+    await page.goto('./#/profil');
+    await dismissQuiz(page);
+    await page.getByRole('button', { name: 'Mes données' }).click();
+    await expect(page.getByRole('dialog', { name: 'Mes données' })).toBeVisible();
 
     // Import d'une sauvegarde invalide : le schéma Zod de sauvegarde s'exécute.
     await page.getByLabel('Choisir une sauvegarde à importer').setInputFiles({

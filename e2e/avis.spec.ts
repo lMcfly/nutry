@@ -1,5 +1,5 @@
 import { expect, test } from './fixtures';
-import { completeOnboarding } from './helpers';
+import { collectWeekNames, completeOnboarding, dayTabs, dismissCelebration } from './helpers';
 
 test('👎 « pas aimé » puis « Nouveau menu » : le plat n’est plus dans la semaine', async ({
   page,
@@ -7,22 +7,25 @@ test('👎 « pas aimé » puis « Nouveau menu » : le plat n’est plus dans l
   await page.goto('./');
   await completeOnboarding(page);
 
-  const meals = page.getByTestId('meal');
-  await expect(meals).toHaveCount(14);
-  const first = meals.first();
-  const disliked = (await first.getByRole('heading').innerText()).trim();
+  const meal = page.getByTestId('meal');
+  await expect(meal).toHaveCount(1);
+  await expect(dayTabs(page)).toHaveCount(7);
+  const disliked = (await meal.getByRole('heading').innerText()).trim();
 
-  await first.getByRole('button', { name: 'Pas pour moi' }).click();
-  await first.getByText('Pas aimé le goût', { exact: true }).click();
+  await meal.getByRole('button', { name: 'Pas pour moi' }).click();
+  const reasons = page.getByRole('dialog', { name: 'Une raison ?' });
+  await reasons.getByText('Pas aimé le goût', { exact: true }).click();
   // Le toast propose de remplacer le plat tout de suite.
   await expect(page.getByRole('button', { name: 'Remplacer ce plat maintenant' })).toBeVisible();
+  // Premier geste du jour : Nutry gagne sa première feuille.
+  await dismissCelebration(page);
 
-  await page.getByRole('button', { name: /Nouveau menu/ }).click();
+  await page.getByRole('button', { name: 'Nouveau menu' }).click();
   const confirm = page.getByRole('alertdialog', { name: 'Un nouveau menu ?' });
   await confirm.getByRole('button', { name: 'Oui, on change' }).click();
   await expect(page.getByText('Ton nouveau menu est prêt.')).toBeVisible();
 
-  await expect(meals).toHaveCount(14);
-  const names = (await meals.getByRole('heading').allInnerTexts()).map((n) => n.trim());
+  const names = await collectWeekNames(page);
+  expect(names).toHaveLength(14);
   expect(names).not.toContain(disliked);
 });

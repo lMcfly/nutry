@@ -30,8 +30,15 @@ test('une nouvelle question à chaque ouverture, la même pendant la session', a
   // Réponse : la série démarre (ou reste à 0), le résultat s'affiche.
   await quizCard(first).getByRole('button').filter({ hasText: /^A/ }).click();
   await expect(quizCard(first).getByText(STREAK).first()).toBeVisible();
+  // Première réponse : Nutry gagne sa première feuille, la célébration passe devant la carte.
+  const celebration = first.getByRole('dialog', { name: 'Bravo !' });
+  await expect(celebration).toBeVisible();
+  await celebration.getByRole('button', { name: 'Génial !' }).click();
+  await expect(celebration).toBeHidden();
   await first.keyboard.press('Escape');
   await expect(quizCard(first)).toBeHidden();
+  // Laisse l'acquittement de la célébration s'écrire avant de recharger.
+  await first.waitForTimeout(300);
 
   // Rechargement dans la même session : pas de nouvelle carte…
   await first.reload();
