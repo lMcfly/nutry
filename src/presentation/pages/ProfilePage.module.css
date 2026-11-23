@@ -135,6 +135,26 @@
   font-weight: var(--font-weight-bold);
 }
 
+/* Petits écrans (360 × 640) : Nutry et les marges se resserrent. */
+@media (max-height: 680px) {
+  .heroNutry {
+    --nutry-size: 4.75rem;
+  }
+
+  .hero {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .tiles {
+    gap: var(--space-1);
+  }
+
+  /* L'humeur reste visible sur le visage de Nutry et dans sa description accessible. */
+  .mood {
+    display: none;
+  }
+}
+
 /* Écrans hauts (Pixel 7) : on respire, Nutry en plus grand et des tuiles plus généreuses. */
 @media (min-height: 760px) {
   .heroNutry {

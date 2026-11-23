@@ -399,7 +399,9 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
             <Nutry look={companion.look} mood={companion.mood} size="l" />
           </div>
           <div className={styles.heroText}>
-            <Badge tone="primary">{COMPANION_MOOD_LABELS[companion.mood]}</Badge>
+            <span className={styles.mood}>
+              <Badge tone="primary">{COMPANION_MOOD_LABELS[companion.mood]}</Badge>
+            </span>
             <p className={styles.message}>{companion.message}</p>
             <p className={styles.streak}>
               <span aria-hidden="true">🔥 </span>
