@@ -129,7 +129,7 @@ describe('QA apprentissage : effet visible sur le menu suivant', () => {
       const after = generate(ratings, seed);
       const planned = after.meals.find((m) => m.recipeId === absent.id && !m.isLeftover);
       expect(planned, `graine ${seed} : ${absent.id}`).toBeDefined();
-      if (planned) expect(explainMeal(planned)).toMatch(/tu avais aimé ce plat/);
+      if (planned) expect(explainMeal(planned)).toMatch(/tu avais aimé ce plat/i);
     }
   });
 

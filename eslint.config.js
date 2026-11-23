@@ -68,7 +68,15 @@ const BROWSER_GLOBALS = [
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'dev-dist', 'coverage', 'playwright-report', 'test-results', 'node_modules'],
+    ignores: [
+      'dist',
+      'dev-dist',
+      'coverage',
+      'playwright-report',
+      'test-results',
+      'node_modules',
+      '.claude/worktrees',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,

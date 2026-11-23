@@ -26,3 +26,6 @@ npm-debug.log*
 
 # Claude Code : réglages locaux
 .claude/settings.local.json
+
+# Copies de travail des agents Claude Code
+.claude/worktrees/

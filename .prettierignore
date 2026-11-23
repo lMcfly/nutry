@@ -6,3 +6,6 @@ test-results
 package-lock.json
 PROMPT.md
 .claude
+# Table Ciqual brute (source ANSES, conservée telle quelle)
+data/ciqual/ciqual-2025.json
+.claude/worktrees
