@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { createInMemoryPorts } from '../testing';
 import { createUseCases } from '.';
+import type { PlanResult, PlanView } from '.';
 import { FIXTURE_RECIPES, makeProfile } from '@domain/testing/fixtures';
+
+function ready(result: PlanResult): PlanView {
+  if (result.status !== 'ready') throw new Error('menu attendu');
+  return result;
+}
 
 const setup = async () => {
   const ports = createInMemoryPorts({ recipes: FIXTURE_RECIPES });
@@ -79,6 +85,78 @@ describe('avis 👍/👎', () => {
     const ids = new Set(next.plan.meals.map((m) => m.recipeId));
     const stillThere = disliked.filter((m) => ids.has(m.recipeId)).length;
     expect(stillThere).toBeLessThan(disliked.length);
+  });
+
+  it('👎 « pas aimé » : la recette sort du menu suivant tant qu’une alternative existe', async () => {
+    for (const seed of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      const ports = createInMemoryPorts({ recipes: FIXTURE_RECIPES, seed });
+      const uc = createUseCases(ports);
+      await uc.saveProfile(makeProfile());
+      const plan = ready(await uc.getCurrentPlan()).plan;
+      const meal = plan.meals.find((m) => !m.isLeftover);
+      if (!meal) throw new Error('repas attendu');
+      await uc.rateMeal({
+        weekStart: plan.weekStart,
+        mealId: meal.id,
+        verdict: 'down',
+        reason: 'pas-aime',
+      });
+      const next = ready(await uc.generateWeeklyPlan()).plan;
+      expect(
+        next.meals.map((m) => m.recipeId),
+        `graine ${seed}`,
+      ).not.toContain(meal.recipeId);
+      expect(next.meals.some((m) => m.relaxed.includes('evitee'))).toBe(false);
+    }
+  });
+
+  it('👎 « pas aimé » : seule recette possible, elle reste mais c’est signalé', async () => {
+    const only = FIXTURE_RECIPES.filter((r) => !r.tags.includes('petit-dejeuner')).slice(0, 1);
+    const ports = createInMemoryPorts({ recipes: only });
+    const uc = createUseCases(ports);
+    await uc.saveProfile(makeProfile());
+    const plan = ready(await uc.getCurrentPlan()).plan;
+    const meal = plan.meals.find((m) => !m.isLeftover);
+    if (!meal) throw new Error('repas attendu');
+    await uc.rateMeal({
+      weekStart: plan.weekStart,
+      mealId: meal.id,
+      verdict: 'down',
+      reason: 'pas-aime',
+    });
+    const next = ready(await uc.generateWeeklyPlan()).plan;
+    expect(next.meals.some((m) => m.relaxed.includes('evitee'))).toBe(true);
+  });
+
+  it('👍 : le score de la recette monte et elle entre dans le menu suivant', async () => {
+    // Deux mondes identiques (même graine, mêmes actions), sauf le 👍.
+    const world = async (like: boolean) => {
+      const ports = createInMemoryPorts({ recipes: FIXTURE_RECIPES, seed: 11 });
+      const uc = createUseCases(ports);
+      await uc.saveProfile(makeProfile());
+      const plan = ready(await uc.getCurrentPlan()).plan;
+      const meal = plan.meals.find((m) => !m.isLeftover && m.slot === 'diner');
+      if (!meal) throw new Error('repas attendu');
+      const [alternative] = await uc.getMealAlternatives(meal.id);
+      if (!alternative) throw new Error('alternative attendue');
+      await uc.replaceMeal({ mealId: meal.id, recipeId: alternative.recipe.id });
+      if (like) await uc.rateMeal({ weekStart: plan.weekStart, mealId: meal.id, verdict: 'up' });
+      const next = ready(await uc.generateWeeklyPlan()).plan;
+      return { recipeId: alternative.recipe.id, next };
+    };
+    const neutral = await world(false);
+    const liked = await world(true);
+    const notes = (meals: typeof liked.next.meals) =>
+      meals
+        .find((m) => m.recipeId === liked.recipeId && !m.isLeftover)
+        ?.score.components.find((c) => c.key === 'notes')?.points ?? 0;
+
+    expect(liked.next.meals.map((m) => m.recipeId)).toContain(liked.recipeId);
+    expect(notes(liked.next.meals)).toBeGreaterThan(0);
+    const likedMeal = liked.next.meals.find((m) => m.recipeId === liked.recipeId);
+    expect(likedMeal?.score.facts.ratedPositively).toBe(true);
+    // Sans le 👍, rien ne la favorise.
+    expect(notes(neutral.next.meals)).toBe(0);
   });
 
   it('liste les favoris compatibles avec le profil actuel', async () => {

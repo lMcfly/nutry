@@ -18,6 +18,9 @@ import { useAsync } from '../hooks/useAsync';
 import { formatDayLong, formatDayShort } from '../i18n/labels';
 import styles from './WeekPage.module.css';
 
+export const DISLIKED_TOAST = 'Compris : ce plat ne reviendra plus dans tes prochains menus.';
+export const REPLACE_NOW_LABEL = 'Remplacer ce plat maintenant';
+
 interface WeekData {
   readonly view: PlanView;
   readonly balance: readonly BalanceGauge[];
@@ -92,6 +95,15 @@ export function WeekPage() {
   const onReason = (view: PlanView) => (meal: PlannedMeal, reason: RatingReason) => {
     void run(async () => {
       await rateMeal({ weekStart: view.plan.weekStart, mealId: meal.id, verdict: 'down', reason });
+      if (reason === 'pas-aime') {
+        // L'avis écarte déjà ce plat des prochains menus ; on propose d'agir tout de suite.
+        toast.show(DISLIKED_TOAST, 'info', {
+          label: REPLACE_NOW_LABEL,
+          onClick: () => {
+            setReplacing(meal);
+          },
+        });
+      }
       reload();
     });
   };

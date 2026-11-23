@@ -6,7 +6,7 @@ import { ChipGroup, RadioGroup } from './Choice';
 import { Gauge } from './Gauge';
 import { Sheet } from './Sheet';
 import { Stepper } from './Stepper';
-import { TOAST_DURATION, ToastProvider, useToast } from './Toast';
+import { TOAST_ACTION_DURATION, TOAST_DURATION, ToastProvider, useToast } from './Toast';
 import { Toggle } from './Toggle';
 
 function SheetHarness({ variant }: { readonly variant?: 'sheet' | 'dialog' }) {
@@ -190,6 +190,44 @@ describe('Toast', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Liste copiée');
     act(() => {
       vi.advanceTimersByTime(TOAST_DURATION + 10);
+    });
+    expect(screen.getByRole('status')).toBeEmptyDOMElement();
+    vi.useRealTimers();
+  });
+
+  it('propose une action, plus longtemps, et se ferme au clic', () => {
+    vi.useFakeTimers();
+    const onClick = vi.fn();
+    function Trigger() {
+      const toast = useToast();
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            toast.show('Compris', 'info', { label: 'Remplacer', onClick });
+          }}
+        >
+          Noter
+        </button>
+      );
+    }
+    render(
+      <ToastProvider>
+        <Trigger />
+      </ToastProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Noter' }));
+    act(() => {
+      vi.advanceTimersByTime(TOAST_DURATION + 10);
+    });
+    const action = screen.getByRole('button', { name: 'Remplacer' });
+    fireEvent.click(action);
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(screen.queryByRole('button', { name: 'Remplacer' })).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Noter' }));
+    act(() => {
+      vi.advanceTimersByTime(TOAST_ACTION_DURATION + 10);
     });
     expect(screen.getByRole('status')).toBeEmptyDOMElement();
     vi.useRealTimers();
