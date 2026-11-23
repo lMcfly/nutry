@@ -45,15 +45,20 @@ export function ShoppingPage() {
   const [label, setLabel] = useState('');
   const [aisle, setAisle] = useState<Aisle | ''>('');
   const [resetSeen, setResetSeen] = useState(false);
+  /** Écritures en cours : la liste est annoncée « occupée » tant qu'elles ne sont pas enregistrées. */
+  const [pending, setPending] = useState(0);
 
   const load = useCallback(() => getShoppingList(), [getShoppingList]);
   const { state, setData } = useAsync<ShoppingResult>(load);
 
   const apply = async (action: Promise<ShoppingResult>) => {
+    setPending((n) => n + 1);
     try {
       setData(await action);
     } catch {
       toast.show('Oups, ça n’a pas fonctionné. Réessaie.', 'error');
+    } finally {
+      setPending((n) => n - 1);
     }
   };
 
@@ -139,47 +144,49 @@ export function ShoppingPage() {
         </EmptyState>
       )}
 
-      {view?.list.sections.map((section) => (
-        <Card as="section" key={section.key} aria-labelledby={`rayon-${section.key}`}>
-          <h2 id={`rayon-${section.key}`} className={styles.sectionTitle}>
-            <span aria-hidden="true">{SECTION_EMOJIS[section.key]} </span>
-            {SECTION_TITLES[section.key]}
-          </h2>
-          <ul className={styles.items}>
-            {section.items.map((item) => (
-              <li key={item.key} className={styles.item}>
-                <label className={`${styles.check} ${item.checked ? styles.checked : ''}`}>
-                  <input
-                    type="checkbox"
-                    className={styles.box}
-                    checked={item.checked}
-                    onChange={() => {
-                      toggleOptimistically(item.key);
-                      void apply(toggleShoppingItem(item.key));
-                    }}
-                  />
-                  <span className={styles.name}>{itemParts(item).name}</span>
-                  {itemParts(item).amount !== undefined && (
-                    <span className={styles.qty}>{itemParts(item).amount}</span>
+      <div data-testid="shopping-list" aria-busy={pending > 0}>
+        {view?.list.sections.map((section) => (
+          <Card as="section" key={section.key} aria-labelledby={`rayon-${section.key}`}>
+            <h2 id={`rayon-${section.key}`} className={styles.sectionTitle}>
+              <span aria-hidden="true">{SECTION_EMOJIS[section.key]} </span>
+              {SECTION_TITLES[section.key]}
+            </h2>
+            <ul className={styles.items}>
+              {section.items.map((item) => (
+                <li key={item.key} className={styles.item}>
+                  <label className={`${styles.check} ${item.checked ? styles.checked : ''}`}>
+                    <input
+                      type="checkbox"
+                      className={styles.box}
+                      checked={item.checked}
+                      onChange={() => {
+                        toggleOptimistically(item.key);
+                        void apply(toggleShoppingItem(item.key));
+                      }}
+                    />
+                    <span className={styles.name}>{itemParts(item).name}</span>
+                    {itemParts(item).amount !== undefined && (
+                      <span className={styles.qty}>{itemParts(item).amount}</span>
+                    )}
+                  </label>
+                  {item.manual && (
+                    <button
+                      type="button"
+                      className={styles.remove}
+                      aria-label={`Supprimer ${itemText(item)}`}
+                      onClick={() => {
+                        void apply(removeShoppingItem(item.key.replace(/^manuel:/, '')));
+                      }}
+                    >
+                      🗑
+                    </button>
                   )}
-                </label>
-                {item.manual && (
-                  <button
-                    type="button"
-                    className={styles.remove}
-                    aria-label={`Supprimer ${itemText(item)}`}
-                    onClick={() => {
-                      void apply(removeShoppingItem(item.key.replace(/^manuel:/, '')));
-                    }}
-                  >
-                    🗑
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      ))}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        ))}
+      </div>
 
       {view && (
         <Card as="section" tone="sunken" aria-labelledby="ajout-title">

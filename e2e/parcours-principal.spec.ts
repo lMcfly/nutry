@@ -45,6 +45,8 @@ test('parcours principal : onboarding → menu → remplacement → courses → 
   const itemName = await fruits.locator('label').first().innerText();
   await item.check();
   await expect(item).toBeChecked();
+  // La case réagit tout de suite : on attend que l'écriture soit enregistrée avant de recharger.
+  await expect(page.getByTestId('shopping-list')).toHaveAttribute('aria-busy', 'false');
 
   // Rechargement : tout est conservé.
   await page.reload();
