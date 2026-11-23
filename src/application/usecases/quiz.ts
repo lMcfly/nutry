@@ -27,15 +27,15 @@ export interface DailyQuizView {
 
 export interface QuizUseCases {
   /** Question du jour (la même toute la journée) ; `undefined` si la banque est vide. */
-  getDailyQuiz(): Promise<DailyQuizView | undefined>;
+  readonly getDailyQuiz: () => Promise<DailyQuizView | undefined>;
   /**
    * Répond à la question du jour. `undefined` si `questionId` n'est pas celle du jour.
    * Répondre à nouveau renvoie la première réponse, sans changer la série.
    */
-  answerQuiz(input: {
+  readonly answerQuiz: (input: {
     readonly questionId: string;
     readonly answerIndex: number;
-  }): Promise<QuizAnswerView | undefined>;
+  }) => Promise<QuizAnswerView | undefined>;
 }
 
 function toAnswerView(

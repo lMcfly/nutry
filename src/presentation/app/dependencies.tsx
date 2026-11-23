@@ -1,15 +1,11 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { Clock, Sharer } from '@application/ports';
+import type { UseCases } from '@application/usecases';
 
 /**
- * Dépendances injectées dans l'UI par la composition root (src/main.tsx).
- * La présentation ne connaît que des contrats de la couche application :
- * les cas d'usage (GenerateWeeklyPlan, AnswerQuiz…) s'ajouteront ici en phase 4.
+ * Dépendances injectées dans l'UI par la composition root (src/main.tsx) : UNIQUEMENT
+ * les cas d'usage. La présentation ne voit ni dépôt, ni horloge, ni adaptateur.
  */
-export interface AppDependencies {
-  readonly clock: Clock;
-  readonly sharer: Sharer;
-}
+export type AppDependencies = UseCases;
 
 const DependenciesContext = createContext<AppDependencies | null>(null);
 

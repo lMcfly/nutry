@@ -61,19 +61,19 @@ export interface BackupReminder {
 
 export interface DataUseCases {
   /** Exporte toutes les données (JSON clair, ou chiffré si une phrase secrète est donnée). */
-  exportData(input?: { readonly passphrase?: string }): Promise<ExportResult>;
+  readonly exportData: (input?: { readonly passphrase?: string }) => Promise<ExportResult>;
   /**
    * Importe une sauvegarde (contenu texte du fichier choisi) en REMPLAÇANT toutes les
    * données, atomiquement. Rien n'est modifié en cas d'échec.
    */
-  importData(input: {
+  readonly importData: (input: {
     readonly content: string;
     readonly passphrase?: string;
-  }): Promise<ImportResult>;
+  }) => Promise<ImportResult>;
   /** « Tout effacer » (à confirmer côté UI). */
-  wipeAllData(): Promise<void>;
+  readonly wipeAllData: () => Promise<void>;
   /** Rappel doux de sauvegarde ; le montrer le note pour 30 jours. */
-  getBackupReminder(): Promise<BackupReminder>;
+  readonly getBackupReminder: () => Promise<BackupReminder>;
 }
 
 const failure = (status: ImportFailure, errors?: readonly string[]): ImportResult => ({

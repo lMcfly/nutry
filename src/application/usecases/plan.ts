@@ -55,24 +55,24 @@ export interface PlanHistory {
 
 export interface PlanUseCases {
   /** Menu de la semaine en cours : enregistré, sinon généré ; régénéré si le profil a changé. */
-  getCurrentPlan(): Promise<PlanResult>;
+  readonly getCurrentPlan: () => Promise<PlanResult>;
   /** Nouveau menu pour la semaine en cours (remplace l'actuel). */
-  generateWeeklyPlan(): Promise<PlanResult>;
+  readonly generateWeeklyPlan: () => Promise<PlanResult>;
   /** 3 alternatives du même niveau pour un repas de la semaine en cours. */
-  getMealAlternatives(mealId: string): Promise<readonly MealAlternative[]>;
+  readonly getMealAlternatives: (mealId: string) => Promise<readonly MealAlternative[]>;
   /**
    * Remplace un repas par l'une des alternatives proposées. `unavailable` si la recette
    * n'en fait pas (ou plus) partie : on ne place jamais une recette incompatible.
    */
-  replaceMeal(input: {
+  readonly replaceMeal: (input: {
     readonly mealId: string;
     readonly recipeId: string;
-  }): Promise<PlanResult | { readonly status: 'unavailable' }>;
-  explainMeal(mealId: string): Promise<string | undefined>;
+  }) => Promise<PlanResult | { readonly status: 'unavailable' }>;
+  readonly explainMeal: (mealId: string) => Promise<string | undefined>;
   /** Préparations du dimanche (vide si l'option batch cooking est désactivée). */
-  getBatchCookingPlan(): Promise<readonly BatchPrep[]>;
-  getWeekBalance(): Promise<readonly BalanceGauge[]>;
-  getPlanHistory(): Promise<PlanHistory>;
+  readonly getBatchCookingPlan: () => Promise<readonly BatchPrep[]>;
+  readonly getWeekBalance: () => Promise<readonly BalanceGauge[]>;
+  readonly getPlanHistory: () => Promise<PlanHistory>;
 }
 
 /** Tous les plats du menu existent encore et respectent les filtres durs du profil. */

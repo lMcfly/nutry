@@ -2,15 +2,15 @@ import type { Theme, UserSettings } from '@domain/userdata';
 import type { AppPorts, SerialRunner } from './context';
 
 export interface SettingsUseCases {
-  getSettings(): Promise<UserSettings>;
-  setTheme(theme: Theme): Promise<UserSettings>;
+  readonly getSettings: () => Promise<UserSettings>;
+  readonly setTheme: (theme: Theme) => Promise<UserSettings>;
   /**
    * Demande au navigateur de ne pas évincer les données. À appeler APRÈS l'onboarding,
    * dans le gestionnaire du clic final (jamais au premier chargement).
    */
-  requestPersistentStorage(): Promise<boolean>;
+  readonly requestPersistentStorage: () => Promise<boolean>;
   /** Le stockage est-il déjà persistant ? (écran Confidentialité) */
-  isStoragePersisted(): Promise<boolean>;
+  readonly isStoragePersisted: () => Promise<boolean>;
 }
 
 export function createSettingsUseCases(ports: AppPorts, serial: SerialRunner): SettingsUseCases {

@@ -33,12 +33,12 @@ export const WEIGHT_TRACKING_DISABLED_MESSAGE =
   'Le suivi du poids est désactivé : tu peux le réactiver dans tes réglages si tu le souhaites.';
 
 export interface ProgressUseCases {
-  getProgressSummary(): Promise<ProgressView>;
+  readonly getProgressSummary: () => Promise<ProgressView>;
   /** Une mesure par semaine calendaire ; une saisie à la même date corrige la précédente. */
-  logProgress(input: LogProgressInput): Promise<EntryCheck>;
-  removeProgress(date: IsoDate): Promise<void>;
+  readonly logProgress: (input: LogProgressInput) => Promise<EntryCheck>;
+  readonly removeProgress: (date: IsoDate) => Promise<void>;
   /** Active ou désactive le suivi du poids (choix explicite de la personne). */
-  setWeightTracking(enabled: boolean): Promise<WeightTrackingStatus>;
+  readonly setWeightTracking: (enabled: boolean) => Promise<WeightTrackingStatus>;
 }
 
 function withoutWeight(entry: ProgressEntry): ProgressEntry {

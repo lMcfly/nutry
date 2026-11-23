@@ -10,12 +10,12 @@ export type FridgeResult =
 
 export interface FridgeUseCases {
   /** Ingrédients du catalogue proposés en puces (hors basiques), sans doublon, triés. */
-  listFridgeIngredients(): Promise<readonly string[]>;
+  readonly listFridgeIngredients: () => Promise<readonly string[]>;
   /** Recettes compatibles avec le profil, triées par nombre d'ingrédients manquants. */
-  suggestFromFridge(input: {
+  readonly suggestFromFridge: (input: {
     readonly available: readonly string[];
     readonly limit?: number;
-  }): Promise<FridgeResult>;
+  }) => Promise<FridgeResult>;
 }
 
 export function createFridgeUseCases(ports: AppPorts): FridgeUseCases {

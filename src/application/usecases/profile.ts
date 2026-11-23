@@ -52,10 +52,10 @@ export type SaveProfileResult =
     };
 
 export interface ProfileUseCases {
-  getProfile(): Promise<ProfileView | undefined>;
+  readonly getProfile: () => Promise<ProfileView | undefined>;
   /** Aperçu pendant la saisie (onboarding, écran Profil) : erreurs et garde-fous. */
-  previewProfile(profile: Profile): ProfilePreview;
-  saveProfile(profile: Profile): Promise<SaveProfileResult>;
+  readonly previewProfile: (profile: Profile) => ProfilePreview;
+  readonly saveProfile: (profile: Profile) => Promise<SaveProfileResult>;
 }
 
 function toHealthSummary(a: EnergyAssessment): HealthSummary {

@@ -35,16 +35,16 @@ export interface ShoppingView {
 export type ShoppingResult = NoProfile | ShoppingView;
 
 export interface ShoppingUseCases {
-  getShoppingList(): Promise<ShoppingResult>;
-  toggleShoppingItem(key: string): Promise<ShoppingResult>;
-  addShoppingItem(input: {
+  readonly getShoppingList: () => Promise<ShoppingResult>;
+  readonly toggleShoppingItem: (key: string) => Promise<ShoppingResult>;
+  readonly addShoppingItem: (input: {
     readonly label: string;
     readonly aisle?: Aisle;
-  }): Promise<ShoppingResult>;
-  removeShoppingItem(id: string): Promise<ShoppingResult>;
-  uncheckAllShoppingItems(): Promise<ShoppingResult>;
+  }) => Promise<ShoppingResult>;
+  readonly removeShoppingItem: (id: string) => Promise<ShoppingResult>;
+  readonly uncheckAllShoppingItems: () => Promise<ShoppingResult>;
   /** Partage les articles restant à acheter (Web Share, sinon presse-papiers). */
-  shareShoppingList(): Promise<ShareResult>;
+  readonly shareShoppingList: () => Promise<ShareResult>;
 }
 
 interface Loaded {

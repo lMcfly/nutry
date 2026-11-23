@@ -22,10 +22,10 @@ export interface RatingUseCases {
    * note le plat d'origine, et un nouvel avis remplace le précédent.
    * `undefined` si le repas n'existe pas.
    */
-  rateMeal(input: RateMealInput): Promise<RatingRecord | undefined>;
-  removeRating(id: string): Promise<void>;
+  readonly rateMeal: (input: RateMealInput) => Promise<RatingRecord | undefined>;
+  readonly removeRating: (id: string) => Promise<void>;
   /** Recettes favorites (déduites des avis), encore compatibles avec le profil actuel. */
-  getFavorites(): Promise<readonly Recipe[]>;
+  readonly getFavorites: () => Promise<readonly Recipe[]>;
 }
 
 export function createRatingUseCases(ports: AppPorts, serial: SerialRunner): RatingUseCases {
