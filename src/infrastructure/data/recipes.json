@@ -1,0 +1,31 @@
+[
+  {
+    "id": "poelee-pois-chiches-epinards-riz-complet",
+    "name": "Poêlée de pois chiches, épinards et riz complet",
+    "level": "simple",
+    "prepMinutes": 5,
+    "cookMinutes": 15,
+    "servings": 2,
+    "diets": ["omnivore", "flexitarien", "vegetarien", "vegan", "sans-gluten", "sans-lactose"],
+    "allergens": [],
+    "mainProtein": "legumineuses",
+    "seasons": ["printemps", "automne", "hiver"],
+    "ingredients": [
+      { "name": "riz complet", "quantity": 120, "unit": "g", "aisle": "epicerie" },
+      { "name": "pois chiches cuits", "quantity": 1, "unit": "boite", "aisle": "epicerie" },
+      { "name": "épinards frais", "quantity": 200, "unit": "g", "aisle": "fruits-legumes" },
+      { "name": "oignon", "quantity": 1, "unit": "piece", "aisle": "fruits-legumes" },
+      { "name": "ail", "quantity": 1, "unit": "gousse", "aisle": "fruits-legumes" },
+      { "name": "huile d'olive", "quantity": 1, "unit": "cuillere-soupe", "aisle": "epicerie" }
+    ],
+    "steps": [
+      "Fais cuire le riz complet selon les indications du paquet.",
+      "Fais revenir l'oignon émincé et l'ail dans l'huile d'olive 3 minutes.",
+      "Ajoute les pois chiches égouttés, puis les épinards, et laisse tomber 2 à 3 minutes.",
+      "Sers la poêlée avec le riz, une pincée de sel et un tour de poivre."
+    ],
+    "plateBalance": { "vegetables": 0.5, "proteins": 0.25, "starches": 0.25 },
+    "nutritionPerServing": { "kcal": 520, "proteinG": 19, "carbsG": 82, "fatG": 11, "fiberG": 14 },
+    "tags": ["restes"]
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "geo-plus-long-fleuve-france",
+    "question": "Quel est le plus long fleuve entièrement situé en France ?",
+    "choices": ["La Loire", "La Seine", "Le Rhône", "La Garonne"],
+    "correctIndex": 0,
+    "explanation": "La Loire parcourt un peu plus de 1 000 km, du mont Gerbier-de-Jonc (Ardèche) jusqu'à l'océan Atlantique.",
+    "category": "geographie",
+    "difficulty": "facile"
+  }
+]
