@@ -24,7 +24,8 @@
     "validate-data": "tsx --tsconfig tsconfig.node.json scripts/validate-data.ts",
     "nutrition:write": "tsx --tsconfig tsconfig.node.json scripts/nutrition/compute.ts --write",
     "nutrition:check": "tsx --tsconfig tsconfig.node.json scripts/nutrition/compute.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "icons": "tsx --tsconfig tsconfig.node.json scripts/icons/generate.ts"
   },
   "dependencies": {
     "dexie": "^4.4.7",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.65.1",
+    "@resvg/resvg-js": "^2.6.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.13",

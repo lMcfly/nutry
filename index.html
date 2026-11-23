@@ -2,14 +2,45 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Nutry — rééquilibrer son alimentation en douceur" />
-    <meta name="theme-color" content="#2f855a" />
     <title>Nutry</title>
+    <meta
+      name="description"
+      content="Nutry t’aide à rééquilibrer ton alimentation en douceur : menus de la semaine, liste de courses et quiz. Tout reste sur ton appareil."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#3d6b4f" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#161a15" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Nutry" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   </head>
   <body>
+    <noscript>
+      <p>Nutry a besoin de JavaScript pour fonctionner. Active-le puis recharge la page.</p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script type="module">
+      // Service worker : hors ligne et mise à jour douce (voir vite.config.ts).
+      import { registerSW } from 'virtual:pwa-register';
+
+      let updatePending = false;
+      const applyUpdateWhenHidden = () => {
+        if (updatePending && document.visibilityState === 'hidden') void updateSW(true);
+      };
+      const updateSW = registerSW({
+        immediate: true,
+        onNeedRefresh() {
+          updatePending = true;
+          applyUpdateWhenHidden();
+        },
+      });
+      document.addEventListener('visibilitychange', applyUpdateWhenHidden);
+    </script>
   </body>
 </html>
