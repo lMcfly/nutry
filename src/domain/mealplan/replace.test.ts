@@ -287,3 +287,39 @@ describe('indicateur d’équilibre', () => {
     ).toBe(true);
   });
 });
+
+describe('replaceMeal et recettes évitées', () => {
+  it('place les recettes évitées en dernier', () => {
+    const target = meal('0-diner');
+    const all = replaceMeal({
+      plan,
+      mealId: target.id,
+      profile,
+      recipes: FIXTURE_RECIPES,
+      count: 10,
+    });
+    const first = all[0];
+    expect(all.length).toBeGreaterThan(1);
+    if (!first) return;
+    const weights = learnWeights(
+      [
+        {
+          recipeId: first.recipe.id,
+          verdict: 'down',
+          reason: 'pas-aime',
+          ratedAt: '2026-11-01T00:00:00.000Z',
+        },
+      ],
+      FIXTURE_RECIPES,
+    );
+    const after = replaceMeal({
+      plan,
+      mealId: target.id,
+      profile,
+      recipes: FIXTURE_RECIPES,
+      weights,
+      count: 10,
+    });
+    expect(after.at(-1)?.recipe.id).toBe(first.recipe.id);
+  });
+});

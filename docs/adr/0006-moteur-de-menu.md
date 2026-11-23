@@ -17,8 +17,13 @@ arrivent en paramètres (`startDate`, `rng: () => number`).
 `isRecipeCompatible` est appliqué par **toutes** les fonctions qui proposent une recette
 (`generateWeeklyPlan`, `replaceMeal`, `suggestFromFridge`) : aucun allergène déclaré, tous les
 régimes de la personne présents dans `recipe.diets`, aucun aliment détesté (ingrédient ou
-`mainProtein`, comparaison sans accents ni pluriel simple). Un test « propriété »
-(`allergen-safety.test.ts`, 200 profils aléatoires à graine fixe) le vérifie.
+`mainProtein`, comparaison sans accents ni pluriel simple). Les termes génériques sont
+étendus par une table de synonymes (`FOOD_SYNONYMS` : « viande » → bœuf, poulet, jambon… ;
+« poisson », « fruits de mer », « fromage », « porc », « champignons », « épicé »…), aussi pour
+les aliments aimés ; `FOOD_PREFERENCE_CHIPS` fournit les puces de l'onboarding. Un test
+« propriété » (`allergen-safety.test.ts`, 200 profils aléatoires à graine fixe) le vérifie.
+`auditRecipe` signale en **erreur** un ingrédient révélant un allergène non déclaré
+(`ALLERGEN_KEYWORDS`, ex. « crème » → lait, sauf « crème de coco »).
 
 ### Score explicable (`domain/mealplan/scoring.ts`)
 
@@ -42,8 +47,9 @@ batch…) alimentent `explainMeal` (« De saison, saumon au menu comme tu aimes,
 - Semaine du lundi au dimanche ; niveau et temps par jour (lun-ven / sam-dim). Le temps du profil
   est un temps **par repas**.
 - Algorithme glouton chronologique : pour chaque repas, meilleure recette respectant tout ; sinon
-  assouplissements successifs : variété de protéine → niveau → doublon → temps (dans ce dernier
-  cas, la recette la plus courte). Les contraintes assouplies sont notées dans
+  assouplissements successifs : niveau → recette évitée (👎 « pas aimé ») → variété de protéine →
+  doublon → temps (dans ce dernier cas, la recette la plus courte). La variété passe avant le
+  niveau : mieux vaut un plat d'un autre niveau que deux fois la même protéine. Les contraintes assouplies sont notées dans
   `PlannedMeal.relaxed` et un avis `contraintes-assouplies` est ajouté au plan.
 - Variété : pas deux repas principaux consécutifs avec la même `mainProtein` (sauf `aucune` et
   restes) ; aucune recette en double (hors restes). Le petit-déjeuner est hors de ces règles
@@ -57,6 +63,9 @@ batch…) alimentent `explainMeal` (« De saison, saumon au menu comme tu aimes,
   `isLeftover: true`, `leftoverOf` = id du dîner. Au plus 3 par semaine (`MAX_LEFTOVERS_PER_WEEK`),
   désactivable (`leftovers: false`).
 - Liste de courses : le plat est compté une fois, quantités × (1 + nombre de repas de restes).
+- `replaceMeal` tient compte des protéines du repas précédent **et du repas suivant**
+  (`nextProtein` ; pour un dîner à restes, le repas qui suit ses restes) et place les recettes
+  évitées en dernier.
 - `applyReplacement` : les restes suivent le plat remplacé ; un repas « restes » remplacé redevient
   cuisiné.
 - Batch cooking : `buildBatchCookingPlan` liste les recettes `batch` cuisinées dans la semaine et
@@ -76,6 +85,10 @@ Bornes : recette ±6, protéine ±2, étiquette ±1. « Trop long » (même avec
 de malus, plafonné à 3, aux recettes de plus de 30 min. « Trop copieux » multiplie le facteur de
 portion par 0,95 (plancher 0,8). Les **favoris** sont déduits des avis (`favoriteRecipeIds` :
 au moins un 👍 et solde 👍 − 👎 positif), sans stockage dédié.
+
+Un 👎 « pas aimé » rend en plus la recette **évitée** (`avoidedRecipes`, `avoidedRecipeIds`) tant
+qu'aucun 👍 plus récent n'existe : contrainte souple, assouplie juste après le niveau et signalée
+`evitee` dans `PlannedMeal.relaxed`. Les autres 👎 ne donnent que le malus de score.
 
 ### Choix associés
 

@@ -66,25 +66,31 @@ interface Pick {
 }
 
 /**
- * Assouplissements successifs quand aucune recette ne respecte tout :
- * variété de protéine, puis niveau, puis doublon, et le temps en tout dernier recours
- * (on prend alors la recette la plus courte).
+ * Assouplissements successifs quand aucune recette ne respecte tout : niveau, puis
+ * recette évitée (👎 « pas aimé »), puis variété de protéine, puis doublon, et le temps
+ * en tout dernier recours (on prend alors la recette la plus courte).
  */
-const STAGES: readonly (readonly RelaxedConstraint[])[] = [
-  [],
-  ['variete-proteine'],
-  ['variete-proteine', 'niveau'],
-  ['variete-proteine', 'niveau', 'doublon'],
-  ['variete-proteine', 'niveau', 'doublon', 'temps'],
+const RELAXATION_ORDER: readonly RelaxedConstraint[] = [
+  'niveau',
+  'evitee',
+  'variete-proteine',
+  'doublon',
+  'temps',
 ];
+/** Étape k : les k premières contraintes de `RELAXATION_ORDER` sont assouplies. */
+const STAGES: readonly (readonly RelaxedConstraint[])[] = Array.from(
+  { length: RELAXATION_ORDER.length + 1 },
+  (_, k) => RELAXATION_ORDER.slice(0, k),
+);
 
 function violations(recipe: Recipe, req: PickRequest): RelaxedConstraint[] {
   const v: RelaxedConstraint[] = [];
-  if (req.strict && isConsecutiveProtein(recipe.mainProtein, req.ctx.previousProtein)) {
-    v.push('variete-proteine');
-  }
   if (req.strict && req.ctx.desiredLevel !== undefined && recipe.level !== req.ctx.desiredLevel) {
     v.push('niveau');
+  }
+  if (req.ctx.weights?.avoidedRecipes.has(recipe.id)) v.push('evitee');
+  if (req.strict && isConsecutiveProtein(recipe.mainProtein, req.ctx.previousProtein)) {
+    v.push('variete-proteine');
   }
   if (req.used.has(recipe.id)) v.push('doublon');
   if (totalMinutes(recipe) > req.ctx.availableMinutes) v.push('temps');

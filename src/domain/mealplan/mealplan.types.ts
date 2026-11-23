@@ -43,8 +43,11 @@ export interface ScoreBreakdown {
   readonly facts: ScoreFacts;
 }
 
-/** Contrainte assouplie faute de recette la respectant. */
-export type RelaxedConstraint = 'variete-proteine' | 'niveau' | 'doublon' | 'temps';
+/**
+ * Contrainte assouplie faute de recette la respectant, dans l'ordre d'assouplissement :
+ * niveau, recette évitée (👎 « pas aimé »), variété de protéine, doublon, temps.
+ */
+export type RelaxedConstraint = 'niveau' | 'evitee' | 'variete-proteine' | 'doublon' | 'temps';
 
 /** Un repas planifié. */
 export interface PlannedMeal {

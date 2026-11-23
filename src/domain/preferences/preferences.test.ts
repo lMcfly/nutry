@@ -4,6 +4,7 @@ import {
   LEARNING_RULES,
   NEUTRAL_WEIGHTS,
   RATING_REASONS,
+  avoidedRecipeIds,
   favoriteRecipeIds,
   learnWeights,
   ratingScore,
@@ -132,5 +133,51 @@ describe('favoris déduits des 👍', () => {
       rate('y', 'up', { ratedAt: at(5) }),
     ];
     expect(favoriteRecipeIds(ratings)).toEqual(['x', 'y']);
+  });
+});
+
+describe('recettes évitées', () => {
+  const r = (verdict: 'up' | 'down', day: number, reason?: MealRating['reason']): MealRating =>
+    rate('dahl-lentilles-corail', verdict, { ratedAt: at(day), ...(reason ? { reason } : {}) });
+
+  it('un 👎 « pas aimé » rend la recette évitée', () => {
+    expect(avoidedRecipeIds([r('down', 1, 'pas-aime')])).toEqual(['dahl-lentilles-corail']);
+    expect(
+      learnWeights([r('down', 1, 'pas-aime')], FIXTURE_RECIPES).avoidedRecipes.has(
+        'dahl-lentilles-corail',
+      ),
+    ).toBe(true);
+    expect(NEUTRAL_WEIGHTS.avoidedRecipes.size).toBe(0);
+  });
+
+  it.each([undefined, 'autre', 'trop-long', 'trop-copieux'] as const)(
+    'un 👎 « %s » garde seulement le malus de score',
+    (reason) => {
+      expect(avoidedRecipeIds([r('down', 1, reason)])).toEqual([]);
+    },
+  );
+
+  it('un 👍 plus récent lève l’évitement, un 👍 plus ancien non', () => {
+    expect(avoidedRecipeIds([r('down', 1, 'pas-aime'), r('up', 2)])).toEqual([]);
+    expect(avoidedRecipeIds([r('up', 2), r('down', 1, 'pas-aime')])).toEqual([]);
+    expect(avoidedRecipeIds([r('up', 1), r('down', 2, 'pas-aime')])).toEqual([
+      'dahl-lentilles-corail',
+    ]);
+    // Le 👎 le plus récent compte, quel que soit l'ordre de la liste.
+    expect(
+      avoidedRecipeIds([r('down', 3, 'pas-aime'), r('up', 2), r('down', 1, 'pas-aime')]),
+    ).toEqual(['dahl-lentilles-corail']);
+    // Même instant : l'évitement reste (aucun 👍 PLUS récent).
+    expect(avoidedRecipeIds([r('down', 2, 'pas-aime'), r('up', 2)])).toEqual([
+      'dahl-lentilles-corail',
+    ]);
+  });
+
+  it('trie les identifiants', () => {
+    const ratings: MealRating[] = [
+      rate('b', 'down', { reason: 'pas-aime' }),
+      rate('a', 'down', { reason: 'pas-aime' }),
+    ];
+    expect(avoidedRecipeIds(ratings)).toEqual(['a', 'b']);
   });
 });

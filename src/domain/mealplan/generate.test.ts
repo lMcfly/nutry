@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createSeededRng } from '../shared';
 import { FIXTURE_RECIPES, fixture, makeProfile, makeRecipe } from '../testing/fixtures';
 import type { Recipe } from '../recipe';
+import { learnWeights } from '../preferences';
 import type { Profile } from '../profile';
 import {
   MAX_LEFTOVERS_PER_WEEK,
@@ -183,7 +184,7 @@ describe('assouplissements', () => {
     expect(plan.notices.map((n) => n.code)).toEqual(['aucune-recette-compatible']);
   });
 
-  it('relâche la variété de protéine avant le niveau', () => {
+  it('relâche le niveau avant la variété de protéine', () => {
     const recipes = [
       makeRecipe({ id: 'v1', mainProtein: 'volaille' }),
       makeRecipe({ id: 'v2', mainProtein: 'volaille' }),
@@ -191,10 +192,50 @@ describe('assouplissements', () => {
     ];
     const profile = makeProfile({ weekendLevel: 'simple' });
     const plan = generate(profile, 1, recipes);
-    const [first, second] = plan.meals;
+    const [first, second, third] = plan.meals;
     expect(first?.relaxed).toEqual([]);
-    expect(second?.relaxed).toEqual(['variete-proteine']);
+    expect(second).toMatchObject({ recipeId: 'm1', relaxed: ['niveau'] });
+    expect(third?.relaxed).toEqual([]);
     expect(plan.notices.map((n) => n.code)).toContain('contraintes-assouplies');
+  });
+
+  describe('recettes évitées (👎 « pas aimé »)', () => {
+    const ratedAt = '2026-11-20T20:00:00.000Z';
+    const dislike = (recipeId: string) =>
+      ({ recipeId, verdict: 'down', reason: 'pas-aime', ratedAt }) as const;
+
+    it('ne sont plus proposées tant qu’une alternative existe', () => {
+      const weights = learnWeights([dislike('dinde-patate-douce')], FIXTURE_RECIPES);
+      for (const seed of [1, 2, 3, 4]) {
+        const plan = generateWeeklyPlan({
+          profile: makeProfile({ likes: ['dinde'] }),
+          recipes: FIXTURE_RECIPES,
+          weights,
+          startDate: START,
+          rng: createSeededRng(seed),
+        });
+        expect(plan.meals.map((m) => m.recipeId)).not.toContain('dinde-patate-douce');
+      }
+    });
+
+    it('sont assouplies après le niveau et avant la variété de protéine', () => {
+      const recipes = [
+        makeRecipe({ id: 'p1', mainProtein: 'porc' }),
+        makeRecipe({ id: 'p2', mainProtein: 'porc' }),
+        makeRecipe({ id: 'evitee', mainProtein: 'boeuf' }),
+      ];
+      const weights = learnWeights([dislike('evitee')], recipes);
+      const plan = generateWeeklyPlan({
+        profile: makeProfile({ weekendLevel: 'simple' }),
+        recipes,
+        weights,
+        startDate: START,
+        rng: createSeededRng(1),
+      });
+      const [first, second] = plan.meals;
+      expect(first?.recipeId).toMatch(/^p/);
+      expect(second).toMatchObject({ recipeId: 'evitee', relaxed: ['evitee'] });
+    });
   });
 
   it('relâche le niveau puis les doublons, et le temps en dernier avec la recette la plus courte', () => {

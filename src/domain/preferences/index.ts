@@ -3,6 +3,7 @@ export type { MealRating, RatingReason, RatingVerdict } from './preferences.type
 export {
   LEARNING_RULES,
   NEUTRAL_WEIGHTS,
+  avoidedRecipeIds,
   favoriteRecipeIds,
   learnWeights,
   ratingScore,

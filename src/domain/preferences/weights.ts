@@ -6,7 +6,8 @@ import type { MealRating } from './preferences.types';
  * Poids appris à partir des avis, tous explicables :
  * - par recette (fort), par protéine principale et par étiquette (plus faible) ;
  * - `longRecipePenalty` : malus appliqué aux recettes longues après des avis « trop long » ;
- * - `portionMultiplier` : réduction de portion après des avis « trop copieux ».
+ * - `portionMultiplier` : réduction de portion après des avis « trop copieux » ;
+ * - `avoidedRecipes` : recettes « évitées » (voir `avoidedRecipeIds`).
  */
 export interface LearnedWeights {
   readonly recipes: ReadonlyMap<string, number>;
@@ -14,6 +15,7 @@ export interface LearnedWeights {
   readonly tags: ReadonlyMap<RecipeTag, number>;
   readonly longRecipePenalty: number;
   readonly portionMultiplier: number;
+  readonly avoidedRecipes: ReadonlySet<string>;
 }
 
 /** Barème de l'apprentissage (points ajoutés au score de menu). */
@@ -39,6 +41,7 @@ export const NEUTRAL_WEIGHTS: LearnedWeights = {
   tags: new Map(),
   longRecipePenalty: 0,
   portionMultiplier: 1,
+  avoidedRecipes: new Set(),
 };
 
 function add<K>(map: Map<K, number>, key: K, delta: number): void {
@@ -96,7 +99,26 @@ export function learnWeights(
       LEARNING_RULES.portionMin,
       LEARNING_RULES.portionStep ** copiousCount,
     ),
+    avoidedRecipes: new Set(avoidedRecipeIds(ratings)),
   };
+}
+
+/**
+ * Recettes « évitées » : un 👎 « pas aimé » sans 👍 plus récent. Le moteur ne les
+ * propose plus, sauf faute d'alternative (contrainte souple, assouplie juste après
+ * le niveau). Un 👍 ultérieur lève l'évitement.
+ */
+export function avoidedRecipeIds(ratings: readonly MealRating[]): string[] {
+  const lastDislike = new Map<string, string>();
+  const lastUp = new Map<string, string>();
+  for (const r of ratings) {
+    const target = r.verdict === 'up' ? lastUp : r.reason === 'pas-aime' ? lastDislike : undefined;
+    if (target && r.ratedAt > (target.get(r.recipeId) ?? '')) target.set(r.recipeId, r.ratedAt);
+  }
+  return [...lastDislike]
+    .filter(([id, at]) => (lastUp.get(id) ?? '') <= at)
+    .map(([id]) => id)
+    .sort();
 }
 
 /** Détail des points « notes passées » d'une recette. */
