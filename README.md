@@ -78,7 +78,7 @@ clignement, petit rebond) respectent `prefers-reduced-motion`. Les choix de conc
 dans [ADR 0012](docs/adr/0012-compagnon-nutry-et-serie.md) (règles) et
 [ADR 0013](docs/adr/0013-refonte-visuelle-sans-scroll.md) (interface).
 
-Le catalogue compte 88 recettes et 464 questions de quiz, toutes en français.
+Le catalogue compte 123 recettes et 464 questions de quiz, toutes en français.
 
 ## Installer Nutry sur ton appareil
 

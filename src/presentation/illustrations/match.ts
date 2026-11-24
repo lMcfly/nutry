@@ -40,7 +40,7 @@ const NAME_RULES: readonly (readonly [RegExp, DishFamily])[] = [
     /\b(pates|spaghetti|tagliatelles?|gnocchis?|penne|nouilles?|bolognaise|boulettes|pad thai|bo bun)\b/,
     'pates',
   ],
-  [/\b(risotto|paella|riz saute|mujaddara)\b/, 'riz'],
+  [/\b(risotto|paella|riz saute|riz cantonais|mujaddara)\b/, 'riz'],
   [/\b(curry|dahl|masala|saag|tajine|yassa|chili|lait de coco)\b/, 'curry'],
   [/\b(wok|tofu|wraps?|tacos?)\b/, 'tofu'],
 ];
@@ -68,6 +68,9 @@ export function pickDishFamily(recipe: DishSubject): DishFamily {
   if (recipe.tags.includes('petit-dejeuner')) return 'petit-dejeuner';
   const name = normalizeText(recipe.name);
   for (const [pattern, family] of NAME_RULES) {
+    // « wrap », « tacos » ou « wok » ne disent pas la garniture : l'illustration tofu
+    // n'est choisie que si le tofu est bien la protéine (sinon, repli sur la protéine).
+    if (family === 'tofu' && recipe.mainProtein !== 'soja-tofu') continue;
     if (pattern.test(name)) return family;
   }
   return PROTEIN_FAMILY[recipe.mainProtein];

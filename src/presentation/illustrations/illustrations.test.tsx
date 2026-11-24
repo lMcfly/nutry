@@ -71,6 +71,15 @@ describe('pickDishFamily', () => {
     );
   });
 
+  it('« wrap » ou « wok » sans tofu : repli sur la protéine, pas sur l’illustration tofu', () => {
+    expect(pickDishFamily(dish('Wraps au poulet, avocat et carottes râpées', 'volaille'))).toBe(
+      'volaille',
+    );
+    expect(pickDishFamily(dish('Wok de poulet et légumes', 'volaille'))).toBe('volaille');
+    expect(pickDishFamily(dish('Wraps au tofu paprika', 'soja-tofu'))).toBe('tofu');
+    expect(pickDishFamily(dish('Riz cantonais au jambon', 'oeufs'))).toBe('riz');
+  });
+
   it('sans mot-clé, repli sur la protéine principale (toujours une famille connue)', () => {
     for (const protein of PROTEIN_TYPES) {
       expect(DISH_FAMILIES).toContain(pickDishFamily(dish('Plat du jour', protein)));

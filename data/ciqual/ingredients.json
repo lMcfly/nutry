@@ -291,6 +291,10 @@
   "fromage blanc nature": {
     "ciqualCode": "19646"
   },
+  "fromage à pâte dure végétarien": {
+    "ciqualCode": "12120",
+    "approx": "Fromage à pâte dure italien à coagulant non animal (type grana) : fiche Parmesan, composition équivalente."
+  },
   "galettes de sarrasin": {
     "ciqualCode": "23801",
     "gramsPerUnit": {
@@ -338,6 +342,12 @@
     "ciqualCode": "15010",
     "gramsPerUnit": {
       "cuillere-soupe": 9
+    }
+  },
+  "haricots blancs cuits": {
+    "ciqualCode": "20511",
+    "gramsPerUnit": {
+      "boite": 250
     }
   },
   "haricots noirs cuits": {
@@ -489,6 +499,9 @@
       "pincee": 0.3
     }
   },
+  "navets": {
+    "ciqualCode": "20064"
+  },
   "noix de cajou": {
     "ciqualCode": "15054"
   },
@@ -574,10 +587,6 @@
       "cuillere-cafe": 2,
       "pincee": 0.3
     }
-  },
-  "fromage à pâte dure végétarien": {
-    "ciqualCode": "12120",
-    "approx": "Fromage à pâte dure italien à coagulant non animal (type grana) : fiche Parmesan, composition équivalente."
   },
   "patates douces": {
     "ciqualCode": "4101"
@@ -674,11 +683,21 @@
       "cuillere-soupe": 16
     }
   },
+  "pâte feuilletée pur beurre": {
+    "ciqualCode": "23424",
+    "gramsPerUnit": {
+      "piece": 230
+    }
+  },
   "pâte filo": {
     "ciqualCode": "23445"
   },
   "pâtes complètes": {
     "ciqualCode": "9870"
+  },
+  "pâtes à lasagnes": {
+    "ciqualCode": "9810",
+    "approx": "Pas de fiche « pâtes à lasagnes » : spaghetti crus (pâtes alimentaires sèches, même composition)."
   },
   "quinoa": {
     "ciqualCode": "9340"
@@ -720,8 +739,17 @@
       "cuillere-soupe": 16
     }
   },
+  "saucisses de Toulouse": {
+    "ciqualCode": "30110",
+    "gramsPerUnit": {
+      "piece": 125
+    }
+  },
   "saumon extra-frais": {
     "ciqualCode": "26036"
+  },
+  "saumon fumé": {
+    "ciqualCode": "26037"
   },
   "semoule": {
     "ciqualCode": "9610"
@@ -814,6 +842,12 @@
   },
   "vin blanc sec": {
     "ciqualCode": "5215",
+    "gramsPerUnit": {
+      "cl": 9.9
+    }
+  },
+  "vin rouge": {
+    "ciqualCode": "5214",
     "gramsPerUnit": {
       "cl": 9.9
     }
