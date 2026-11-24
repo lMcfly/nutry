@@ -638,23 +638,6 @@
   },
   {
     "provider": "unsplash",
-    "recipeId": "gnocchis-poeles-courgettes-mozzarella",
-    "rawUrl": "https://images.unsplash.com/photo-1621340434481-f2a3db584ea6?ixid=M3wxMTQzNDU3fDB8MXxzZWFyY2h8N3x8cGFuJTIwZnJpZWQlMjBnbm9jY2hpJTIwenVjY2hpbmklMjBjaGVycnklMjB0b21hdG9lcyUyMG1venphcmVsbGF8ZW58MHwwfHx8MTc5NTUxMzQzNnww&ixlib=rb-4.1.0",
-    "focal": {
-      "x": 0.5,
-      "y": 0.5
-    },
-    "title": "white ceramic plate with sliced fruits",
-    "author": "Stefan Schauberger",
-    "authorUrl": "https://unsplash.com/@wuf2018?utm_source=nutry&utm_medium=referral",
-    "license": "Unsplash",
-    "licenseUrl": "https://unsplash.com/license",
-    "sourceUrl": "https://unsplash.com/photos/white-ceramic-plate-with-sliced-fruits-TtW_lX_F3xM?utm_source=nutry&utm_medium=referral",
-    "modified": "recadrée et compressée",
-    "matchQuality": "approchant"
-  },
-  {
-    "provider": "unsplash",
     "recipeId": "gratin-colin-epinards-pommes-de-terre",
     "rawUrl": "https://images.unsplash.com/photo-1777199311086-ec5ff230aefd?ixid=M3wxMTQzNDU3fDB8MXxzZWFyY2h8MTJ8fGJha2VkJTIwZmlzaCUyMGZpbGxldCUyMHNwaW5hY2glMjBwb3RhdG8lMjBncmF0aW58ZW58MHwwfHx8MTc5NTUwMzIxNXww&ixlib=rb-4.1.0",
     "focal": {
@@ -844,23 +827,6 @@
     "license": "CC0",
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "sourceUrl": "https://www.foodiesfeed.com/free-food-photo/colorful-scrambled-eggs-with-spinach-and-cherry-tomatoes",
-    "modified": "recadrée et compressée",
-    "matchQuality": "approchant"
-  },
-  {
-    "provider": "unsplash",
-    "recipeId": "oeufs-cocotte-epinards-emmental",
-    "rawUrl": "https://images.unsplash.com/photo-1667682343196-95e766954d0b?ixid=M3wxMTQzNDU3fDB8MXxzZWFyY2h8OHx8YmFrZWQlMjBlZ2dzJTIwc3BpbmFjaHxlbnwwfDB8fHwxNzk1NTEzNTQxfDA&ixlib=rb-4.1.0",
-    "focal": {
-      "x": 0.5,
-      "y": 0.45
-    },
-    "title": "a plate of food",
-    "author": "S. Kim",
-    "authorUrl": "https://unsplash.com/@sterni12?utm_source=nutry&utm_medium=referral",
-    "license": "Unsplash",
-    "licenseUrl": "https://unsplash.com/license",
-    "sourceUrl": "https://unsplash.com/photos/a-plate-of-food-KHkjbhp9bAE?utm_source=nutry&utm_medium=referral",
     "modified": "recadrée et compressée",
     "matchQuality": "approchant"
   },
