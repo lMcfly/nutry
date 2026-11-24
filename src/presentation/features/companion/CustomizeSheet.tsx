@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 import type { CompanionView } from '@application/usecases';
 import {
   ACCESSORY_SLOTS,
-  ACCESSORY_SLOT_LABELS,
   COMPANION_ACCESSORIES,
   COMPANION_COLORS,
   COMPANION_EYES,
@@ -28,6 +28,14 @@ import { LockIcon } from '../../components/icons';
 
 type CustomizeTab = 'couleur' | 'yeux' | 'accessoires';
 
+const HINT = 'Touche une bulle pour l’essayer sur Nutry.';
+
+const TAB_TITLES = {
+  couleur: 'Couleurs',
+  yeux: 'Yeux',
+  accessoires: 'Accessoires',
+} as const;
+
 const TABS = [
   { id: 'couleur', label: 'Couleur' },
   { id: 'yeux', label: 'Yeux' },
@@ -41,32 +49,53 @@ interface CustomizeSheetProps {
   readonly onSaved: (companion: CompanionView) => void;
 }
 
-interface ChoiceProps {
+interface BubbleProps {
   readonly item: CompanionItem;
   readonly selected: boolean;
   readonly unlocked: boolean;
+  readonly index: number;
+  readonly count: number;
   readonly onPick: () => void;
 }
 
-/** Une pastille de choix : grisée avec un cadenas tant que l'élément n'est pas débloqué. */
-function Choice({ item, selected, unlocked, onPick }: ChoiceProps) {
+/**
+ * Bulle ronde posée sur le cercle autour de Nutry : grisée, avec un cadenas et « à X jours »,
+ * tant que l'élément n'est pas débloqué. Toucher une bulle libre l'essaie tout de suite.
+ */
+function Bubble({ item, selected, unlocked, index, count, onPick }: BubbleProps) {
+  // Départ en haut, sens horaire ; cos et sin sont lus par la CSS (`--cx`, `--cy`).
+  const angle = (index / count) * Math.PI * 2 - Math.PI / 2;
+  const position = {
+    '--cx': Math.cos(angle).toFixed(4),
+    '--cy': Math.sin(angle).toFixed(4),
+  } as CSSProperties;
   return (
-    <li>
+    <li className={styles.slot} style={position}>
       <button
         type="button"
-        className={`${styles.choice} ${selected ? styles.selected : ''} ${unlocked ? '' : styles.locked}`}
+        className={`${styles.bubble} ${selected ? styles.selected : ''} ${unlocked ? '' : styles.locked}`}
         aria-pressed={selected}
         aria-disabled={!unlocked}
+        aria-label={
+          unlocked
+            ? item.label
+            : `${item.label}, verrouillé, à ${plural(item.unlockAt, 'jour')} de série`
+        }
         onClick={() => {
           if (unlocked) onPick();
         }}
       >
-        <span className={styles.choiceEmoji} aria-hidden="true">
-          {unlocked ? item.emoji : <LockIcon size={20} />}
-        </span>
-        <span className={styles.choiceLabel}>{item.label}</span>
-        {!unlocked && (
-          <span className={styles.lockHint}>à {plural(item.unlockAt, 'jour')} de série</span>
+        {unlocked ? (
+          <span className={styles.bubbleEmoji} aria-hidden="true">
+            {item.emoji}
+          </span>
+        ) : (
+          <>
+            <LockIcon size={18} />
+            <span className={styles.lockHint} aria-hidden="true">
+              à {plural(item.unlockAt, 'jour')}
+            </span>
+          </>
         )}
       </button>
     </li>
@@ -80,11 +109,14 @@ export function CustomizeSheet({ open, companion, onClose, onSaved }: CustomizeS
   const [look, setLook] = useState<CompanionLook>(companion.look);
   const [tab, setTab] = useState<CustomizeTab>('couleur');
   const [saving, setSaving] = useState(false);
+  const [bounce, setBounce] = useState(0);
+  const [caption, setCaption] = useState(HINT);
 
   useEffect(() => {
     if (open) {
       setLook(companion.look);
       setTab('couleur');
+      setCaption(HINT);
     }
   }, [open, companion.look]);
 
@@ -98,6 +130,24 @@ export function CustomizeSheet({ open, companion, onClose, onSaved }: CustomizeS
       if (id !== undefined) next[s] = id;
     }
     setLook({ ...look, accessories: next as CompanionAccessories });
+  };
+
+  const items: readonly CompanionItem[] =
+    tab === 'couleur' ? COMPANION_COLORS : tab === 'yeux' ? COMPANION_EYES : COMPANION_ACCESSORIES;
+
+  const isSelected = (item: CompanionItem): boolean => {
+    if (item.kind === 'color') return look.color === item.id;
+    if (item.kind === 'eyes') return look.eyes === item.id;
+    return look.accessories[item.slot] === item.id;
+  };
+
+  /** Essaie l'élément sur Nutry tout de suite ; un accessoire déjà porté s'enlève. */
+  const pick = (item: CompanionItem) => {
+    if (item.kind === 'color') setLook({ ...look, color: item.id });
+    else if (item.kind === 'eyes') setLook({ ...look, eyes: item.id });
+    else setAccessory(item.slot, look.accessories[item.slot] === item.id ? undefined : item);
+    setBounce((n) => n + 1);
+    setCaption(item.kind === 'accessory' && isSelected(item) ? `${item.label} retiré` : item.label);
   };
 
   const save = async () => {
@@ -137,9 +187,6 @@ export function CustomizeSheet({ open, companion, onClose, onSaved }: CustomizeS
       }
     >
       <div className={styles.layout}>
-        <div className={styles.preview}>
-          <Nutry look={look} mood={companion.mood} size="l" />
-        </div>
         <SegmentedTabs
           label="Ce que tu peux changer"
           tabs={TABS}
@@ -153,74 +200,44 @@ export function CustomizeSheet({ open, companion, onClose, onSaved }: CustomizeS
           aria-labelledby={tabId('nutry', tab)}
           className={styles.panel}
         >
-          {tab === 'couleur' && (
-            <ul className={styles.grid} aria-label="Couleurs">
-              {COMPANION_COLORS.map((item) => (
-                <Choice
+          <div className={styles.ring}>
+            <div className={styles.center}>
+              <div key={bounce} className={styles.hop}>
+                <Nutry look={look} mood={companion.mood} size="l" />
+              </div>
+            </div>
+            <ul className={styles.bubbles} aria-label={TAB_TITLES[tab]}>
+              {items.map((item, index) => (
+                <Bubble
                   key={item.id}
                   item={item}
-                  selected={look.color === item.id}
+                  index={index}
+                  count={items.length}
+                  selected={isSelected(item)}
                   unlocked={isUnlocked(item)}
                   onPick={() => {
-                    setLook({ ...look, color: item.id });
+                    pick(item);
                   }}
                 />
               ))}
             </ul>
+          </div>
+          <p className={styles.caption} aria-live="polite">
+            {caption}
+          </p>
+          {tab === 'accessoires' && (
+            <Button
+              variant="ghost"
+              small
+              onClick={() => {
+                setLook({ ...look, accessories: {} });
+                setBounce((n) => n + 1);
+                setCaption('Aucun accessoire');
+              }}
+            >
+              Aucun accessoire
+            </Button>
           )}
-          {tab === 'yeux' && (
-            <ul className={styles.grid} aria-label="Yeux">
-              {COMPANION_EYES.map((item) => (
-                <Choice
-                  key={item.id}
-                  item={item}
-                  selected={look.eyes === item.id}
-                  unlocked={isUnlocked(item)}
-                  onPick={() => {
-                    setLook({ ...look, eyes: item.id });
-                  }}
-                />
-              ))}
-            </ul>
-          )}
-          {tab === 'accessoires' &&
-            ACCESSORY_SLOTS.map((slot) => {
-              const items = COMPANION_ACCESSORIES.filter((a) => a.slot === slot);
-              const worn = look.accessories[slot];
-              return (
-                <section key={slot} aria-label={ACCESSORY_SLOT_LABELS[slot]}>
-                  <h3 className={styles.slotTitle}>{ACCESSORY_SLOT_LABELS[slot]}</h3>
-                  <ul className={styles.grid}>
-                    <li>
-                      <button
-                        type="button"
-                        className={`${styles.choice} ${worn === undefined ? styles.selected : ''}`}
-                        aria-pressed={worn === undefined}
-                        onClick={() => {
-                          setAccessory(slot, undefined);
-                        }}
-                      >
-                        <span className={styles.choiceEmoji} aria-hidden="true">
-                          ∅
-                        </span>
-                        <span className={styles.choiceLabel}>Aucun</span>
-                      </button>
-                    </li>
-                    {items.map((item) => (
-                      <Choice
-                        key={item.id}
-                        item={item}
-                        selected={worn === item.id}
-                        unlocked={isUnlocked(item)}
-                        onPick={() => {
-                          setAccessory(slot, item);
-                        }}
-                      />
-                    ))}
-                  </ul>
-                </section>
-              );
-            })}
         </div>
       </div>
     </Sheet>

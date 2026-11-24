@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import type { FridgeSuggestion } from '@domain/fridge';
 import { totalMinutes } from '@domain/recipe';
 import { normalizeText } from '@domain/shared';
+import { ingredientEmoji } from '@domain/shopping';
 import { useDependencies } from '../app/dependencies';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
@@ -115,6 +116,7 @@ export function FridgePage() {
                     toggle(i);
                   }}
                 >
+                  <span aria-hidden="true">{ingredientEmoji(i) ?? '🍽️'}</span>
                   {i} <CloseIcon size={16} />
                 </button>
               </li>
@@ -143,6 +145,7 @@ export function FridgePage() {
                     toggle(i);
                   }}
                 >
+                  <span aria-hidden="true">{ingredientEmoji(i) ?? '🍽️'}</span>
                   {i}
                 </button>
               </li>

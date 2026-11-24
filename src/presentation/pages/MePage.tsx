@@ -10,6 +10,7 @@ import { Button } from '../components/Button';
 import { RadioGroup } from '../components/Choice';
 import { Notice } from '../components/Notice';
 import { Page } from '../components/Page';
+import { RoundIconButton } from '../components/RoundIconButton';
 import { Sheet } from '../components/Sheet';
 import {
   CalendarIcon,
@@ -32,6 +33,7 @@ import { Nutry } from '../features/companion/Nutry';
 import { useCompanion } from '../features/companion/useCompanion';
 import { DataSection } from '../features/data/DataSection';
 import { PrivacyContent } from '../features/privacy/PrivacyContent';
+import { ProgressCards } from '../features/progress/ProgressCards';
 import {
   AboutSection,
   GoalSection,
@@ -48,7 +50,7 @@ import type { AboutIssues, ProfileDraft } from '../features/profile/draft';
 import { applyTheme } from '../hooks/theme';
 import { useAsync } from '../hooks/useAsync';
 import { THEME_LABELS, formatDecimal, plural, unlockPhrase } from '../i18n/labels';
-import styles from './ProfilePage.module.css';
+import styles from './MePage.module.css';
 
 export const SAVE_FAILED_MESSAGE = 'Oups, l’enregistrement n’a pas fonctionné. Réessaie.';
 
@@ -74,7 +76,7 @@ const SHEET_TITLES: Readonly<Record<SheetId, string>> = {
   confidentialite: 'Confidentialité',
 };
 
-export function ProfilePage() {
+export function MePage() {
   const { getProfile, getSettings, getProgressSummary } = useDependencies();
   const load = useCallback(async (): Promise<ProfileData> => {
     const [view, settings, progress] = await Promise.all([
@@ -88,8 +90,21 @@ export function ProfilePage() {
 
   const data = state.status === 'ready' ? state.data : undefined;
 
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   return (
-    <Page title="Mon profil">
+    <Page
+      title="Moi"
+      actions={
+        <RoundIconButton
+          icon={<SettingsIcon />}
+          label="Réglages"
+          onClick={() => {
+            setSettingsOpen(true);
+          }}
+        />
+      }
+    >
       {/* Bandeau permanent (PROMPT §3.2) : affiché même pendant le chargement ou en erreur. */}
       {state.status === 'loading' && (
         <>
@@ -111,13 +126,17 @@ export function ProfilePage() {
               Réessayer
             </Button>
           </Notice>
-          <ProfileTiles view={undefined} />
+          <ProgressCards />
         </>
       )}
-      {data?.view && (
+      {data?.view ? (
         <ProfileContent
           data={data}
           view={data.view}
+          settingsOpen={settingsOpen}
+          onCloseSettings={() => {
+            setSettingsOpen(false);
+          }}
           onSaved={(view) => {
             setData({ ...data, view });
           }}
@@ -128,6 +147,13 @@ export function ProfilePage() {
             setData({ ...data, tracking });
           }}
         />
+      ) : (
+        <FallbackSettings
+          open={settingsOpen}
+          onClose={() => {
+            setSettingsOpen(false);
+          }}
+        />
       )}
       <p className={styles.disclaimer} role="note">
         {MEDICAL_DISCLAIMER}
@@ -136,96 +162,112 @@ export function ProfilePage() {
   );
 }
 
-interface TilesProps {
+interface SettingsListProps {
   readonly view: ProfileView | undefined;
-  readonly onOpen?: (id: SheetId) => void;
+  readonly onOpen: (id: SheetId) => void;
 }
 
-/** Grille des tuiles : seules « Mes données » et « Confidentialité » existent sans profil. */
-function ProfileTiles({ view, onOpen }: TilesProps) {
-  const [fallbackSheet, setFallbackSheet] = useState<SheetId | undefined>();
-  const open = onOpen ?? setFallbackSheet;
+/** Les réglages : modifier ses réponses, apparence, données, confidentialité. */
+function SettingsList({ view, onOpen }: SettingsListProps) {
   return (
-    <>
-      <ListGroup className={styles.list} label="Réglages">
-        {view && (
-          <>
-            <ListRow
-              icon={<PersonIcon />}
-              title="Moi"
-              onClick={() => {
-                open('moi');
-              }}
-            />
-            <ListRow
-              icon={<TargetIcon />}
-              title="Objectif et alimentation"
-              onClick={() => {
-                open('objectif');
-              }}
-            />
-            <ListRow
-              icon={<SmileIcon />}
-              title="Goûts"
-              onClick={() => {
-                open('gouts');
-              }}
-            />
-            <ListRow
-              icon={<CalendarIcon />}
-              title="Organisation"
-              onClick={() => {
-                open('organisation');
-              }}
-            />
-            <ListRow
-              icon={<SettingsIcon />}
-              title="Apparence et suivi"
-              onClick={() => {
-                open('apparence');
-              }}
-            />
-          </>
-        )}
-        <ListRow
-          icon={<DatabaseIcon />}
-          title="Mes données"
-          onClick={() => {
-            open('donnees');
-          }}
-        />
-        <ListRow
-          icon={<LockIcon />}
-          title="Confidentialité"
-          onClick={() => {
-            open('confidentialite');
-          }}
-        />
-      </ListGroup>
-      {onOpen === undefined && (
+    <ListGroup className={styles.list} label="Réglages">
+      {view && (
         <>
-          <Sheet
-            open={fallbackSheet === 'donnees'}
-            variant="full"
-            title={SHEET_TITLES.donnees}
-            onClose={() => {
-              setFallbackSheet(undefined);
+          <ListRow
+            icon={<PersonIcon />}
+            title="Moi"
+            onClick={() => {
+              onOpen('moi');
             }}
-          >
-            <DataSection bare />
-          </Sheet>
-          <Sheet
-            open={fallbackSheet === 'confidentialite'}
-            variant="full"
-            title={SHEET_TITLES.confidentialite}
-            onClose={() => {
-              setFallbackSheet(undefined);
+          />
+          <ListRow
+            icon={<TargetIcon />}
+            title="Objectif et alimentation"
+            onClick={() => {
+              onOpen('objectif');
             }}
-          >
-            <PrivacyContent />
-          </Sheet>
+          />
+          <ListRow
+            icon={<SmileIcon />}
+            title="Goûts"
+            onClick={() => {
+              onOpen('gouts');
+            }}
+          />
+          <ListRow
+            icon={<CalendarIcon />}
+            title="Organisation"
+            onClick={() => {
+              onOpen('organisation');
+            }}
+          />
+          <ListRow
+            icon={<SettingsIcon />}
+            title="Apparence et suivi"
+            onClick={() => {
+              onOpen('apparence');
+            }}
+          />
         </>
       )}
+      <ListRow
+        icon={<DatabaseIcon />}
+        title="Mes données"
+        onClick={() => {
+          onOpen('donnees');
+        }}
+      />
+      <ListRow
+        icon={<LockIcon />}
+        title="Confidentialité"
+        onClick={() => {
+          onOpen('confidentialite');
+        }}
+      />
+    </ListGroup>
+  );
+}
+
+/** Réglages sans profil chargé : seules « Mes données » et « Confidentialité » existent. */
+function FallbackSettings({
+  open,
+  onClose,
+}: {
+  readonly open: boolean;
+  readonly onClose: () => void;
+}) {
+  const [sheet, setSheet] = useState<SheetId | undefined>();
+  return (
+    <>
+      <Sheet open={open} title="Réglages" onClose={onClose}>
+        <SettingsList
+          view={undefined}
+          onOpen={(id) => {
+            onClose();
+            setSheet(id);
+          }}
+        />
+      </Sheet>
+      <Sheet
+        open={sheet === 'donnees'}
+        variant="full"
+        title={SHEET_TITLES.donnees}
+        onClose={() => {
+          setSheet(undefined);
+        }}
+      >
+        <DataSection bare />
+      </Sheet>
+      <Sheet
+        open={sheet === 'confidentialite'}
+        variant="full"
+        title={SHEET_TITLES.confidentialite}
+        onClose={() => {
+          setSheet(undefined);
+        }}
+      >
+        <PrivacyContent />
+      </Sheet>
     </>
   );
 }
@@ -233,12 +275,22 @@ function ProfileTiles({ view, onOpen }: TilesProps) {
 interface ProfileContentProps {
   readonly data: ProfileData;
   readonly view: ProfileView;
+  readonly settingsOpen: boolean;
+  readonly onCloseSettings: () => void;
   readonly onSaved: (view: ProfileView) => void;
   readonly onTheme: (theme: Theme) => void;
   readonly onTracking: (tracking: WeightTrackingStatus) => void;
 }
 
-function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileContentProps) {
+function ProfileContent({
+  data,
+  view,
+  settingsOpen,
+  onCloseSettings,
+  onSaved,
+  onTheme,
+  onTracking,
+}: ProfileContentProps) {
   const { previewProfile, saveProfile, setTheme, setWeightTracking } = useDependencies();
   const toast = useToast();
   const location = useLocation();
@@ -405,11 +457,21 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
       <div className={styles.layout}>
         {companion && (
           <section className={styles.hero} aria-label="Nutry">
-            <div className={styles.heroNutry}>
+            <button
+              type="button"
+              className={styles.heroNutry}
+              aria-label="Personnaliser Nutry"
+              onClick={() => {
+                setCustomizing(true);
+              }}
+            >
               <Nutry look={companion.look} mood={companion.mood} size="l" />
-            </div>
+              <span className={styles.customizeHint} aria-hidden="true">
+                <PaletteIcon size={16} />
+                Personnaliser
+              </span>
+            </button>
             <div className={styles.heroText}>
-              <p className={styles.message}>{companion.message}</p>
               <p className={styles.streak}>
                 <FlameIcon size={20} />
                 {companion.streak > 0
@@ -417,27 +479,30 @@ function ProfileContent({ data, view, onSaved, onTheme, onTracking }: ProfileCon
                   : 'Pas de série en cours'}
                 {companion.best > 0 && ` · record : ${companion.best}`}
               </p>
+              <p className={styles.message}>{companion.message}</p>
               <p className={styles.next}>
                 {companion.nextUnlock
                   ? `Encore ${plural(companion.nextUnlock.inDays, 'jour')} pour ${unlockPhrase(companion.nextUnlock.item)} !`
                   : 'Tu as tout débloqué, bravo !'}
               </p>
-              <Button
-                small
-                variant="ghost"
-                icon={<PaletteIcon size={20} />}
-                onClick={() => {
-                  setCustomizing(true);
-                }}
-              >
-                Personnaliser
-              </Button>
             </div>
           </section>
         )}
 
-        <ProfileTiles view={view} onOpen={setSheet} />
+        <div className={styles.progress}>
+          <ProgressCards />
+        </div>
       </div>
+
+      <Sheet open={settingsOpen} title="Réglages" onClose={onCloseSettings}>
+        <SettingsList
+          view={view}
+          onOpen={(id) => {
+            onCloseSettings();
+            setSheet(id);
+          }}
+        />
+      </Sheet>
 
       <Sheet
         open={sheet !== undefined}

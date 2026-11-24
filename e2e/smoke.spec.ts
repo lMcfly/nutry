@@ -5,7 +5,7 @@ test('l’application se charge sur l’onboarding au premier lancement', async 
   await page.goto('./');
   await expect(page).toHaveTitle('Bienvenue · Nutry');
   await expect(page).toHaveURL(/#\/bienvenue$/);
-  await expect(page.getByRole('heading', { name: 'Faisons connaissance' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Tu as quel âge ?', level: 1 })).toBeVisible();
   await expect(page.getByRole('progressbar', { name: 'Progression' })).toBeVisible();
 });
 

@@ -99,6 +99,57 @@ export const SEX_LABELS: Readonly<Record<Sex, string>> = {
   autre: 'Autre',
 };
 
+export const SEX_EMOJIS: Readonly<Record<Sex, string>> = {
+  femme: '🙋‍♀️',
+  homme: '🙋‍♂️',
+  autre: '🙋',
+};
+
+export const DIET_EMOJIS: Readonly<Record<Diet, string>> = {
+  omnivore: '🍽️',
+  flexitarien: '🥗',
+  vegetarien: '🥕',
+  vegan: '🌱',
+  'sans-gluten': '🌾',
+  'sans-lactose': '🥛',
+};
+
+export const DIET_HINTS: Readonly<Partial<Record<Diet, string>>> = {
+  omnivore: 'De tout, sans restriction',
+  flexitarien: 'Surtout végétal, un peu de viande ou de poisson',
+  vegetarien: 'Pas de viande ni de poisson',
+  vegan: 'Aucun produit animal',
+};
+
+export const ALLERGEN_EMOJIS: Readonly<Record<Allergen, string>> = {
+  gluten: '🌾',
+  crustaces: '🦐',
+  oeufs: '🥚',
+  poissons: '🐟',
+  arachides: '🥜',
+  soja: '🫘',
+  lait: '🥛',
+  'fruits-a-coque': '🌰',
+  celeri: '🥬',
+  moutarde: '🟡',
+  sesame: '🌱',
+  sulfites: '🍷',
+  lupin: '🌼',
+  mollusques: '🐚',
+};
+
+/** Emoji d'une durée de cuisine proposée (TIME_OPTIONS). */
+export const TIME_EMOJIS: Readonly<Record<number, string>> = {
+  15: '⚡',
+  20: '🍳',
+  30: '🥘',
+  45: '🍲',
+  60: '👩‍🍳',
+  90: '🫕',
+};
+
+export const YES_NO_LABELS = { yes: 'Oui', no: 'Non' } as const;
+
 export const ACTIVITY_LABELS: Readonly<Record<ActivityLevel, string>> = {
   sedentaire: 'Sédentaire',
   leger: 'Un peu actif',

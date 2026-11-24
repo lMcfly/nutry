@@ -16,6 +16,7 @@ export type {
   RecipeTag,
   Unit,
 } from './recipe.constants';
+export { describePlate, describePlateShare } from './plate';
 export type { NutritionPerServing, PlateBalance, Recipe, RecipeIngredient } from './recipe.types';
 export {
   PREGNANCY_EXCLUDED_TAGS,

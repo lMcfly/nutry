@@ -54,11 +54,14 @@ test('parcours principal : onboarding → menu → remplacement → courses → 
   await expect(rayons.first()).toHaveAccessibleName(/^Fruits et légumes/);
   await expect(page.getByRole('heading', { level: 2 })).toContainText('Fruits et légumes');
   const fruits = page.getByTestId('shopping-list');
-  const item = fruits.getByRole('checkbox').first();
-  const itemName = await fruits.locator('label').first().innerText();
-  await item.check();
-  await expect(item).toBeChecked();
-  await expect(page.getByText(/^1 sur \d+$/)).toBeVisible();
+  // Tuiles : un gros emoji, le nom et la quantité ; la case porte le nom complet.
+  const itemName = (await fruits.getByRole('checkbox').first().getAttribute('aria-label')) ?? '';
+  expect(itemName).toMatch(/\S/);
+  await fruits.getByRole('checkbox', { name: itemName }).click();
+  await expect(page.getByText(/^1 \/ \d+$/)).toBeVisible();
+  // La tuile cochée rejoint la section repliable « Dans le panier (1) ».
+  const basket = page.getByRole('button', { name: 'Dans le panier (1)' });
+  await expect(basket).toHaveAttribute('aria-expanded', 'false');
   // Premier geste du jour : Nutry gagne sa première feuille.
   await dismissCelebration(page);
   // La case réagit tout de suite : on attend que l'écriture soit enregistrée avant de recharger.
@@ -68,9 +71,10 @@ test('parcours principal : onboarding → menu → remplacement → courses → 
   await page.reload();
   await dismissQuiz(page);
   await expect(page.getByRole('heading', { name: 'Mes courses', level: 1 })).toBeVisible();
+  await page.getByRole('button', { name: 'Dans le panier (1)' }).click();
   await expect(
-    page.locator('label', { hasText: itemName.split('\n')[0] ?? '' }).getByRole('checkbox'),
-  ).toBeChecked();
+    page.getByTestId('shopping-list').getByRole('checkbox', { name: itemName, checked: true }),
+  ).toBeVisible();
   await page.getByRole('link', { name: 'Semaine' }).click();
   await expect(page.getByTestId('meal')).toHaveCount(1);
   await expect(page.getByTestId('meal').getByRole('heading')).toHaveText(chosen);
@@ -93,10 +97,8 @@ test('fonctionne hors ligne après une première visite', async ({ page, context
   await page.getByRole('link', { name: 'Courses' }).click();
   await expect(page.getByRole('heading', { name: 'Mes courses', level: 1 })).toBeVisible();
   // Écrans chargés à la demande : leurs morceaux sont précachés.
-  await page.getByRole('link', { name: 'Profil' }).click();
-  await expect(page.getByRole('heading', { name: 'Mon profil', level: 1 })).toBeVisible();
-  await page.getByRole('link', { name: 'Progrès' }).click();
-  await expect(page.getByRole('heading', { name: 'Mes progrès', level: 1 })).toBeVisible();
+  await page.getByRole('link', { name: 'Moi' }).click();
+  await expect(page.getByRole('heading', { name: 'Moi', level: 1 })).toBeVisible();
   await context.setOffline(false);
 });
 
@@ -106,6 +108,12 @@ test('accessibilité : aucune violation axe sérieuse sur les écrans principaux
   await page.goto('./');
   const report: Record<string, unknown> = {};
   report['onboarding'] = await seriousViolations(page);
+  // Quelques autres écrans de l'onboarding : carte de choix, nuage de puces.
+  await page.getByLabel('Âge', { exact: true }).fill('34');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await expect(page.getByRole('heading', { name: 'Tu es…', level: 1 })).toBeVisible();
+  report['onboarding-choix'] = await seriousViolations(page);
+  await page.reload();
   await completeOnboarding(page);
   await expect(page.getByTestId('meal')).toHaveCount(1);
   report['semaine'] = await seriousViolations(page);
@@ -131,21 +139,25 @@ test('accessibilité : aucune violation axe sérieuse sur les écrans principaux
 
   for (const [tab, title] of [
     ['Courses', 'Mes courses'],
-    ['Profil', 'Mon profil'],
-    ['Progrès', 'Mes progrès'],
+    ['Moi', 'Moi'],
   ] as const) {
     await page.getByRole('link', { name: tab }).click();
     await expect(page.getByRole('heading', { name: title, level: 1 })).toBeVisible();
     report[tab] = await seriousViolations(page);
   }
 
-  // Profil : feuille plein écran d'une tuile, personnalisation de Nutry.
-  await page.getByRole('link', { name: 'Profil' }).click();
-  await page.getByRole('button', { name: 'Goûts' }).click();
+  // Moi : réglages dans le ⚙, feuille plein écran d'une tuile, personnalisation de Nutry.
+  await page.getByRole('link', { name: 'Moi' }).click();
+  await page.getByRole('button', { name: 'Réglages' }).click();
+  report['moi-reglages'] = await seriousViolations(page);
+  await page
+    .getByRole('dialog', { name: 'Réglages' })
+    .getByRole('button', { name: 'Goûts' })
+    .click();
   await expect(page.getByRole('dialog', { name: 'Goûts' })).toBeVisible();
-  report['profil-gouts'] = await seriousViolations(page);
+  report['moi-gouts'] = await seriousViolations(page);
   await page.keyboard.press('Escape');
-  await page.getByRole('button', { name: /Personnaliser/ }).click();
+  await page.getByRole('button', { name: 'Personnaliser Nutry' }).click();
   await expect(page.getByRole('dialog', { name: 'Personnaliser Nutry' })).toBeVisible();
   report['nutry-couleur'] = await seriousViolations(page);
   await page.getByRole('tab', { name: 'Accessoires' }).click();
@@ -158,15 +170,16 @@ test('accessibilité : aucune violation axe sérieuse sur les écrans principaux
 
   // Thème sombre forcé.
   await page.goto('./#/profil');
+  await page.getByRole('button', { name: 'Réglages' }).click();
   await page.getByRole('button', { name: 'Apparence et suivi' }).click();
   await page.getByText('Sombre', { exact: true }).click();
   await page.keyboard.press('Escape');
   await page.getByRole('link', { name: 'Semaine' }).click();
   await expect(page.getByTestId('meal')).toHaveCount(1);
   report['semaine-sombre'] = await seriousViolations(page);
-  await page.getByRole('link', { name: 'Progrès' }).click();
-  await expect(page.getByRole('heading', { name: 'Mes progrès', level: 1 })).toBeVisible();
-  report['progres-sombre'] = await seriousViolations(page);
+  await page.getByRole('link', { name: 'Moi' }).click();
+  await expect(page.getByRole('heading', { name: 'Moi', level: 1 })).toBeVisible();
+  report['moi-sombre'] = await seriousViolations(page);
   await page.getByRole('link', { name: 'Courses' }).click();
   await expect(page.getByRole('heading', { name: 'Mes courses', level: 1 })).toBeVisible();
   report['courses-sombre'] = await seriousViolations(page);

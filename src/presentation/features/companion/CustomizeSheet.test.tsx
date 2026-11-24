@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { INITIAL_COMPANION_STATE } from '@domain/companion';
-import { ProfilePage } from '../../pages/ProfilePage';
+import { MePage } from '../../pages/MePage';
 import { TEST_PROFILE, createTestUseCases, renderScreen } from '../../testing/renderApp';
 
 function setup(best: number) {
@@ -23,7 +23,7 @@ async function openCustomizer(user: ReturnType<typeof renderScreen>['user']) {
 
 describe('Personnaliser Nutry', () => {
   it('aperçu vivant, onglets Couleur / Yeux / Accessoires', async () => {
-    const { user } = renderScreen(<ProfilePage />, { existing: setup(10) });
+    const { user } = renderScreen(<MePage />, { existing: setup(10) });
     const sheet = await openCustomizer(user);
     expect(
       within(sheet)
@@ -47,20 +47,24 @@ describe('Personnaliser Nutry', () => {
     await user.click(within(sheet).getByRole('button', { name: /Feuille sur la tête/ }));
     expect(preview()).toHaveAccessibleName(/avec feuille sur la tête/);
     expect(preview().getAttribute('aria-label')).not.toContain('toque');
-    // « Aucun » retire l'accessoire de l'emplacement.
-    const head = within(sheet).getByRole('region', { name: 'Tête' });
-    await user.click(within(head).getByRole('button', { name: /Aucun/ }));
+    // Retoucher l'accessoire porté l'enlève ; « Aucun accessoire » retire tout.
+    await user.click(within(sheet).getByRole('button', { name: /Feuille sur la tête/ }));
+    expect(preview()).toHaveAccessibleName(/sans accessoire/);
+    await user.click(within(sheet).getByRole('button', { name: /Écharpe/ }));
+    expect(preview()).toHaveAccessibleName(/avec écharpe/);
+    await user.click(within(sheet).getByRole('button', { name: 'Aucun accessoire' }));
     expect(preview()).toHaveAccessibleName(/sans accessoire/);
   });
 
   it('éléments verrouillés grisés avec cadenas et « à N jours de série »', async () => {
-    const { user } = renderScreen(<ProfilePage />, { existing: setup(3) });
+    const { user } = renderScreen(<MePage />, { existing: setup(3) });
     const sheet = await openCustomizer(user);
     await user.click(within(sheet).getByRole('tab', { name: 'Accessoires' }));
     const toque = within(sheet).getByRole('button', { name: /Toque de chef/ });
     expect(toque).toHaveAttribute('aria-disabled', 'true');
     expect(toque.querySelector('svg')).not.toBeNull();
-    expect(toque).toHaveTextContent('à 7 jours de série');
+    expect(toque).toHaveAccessibleName(/verrouillé, à 7 jours de série/);
+    expect(toque).toHaveTextContent('à 7 jours');
     const glasses = within(sheet).getByRole('button', { name: /Lunettes rondes/ });
     expect(glasses).toHaveAttribute('aria-disabled', 'false');
 
@@ -69,14 +73,12 @@ describe('Personnaliser Nutry', () => {
     expect(within(sheet).getByRole('img')).toHaveAccessibleName(/sans accessoire/);
 
     await user.click(within(sheet).getByRole('tab', { name: 'Couleur' }));
-    expect(within(sheet).getByRole('button', { name: /Cosmos/ })).toHaveTextContent(
-      'à 15 jours de série',
-    );
+    expect(within(sheet).getByRole('button', { name: /Cosmos/ })).toHaveTextContent('à 15 jours');
   });
 
   it('enregistre avec customizeCompanion et met à jour Nutry', async () => {
     const existing = setup(10);
-    const { user } = renderScreen(<ProfilePage />, { existing });
+    const { user } = renderScreen(<MePage />, { existing });
     const sheet = await openCustomizer(user);
     await user.click(within(sheet).getByRole('button', { name: /Framboise/ }));
     await user.click(within(sheet).getByRole('tab', { name: 'Accessoires' }));
@@ -104,7 +106,7 @@ describe('Personnaliser Nutry', () => {
           message: 'Cet élément n’est pas encore débloqué, mais ça viendra !',
         }),
     };
-    const { user } = renderScreen(<ProfilePage />, {
+    const { user } = renderScreen(<MePage />, {
       existing: { ports: existing.ports, useCases: refusing },
     });
     const sheet = await openCustomizer(user);

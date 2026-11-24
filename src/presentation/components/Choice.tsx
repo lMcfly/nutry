@@ -58,7 +58,7 @@ export function ChipGroup<T extends string>({
         {options.map((option) => (
           <label
             key={option.value}
-            className={`${styles.chip} ${option.disabled ? styles.disabled : ''}`}
+            className={`${styles.chip} ${styles.cloudChip} ${option.disabled ? styles.disabled : ''}`}
           >
             <input
               type="checkbox"
@@ -89,9 +89,15 @@ interface RadioGroupProps<T extends string> {
   readonly options: readonly ChoiceOption<T>[];
   readonly value: T | undefined;
   readonly onChange: (value: T) => void;
-  /** `cards` : une option par ligne avec explication ; `chips` : puces en ligne. */
-  readonly layout?: 'cards' | 'chips' | 'segmented';
+  /** `cards` : une option par ligne avec explication ; `chips` : puces en ligne ; `tiles` : grandes cartes illustrées. */
+  readonly layout?: 'cards' | 'chips' | 'segmented' | 'tiles';
   readonly name?: string;
+  /**
+   * Appelé quand la personne touche une option avec la souris ou le doigt (même celle déjà
+   * choisie) : l'onboarding passe alors à la question suivante. Jamais au clavier, pour ne
+   * pas changer d'écran pendant qu'on parcourt les flèches.
+   */
+  readonly onPick?: (value: T) => void;
 }
 
 /** Choix unique : boutons radio natifs (flèches du clavier) habillés en cartes ou puces. */
@@ -104,13 +110,22 @@ export function RadioGroup<T extends string>({
   onChange,
   layout = 'chips',
   name,
+  onPick,
 }: RadioGroupProps<T>) {
   const autoName = useId();
   const groupName = name ?? autoName;
-  const containerClass =
-    layout === 'cards' ? styles.cards : layout === 'segmented' ? styles.segmented : styles.chips;
-  const itemClass =
-    layout === 'cards' ? styles.card : layout === 'segmented' ? styles.segment : styles.chip;
+  const containerClass = {
+    cards: styles.cards,
+    segmented: styles.segmented,
+    chips: styles.chips,
+    tiles: styles.tiles,
+  }[layout];
+  const itemClass = {
+    cards: styles.card,
+    segmented: styles.segment,
+    chips: styles.chip,
+    tiles: styles.tile,
+  }[layout];
   return (
     <GroupFrame legend={legend} hint={hint} hideLegend={hideLegend}>
       <div className={containerClass}>
@@ -129,13 +144,16 @@ export function RadioGroup<T extends string>({
               onChange={() => {
                 onChange(option.value);
               }}
+              onClick={(event) => {
+                if (event.detail > 0) onPick?.(option.value);
+              }}
             />
             {option.emoji !== undefined && (
               <span aria-hidden="true" className={styles.emoji}>
                 {option.emoji}
               </span>
             )}
-            {layout === 'cards' ? (
+            {layout === 'cards' || layout === 'tiles' ? (
               <span className={styles.cardText}>
                 <span className={styles.cardLabel}>{option.label}</span>
                 {option.hint !== undefined && (

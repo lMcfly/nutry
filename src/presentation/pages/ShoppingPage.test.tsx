@@ -29,26 +29,57 @@ describe('<ShoppingPage />', () => {
     expect(screen.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', tabs[epicerie]?.id);
   });
 
-  it('affiche « « n sur total » » et le met à jour', async () => {
+  it('affiche « n / total » dans le panier et le met à jour', async () => {
     const { user } = renderScreen(<ShoppingPage />);
-    expect(await screen.findByText(/^0 sur \d+$/)).toBeVisible();
+    expect(await screen.findByText(/^0 \/ \d+$/)).toBeVisible();
     const list = screen.getByTestId('shopping-list');
     const first = within(list).getAllByRole('checkbox')[0];
     if (!first) throw new Error('aucun article');
     await user.click(first);
-    expect(await screen.findByText(/^1 sur \d+$/)).toBeVisible();
+    expect(await screen.findByText(/^1 \/ \d+$/)).toBeVisible();
   });
 
-  it('coche un article, ajoute et supprime un article manuel, décoche tout', async () => {
+  it('les tuiles portent un emoji, le nom et la quantité dans le nom accessible', async () => {
+    renderScreen(<ShoppingPage />);
+    const list = await screen.findByTestId('shopping-list');
+    const boxes = within(list).getAllByRole('checkbox');
+    expect(boxes.length).toBeGreaterThan(2);
+    // « Nom, quantité » ou « 2 concombres » d'un bloc, initiale en capitale.
+    for (const box of boxes) expect(box.getAttribute('aria-label')).toMatch(/^[A-ZÉÈÂÊ0-9]/);
+    expect(within(list).getAllByText(/\p{Extended_Pictographic}/u).length).toBeGreaterThan(2);
+  });
+
+  it('cocher une tuile l’envoie dans « Dans le panier (n) », repliable ; la décocher la rend', async () => {
+    const { user, ports } = renderScreen(<ShoppingPage />);
+    const list = await screen.findByTestId('shopping-list');
+    const first = within(list).getAllByRole('checkbox')[0];
+    if (!first) throw new Error('aucun article');
+    const name = first.getAttribute('aria-label') ?? '';
+    await user.click(first);
+    const toggle = await screen.findByRole('button', { name: 'Dans le panier (1)' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(() => {
+      expect(record(ports)?.state.checkedKeys).toHaveLength(1);
+    });
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    const inBasket = await within(list).findByRole('checkbox', { name, checked: true });
+    await user.click(inBasket);
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /Dans le panier/ })).toBeNull();
+    });
+    expect(within(list).getByRole('checkbox', { name, checked: false })).toBeInTheDocument();
+  });
+
+  it('ajoute et supprime un article manuel, décoche tout', async () => {
     const { user, ports } = renderScreen(<ShoppingPage />);
     const list = await screen.findByTestId('shopping-list');
     const first = within(list).getAllByRole('checkbox')[0];
     if (!first) throw new Error('aucun article');
     await user.click(first);
     await waitFor(() => {
-      expect(first).toBeChecked();
+      expect(record(ports)?.state.checkedKeys).toHaveLength(1);
     });
-    expect(record(ports)?.state.checkedKeys).toHaveLength(1);
 
     // Ajout manuel dans une feuille.
     await user.click(screen.getByRole('button', { name: 'Ajouter un article' }));
@@ -65,12 +96,11 @@ describe('<ShoppingPage />', () => {
     expect(await screen.findByRole('checkbox', { name: 'Café moulu' })).toBeInTheDocument();
 
     await fromMenu(user, 'Tout décocher');
-    await user.click(screen.getByRole('tab', { name: /^Fruits et légumes/ }));
     await waitFor(() => {
-      expect(
-        within(screen.getByTestId('shopping-list')).getAllByRole('checkbox')[0],
-      ).not.toBeChecked();
+      expect(record(ports)?.state.checkedKeys).toHaveLength(0);
     });
+    await user.click(screen.getByRole('tab', { name: /^Fruits et légumes/ }));
+    expect(screen.queryByRole('button', { name: /Dans le panier/ })).toBeNull();
 
     await user.click(screen.getByRole('tab', { name: /^Épicerie/ }));
     await user.click(screen.getByRole('button', { name: 'Supprimer Café moulu' }));

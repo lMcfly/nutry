@@ -31,7 +31,7 @@ describe('<RecipePage />', () => {
       existing,
     });
     expect(await screen.findByRole('heading', { name: recipe.name, level: 1 })).toBeVisible();
-    // Trois onglets : Ingrédients, Étapes, Infos (les jauges d'assiette sont dans Infos).
+    // Trois onglets : Ingrédients, Étapes, Infos (l'assiette illustrée est dans Infos).
     expect(screen.queryAllByRole('meter')).toHaveLength(0);
     expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual([
       'Ingrédients',
@@ -48,7 +48,10 @@ describe('<RecipePage />', () => {
     expect(screen.getByRole('list').querySelectorAll('li').length).toBe(recipe.steps.length);
 
     await user.click(screen.getByRole('tab', { name: 'Infos' }));
-    expect(screen.getAllByRole('meter')).toHaveLength(3);
+    expect(screen.queryAllByRole('meter')).toHaveLength(0);
+    const plate = screen.getByRole('img', { name: /^Composition de l’assiette : légumes : / });
+    expect(plate.getAttribute('aria-label')).not.toMatch(/%|pour cent/);
+    expect(screen.getByText('Légumes')).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Allergènes' })).toBeVisible();
     expect(screen.getByText(PROCESSED_PRODUCTS_NOTICE, { exact: false })).toBeVisible();
     const details = screen.getByText('Détail nutritionnel (optionnel)').closest('details');
@@ -119,7 +122,7 @@ describe('<PrivacyPage />', () => {
     expect(screen.getByRole('link', { name: 'Licence Ouverte' })).toBeVisible();
     expect(screen.getByRole('link', { name: /Exporter ou tout effacer/ })).toHaveAttribute(
       'href',
-      '/profil#mes-donnees',
+      '/moi#mes-donnees',
     );
     expect(await screen.findByText(/navigateur peut effacer/)).toBeVisible();
   });

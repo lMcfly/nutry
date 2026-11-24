@@ -96,7 +96,7 @@ export function PrivacyContent() {
             Exporte une sauvegarde (chiffrée si tu veux) ou efface tout, à tout moment.
           </p>
           <div className={styles.actions}>
-            <ButtonLink to="/profil#mes-donnees" variant="secondary" small>
+            <ButtonLink to="/moi#mes-donnees" variant="secondary" small>
               Exporter ou tout effacer
             </ButtonLink>
           </div>

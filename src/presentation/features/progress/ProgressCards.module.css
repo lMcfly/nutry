@@ -1,0 +1,266 @@
+/* Cartes de progrès : une grille de 2 colonnes, l'équilibre en haut à gauche. */
+.cards {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+}
+
+button.card {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+button.card:active {
+  transform: scale(0.97);
+}
+
+button.card:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.balanceCard {
+  grid-row: span 2;
+  justify-content: flex-start;
+  gap: var(--space-2);
+}
+
+.measureCard {
+  grid-column: span 2;
+  align-items: stretch;
+}
+
+.cardTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.cardHint {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.bigEmoji {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.balanceRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.balanceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 1.25rem;
+}
+
+.dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.dot,
+.dotOn {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+}
+
+.dot {
+  background: var(--color-surface-alt);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+}
+
+.dotOn {
+  background: var(--color-primary);
+}
+
+.tileHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.tileActions {
+  display: flex;
+}
+
+.gauges {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.links {
+  flex: none;
+}
+
+.small {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.3;
+}
+
+.measure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--space-3);
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.entries summary,
+.week summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.entries ul {
+  list-style: none;
+}
+
+.entries li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.remove {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.recipeLinks {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.recipeLinks a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+
+.week {
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Tablette et ordinateur : cartes plus grandes. */
+@media (min-width: 768px) and (min-height: 540px) {
+  .cards {
+    gap: var(--space-3);
+  }
+
+  .card {
+    padding: var(--space-4);
+  }
+
+  .bigEmoji {
+    font-size: 2.5rem;
+  }
+
+  .balanceRow {
+    font-size: 1.5rem;
+  }
+
+  .dot,
+  .dotOn {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  .cardTitle {
+    font-size: var(--font-size-md);
+  }
+}
+
+/* Petits écrans (360 × 640) : on resserre pour garder de la marge quelles que soient les polices. */
+@media (max-height: 700px) {
+  .cards {
+    gap: var(--space-1);
+  }
+
+  .card {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .balanceCard {
+    gap: var(--space-1);
+  }
+
+  .balanceRows {
+    gap: 2px;
+  }
+
+  .balanceRow {
+    font-size: 1.1rem;
+  }
+
+  .bigEmoji {
+    font-size: 1.5rem;
+  }
+
+  .small {
+    font-size: var(--font-size-xs);
+  }
+}

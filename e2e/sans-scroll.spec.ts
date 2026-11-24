@@ -101,9 +101,7 @@ for (const viewport of VIEWPORTS) {
   test.describe(viewport.name, () => {
     if (viewport.size) test.use({ viewport: viewport.size });
 
-    test('Semaine, Courses, Profil, Progrès et Recette tiennent sans scroll de page', async ({
-      page,
-    }) => {
+    test('Semaine, Courses, Moi et Recette tiennent sans scroll de page', async ({ page }) => {
       await page.goto('./');
       await expectFits(page, 'onboarding, étape 1');
       await completeOnboarding(page);
@@ -130,32 +128,24 @@ for (const viewport of VIEWPORTS) {
       await rayons.nth(1).click();
       await expectFits(page, 'Courses, 2e rayon');
 
-      await page.getByRole('link', { name: 'Profil' }).click();
-      await expect(page.getByRole('heading', { name: 'Mon profil', level: 1 })).toBeVisible();
+      // Moi : Nutry, série et progrès en cartes, réglages dans le ⚙.
+      await page.getByRole('link', { name: 'Moi' }).click();
+      await expect(page.getByRole('heading', { name: 'Moi', level: 1 })).toBeVisible();
       await expect(page.getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
-      await expect(page.getByRole('note')).toContainText('ne remplace pas');
-      const profil = await expectFits(page, 'Profil');
-      if (viewport.size?.height === 640) {
-        expect(
-          profil.spare,
-          `réserve sous Profil : ${JSON.stringify(profil)}`,
-        ).toBeGreaterThanOrEqual(60);
-      }
-
-      await page.getByRole('link', { name: 'Progrès' }).click();
-      await expect(page.getByRole('heading', { name: 'Mes progrès', level: 1 })).toBeVisible();
       await expect(page.getByRole('button', { name: 'Noter ma mesure' })).toBeVisible();
-      const progres = await expectFits(page, 'Progrès');
+      await expect(page.getByRole('note')).toContainText('ne remplace pas');
+      const moi = await expectFits(page, 'Moi');
       if (viewport.size?.height === 640) {
-        expect(
-          progres.spare,
-          `réserve sous Progrès : ${JSON.stringify(progres)}`,
-        ).toBeGreaterThanOrEqual(60);
+        expect(moi.spare, `réserve sous Moi : ${JSON.stringify(moi)}`).toBeGreaterThanOrEqual(10);
       }
 
       // Crédits photos : la longue liste défile dans sa carte, jamais la page.
-      await page.getByRole('link', { name: 'Profil' }).click();
-      await page.getByRole('button', { name: 'Confidentialité' }).click();
+      await page.getByRole('link', { name: 'Moi' }).click();
+      await page.getByRole('button', { name: 'Réglages' }).click();
+      await page
+        .getByRole('dialog', { name: 'Réglages' })
+        .getByRole('button', { name: 'Confidentialité' })
+        .click();
       await page
         .getByRole('dialog', { name: 'Confidentialité' })
         .getByRole('link', { name: 'Crédits photos' })
@@ -195,7 +185,7 @@ async function expectReachable(locator: ReturnType<Page['locator']>): Promise<vo
 }
 
 test.describe('Texte zoomé, clavier ouvert, explication dépliée', () => {
-  test('texte à 130 % : la carte du repas, ses actions et les lignes de Progrès restent atteignables', async ({
+  test('texte à 130 % : la carte du repas, ses actions et les cartes de Moi restent atteignables', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 360, height: 640 });
@@ -207,15 +197,15 @@ test.describe('Texte zoomé, clavier ouvert, explication dépliée', () => {
     await expectReachable(page.getByTestId('meal').getByRole('link').first());
     await expectReachable(page.getByRole('button', { name: 'J’ai aimé' }));
 
-    await page.getByRole('link', { name: 'Progrès' }).click();
-    await expect(page.getByRole('heading', { name: 'Mes progrès', level: 1 })).toBeVisible();
+    await page.getByRole('link', { name: 'Moi' }).click();
+    await expect(page.getByRole('heading', { name: 'Moi', level: 1 })).toBeVisible();
     for (const name of [/équilibre/i, /Favoris/, /Historique/]) {
       await expectReachable(page.getByRole('button', { name }));
     }
     await expectReachable(page.getByRole('button', { name: 'Noter ma mesure' }));
   });
 
-  test('clavier ouvert (360 × 340) : Courses, Progrès et Profil gardent champ et validation à portée', async ({
+  test('clavier ouvert (360 × 340) : Courses, Moi et les réglages gardent champ et validation à portée', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 360, height: 340 });
@@ -230,7 +220,7 @@ test.describe('Texte zoomé, clavier ouvert, explication dépliée', () => {
     await expectReachable(add.getByRole('button', { name: 'Ajouter', exact: true }));
     await page.keyboard.press('Escape');
 
-    await page.getByRole('link', { name: 'Progrès' }).click();
+    await page.getByRole('link', { name: 'Moi' }).click();
     await page.getByRole('button', { name: 'Noter ma mesure' }).click();
     const measure = page.getByRole('dialog').last();
     await measure.getByLabel('Tour de taille').fill('80');
@@ -238,8 +228,12 @@ test.describe('Texte zoomé, clavier ouvert, explication dépliée', () => {
     await expectReachable(measure.getByRole('button', { name: 'Enregistrer' }));
     await page.keyboard.press('Escape');
 
-    await page.getByRole('link', { name: 'Profil' }).click();
-    await page.getByRole('button', { name: 'Goûts' }).click();
+    await page.getByRole('link', { name: 'Moi' }).click();
+    await page.getByRole('button', { name: 'Réglages' }).click();
+    await page
+      .getByRole('dialog', { name: 'Réglages' })
+      .getByRole('button', { name: 'Goûts' })
+      .click();
     const gouts = page.getByRole('dialog', { name: 'Goûts' });
     await expectReachable(
       gouts.getByRole('button', { name: /Réponses enregistrées|Enregistrer mes réponses/ }),

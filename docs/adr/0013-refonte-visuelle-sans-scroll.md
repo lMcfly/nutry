@@ -138,3 +138,44 @@ portrait et en paysage) : pas de scroll de page, rien de coupé dans `<main>`, a
 horizontal, navigation entièrement visible, et au moins 60 px de réserve sous Profil et Progrès
 en 360 × 640. `e2e/responsive.spec.ts` ajoute axe (sans violation sérieuse) sur tablette et
 ordinateur. Captures : `docs/captures/` (dont `tablette.png` et `ordinateur.png`).
+
+## Saisie ludique, courses en tuiles, assiette, Nutry en cercle, onglet « Moi » (révision du 2026-11-24)
+
+Retours : la saisie « fait Google Forms », la liste de courses « trop ligne, ligne, ligne », les
+pourcentages déplaisent, Nutry doit être mis en valeur, Profil et Progrès sont réunis.
+
+- **Onboarding, une question par écran** : Nutry pose la question dans une bulle (le titre de
+  niveau 1 prend le focus à chaque écran), transition glissée coupée par
+  `prefers-reduced-motion`, retour, barre fine, « Continuer » sous le pouce, « Passer » sur les
+  questions facultatives. Les textes et l'ordre des questions sont dans
+  `domain/profile/questions.ts` (ADR 0010) ; la question de grossesse n'apparaît que si le sexe
+  n'est pas « homme ». Validation, messages d'erreur, `previewProfile` et garde-fous sont inchangés
+  (`draft.ts`). Une carte de choix touchée au doigt passe seule à la suite (jamais au clavier, pour ne
+  pas changer d'écran pendant qu'on parcourt les flèches ; jamais sur la dernière question).
+- **Composants** : `NumberDial` (grand chiffre qui est un vrai champ, − / + avec appui long qui
+  accélère, curseur `input range`), `RadioGroup` en `tiles` (cartes illustrées), `ChipGroup` en nuage
+  (fond de l'accent et coche). `ProfileSections` expose `QuestionInput`, rendu en `wizard`
+  (onboarding) ou en `list` (feuilles d'édition de « Moi » : toutes les questions d'une partie, avec
+  interrupteurs pour les oui/non).
+- **Courses** : grille de tuiles par rayon (3 colonnes téléphone, 4 tablette, 5 puis 6 dès 1000 et
+  1280 px), emoji de l'aliment (`ingredientEmoji`, repli sur l'emoji du rayon), vraie case à
+  cocher nommée « Ail, 6 gousses ». Cocher joue un « pop » puis envoie la tuile dans « Dans le panier
+  (n) » (repliable, en bas du rayon). Anneau de progression « 12 / 57 », rayons en chips avec emoji.
+  `aria-busy` sur `data-testid="shopping-list"` et persistance inchangés. « Frigo vide » reprend
+  les emoji sur ses puces.
+- **Assiette illustrée** (`PlateGauges`) : disque SVG en secteurs (légumes, féculents, protéines) et
+  légende emoji + mot ; aucun pourcentage, la part se lit en mots dans `aria-label`
+  (`describePlate`). Les autres jauges de la semaine n'affichent que des comptes (« 3 sur 4 »).
+- **Nutry en cercle** (`CustomizeSheet`) : grand Nutry au centre, choix en bulles rondes sur un
+  cercle (angles calculés en CSS), onglets Couleur / Yeux / Accessoires, cadenas et « à N jours »
+  sur les éléments verrouillés, essai immédiat avec petit rebond ; `aria-pressed`, touche à
+  nouveau un accessoire pour l'enlever.
+- **Onglet « Moi »** (route `/moi`) remplace Profil et Progrès : 3 onglets (Semaine, Courses,
+  Moi). `/profil` et `/progres` redirigent vers `/moi` (l'ancre `#mes-donnees` est conservée).
+  Nutry en héros (un toucher ouvre la personnalisation), série et record, puis les progrès en cartes
+  (`ProgressCards` : équilibre de la semaine en pastilles, favoris, historique, mesures ou tendance),
+  sans pourcentage. Les réglages (Moi, Objectif et alimentation, Goûts, Organisation, Apparence
+  et suivi, Mes données, Confidentialité) sont dans le bouton ⚙ « Réglages ». La mention médicale
+  reste en pied de page. Dès 768 px : deux colonnes (Nutry et série à gauche, progrès à droite).
+  Le quiz n'a pas de carte propre : ses statistiques ne sont exposées par aucun cas d'usage hors de la
+  question du moment.

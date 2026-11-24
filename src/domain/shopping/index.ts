@@ -31,3 +31,4 @@ export {
   toBaseUnit,
 } from './units';
 export type { IngredientDisplay } from './units';
+export { ingredientEmoji } from './emoji';

@@ -38,3 +38,16 @@ export {
 export type { HouseholdPortions } from './portions';
 export { PROFILE_BOUNDS, validateProfile } from './validate';
 export type { ProfileField, ProfileIssue } from './validate';
+export {
+  PROFILE_QUESTIONS,
+  PROFILE_QUESTION_IDS,
+  PROFILE_STEPS,
+  onboardingQuestions,
+  stepOfQuestion,
+} from './questions';
+export type {
+  ProfileQuestionId,
+  ProfileQuestionText,
+  ProfileStep,
+  ProfileStepId,
+} from './questions';

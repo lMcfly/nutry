@@ -1,11 +1,11 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
-import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useDependencies } from './dependencies';
 import { AppStateContext } from './appState';
 import type { ProfileStatus } from './appState';
 import { TabBar } from '../components/TabBar';
 import type { Tab } from '../components/TabBar';
-import { BasketIcon, HomeIcon, PersonIcon, TrendIcon } from '../components/icons';
+import { BasketIcon, HomeIcon, PersonIcon } from '../components/icons';
 import { ToastProvider } from '../components/Toast';
 import { CelebrationProvider } from '../features/companion/Celebration';
 import { QuizCard } from '../features/quiz/QuizCard';
@@ -22,12 +22,7 @@ import styles from './App.module.css';
 const OnboardingPage = lazy(() =>
   import('../pages/OnboardingPage').then((m) => ({ default: m.OnboardingPage })),
 );
-const ProfilePage = lazy(() =>
-  import('../pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
-);
-const ProgressPage = lazy(() =>
-  import('../pages/ProgressPage').then((m) => ({ default: m.ProgressPage })),
-);
+const MePage = lazy(() => import('../pages/MePage').then((m) => ({ default: m.MePage })));
 const FridgePage = lazy(() =>
   import('../pages/FridgePage').then((m) => ({ default: m.FridgePage })),
 );
@@ -45,9 +40,14 @@ const PhotoCreditsPage = lazy(() =>
 const TABS: readonly Tab[] = [
   { to: '/semaine', label: 'Semaine', icon: <HomeIcon /> },
   { to: '/courses', label: 'Courses', icon: <BasketIcon /> },
-  { to: '/profil', label: 'Profil', icon: <PersonIcon /> },
-  { to: '/progres', label: 'Progrès', icon: <TrendIcon /> },
+  { to: '/moi', label: 'Moi', icon: <PersonIcon /> },
 ];
+
+/** Redirige l'ancienne adresse (Profil, Progrès) vers « Moi » en gardant l'ancre (#mes-donnees). */
+function RedirectToMe() {
+  const { hash } = useLocation();
+  return <Navigate to={{ pathname: '/moi', hash }} replace />;
+}
 
 /** Attente sobre et annoncée (chargement initial ou d'un écran). */
 function Loading() {
@@ -112,8 +112,10 @@ function Shell() {
               <Route path="/" element={<Navigate to="/semaine" replace />} />
               <Route path="/semaine" element={<WeekPage />} />
               <Route path="/courses" element={<ShoppingPage />} />
-              <Route path="/profil" element={<ProfilePage />} />
-              <Route path="/progres" element={<ProgressPage />} />
+              <Route path="/moi" element={<MePage />} />
+              {/* Anciens liens : Profil et Progrès sont réunis dans « Moi » (ADR 0013). */}
+              <Route path="/profil" element={<RedirectToMe />} />
+              <Route path="/progres" element={<RedirectToMe />} />
               <Route path="/frigo" element={<FridgePage />} />
               <Route path="/recette/:id" element={<RecipePage />} />
               <Route path="/confidentialite" element={<PrivacyPage />} />

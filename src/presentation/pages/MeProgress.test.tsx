@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { ProgressPage } from './ProgressPage';
+import { MePage } from './MePage';
 import { TEST_PROFILE, createTestUseCases, renderScreen } from '../testing/renderApp';
 
 type User = ReturnType<typeof renderScreen>['user'];
@@ -11,13 +11,18 @@ async function openMeasureSheet(user: User): Promise<HTMLElement> {
   return screen.findByRole('dialog', { name: 'Ma mesure de la semaine' });
 }
 
-describe('<ProgressPage />', () => {
-  it('tableau de bord sur un écran : série et Nutry, équilibre, suivi, accès aux sheets', async () => {
-    const { user } = renderScreen(<ProgressPage />);
-    expect(await screen.findByRole('heading', { name: /Ta série/ })).toBeVisible();
+describe('<MePage />', () => {
+  it('une page : Nutry et série en haut, progrès en cartes sans pourcentage, accès aux feuilles', async () => {
+    const { user } = renderScreen(<MePage />);
+    expect(await screen.findByText(/Pas de série en cours/)).toBeVisible();
     expect(screen.getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
-    // L'équilibre est une ligne qui ouvre une feuille (pas de jauges sur l'écran).
+    // L'équilibre est une carte à pastilles qui ouvre une feuille (pas de jauges sur l'écran).
     expect(screen.queryAllByRole('meter')).toHaveLength(0);
+    const rows = await screen.findAllByRole('img', {
+      name: /^(Légumes|Poissons|Légumineuses|Céréales).* : \d+ sur \d+$/,
+    });
+    expect(rows.length).toBe(4);
+    expect(document.body.textContent).not.toMatch(/\d\s?%/);
     await user.click(screen.getByRole('button', { name: /L’équilibre de ta semaine/ }));
     const sheet = await screen.findByRole('dialog', { name: 'L’équilibre de ta semaine' });
     expect(within(sheet).getAllByRole('meter')).toHaveLength(4);
@@ -30,7 +35,7 @@ describe('<ProgressPage />', () => {
     const existing = createTestUseCases({ profile: TEST_PROFILE });
     existing.ports.state.progress.set('2026-11-09', { date: '2026-11-09', weightKg: 63 });
     existing.ports.state.progress.set('2026-11-16', { date: '2026-11-16', weightKg: 62.4 });
-    const { user, ports } = renderScreen(<ProgressPage />, { existing });
+    const { user, ports } = renderScreen(<MePage />, { existing });
     const sheet = await openMeasureSheet(user);
     await user.type(within(sheet).getByLabelText('Poids'), '62,1');
     await user.click(within(sheet).getByRole('button', { name: 'Enregistrer' }));
@@ -56,7 +61,7 @@ describe('<ProgressPage />', () => {
     const existing = createTestUseCases({ profile: TEST_PROFILE });
     existing.ports.clock.set('2026-11-25T10:00:00.000Z');
     existing.ports.state.progress.set('2026-11-24', { date: '2026-11-24', waistCm: 80 });
-    const { user } = renderScreen(<ProgressPage />, { existing });
+    const { user } = renderScreen(<MePage />, { existing });
     const sheet = await openMeasureSheet(user);
     await user.type(within(sheet).getByLabelText('Tour de taille'), '79');
     await user.click(within(sheet).getByRole('button', { name: 'Enregistrer' }));
@@ -64,7 +69,7 @@ describe('<ProgressPage />', () => {
   });
 
   it('suivi du poids désactivé par défaut : formulation douce et activation', async () => {
-    const { user, ports } = renderScreen(<ProgressPage />, {
+    const { user, ports } = renderScreen(<MePage />, {
       profile: { ...TEST_PROFILE, age: 16 },
     });
     const card = (await screen.findByRole('heading', { name: /Suivi du poids/ })).closest(
@@ -93,7 +98,7 @@ describe('<ProgressPage />', () => {
   ] as const)(
     'profil protégé (%s) : suivi masqué, carte douce sans jugement',
     async (_label, overrides) => {
-      const { user } = renderScreen(<ProgressPage />, {
+      const { user } = renderScreen(<MePage />, {
         profile: { ...TEST_PROFILE, ...overrides },
       });
       const card = (await screen.findByRole('heading', { name: /Suivi du poids/ })).closest(
@@ -110,7 +115,7 @@ describe('<ProgressPage />', () => {
 
   it('profil standard : poids proposé, pas de carte de suivi désactivé', async () => {
     const existing = createTestUseCases({ profile: TEST_PROFILE });
-    const { user } = renderScreen(<ProgressPage />, { existing });
+    const { user } = renderScreen(<MePage />, { existing });
     const sheet = await openMeasureSheet(user);
     expect(within(sheet).getByLabelText('Poids')).toBeInTheDocument();
     await user.click(within(sheet).getByRole('button', { name: 'Fermer' }));
@@ -120,7 +125,7 @@ describe('<ProgressPage />', () => {
   it('profil standard qui a mis le suivi en pause : formulation « en pause »', async () => {
     const existing = createTestUseCases({ profile: TEST_PROFILE });
     await existing.useCases.setWeightTracking(false);
-    renderScreen(<ProgressPage />, { existing });
+    renderScreen(<MePage />, { existing });
     const card = (await screen.findByRole('heading', { name: /Suivi du poids/ })).closest(
       'section',
     );
@@ -138,7 +143,7 @@ describe('<ProgressPage />', () => {
       mealId: meal.id,
       verdict: 'up',
     });
-    const { user } = renderScreen(<ProgressPage />, { existing });
+    const { user } = renderScreen(<MePage />, { existing });
     const name = plan.recipes[meal.recipeId]?.name ?? '';
     await user.click(await screen.findByRole('button', { name: /Favoris/ }));
     const favorites = await screen.findByRole('dialog', { name: 'Mes recettes favorites' });

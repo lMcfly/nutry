@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 export interface IconProps {
   /** Côté en pixels (24 par défaut). */
   readonly size?: number;
-  readonly className?: string;
+  readonly className?: string | undefined;
 }
 
 /**

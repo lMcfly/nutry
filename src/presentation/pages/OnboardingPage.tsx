@@ -1,73 +1,38 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDependencies } from '../app/dependencies';
 import { useAppState } from '../app/appState';
 import { COMPANION_MESSAGES, DEFAULT_LOOK } from '@domain/companion';
+import { PROFILE_QUESTIONS, onboardingQuestions, stepOfQuestion } from '@domain/profile';
+import type { ProfileQuestionId } from '@domain/profile';
 import { Button } from '../components/Button';
-import {
-  CalendarIcon,
-  LeafIcon,
-  LockIcon,
-  PersonIcon,
-  SmileIcon,
-  TargetIcon,
-} from '../components/icons';
+import { ArrowLeftIcon, LeafIcon, LockIcon } from '../components/icons';
 import { APP_NAME } from '../components/Page';
 import { ScrollArea } from '../components/ScrollArea';
 import { useToast } from '../components/Toast';
 import { Nutry } from '../features/companion/Nutry';
-import {
-  AboutSection,
-  GoalSection,
-  OrganisationSection,
-  TastesSection,
-} from '../features/profile/ProfileSections';
+import { QuestionInput } from '../features/profile/ProfileSections';
 import {
   DEFAULT_DRAFT,
   aboutIssues,
-  draftToProfile,
   aboutIssuesFrom,
+  draftToProfile,
 } from '../features/profile/draft';
-import type { AboutIssues, ProfileDraft } from '../features/profile/draft';
+import type { AboutField, AboutIssues, ProfileDraft } from '../features/profile/draft';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import styles from './OnboardingPage.module.css';
 
-interface Step {
-  readonly title: string;
-  readonly intro: string;
-  readonly icon: ReactNode;
-  /** Écran facultatif : bouton « Passer ». */
-  readonly optional: boolean;
-}
-
-const FIRST_STEP: Step = {
-  title: 'Faisons connaissance',
-  intro: 'Pour ajuster tes portions. Tout reste sur ton téléphone.',
-  icon: <PersonIcon size={26} />,
-  optional: false,
+/** Champ validé par une question (les autres questions ont toujours une réponse valide). */
+const FIELD_OF: Readonly<Partial<Record<ProfileQuestionId, AboutField>>> = {
+  age: 'age',
+  sex: 'sex',
+  height: 'heightCm',
+  weight: 'weightKg',
+  waist: 'waistCm',
 };
 
-const STEPS: readonly Step[] = [
-  FIRST_STEP,
-  {
-    title: 'Ton objectif',
-    intro: 'Et ce que tu ne manges pas.',
-    icon: <TargetIcon size={26} />,
-    optional: true,
-  },
-  {
-    title: 'Tes goûts',
-    intro: 'Touche ce que tu adores… et ce que tu évites.',
-    icon: <SmileIcon size={26} />,
-    optional: true,
-  },
-  {
-    title: 'Ton organisation',
-    intro: 'Pour un menu qui tient dans ta semaine.',
-    icon: <CalendarIcon size={26} />,
-    optional: true,
-  },
-];
+/** Délai laissé à la carte choisie pour se voir avant de passer à la question suivante. */
+const AUTO_ADVANCE_MS = 260;
 
 export function OnboardingPage() {
   const { previewProfile, saveProfile, requestPersistentStorage, getCurrentPlan, markQuizShown } =
@@ -75,52 +40,81 @@ export function OnboardingPage() {
   const { setProfileStatus } = useAppState();
   const navigate = useNavigate();
   const toast = useToast();
-  const [step, setStep] = useState(0);
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const [currentId, setCurrentId] = useState<ProfileQuestionId>('age');
+  const [direction, setDirection] = useState<'next' | 'back'>('next');
   const [draft, setDraft] = useState<ProfileDraft>(DEFAULT_DRAFT);
   const [showIssues, setShowIssues] = useState(false);
   const [savedIssues, setSavedIssues] = useState<AboutIssues>({});
   const [saving, setSaving] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  const current = STEPS[step] ?? FIRST_STEP;
+  const questions = useMemo(() => onboardingQuestions(draft.sex), [draft.sex]);
+  const index = Math.max(0, questions.indexOf(currentId));
+  const isLast = index === questions.length - 1;
+  const text = PROFILE_QUESTIONS[currentId];
+  const step = stepOfQuestion(currentId);
   const issues: AboutIssues = useMemo(() => aboutIssues(draft), [draft]);
   const profile = useMemo(() => draftToProfile(draft), [draft]);
   const health = useMemo(
     () => (profile ? previewProfile(profile).health : undefined),
     [profile, previewProfile],
   );
+  const shownIssues = showIssues ? { ...savedIssues, ...issues } : {};
 
   useEffect(() => {
     document.title = `Bienvenue · ${APP_NAME}`;
   }, []);
 
   useEffect(() => {
-    // Nouvel écran : on annonce son titre (la zone défilante est remontée par sa clé).
+    // Nouvel écran : on annonce la question (Nutry la pose, le titre prend le focus).
     if (firstRender.current) {
       firstRender.current = false;
       return;
     }
     headingRef.current?.focus();
-  }, [step]);
+  }, [currentId]);
+
+  useEffect(
+    () => () => {
+      clearTimeout(advanceTimer.current);
+    },
+    [],
+  );
 
   const update = (patch: Partial<ProfileDraft>) => {
     setDraft((d) => ({ ...d, ...patch }));
   };
 
+  const goTo = (id: ProfileQuestionId, dir: 'next' | 'back') => {
+    clearTimeout(advanceTimer.current);
+    setDirection(dir);
+    setShowIssues(false);
+    setCurrentId(id);
+  };
+
   const finish = async () => {
+    const firstWithIssue = (known: AboutIssues): ProfileQuestionId =>
+      questions.find((q) => {
+        const field = FIELD_OF[q];
+        return field !== undefined && known[field] !== undefined;
+      }) ?? 'age';
     if (!profile) {
       setShowIssues(true);
-      setStep(0);
+      goTo(firstWithIssue(issues), 'back');
+      setShowIssues(true);
       return;
     }
     setSaving(true);
     try {
       const result = await saveProfile(profile);
       if (result.status === 'invalid') {
-        setSavedIssues(aboutIssuesFrom(result.issues));
+        const known = aboutIssuesFrom(result.issues);
+        setSavedIssues(known);
+        goTo(firstWithIssue(known), 'back');
         setShowIssues(true);
-        setStep(0);
         return;
       }
       // Fin de l'onboarding, dans le gestionnaire du clic (ADR 0009).
@@ -137,114 +131,132 @@ export function OnboardingPage() {
     }
   };
 
-  const next = () => {
-    if (step === 0 && Object.keys(issues).length > 0) {
-      setShowIssues(true);
-      return;
-    }
-    if (step < STEPS.length - 1) setStep(step + 1);
+  const advance = () => {
+    const next = questions[index + 1];
+    if (next) goTo(next, 'next');
     else void finish();
   };
 
-  const isLast = step === STEPS.length - 1;
+  const submit = () => {
+    const field = FIELD_OF[currentId];
+    if (field && issues[field]) {
+      setShowIssues(true);
+      return;
+    }
+    advance();
+  };
+
+  // Choix au doigt : on laisse voir la carte cochée, puis on passe à la suite (sauf à la fin :
+  // enregistrer le profil demande un geste volontaire).
+  const submitRef = useRef(submit);
+  submitRef.current = submit;
+  const onPick = () => {
+    if (isLast) return;
+    clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(
+      () => {
+        submitRef.current();
+      },
+      reducedMotion ? 0 : AUTO_ADVANCE_MS,
+    );
+  };
+
+  const skip = () => {
+    // Une valeur facultative mal saisie est écartée : on passe sans elle.
+    if (currentId === 'waist') update({ waistCm: '' });
+    advance();
+  };
+
+  const back = () => {
+    const previous = questions[index - 1];
+    if (previous) goTo(previous, 'back');
+  };
 
   return (
     <div className={styles.onboarding}>
-      <div className={styles.top}>
-        <p className={styles.brand}>
-          <LeafIcon size={18} />
-          {APP_NAME}
-        </p>
-        <div
-          className={styles.progress}
-          role="progressbar"
-          aria-label="Progression"
-          aria-valuemin={1}
-          aria-valuemax={STEPS.length}
-          aria-valuenow={step + 1}
-          aria-valuetext={`Étape ${step + 1} sur ${STEPS.length}`}
-        >
-          <div
-            className={styles.progressFill}
-            style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
-          />
-        </div>
-        <p className={styles.stepCount}>
-          {step + 1}/{STEPS.length}
-          <span className="visually-hidden">
-            {' '}
-            Étape {step + 1} sur {STEPS.length}
-          </span>
-        </p>
-      </div>
-
       <form
-        className={styles.form}
+        className={styles.card}
         noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          next();
+          submit();
         }}
       >
-        <header className={styles.header}>
-          {step === 0 ? (
-            <Nutry look={DEFAULT_LOOK} mood="joyeux" size="m" />
+        <div className={styles.top}>
+          {index > 0 ? (
+            <button type="button" className={styles.back} aria-label="Retour" onClick={back}>
+              <ArrowLeftIcon size={22} />
+            </button>
           ) : (
-            <span className={styles.icon}>{current.icon}</span>
-          )}
-          <div className={styles.headerText}>
-            <h1 ref={headingRef} tabIndex={-1} className={styles.title}>
-              {current.title}
-            </h1>
-            <p className={styles.intro}>
-              {step === 0 ? COMPANION_MESSAGES.welcome : current.intro}
+            <p className={styles.brand}>
+              <LeafIcon size={20} />
+              <span>{APP_NAME}</span>
             </p>
-            {step === 0 && <p className={styles.introSub}>{current.intro}</p>}
-          </div>
-        </header>
-
-        <ScrollArea key={step} label={current.title} className={styles.body}>
-          {step === 0 && (
-            <AboutSection
-              draft={draft}
-              onChange={update}
-              issues={showIssues ? { ...savedIssues, ...issues } : {}}
+          )}
+          <div
+            className={styles.progress}
+            role="progressbar"
+            aria-label="Progression"
+            aria-valuemin={1}
+            aria-valuemax={questions.length}
+            aria-valuenow={index + 1}
+            aria-valuetext={`Question ${index + 1} sur ${questions.length}`}
+          >
+            <div
+              className={styles.progressFill}
+              style={{ width: `${((index + 1) / questions.length) * 100}%` }}
             />
-          )}
-          {step === 1 && <GoalSection draft={draft} onChange={update} health={health} />}
-          {step === 2 && <TastesSection draft={draft} onChange={update} />}
-          {step === 3 && <OrganisationSection draft={draft} onChange={update} />}
-          {step === 0 && (
-            <p className={styles.privacy}>
-              <LockIcon size={16} />
-              Aucun compte, aucun serveur. <Link to="/confidentialite">Confidentialité</Link>
-            </p>
-          )}
-        </ScrollArea>
+          </div>
+        </div>
+
+        <div key={currentId} className={styles.stage} data-direction={direction}>
+          <div className={styles.ask}>
+            <div className={styles.nutry}>
+              <Nutry look={DEFAULT_LOOK} mood="joyeux" size="m" />
+            </div>
+            <div className={styles.bubble}>
+              <p className={styles.eyebrow}>{step.title}</p>
+              <h1 ref={headingRef} tabIndex={-1} className={styles.question}>
+                {text.prompt}
+              </h1>
+              {index === 0 ? (
+                <p className={styles.hint}>{COMPANION_MESSAGES.welcome}</p>
+              ) : (
+                text.hint !== undefined && <p className={styles.hint}>{text.hint}</p>
+              )}
+            </div>
+          </div>
+
+          <ScrollArea label={`Ta réponse : ${text.label}`} className={styles.answer}>
+            <div className={styles.answerInner}>
+              <QuestionInput
+                id={currentId}
+                variant="wizard"
+                draft={draft}
+                onChange={update}
+                issues={shownIssues}
+                health={health}
+                onPick={onPick}
+              />
+              {index === 0 && (
+                <p className={styles.privacy}>
+                  <LockIcon size={16} />
+                  <span>
+                    Aucun compte, aucun serveur. <Link to="/confidentialite">Confidentialité</Link>
+                  </span>
+                </p>
+              )}
+            </div>
+          </ScrollArea>
+        </div>
 
         <div className={styles.actions}>
-          {step > 0 && (
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setStep(step - 1);
-              }}
-            >
-              Retour
-            </Button>
-          )}
-          <div className={styles.spacer} />
-          {current.optional && !isLast && (
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setStep(step + 1);
-              }}
-            >
+          {text.optional && !isLast && (
+            <Button variant="ghost" onClick={skip}>
               Passer
             </Button>
           )}
-          <Button type="submit" disabled={saving} aria-busy={saving}>
+          <Button type="submit" disabled={saving} aria-busy={saving} className={styles.next}>
             {isLast ? (saving ? 'Je prépare ton menu…' : 'Voir mon menu') : 'Continuer'}
           </Button>
         </div>

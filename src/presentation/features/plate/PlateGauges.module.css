@@ -1,5 +1,62 @@
 .plate {
   display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.disc {
+  flex: none;
+  width: clamp(7.5rem, 32vw, 10rem);
+  height: auto;
+}
+
+.rim {
+  fill: var(--color-surface);
+  stroke: var(--color-border-strong);
+  stroke-width: 1;
+}
+
+.rimInner {
+  fill: var(--color-surface-alt);
+}
+
+.veg {
+  fill: var(--gauge-veg);
+  background: var(--gauge-veg);
+}
+
+.protein {
+  fill: var(--gauge-protein);
+  background: var(--gauge-protein);
+}
+
+.starch {
+  fill: var(--gauge-starch);
+  background: var(--gauge-starch);
+}
+
+.cut {
+  stroke: var(--color-surface);
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.legend {
+  display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-medium);
+}
+
+.dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
 }

@@ -12,7 +12,7 @@ for (const wide of WIDE) {
   test.describe(wide.name, () => {
     test.use({ viewport: wide.size });
 
-    test('rail de navigation à gauche, contenu centré, axe sans violation sérieuse', async ({
+    test('rail de navigation à gauche (3 entrées), contenu centré, axe sans violation sérieuse', async ({
       page,
     }) => {
       await page.goto('./');
@@ -39,6 +39,7 @@ for (const wide of WIDE) {
 
       const nav = page.getByRole('navigation', { name: 'Navigation principale' });
       const box = await nav.boundingBox();
+      await expect(nav.getByRole('link')).toHaveCount(3);
       expect(box?.x).toBe(0);
       expect(box?.width ?? 0).toBeLessThan(140);
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(wide.size.height - 1);
@@ -57,23 +58,35 @@ for (const wide of WIDE) {
 
       for (const [tab, title] of [
         ['Courses', 'Mes courses'],
-        ['Profil', 'Mon profil'],
-        ['Progrès', 'Mes progrès'],
+        ['Moi', 'Moi'],
       ] as const) {
         await page.getByRole('link', { name: tab }).click();
         await expect(page.getByRole('heading', { name: title, level: 1 })).toBeVisible();
         report[tab] = await seriousViolations(page);
       }
 
-      // Profil : la feuille de réglage devient un panneau à droite.
-      await page.getByRole('link', { name: 'Profil' }).click();
-      await page.getByRole('button', { name: 'Goûts' }).click();
+      // Moi : Nutry et la série à gauche, les progrès à droite (2 colonnes dès 768 px).
+      await page.getByRole('link', { name: 'Moi' }).click();
+      const hero = await page.getByRole('button', { name: 'Personnaliser Nutry' }).boundingBox();
+      const cards = await page.getByRole('button', { name: /Favoris/ }).boundingBox();
+      expect(cards?.x ?? 0).toBeGreaterThan((hero?.x ?? 0) + (hero?.width ?? 0));
+      // Les réglages : la feuille devient un panneau à droite.
+      await page.getByRole('button', { name: 'Réglages' }).click();
+      await page
+        .getByRole('dialog', { name: 'Réglages' })
+        .getByRole('button', { name: 'Goûts' })
+        .click();
       const panel = page.getByRole('dialog', { name: 'Goûts' });
       await expect(panel).toBeVisible();
+      // Panneau collé à droite, sans couvrir tout l'écran.
       await expect
-        .poll(async () => (await panel.boundingBox())?.x ?? 0)
-        .toBeGreaterThan(wide.size.width / 2 - 50);
-      report['profil-panneau'] = await seriousViolations(page);
+        .poll(async () => {
+          const box = await panel.boundingBox();
+          return Math.round((box?.x ?? 0) + (box?.width ?? 0));
+        })
+        .toBeGreaterThanOrEqual(wide.size.width - 2);
+      expect((await panel.boundingBox())?.x ?? 0).toBeGreaterThan(wide.size.width * 0.2);
+      report['moi-panneau'] = await seriousViolations(page);
 
       console.log(`Violations axe (${wide.name}) :`, JSON.stringify(report));
       for (const violations of Object.values(report)) expect(violations).toEqual([]);

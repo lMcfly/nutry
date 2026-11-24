@@ -25,6 +25,9 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}${BASE_PATH}`,
     trace: 'on-first-retry',
+    // Animations coupées (et passage automatique immédiat à l'onboarding) : parcours plus rapides
+    // et prefers-reduced-motion exercé en continu.
+    reducedMotion: 'reduce',
   },
   projects: [
     {

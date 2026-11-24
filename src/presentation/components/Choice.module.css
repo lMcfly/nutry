@@ -48,7 +48,6 @@
   transition: background-color var(--duration-fast) var(--ease-out);
 }
 
-.chip:has(.input:checked),
 .segment:has(.input:checked) {
   background: var(--color-primary-soft);
   border-color: var(--color-primary);
@@ -56,9 +55,110 @@
   font-weight: var(--font-weight-medium);
 }
 
+/* Nuage de puces : la sélection saute aux yeux (fond de l'accent, coche). */
+.chip:has(.input:checked) {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: var(--font-weight-medium);
+}
+
 .chip:has(.input:checked)::after {
   content: '✓';
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-bold);
+}
+
+.chip:active:not(.disabled) {
+  transform: scale(0.95);
+}
+
+.chip {
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.cloudChip {
+  box-shadow: var(--shadow-sm);
+}
+
+/* Grandes cartes illustrées : emoji, titre, une ligne. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+  gap: var(--space-3);
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: 6.5rem;
+  padding: var(--space-3);
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.tile .emoji {
+  font-size: 2.25rem;
+}
+
+.tile .cardText {
+  align-items: center;
+}
+
+.tile:active:not(.disabled) {
+  transform: scale(0.97);
+}
+
+.tile:has(.input:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+  box-shadow: inset 0 0 0 1.5px var(--color-primary);
+}
+
+.tile:has(.input:checked)::after {
+  content: '✓';
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 0.8125rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.tile:has(.input:focus-visible) {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (max-height: 700px) {
+  .tile {
+    min-height: 5rem;
+    padding: var(--space-2);
+  }
+
+  .tile .emoji {
+    font-size: 1.75rem;
+  }
 }
 
 .chip:has(.input:focus-visible),
@@ -143,4 +243,19 @@
   cursor: not-allowed;
   opacity: 0.6;
   border-style: dashed;
+}
+
+@media (max-height: 700px) {
+  .card {
+    min-height: 0;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .card .emoji {
+    font-size: 1.4rem;
+  }
+
+  .cards {
+    gap: var(--space-1);
+  }
 }

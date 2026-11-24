@@ -12,9 +12,7 @@ export function PrivacyPage() {
       title="Confidentialité"
       subtitle="Tes données t’appartiennent."
       scroll
-      back={
-        hasProfile ? { to: '/profil', label: 'Mon profil' } : { to: '/bienvenue', label: 'Retour' }
-      }
+      back={hasProfile ? { to: '/moi', label: 'Moi' } : { to: '/bienvenue', label: 'Retour' }}
     >
       <PrivacyContent />
     </Page>

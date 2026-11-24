@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { renderApp, TEST_PROFILE } from '../testing/renderApp';
 import { resetPageFocusForTests } from '../components/Page';
@@ -10,7 +10,7 @@ describe('<App />', () => {
 
   it('sans profil, démarre sur l’onboarding, sans onglets ni quiz', async () => {
     renderApp({ quiz: true });
-    expect(await screen.findByRole('heading', { name: 'Faisons connaissance' })).toBeVisible();
+    expect(await screen.findByRole('heading', { name: 'Tu as quel âge ?' })).toBeVisible();
     expect(screen.queryByRole('navigation', { name: 'Navigation principale' })).toBeNull();
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(window.location.hash).toBe('#/bienvenue');
@@ -18,36 +18,57 @@ describe('<App />', () => {
 
   it('onboarding complet → menu de la semaine affiché', async () => {
     const { user, ports } = renderApp();
-    await screen.findByRole('heading', { name: 'Faisons connaissance' });
+    const ask = (name: string | RegExp) => screen.findByRole('heading', { name, level: 1 });
+    const next = () => user.click(screen.getByRole('button', { name: 'Continuer' }));
+    const skip = () => user.click(screen.getByRole('button', { name: 'Passer' }));
 
-    // Écran 1 : « Continuer » sans réponse affiche des erreurs.
-    await user.click(screen.getByRole('button', { name: 'Continuer' }));
-    expect(screen.getAllByText('Ce champ nous aide à ajuster tes portions.')).toHaveLength(3);
+    // « Continuer » sans réponse affiche l'erreur douce de la question.
+    await ask('Tu as quel âge ?');
+    await next();
+    expect(screen.getByText('Ce champ nous aide à ajuster tes portions.')).toBeVisible();
 
     await user.type(screen.getByLabelText('Âge'), '34');
-    await user.type(screen.getByLabelText('Taille'), '170');
-    await user.type(screen.getByLabelText('Poids'), '68,5');
+    await next();
+    await ask('Tu es…');
     await user.click(screen.getByRole('radio', { name: 'Homme' }));
+    await ask('Tu mesures combien ?');
+    await user.type(screen.getByLabelText('Taille'), '170');
+    await next();
+    await ask('Et tu pèses combien ?');
+    await user.type(screen.getByLabelText('Poids'), '68,5');
+    await next();
+    await ask('Tu connais ton tour de taille ?');
+    await skip();
+    await ask('Tu bouges comment au quotidien ?');
     await user.click(screen.getByRole('radio', { name: /Actif/ }));
-    await user.click(screen.getByRole('button', { name: 'Continuer' }));
+    // Le titre de la question prend le focus à chaque écran.
+    expect(await ask(/condition de santé/)).toHaveFocus();
+    await skip();
 
-    // Écran 2 : objectif et allergies.
-    expect(await screen.findByRole('heading', { name: 'Ton objectif' })).toHaveFocus();
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '2');
+    await ask('Quel est ton objectif ?');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '8');
+    await user.click(screen.getByRole('radio', { name: /Rééquilibrer/ }));
+    await ask('Tu manges comment ?');
+    await user.click(screen.getByRole('radio', { name: /Omnivore/ }));
+    await ask(/« sans »/);
+    await skip();
+    await ask('Tu as des allergies ?');
     expect(screen.getByText(/ne sont pas prises en compte/)).toBeVisible();
-    await user.click(screen.getByRole('checkbox', { name: 'Arachides' }));
-    await user.click(screen.getByRole('button', { name: 'Continuer' }));
+    await user.click(screen.getByRole('checkbox', { name: /Arachides/ }));
+    await next();
 
-    // Écran 3 : goûts (facultatif).
-    await screen.findByRole('heading', { name: 'Tes goûts' });
-    const likes = screen.getByRole('group', { name: /J’adore/ });
-    await user.click(within(likes).getByRole('checkbox', { name: /Tomate/ }));
-    await user.click(screen.getByRole('button', { name: 'Passer' }));
+    await ask('Qu’est-ce que tu adores ?');
+    await user.click(screen.getByRole('checkbox', { name: /Tomate/ }));
+    await skip();
+    await ask('Et ce que tu n’aimes pas ?');
+    await skip();
 
-    // Écran 4 : organisation.
-    await screen.findByRole('heading', { name: 'Ton organisation' });
+    await ask('Vous êtes combien à table ?');
     await user.click(screen.getByRole('button', { name: 'Une personne de plus' }));
-    expect(screen.getByText('2 personnes')).toBeInTheDocument();
+    expect(screen.getByLabelText('Combien êtes-vous à table ?')).toHaveValue('2');
+    await next();
+    for (let i = 0; i < 5; i += 1) await skip();
+    await ask('Tu veux cuisiner en avance le dimanche ?');
     await user.click(screen.getByRole('button', { name: 'Voir mon menu' }));
 
     expect(await screen.findByRole('heading', { name: 'Ma semaine' })).toBeVisible();
@@ -55,9 +76,12 @@ describe('<App />', () => {
     expect(await screen.findByTestId('meal')).toBeVisible();
     expect(screen.getAllByRole('tab', { name: /novembre/ })).toHaveLength(7);
     expect(ports.state.plans.size).toBe(1);
-    expect(screen.getByRole('navigation', { name: 'Navigation principale' })).toHaveTextContent(
-      /Semaine.*Courses.*Profil.*Progrès/,
-    );
+    const tabs = within(screen.getByRole('navigation', { name: 'Navigation principale' }));
+    expect(tabs.getAllByRole('link').map((l) => l.textContent)).toEqual([
+      'Semaine',
+      'Courses',
+      'Moi',
+    ]);
     expect(ports.state.profile).toMatchObject({
       age: 34,
       sex: 'homme',
@@ -74,7 +98,7 @@ describe('<App />', () => {
 
   it('à l’étape 1, Nutry accueille la personne', async () => {
     renderApp();
-    await screen.findByRole('heading', { name: 'Faisons connaissance' });
+    await screen.findByRole('heading', { name: 'Tu as quel âge ?' });
     expect(screen.getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
     expect(screen.getByText(/Salut, moi c’est Nutry/)).toBeVisible();
   });
@@ -97,11 +121,15 @@ describe('<App />', () => {
     const heading = await screen.findByRole('heading', { name: 'Mes courses', level: 1 });
     expect(heading).toHaveFocus();
     expect(document.title).toBe('Mes courses · Nutry');
-    await user.click(screen.getByRole('link', { name: 'Progrès' }));
-    expect(await screen.findByRole('heading', { name: 'Mes progrès' })).toBeVisible();
-    await user.click(screen.getByRole('link', { name: 'Profil' }));
-    expect(await screen.findByRole('heading', { name: 'Mon profil' })).toBeVisible();
-    expect(screen.getByRole('link', { name: 'Profil' })).toHaveAttribute('aria-current', 'page');
+    await user.click(screen.getByRole('link', { name: 'Moi' }));
+    expect(await screen.findByRole('heading', { name: 'Moi', level: 1 })).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Moi' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.queryByRole('link', { name: 'Progrès' })).toBeNull();
+    // Anciennes adresses : Profil et Progrès mènent à « Moi ».
+    window.location.hash = '#/progres';
+    await waitFor(() => {
+      expect(window.location.hash).toBe('#/moi');
+    });
   });
 
   it('le lien d’évitement déplace le focus sur le contenu', async () => {

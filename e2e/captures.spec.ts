@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
-import { completeOnboarding, dismissCelebration } from './helpers';
+import { completeOnboarding, dismissCelebration, expectQuestion } from './helpers';
 
 /**
  * Captures d'écran du README (Pixel 7, densité 2). Lancées seulement à la demande :
@@ -21,17 +21,41 @@ async function photosLoaded(page: Page): Promise<void> {
   await page.waitForTimeout(300);
 }
 
-test('capture onboarding : Nutry accueille la personne', async ({ page }) => {
+test('captures onboarding : une question par écran, présentée par Nutry', async ({ page }) => {
   await page.goto('./');
-  await page.getByLabel('Âge').fill('34');
-  await page.getByLabel('Taille', { exact: true }).fill('172');
-  await page.getByLabel('Poids', { exact: true }).fill('70');
-  await page.getByText('Femme', { exact: true }).click();
-  await expect(page.getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
+  await expectQuestion(page, 'Tu as quel âge ?');
+  await page.getByRole('button', { name: 'Augmenter : Âge' }).click();
+  await page.getByRole('button', { name: 'Augmenter : Âge' }).click();
+  await page.getByRole('button', { name: 'Augmenter : Âge' }).click();
+  await page.waitForTimeout(400);
   await page.screenshot({ path: 'docs/captures/onboarding.png' });
+  await page.getByRole('button', { name: 'Continuer' }).click();
+
+  await expectQuestion(page, 'Tu es…');
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: 'docs/captures/onboarding-choix.png' });
+  await page.getByText('Femme', { exact: true }).click();
+  await expectQuestion(page, 'Tu es enceinte ou tu allaites ?');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await expectQuestion(page, 'Tu mesures combien ?');
+  await page.getByLabel('Taille', { exact: true }).fill('165');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await page.getByLabel('Poids', { exact: true }).fill('62');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await page.getByRole('button', { name: 'Passer' }).click();
+  await page.getByText('Un peu actif', { exact: true }).click();
+  await page.getByRole('button', { name: 'Passer' }).click();
+  await page.getByText('Rééquilibrer', { exact: true }).click();
+  await page.getByText('Végétarien', { exact: true }).click();
+  await page.getByRole('button', { name: 'Passer' }).click();
+  await expectQuestion(page, 'Tu as des allergies ?');
+  await page.getByText('Arachides', { exact: true }).click();
+  await page.getByText('Œufs', { exact: true }).click();
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: 'docs/captures/onboarding-nuage.png' });
 });
 
-test('captures Semaine, Courses, Profil et Recette', async ({ page }) => {
+test('captures Semaine, Courses, Moi, Nutry et Recette', async ({ page }) => {
   test.setTimeout(90_000);
   await page.goto('./');
   await completeOnboarding(page);
@@ -53,23 +77,37 @@ test('captures Semaine, Courses, Profil et Recette', async ({ page }) => {
 
   await page.getByRole('link', { name: 'Courses' }).click();
   await expect(page.getByRole('heading', { name: 'Mes courses', level: 1 })).toBeVisible();
-  await page.getByTestId('shopping-list').getByRole('checkbox').first().check();
-  // Premier geste : Nutry gagne une feuille ; on la lui met pour la capture du profil.
+  await page.getByTestId('shopping-list').getByRole('checkbox').first().click();
+  // Premier geste : Nutry gagne une feuille ; on la lui met pour la capture de « Moi ».
   await dismissCelebration(page);
-  await page.getByTestId('shopping-list').getByRole('checkbox').nth(1).check();
-  await page.waitForTimeout(300);
+  await page.getByTestId('shopping-list').getByRole('checkbox').nth(1).click();
+  await page.waitForTimeout(700);
   await page.screenshot({ path: 'docs/captures/courses.png' });
 
-  await page.getByRole('link', { name: 'Profil' }).click();
-  await page.getByRole('button', { name: /Personnaliser/ }).click();
+  await page.getByRole('link', { name: 'Moi' }).click();
+  await page.getByRole('button', { name: 'Personnaliser Nutry' }).click();
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/nutry-personnalisation.png' });
   await page.getByRole('button', { name: 'Framboise' }).click();
   await page.getByRole('tab', { name: 'Accessoires' }).click();
   await page.getByRole('button', { name: /Feuille sur la tête/ }).click();
+  await page.waitForTimeout(600);
+  await page.screenshot({ path: 'docs/captures/nutry-accessoires.png' });
   await page.getByRole('button', { name: 'Enregistrer ce look' }).click();
   await expect(page.getByRole('img', { name: /feuille sur la tête/ })).toBeVisible();
   // Laisse le toast « Nutry a changé de look ! » disparaître.
   await page.waitForTimeout(4600);
-  await page.screenshot({ path: 'docs/captures/profil.png' });
+  await page.screenshot({ path: 'docs/captures/moi.png' });
+
+  // L'assiette illustrée de la fiche recette.
+  await page.getByRole('link', { name: 'Semaine' }).click();
+  await page
+    .getByTestId('meal')
+    .getByRole('link', { name: /^Voir la recette/ })
+    .click();
+  await page.getByRole('tab', { name: 'Infos' }).click();
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: 'docs/captures/assiette.png' });
 });
 
 test('captures tablette (iPad) et ordinateur (1440 × 900) : Semaine', async ({ page }) => {
@@ -91,6 +129,23 @@ test('captures tablette (iPad) et ordinateur (1440 × 900) : Semaine', async ({ 
   await page.waitForTimeout(500);
   await photosLoaded(page);
   await page.screenshot({ path: 'docs/captures/ordinateur.png' });
+
+  await page.getByRole('link', { name: 'Courses' }).click();
+  await page.getByTestId('shopping-list').getByRole('checkbox').first().click();
+  await dismissCelebration(page);
+  await page.waitForTimeout(700);
+  await page.screenshot({ path: 'docs/captures/courses-ordinateur.png' });
+  await page.getByRole('link', { name: 'Moi' }).click();
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/moi-ordinateur.png' });
+  await page.getByRole('button', { name: 'Personnaliser Nutry' }).click();
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/nutry-ordinateur.png' });
+  await page.keyboard.press('Escape');
+  await page.setViewportSize({ width: 820, height: 1180 });
+  await page.getByRole('link', { name: 'Courses' }).click();
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/courses-tablette.png' });
 });
 
 test('capture Crédits photos', async ({ page }) => {

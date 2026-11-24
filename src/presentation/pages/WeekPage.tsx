@@ -208,7 +208,7 @@ export function WeekPage() {
         <>
           {companion && (
             <Link
-              to="/profil"
+              to="/moi"
               className={styles.nutryLink}
               aria-label="Nutry, mon petit compagnon"
               title={companion.message}
@@ -311,7 +311,7 @@ export function WeekPage() {
               onClick={() => {
                 backup.dismiss();
                 setShowMenu(false);
-                void navigate('/profil#mes-donnees');
+                void navigate('/moi#mes-donnees');
               }}
             />
           )}

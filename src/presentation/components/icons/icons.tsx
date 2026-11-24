@@ -292,3 +292,5 @@ export const ImageIcon = makeIcon(
     <path d="m4.5 17 4.5-4.5 3.5 3.5 2.5-2.5 4.5 4" />
   </>,
 );
+
+export const ChevronDownIcon = makeIcon(<path d="m6 9.5 6 6 6-6" />);

@@ -13,7 +13,7 @@ interface TabBarProps {
   readonly tabs: readonly Tab[];
 }
 
-/** Barre d'onglets en bas (4 onglets au plus). */
+/** Barre d'onglets en bas (4 onglets au plus, 3 dans l’app). */
 export function TabBar({ tabs }: TabBarProps) {
   return (
     <nav className={styles.tabbar} aria-label="Navigation principale">

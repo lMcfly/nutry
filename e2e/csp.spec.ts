@@ -28,6 +28,7 @@ test.describe('Content Security Policy', () => {
     for (const route of [
       'courses',
       'frigo',
+      'moi',
       'progres',
       'confidentialite',
       'credits-photos',
@@ -39,9 +40,13 @@ test.describe('Content Security Policy', () => {
     }
 
     // « Mes données » : la feuille plein écran du Profil.
-    await page.goto('./#/profil');
+    await page.goto('./#/moi');
     await dismissQuiz(page);
-    await page.getByRole('button', { name: 'Mes données' }).click();
+    await page.getByRole('button', { name: 'Réglages' }).click();
+    await page
+      .getByRole('dialog', { name: 'Réglages' })
+      .getByRole('button', { name: 'Mes données' })
+      .click();
     await expect(page.getByRole('dialog', { name: 'Mes données' })).toBeVisible();
 
     // Import d'une sauvegarde invalide : le schéma Zod de sauvegarde s'exécute.
