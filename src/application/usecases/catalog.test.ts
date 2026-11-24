@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { FixedClock, createInMemoryPorts } from '../testing';
 import { FIXTURE_RECIPES } from '@domain/testing/fixtures';
+import type { RecipePhoto } from '../ports';
+import { licenseLabel } from './catalog';
 import { createUseCases } from './index';
 
 describe('catalogue et calendrier', () => {
@@ -18,5 +20,51 @@ describe('catalogue et calendrier', () => {
     expect(uc.today()).toBe('2026-11-25');
     clock.set('2026-11-30T08:00:00.000Z');
     expect(uc.today()).toBe('2026-11-30');
+  });
+});
+
+describe('photos des plats', () => {
+  const [first, second] = FIXTURE_RECIPES;
+  if (!first || !second) throw new Error('fixture');
+  const photo = (recipeId: string, overrides: Partial<RecipePhoto> = {}): RecipePhoto => ({
+    recipeId,
+    url: `/nutry/photos/${recipeId}.webp`,
+    title: 'Plat.jpg',
+    author: 'Auteur',
+    license: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Plat.jpg',
+    modified: 'recadrée et compressée',
+    approximate: false,
+    ...overrides,
+  });
+
+  it('getPhotoUrls : une adresse par recette illustrée, rien pour les autres', async () => {
+    const uc = createUseCases(
+      createInMemoryPorts({ recipes: FIXTURE_RECIPES, photos: [photo(first.id)] }),
+    );
+    await expect(uc.getPhotoUrls()).resolves.toEqual({
+      [first.id]: `/nutry/photos/${first.id}.webp`,
+    });
+  });
+
+  it('listPhotoCredits : nom du plat, licence lisible, ordre alphabétique, orphelines écartées', async () => {
+    const a = { ...first, name: 'Zèbre' };
+    const b = { ...second, name: 'Abricot' };
+    const uc = createUseCases(
+      createInMemoryPorts({
+        recipes: [a, b],
+        photos: [photo(a.id), photo(b.id, { license: 'PD', approximate: true }), photo('disparue')],
+      }),
+    );
+    const credits = await uc.listPhotoCredits();
+    expect(credits.map((c) => c.dishName)).toEqual(['Abricot', 'Zèbre']);
+    expect(credits[0]).toMatchObject({ licenseLabel: 'Domaine public', illustrative: true });
+    expect(credits[1]).toMatchObject({
+      licenseLabel: 'CC BY-SA 4.0',
+      illustrative: false,
+      modified: 'recadrée et compressée',
+    });
+    expect(licenseLabel('CC0')).toBe('CC0');
   });
 });

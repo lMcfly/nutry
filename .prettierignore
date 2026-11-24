@@ -9,3 +9,5 @@ PROMPT.md
 # Table Ciqual brute (source ANSES, conservée telle quelle)
 data/ciqual/ciqual-2025.json
 .claude/worktrees
+# Généré par npm run photos:doc
+docs/PHOTOS.md

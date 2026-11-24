@@ -25,7 +25,14 @@ test.describe('Content Security Policy', () => {
     await page.getByTestId('meal').first().getByRole('link').first().click();
     await expect(page).toHaveURL(/#\/recette\//);
 
-    for (const route of ['courses', 'frigo', 'progres', 'confidentialite', 'profil']) {
+    for (const route of [
+      'courses',
+      'frigo',
+      'progres',
+      'confidentialite',
+      'credits-photos',
+      'profil',
+    ]) {
       await page.goto(`./#/${route}`);
       await dismissQuiz(page);
       await expect(page.locator('main')).toBeVisible();

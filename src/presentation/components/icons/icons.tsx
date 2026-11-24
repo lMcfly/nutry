@@ -284,3 +284,11 @@ export const GlobeIcon = makeIcon(
     <path d="M12 3.5c2.500 2.500 3.500 5.300 3.500 8.500s-1 6-3.500 8.500c-2.500-2.500-3.500-5.300-3.500-8.500s1-6 3.500-8.500Z" />
   </>,
 );
+
+export const ImageIcon = makeIcon(
+  <>
+    <rect x="4" y="5" width="16" height="14" rx="2.5" />
+    <circle cx="9" cy="10" r="1.5" />
+    <path d="m4.5 17 4.5-4.5 3.5 3.5 2.5-2.5 4.5 4" />
+  </>,
+);

@@ -74,6 +74,8 @@ export {
   PASSPHRASE_MIN_LENGTH,
   STORAGE_FAILURE_MESSAGES,
 } from './data';
+export type { PhotoCreditView } from './catalog';
+export { PHOTO_CREDITS_TEXTS } from './catalog';
 export type { CompanionView, CustomizeResult } from './companion';
 export type { FridgeResult } from './fridge';
 export type {

@@ -211,6 +211,23 @@ Les garde-fous sont codés dans le `domain` et testés
 - **allergies** : exclusion stricte, vérifiée par un test sur l'ensemble des recettes ;
 - les calories ne sont pas mises en avant dans l'interface.
 
+## Crédits photos
+
+Les photos des plats viennent de [Wikimedia Commons](https://commons.wikimedia.org/), sous
+licences libres (CC0, domaine public, CC BY, CC BY-SA). Chaque image est recadrée en 800 × 600 et
+compressée en WebP : elle est **modifiée** par rapport à l'original, ce que la mention
+« modifiée : recadrée et compressée » indique. Les auteurs, licences et sources de chaque photo
+sont listés dans l'app (Profil → Confidentialité → **Crédits photos**) et dans
+[docs/PHOTOS.md](docs/PHOTOS.md), généré par `npm run photos:doc` à partir de
+`src/infrastructure/data/photoCredits.json`. Un plat sans photo garde son illustration, tout
+comme une photo qui ne charge pas (hors ligne, par exemple).
+
+Les fichiers sont dans `public/photos/` (`<id-de-la-recette>.webp`, moins de 80 Ko). Ils ne
+sont **pas précachés** : le service worker les garde à la première vue (cache `nutry-photos`,
+120 images, 60 jours). Pour en ajouter une : déposer le WebP, ajouter son entrée complète
+(auteur, licence, `licenseUrl`, `sourceUrl`) dans `photoCredits.json`, puis lancer
+`npm run photos:doc` ; les tests refusent une licence non libre ou un crédit incomplet.
+
 ## Confidentialité
 
 - **Aucun compte, aucun serveur, aucune donnée envoyée.** Tout est enregistré dans ton

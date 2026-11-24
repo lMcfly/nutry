@@ -5,6 +5,7 @@ import type {
   CompanionRepository,
   DeviceStorage,
   FileSaver,
+  PhotoCatalog,
   PlanRepository,
   ProfileRepository,
   ProgressRepository,
@@ -40,6 +41,7 @@ export interface AppPorts {
   readonly shopping: ShoppingRepository;
   readonly settings: SettingsRepository;
   readonly recipes: RecipeRepository;
+  readonly photos: PhotoCatalog;
   readonly sharer: Sharer;
   readonly userData: UserDataStore;
   readonly cipher: Cipher;

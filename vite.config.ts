@@ -87,10 +87,24 @@ export default defineConfig({
          * (catalogue de recettes, quiz, Zod) : hors ligne complet dès la première visite.
          */
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        // Les photos de plats (public/photos, ~5 Mo) ne sont pas précachées : mises en cache
+        // à la première vue (runtimeCaching ci-dessous), l'illustration prend le relais sinon.
+        globIgnores: ['photos/**'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         clientsClaim: true,
-        // Aucune ressource tierce : pas de runtimeCaching.
+        // Aucune ressource tierce : seules les photos de l'app elle-même sont mises en cache.
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith(`${BASE}photos/`),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'nutry-photos',
+              expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 60 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+        ],
       },
     }),
   ],

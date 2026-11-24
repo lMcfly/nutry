@@ -74,3 +74,12 @@ test('captures tablette (iPad) et ordinateur (1440 × 900) : Semaine', async ({ 
   await page.waitForTimeout(500);
   await page.screenshot({ path: 'docs/captures/ordinateur.png' });
 });
+
+test('capture Crédits photos', async ({ page }) => {
+  await page.goto('./');
+  await completeOnboarding(page);
+  await page.goto('./#/credits-photos');
+  await expect(page.getByRole('region', { name: 'Liste des crédits photos' })).toBeVisible();
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: 'docs/captures/credits-photos.png' });
+});

@@ -5,6 +5,7 @@ export {
   FixedClock,
   InMemoryCompanionRepository,
   InMemoryDeviceStorage,
+  InMemoryPhotoCatalog,
   InMemoryPlanRepository,
   InMemoryProfileRepository,
   InMemoryProgressRepository,

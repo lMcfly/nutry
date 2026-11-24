@@ -31,6 +31,7 @@ testées, jamais construites dans un composant :
 | `application/usecases/data.ts`            | `IMPORT_MESSAGES`, `STORAGE_FAILURE_MESSAGES`                  |
 | `application/usecases/progress.ts`        | `WEIGHT_TRACKING_DISABLED_MESSAGE`                             |
 | `application/usecases/shopping.ts`        | titre du texte partagé                                         |
+| `application/usecases/catalog.ts`         | `PHOTO_CREDITS_TEXTS` (écran Crédits photos, mention CC BY-SA) |
 
 Les **libellés des identifiants** (niveaux, régimes, allergènes, thèmes…) restent dans
 `presentation/i18n/labels.ts`, vérifiés exhaustifs par `labels.test.ts` ; les identifiants du

@@ -4,6 +4,7 @@ import { MEDICAL_DISCLAIMER } from '@domain/profile';
 import { useDependencies } from '../../app/dependencies';
 import { useAppState } from '../../app/appState';
 import { ButtonLink } from '../../components/Button';
+import { ListGroup, ListRow } from '../../components/ListRow';
 import { Card } from '../../components/Card';
 import { useAsync } from '../../hooks/useAsync';
 import { CIQUAL_CITATION } from '../../i18n/labels';
@@ -11,6 +12,7 @@ import styles from './PrivacyContent.module.css';
 import {
   CheckIcon,
   GlobeIcon,
+  ImageIcon,
   LockIcon,
   PaletteIcon,
   PersonIcon,
@@ -113,6 +115,10 @@ export function PrivacyContent() {
         </p>
         <p className={styles.text}>{MEDICAL_DISCLAIMER}</p>
       </Card>
+
+      <ListGroup label="Autres informations">
+        <ListRow icon={<ImageIcon size={22} />} title="Crédits photos" to="/credits-photos" />
+      </ListGroup>
     </div>
   );
 }

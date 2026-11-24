@@ -8,6 +8,7 @@ import type { RatingRecord } from '@domain/userdata';
 import { RecycleIcon, SwapIcon, ThumbDownIcon, ThumbUpIcon } from '../../components/icons';
 import { RoundIconButton } from '../../components/RoundIconButton';
 import { DAY_LABELS, LEVEL_LABELS, SLOT_LABELS, formatMinutes } from '../../i18n/labels';
+import { useRecipePhoto } from '../../hooks/useRecipePhotos';
 import { DishImage } from '../../illustrations/DishImage';
 import { BREAD_SUGGESTION } from '../recipe/suggestions';
 import styles from './MealCard.module.css';
@@ -54,6 +55,7 @@ export function MealCard({
   const [whyOpen, setWhyOpen] = useState(false);
   const verdict = rating?.verdict;
   const name = recipe?.name ?? 'Recette indisponible';
+  const photo = useRecipePhoto(recipe?.id);
 
   return (
     <article
@@ -62,7 +64,15 @@ export function MealCard({
       data-testid="meal"
       data-meal-id={meal.id}
     >
-      <DishImage recipe={recipe} ratio="4 / 3" fill priority className={styles.art} />
+      <DishImage
+        recipe={recipe}
+        src={photo}
+        alt={name}
+        ratio="4 / 3"
+        fill
+        priority
+        className={styles.art}
+      />
 
       <div className={styles.text}>
         <h2 id={titleId} className={styles.title}>

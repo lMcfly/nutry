@@ -25,6 +25,7 @@
     "nutrition:write": "tsx --tsconfig tsconfig.node.json scripts/nutrition/compute.ts --write",
     "nutrition:check": "tsx --tsconfig tsconfig.node.json scripts/nutrition/compute.ts",
     "prepare": "husky",
+    "photos:doc": "tsx --tsconfig tsconfig.node.json scripts/photos/doc.ts",
     "icons": "tsx --tsconfig tsconfig.node.json scripts/icons/generate.ts"
   },
   "dependencies": {

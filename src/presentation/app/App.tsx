@@ -38,6 +38,10 @@ const PrivacyPage = lazy(() =>
   import('../pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
 );
 
+const PhotoCreditsPage = lazy(() =>
+  import('../pages/PhotoCreditsPage').then((m) => ({ default: m.PhotoCreditsPage })),
+);
+
 const TABS: readonly Tab[] = [
   { to: '/semaine', label: 'Semaine', icon: <HomeIcon /> },
   { to: '/courses', label: 'Courses', icon: <BasketIcon /> },
@@ -113,6 +117,7 @@ function Shell() {
               <Route path="/frigo" element={<FridgePage />} />
               <Route path="/recette/:id" element={<RecipePage />} />
               <Route path="/confidentialite" element={<PrivacyPage />} />
+              <Route path="/credits-photos" element={<PhotoCreditsPage />} />
               <Route path="*" element={<Navigate to="/semaine" replace />} />
             </Routes>
           </Suspense>
@@ -121,6 +126,7 @@ function Shell() {
             <Routes>
               <Route path="/bienvenue" element={<OnboardingPage />} />
               <Route path="/confidentialite" element={<PrivacyPage />} />
+              <Route path="/credits-photos" element={<PhotoCreditsPage />} />
               <Route path="*" element={<Navigate to="/bienvenue" replace />} />
             </Routes>
           </Suspense>

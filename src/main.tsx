@@ -9,6 +9,7 @@ import { createUseCases } from '@application/usecases';
 import type { AppPorts } from '@application/usecases';
 import { ZodBackupValidator } from '@infrastructure/backup/ZodBackupValidator';
 import { JsonQuizRepository, JsonRecipeRepository } from '@infrastructure/catalog/JsonCatalog';
+import { StaticPhotoCatalog } from '@infrastructure/catalog/StaticPhotoCatalog';
 import { SystemClock } from '@infrastructure/clock/SystemClock';
 import { WebCryptoCipher } from '@infrastructure/crypto/WebCryptoCipher';
 import {
@@ -75,6 +76,7 @@ const ports: AppPorts = {
   // Catalogues chargés à la demande (import dynamique) : rien de plus au premier rendu.
   recipes: new JsonRecipeRepository(),
   quizBank: new JsonQuizRepository(),
+  photos: new StaticPhotoCatalog(import.meta.env.BASE_URL),
   sharer: new NavigatorSharer(navigator),
   cipher: new WebCryptoCipher(),
   backupValidator: new ZodBackupValidator(),

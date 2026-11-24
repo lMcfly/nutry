@@ -1,0 +1,52 @@
+.intro {
+  flex: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.list {
+  /* Contient les textes `visually-hidden` (position absolue) : sinon ils étirent la page. */
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+}
+
+.item + .item {
+  border-top: 1px solid var(--color-border);
+}
+
+.dish {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+.line {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  overflow-wrap: anywhere;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+/* Zone tactile d'au moins 44 px. */
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}

@@ -153,6 +153,17 @@ for (const viewport of VIEWPORTS) {
         ).toBeGreaterThanOrEqual(60);
       }
 
+      // Crédits photos : la longue liste défile dans sa carte, jamais la page.
+      await page.getByRole('link', { name: 'Profil' }).click();
+      await page.getByRole('button', { name: 'Confidentialité' }).click();
+      await page
+        .getByRole('dialog', { name: 'Confidentialité' })
+        .getByRole('link', { name: 'Crédits photos' })
+        .click();
+      await expect(page.getByRole('heading', { name: 'Crédits photos', level: 1 })).toBeVisible();
+      await expect(page.getByRole('region', { name: 'Liste des crédits photos' })).toBeVisible();
+      await expectFits(page, 'Crédits photos');
+
       // Une recette : chaque onglet, la liste défile dans sa carte.
       await page.getByRole('link', { name: 'Semaine' }).click();
       await page.getByTestId('meal').getByRole('link').first().click();

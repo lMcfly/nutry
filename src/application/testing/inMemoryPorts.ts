@@ -13,6 +13,7 @@ import type {
   EncryptedPayload,
   FileSaver,
   FileToSave,
+  PhotoCatalog,
   PlanRepository,
   ProfileRepository,
   ProgressRepository,
@@ -20,6 +21,7 @@ import type {
   QuizStateRepository,
   RandomSource,
   RatingRepository,
+  RecipePhoto,
   RecipeRepository,
   SettingsRepository,
   ShareResult,
@@ -269,6 +271,13 @@ export class InMemoryRecipeRepository implements RecipeRepository {
   }
 }
 
+export class InMemoryPhotoCatalog implements PhotoCatalog {
+  constructor(public photos: readonly RecipePhoto[]) {}
+  getAll() {
+    return Promise.resolve(this.photos);
+  }
+}
+
 export class InMemoryQuizRepository implements QuizRepository {
   constructor(public questions: readonly QuizQuestion[]) {}
   getQuestions() {
@@ -373,6 +382,7 @@ export class InMemoryDeviceStorage implements DeviceStorage {
 export interface InMemoryPorts extends AppPorts {
   readonly clock: FixedClock;
   readonly recipes: InMemoryRecipeRepository;
+  readonly photos: InMemoryPhotoCatalog;
   readonly quizBank: InMemoryQuizRepository;
   readonly sharer: RecordingSharer;
   readonly fileSaver: RecordingFileSaver;
@@ -385,6 +395,7 @@ export interface InMemoryPorts extends AppPorts {
 export function createInMemoryPorts(
   options: {
     readonly recipes?: readonly Recipe[];
+    readonly photos?: readonly RecipePhoto[];
     readonly questions?: readonly QuizQuestion[];
     readonly clock?: FixedClock;
     readonly seed?: number;
@@ -407,6 +418,7 @@ export function createInMemoryPorts(
     shopping: new InMemoryShoppingRepository(state),
     settings: new InMemorySettingsRepository(state),
     recipes: new InMemoryRecipeRepository(options.recipes ?? []),
+    photos: new InMemoryPhotoCatalog(options.photos ?? []),
     sharer: new RecordingSharer(options.shareResult),
     userData: new InMemoryUserDataStore(state),
     cipher: new FakeCipher(),

@@ -8,6 +8,7 @@ import type { ReactElement } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { createInMemoryPorts } from '@application/testing';
 import type { InMemoryPorts } from '@application/testing';
+import type { RecipePhoto } from '@application/ports';
 import { DEVICE_KEYS, createUseCases } from '@application/usecases';
 import type { ShareResult, UseCases } from '@application/usecases';
 import type { Profile } from '@domain/profile';
@@ -46,6 +47,8 @@ export const TEST_PROFILE: Profile = { ...BASE_PROFILE, householdSize: 2 };
 export interface SetupOptions {
   readonly profile?: Profile | undefined;
   readonly recipes?: readonly Recipe[];
+  /** Photos de plats (crédits compris) ; aucune par défaut. */
+  readonly photos?: readonly RecipePhoto[];
   readonly questions?: readonly QuizQuestion[];
   /** Route initiale (hash), ex. '/courses'. */
   readonly route?: string;
@@ -69,6 +72,7 @@ export function createTestUseCases(options: SetupOptions = {}): {
 } {
   const ports = createInMemoryPorts({
     recipes: options.recipes ?? FIXTURE_RECIPES,
+    ...(options.photos ? { photos: options.photos } : {}),
     questions: options.questions ?? TEST_QUESTIONS,
     ...(options.shareResult ? { shareResult: options.shareResult } : {}),
   });

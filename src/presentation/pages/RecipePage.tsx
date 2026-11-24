@@ -15,6 +15,7 @@ import { useCelebrationCheck } from '../features/companion/Celebration';
 import { PlateGauges } from '../features/plate/PlateGauges';
 import { BREAD_SUGGESTION } from '../features/recipe/suggestions';
 import { useAsync } from '../hooks/useAsync';
+import { useRecipePhoto } from '../hooks/useRecipePhotos';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { DishImage } from '../illustrations/DishImage';
 import {
@@ -53,6 +54,7 @@ export function RecipePage() {
 
   const { state, reload } = useAsync(load);
   const view = state.status === 'ready' ? state.data : undefined;
+  const photo = useRecipePhoto(view?.recipe.id);
   usePageTitle(view?.recipe.name ?? 'Recette', headingRef);
 
   if (state.status !== 'ready') {
@@ -99,7 +101,15 @@ export function RecipePage() {
     <div className={styles.recipe}>
       <div className={styles.left}>
         <div className={styles.hero}>
-          <DishImage recipe={recipe} ratio="16 / 10" fill priority className={styles.heroImage} />
+          <DishImage
+            recipe={recipe}
+            src={photo}
+            alt={recipe.name}
+            ratio="16 / 10"
+            fill
+            priority
+            className={styles.heroImage}
+          />
           <Link to="/semaine" className={styles.back} aria-label="Retour : Ma semaine">
             <ArrowLeftIcon />
           </Link>
