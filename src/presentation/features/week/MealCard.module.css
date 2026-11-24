@@ -1,6 +1,7 @@
 /*
- * Carte du repas : l'image du plat occupe toute la largeur (et la hauteur que lui laisse le
- * texte), puis le nom, une ligne de méta, « Pourquoi ce plat ? » et trois actions au trait.
+ * Carte du repas : l'image du plat est toujours montrée en entier (ratio 4:3 de la photo,
+ * jamais recadrée) ; la carte se cale sur son contenu et se centre dans la zone disponible.
+ * Quand la hauteur manque, l'image rétrécit en gardant son ratio. Puis le nom, une ligne de méta, « Pourquoi ce plat ? » et trois actions au trait.
  * Toute la surface mène à la recette (lien étiré sur le nom).
  * Téléphone : verticale ; tablette en portrait : horizontale (image à gauche) ; paysage et
  * ordinateur : verticale, plusieurs cartes côte à côte.
@@ -8,9 +9,11 @@
 .card {
   position: relative;
   display: flex;
-  flex: 1;
+  flex: 0 1 auto;
   flex-direction: column;
   min-height: 0;
+  max-height: 100%;
+  margin-block: auto;
   padding: 0;
   overflow: hidden auto;
   border: 1px solid var(--color-border);
@@ -24,10 +27,14 @@
   flex: none;
 }
 
+/* --meal-chrome : hauteur de tout ce qui entoure l'image (en-tête, jours, texte, barre d'onglets). */
 .card .art {
-  flex: 1 1 8rem;
-  min-height: 8rem;
-  border-radius: 0;
+  --meal-chrome: 27rem;
+
+  align-self: center;
+  width: min(calc(100% - 2 * var(--space-2)), calc((100dvh - var(--meal-chrome)) * 4 / 3));
+  margin: var(--space-2) var(--space-2) 0;
+  border-radius: var(--radius-lg);
 }
 
 .text {
@@ -149,8 +156,7 @@
 /* Écrans bas : on resserre pour que tout tienne sans défiler. */
 @media (max-height: 760px) {
   .card .art {
-    flex-basis: 6rem;
-    min-height: 6rem;
+    margin-top: var(--space-1);
   }
 
   .text {
@@ -168,11 +174,14 @@
   .card {
     flex-direction: row;
     align-items: stretch;
+    margin-block: 0; /* les cartes sont centrées en groupe par la grille de la page */
   }
 
   .card .art {
-    flex: 0 0 45%;
-    min-height: 0;
+    flex: 0 0 52%;
+    align-self: flex-start;
+    width: auto;
+    margin: var(--space-2);
   }
 
   .text {
@@ -200,8 +209,12 @@
   }
 
   .card .art {
-    flex: 1 1 10rem;
-    min-height: 10rem;
+    --meal-chrome: 26rem;
+
+    flex: none;
+    align-self: center;
+    width: min(calc(100% - 2 * var(--space-2)), calc((100dvh - var(--meal-chrome)) * 4 / 3));
+    margin: var(--space-2) var(--space-2) 0;
   }
 
   .text {

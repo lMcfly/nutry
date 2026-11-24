@@ -52,6 +52,28 @@
   display: none;
 }
 
+/*
+ * Fondu sur les bords : à droite tant qu'il reste des puces à découvrir, à gauche dès qu'on a
+ * défilé (attributs posés par SegmentedTabs). Le défilement horizontal reste libre.
+ */
+.chips[data-fade-end] {
+  mask-image: linear-gradient(to right, #000 calc(100% - 2rem), transparent);
+}
+
+.chips[data-fade-start] {
+  mask-image: linear-gradient(to right, transparent, #000 2rem);
+}
+
+.chips[data-fade-start][data-fade-end] {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 2rem,
+    #000 calc(100% - 2rem),
+    transparent
+  );
+}
+
 .chips .tab {
   flex: none;
   padding: 0 var(--space-3);

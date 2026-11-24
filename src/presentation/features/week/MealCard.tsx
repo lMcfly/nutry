@@ -69,7 +69,6 @@ export function MealCard({
         src={photo}
         alt={name}
         ratio="4 / 3"
-        fill
         priority
         className={styles.art}
       />

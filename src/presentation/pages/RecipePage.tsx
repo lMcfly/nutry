@@ -105,8 +105,7 @@ export function RecipePage() {
             recipe={recipe}
             src={photo}
             alt={recipe.name}
-            ratio="16 / 10"
-            fill
+            ratio="4 / 3"
             priority
             className={styles.heroImage}
           />

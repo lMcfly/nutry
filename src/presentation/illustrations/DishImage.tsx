@@ -14,8 +14,6 @@ interface DishImageProps {
   readonly ratio?: string | undefined;
   /** Image principale visible dès l'ouverture : chargée tout de suite (sinon `lazy`). */
   readonly priority?: boolean | undefined;
-  /** Remplit la hauteur que lui laisse son conteneur (pas de ratio) : une hauteur minimale la réserve. */
-  readonly fill?: boolean | undefined;
   /** Dégradé léger en bas de l'image, pour du texte posé dessus. */
   readonly scrim?: boolean | undefined;
   readonly className?: string | undefined;
@@ -23,7 +21,7 @@ interface DishImageProps {
 
 /**
  * Image d'un plat : photo si `src` est fournie, sinon (ou si elle ne charge pas, par
- * exemple hors ligne) l'illustration maison. Cadrage `cover`, coins arrondis, ratio fixe.
+ * exemple hors ligne) l'illustration maison. Ratio fixe 4:3 (celui des photos : pas de recadrage visible), coins arrondis.
  */
 export function DishImage({
   recipe,
@@ -32,15 +30,14 @@ export function DishImage({
   ratio = '4 / 3',
   priority = false,
   scrim = false,
-  fill = false,
   className,
 }: DishImageProps) {
   const [failedSrc, setFailedSrc] = useState<string | undefined>();
   const showPhoto = src !== undefined && src !== failedSrc;
   return (
     <div
-      className={[styles.frame, fill ? styles.fill : '', className ?? ''].filter(Boolean).join(' ')}
-      style={fill ? undefined : { aspectRatio: ratio }}
+      className={[styles.frame, className ?? ''].filter(Boolean).join(' ')}
+      style={{ aspectRatio: ratio }}
       data-photo={showPhoto ? 'true' : 'false'}
     >
       {showPhoto ? (

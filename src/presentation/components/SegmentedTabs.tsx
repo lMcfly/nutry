@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { panelId, tabId } from './tabIds';
 import styles from './SegmentedTabs.module.css';
@@ -41,6 +41,24 @@ export function SegmentedTabs<T extends string>({
   className,
 }: SegmentedTabsProps<T>) {
   const refs = useRef(new Map<string, HTMLButtonElement>());
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Puces défilables : fondu aux bords où il reste du contenu (attributs lus par la CSS).
+  const updateFades = useCallback(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const max = list.scrollWidth - list.clientWidth;
+    list.toggleAttribute('data-fade-start', list.scrollLeft > 1);
+    list.toggleAttribute('data-fade-end', list.scrollLeft < max - 1);
+  }, []);
+  useEffect(() => {
+    if (variant !== 'chips') return;
+    updateFades();
+    window.addEventListener('resize', updateFades);
+    return () => {
+      window.removeEventListener('resize', updateFades);
+    };
+  }, [variant, tabs.length, updateFades]);
 
   const select = (index: number) => {
     const target = tabs[(index + tabs.length) % tabs.length];
@@ -66,6 +84,8 @@ export function SegmentedTabs<T extends string>({
     <div
       role="tablist"
       aria-label={label}
+      ref={listRef}
+      onScroll={variant === 'chips' ? updateFades : undefined}
       className={[styles.list, styles[variant], className ?? ''].filter(Boolean).join(' ')}
     >
       {tabs.map((tab, index) => {

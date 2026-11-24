@@ -37,7 +37,8 @@
   flex: 1;
   flex-direction: column;
   min-height: 0;
-  padding: var(--space-3) var(--space-2) 0 var(--space-4);
+  /* Le bas de la carte est réservé au bouton « + » : il ne recouvre jamais une ligne. */
+  padding: var(--space-3) var(--space-2) 4.5rem var(--space-4);
   border-radius: var(--radius-xl);
 }
 
@@ -52,7 +53,6 @@
 .scroll {
   flex: 1;
   padding-right: var(--space-2);
-  padding-bottom: 4.5rem;
 }
 
 .items {
@@ -116,6 +116,11 @@
 
 .name {
   flex: 1;
+}
+
+/* Initiale en capitale à l'affichage (« ail » → « Ail »), les données restent intactes. */
+.name::first-letter {
+  text-transform: uppercase;
 }
 
 .qty {
@@ -184,6 +189,11 @@
     padding: 0;
   }
 
+  .layout .rayons[data-fade-start],
+  .layout .rayons[data-fade-end] {
+    mask-image: none;
+  }
+
   .layout .rayons [role='tab'] {
     flex: none;
     justify-content: space-between;
@@ -194,6 +204,6 @@
 
   .fab {
     right: var(--space-3);
-    bottom: var(--space-4);
+    bottom: var(--space-3);
   }
 }
