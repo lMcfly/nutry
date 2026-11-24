@@ -207,11 +207,14 @@
   min-height: var(--touch-min);
 }
 
+.privacy svg {
+  display: inline-block;
+  margin-inline-end: var(--space-1);
+  vertical-align: -0.15em;
+}
+
 .privacy {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
+  display: block;
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   text-align: center;
