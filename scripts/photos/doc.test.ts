@@ -12,6 +12,7 @@ describe('docs/PHOTOS.md', () => {
     const doc = renderPhotosDoc(
       [
         {
+          provider: 'wikimedia',
           recipeId: 'a',
           file: 'a.webp',
           title: 'A | B.jpg',
@@ -26,7 +27,30 @@ describe('docs/PHOTOS.md', () => {
       new Map([['a', 'Plat A']]),
     );
     expect(doc).toContain(
-      '| Plat A | `a.webp` | Ana | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) | [A \\| B.jpg](https://commons.wikimedia.org/wiki/File:A.jpg) | illustration |',
+      '| Plat A | Wikimedia Commons | `a.webp` | Ana | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) | [A \\| B.jpg](https://commons.wikimedia.org/wiki/File:A.jpg) | illustration |',
+    );
+  });
+
+  it('Unsplash : photo distante, attribution avec les deux liens utm', () => {
+    const doc = renderPhotosDoc(
+      [
+        {
+          provider: 'unsplash',
+          recipeId: 'b',
+          title: 'a bowl',
+          author: 'Bob',
+          authorUrl: 'https://unsplash.com/@bob?utm_source=nutry&utm_medium=referral',
+          license: 'Unsplash',
+          licenseUrl: 'https://unsplash.com/license',
+          sourceUrl: 'https://unsplash.com/photos/x?utm_source=nutry&utm_medium=referral',
+          modified: 'recadrée et compressée',
+          matchQuality: 'exact',
+        },
+      ],
+      new Map([['b', 'Plat B']]),
+    );
+    expect(doc).toContain(
+      '| Plat B | Unsplash | distante | Photo de [Bob](https://unsplash.com/@bob?utm_source=nutry&utm_medium=referral) sur [Unsplash](https://unsplash.com/?utm_source=nutry&utm_medium=referral) |',
     );
   });
 });

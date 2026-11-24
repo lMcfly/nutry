@@ -17,21 +17,21 @@ On assume des textes d'interface en français dans `domain` et `application`, qu
 indissociables d'une règle. Ils restent des **constantes exportées** (ou des fonctions pures),
 testées, jamais construites dans un composant :
 
-| Où                                        | Quoi                                                           |
-| ----------------------------------------- | -------------------------------------------------------------- |
-| `domain/profile/guards.ts`                | `HEALTH_MESSAGES` (garde-fous de santé)                        |
-| `domain/profile/profile.constants.ts`     | `MEDICAL_DISCLAIMER` (bandeau Profil, écran Confidentialité)   |
-| `domain/profile/validate.ts`              | messages de `ProfileIssue`                                     |
-| `domain/mealplan/explain.ts`, `labels.ts` | « Pourquoi ce plat ? », `DAY_NAMES`, `SLOT_NAMES`, `mealLabel` |
-| `domain/mealplan/generate.ts`             | `PLAN_NOTICES`                                                 |
-| `domain/mealplan/batch.ts`                | `BATCH_PREP_TEXTS` (cuisiner en avance le dimanche)            |
-| `domain/progress/progress.ts`             | messages de régularité et de saisie                            |
-| `domain/quiz/quiz.ts`                     | encouragements après une réponse au quiz                       |
-| `domain/shopping/*`                       | rayons (`SECTION_LABELS`), pluriels, texte de partage          |
-| `application/usecases/data.ts`            | `IMPORT_MESSAGES`, `STORAGE_FAILURE_MESSAGES`                  |
-| `application/usecases/progress.ts`        | `WEIGHT_TRACKING_DISABLED_MESSAGE`                             |
-| `application/usecases/shopping.ts`        | titre du texte partagé                                         |
-| `application/usecases/catalog.ts`         | `PHOTO_CREDITS_TEXTS` (écran Crédits photos, mention CC BY-SA) |
+| Où                                        | Quoi                                                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- |
+| `domain/profile/guards.ts`                | `HEALTH_MESSAGES` (garde-fous de santé)                                               |
+| `domain/profile/profile.constants.ts`     | `MEDICAL_DISCLAIMER` (bandeau Profil, écran Confidentialité)                          |
+| `domain/profile/validate.ts`              | messages de `ProfileIssue`                                                            |
+| `domain/mealplan/explain.ts`, `labels.ts` | « Pourquoi ce plat ? », `DAY_NAMES`, `SLOT_NAMES`, `mealLabel`                        |
+| `domain/mealplan/generate.ts`             | `PLAN_NOTICES`                                                                        |
+| `domain/mealplan/batch.ts`                | `BATCH_PREP_TEXTS` (cuisiner en avance le dimanche)                                   |
+| `domain/progress/progress.ts`             | messages de régularité et de saisie                                                   |
+| `domain/quiz/quiz.ts`                     | encouragements après une réponse au quiz                                              |
+| `domain/shopping/*`                       | rayons (`SECTION_LABELS`), pluriels, texte de partage                                 |
+| `application/usecases/data.ts`            | `IMPORT_MESSAGES`, `STORAGE_FAILURE_MESSAGES`                                         |
+| `application/usecases/progress.ts`        | `WEIGHT_TRACKING_DISABLED_MESSAGE`                                                    |
+| `application/usecases/shopping.ts`        | titre du texte partagé                                                                |
+| `application/usecases/catalog.ts`         | `PHOTO_CREDITS_TEXTS` (écran Crédits photos, attributions Unsplash, mention CC BY-SA) |
 
 Les **libellés des identifiants** (niveaux, régimes, allergènes, thèmes…) restent dans
 `presentation/i18n/labels.ts`, vérifiés exhaustifs par `labels.test.ts` ; les identifiants du

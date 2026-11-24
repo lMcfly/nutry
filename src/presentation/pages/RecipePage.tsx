@@ -103,7 +103,9 @@ export function RecipePage() {
         <div className={styles.hero}>
           <DishImage
             recipe={recipe}
-            src={photo}
+            src={photo?.src}
+            srcSet={photo?.srcSet}
+            sizes="(min-width: 1000px) 50vw, 100vw"
             alt={recipe.name}
             ratio="4 / 3"
             priority

@@ -6,8 +6,12 @@ import styles from './DishImage.module.css';
 interface DishImageProps {
   /** Recette (pour choisir l'illustration de repli). */
   readonly recipe?: DishSubject | undefined;
-  /** Photo du plat, servie par le dépôt (même origine : la CSP reste `img-src 'self'`). */
+  /** Photo du plat : même origine, ou le CDN d'Unsplash (seule exception de la CSP `img-src`). */
   readonly src?: string | undefined;
+  /** Variantes de largeur de la photo (`400w, 800w…`), avec `sizes`. */
+  readonly srcSet?: string | undefined;
+  /** Largeur d'affichage de l'image selon l'écran, pour choisir la variante du `srcSet`. */
+  readonly sizes?: string | undefined;
   /** Texte alternatif de la photo (l'illustration de repli reste décorative). */
   readonly alt?: string | undefined;
   /** Rapport largeur / hauteur fixe, réservé avant le chargement (évite tout décalage). */
@@ -26,6 +30,8 @@ interface DishImageProps {
 export function DishImage({
   recipe,
   src,
+  srcSet,
+  sizes,
   alt = '',
   ratio = '4 / 3',
   priority = false,
@@ -44,8 +50,11 @@ export function DishImage({
         <img
           className={styles.photo}
           src={src}
+          srcSet={srcSet}
+          sizes={srcSet ? sizes : undefined}
           alt={alt}
           loading={priority ? 'eager' : 'lazy'}
+          crossOrigin="anonymous"
           decoding="async"
           onError={() => {
             setFailedSrc(src);

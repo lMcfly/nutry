@@ -112,25 +112,61 @@
   }
 }
 
-/* Paysage et ordinateur : jours à gauche, cartes verticales côte à côte. */
+/*
+ * Paysage et ordinateur : jours à gauche, cartes verticales côte à côte sur toute la largeur
+ * restante. Très grand écran : « Ta semaine » (Nutry, équilibre) forme une bande sous les cartes
+ * plutôt qu'une colonne, pour ne pas rétrécir les photos.
+ */
 @media (min-width: 1000px) and (min-height: 540px) {
   .layout {
     display: grid;
-    grid-template-columns: minmax(12rem, 14rem) minmax(0, 1fr);
+    grid-template-columns: minmax(10rem, 12rem) minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
     align-items: stretch;
     gap: var(--space-6);
   }
 
   .layout.withAside {
-    grid-template-columns: minmax(12rem, 14rem) minmax(0, 1fr) minmax(14rem, 17rem);
+    --meal-extra: 6rem;
+
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: var(--space-4) var(--space-6);
+  }
+
+  .layout.withAside .side {
+    grid-row: 1 / span 2;
+  }
+
+  .layout.withAside .dayMeals {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .layout.withAside .aside {
+    grid-column: 2;
+    grid-row: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .layout.withAside .asideGauges {
+    display: grid;
+    flex: 1 1 24rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-5);
+    width: auto;
   }
 
   .dayMeals {
     grid-template-columns: repeat(var(--meals, 2), minmax(0, 1fr));
     grid-template-rows: auto;
     align-content: center;
-    align-items: start;
+    align-items: stretch; /* cartes de même hauteur */
+    gap: var(--space-5);
   }
 
   .side {

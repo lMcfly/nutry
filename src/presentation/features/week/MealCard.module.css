@@ -209,7 +209,8 @@
   }
 
   .card .art {
-    --meal-chrome: 26rem;
+    /* + la bande « Ta semaine » sous les cartes (--meal-extra, définie par la page). */
+    --meal-chrome: calc(26rem + var(--meal-extra, 0rem));
 
     flex: none;
     align-self: center;

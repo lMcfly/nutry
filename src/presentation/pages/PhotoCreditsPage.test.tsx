@@ -12,7 +12,8 @@ if (!first || !second) throw new Error('fixture');
 
 const photo = (recipeId: string, overrides: Partial<RecipePhoto> = {}): RecipePhoto => ({
   recipeId,
-  url: `/nutry/photos/${recipeId}.webp`,
+  provider: 'wikimedia',
+  src: `/nutry/photos/${recipeId}.webp`,
   title: 'Plat.jpg',
   author: 'Benreis',
   license: 'CC BY-SA 4.0',
@@ -52,6 +53,42 @@ describe('<PhotoCreditsPage />', () => {
     const other = items.find((item) => within(item).queryByText(second.name)) as HTMLElement;
     expect(other).toHaveTextContent('Domaine public');
     expect(within(other).getByText(PHOTO_CREDITS_TEXTS.illustrative)).toBeVisible();
+  });
+
+  it('Unsplash : « Photo de auteur sur Unsplash » avec les deux liens, licence Unsplash', async () => {
+    renderScreen(<PhotoCreditsPage />, {
+      photos: [
+        photo(first.id, {
+          provider: 'unsplash',
+          src: 'https://images.unsplash.com/photo-1?w=800',
+          author: 'Calum Lewis',
+          authorUrl: 'https://unsplash.com/@calumlewis?utm_source=nutry&utm_medium=referral',
+          license: 'Unsplash',
+          licenseUrl: 'https://unsplash.com/license',
+          sourceUrl: 'https://unsplash.com/photos/x?utm_source=nutry&utm_medium=referral',
+        }),
+      ],
+    });
+    const row = (await screen.findByText(first.name)).closest('li') as HTMLElement;
+    expect(row).toHaveTextContent('Photo de Calum Lewis sur Unsplash');
+    expect(within(row).getByRole('link', { name: 'Calum Lewis' })).toHaveAttribute(
+      'href',
+      'https://unsplash.com/@calumlewis?utm_source=nutry&utm_medium=referral',
+    );
+    expect(within(row).getByRole('link', { name: 'Unsplash' })).toHaveAttribute(
+      'href',
+      PHOTO_CREDITS_TEXTS.unsplashHomeUrl,
+    );
+    expect(PHOTO_CREDITS_TEXTS.unsplashHomeUrl).toContain('utm_source=nutry');
+    expect(within(row).getByRole('link', { name: /^Licence/ })).toHaveAttribute(
+      'href',
+      'https://unsplash.com/license',
+    );
+    expect(row).toHaveTextContent('Licence Unsplash');
+    expect(within(row).getByRole('link', { name: /Photo sur Unsplash/ })).toHaveAttribute(
+      'href',
+      'https://unsplash.com/photos/x?utm_source=nutry&utm_medium=referral',
+    );
   });
 
   it('sans photo : message simple', async () => {

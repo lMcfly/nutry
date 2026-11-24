@@ -41,6 +41,11 @@ const PROMISES: readonly { icon: ReactNode; title: string; text: string }[] = [
     text: 'Les fichiers de l’app sont servis par GitHub Pages. Comme pour tout site, GitHub voit ton adresse IP quand ils sont téléchargés, mais aucune donnée personnelle ne lui est envoyée.',
   },
   {
+    icon: <ImageIcon size={22} />,
+    title: 'Photos chargées depuis Unsplash',
+    text: 'Les photos de certains plats sont chargées depuis Unsplash (images.unsplash.com), ce qui transmet ton adresse IP à Unsplash, comme pour tout site web. Aucune donnée personnelle ni de santé n’est envoyée. Hors ligne, ou si une photo ne charge pas, une illustration la remplace.',
+  },
+  {
     icon: <PaletteIcon size={22} />,
     title: 'Ton thème, mémorisé dans le navigateur',
     text: 'Le thème choisi (et quelques repères de session, comme la question du quiz de cette ouverture) est gardé dans ce navigateur pour un affichage immédiat. « Tout effacer » le supprime aussi.',

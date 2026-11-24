@@ -1,6 +1,9 @@
 import { existsSync } from 'node:fs';
 import { defineConfig, devices } from '@playwright/test';
 
+// Le service worker passe aussi par les routes Playwright (photos Unsplash simulées, voir e2e/fixtures.ts).
+process.env['PW_EXPERIMENTAL_SERVICE_WORKER_NETWORK_EVENTS'] = '1';
+
 const PORT = 4173;
 const BASE_PATH = '/nutry/';
 

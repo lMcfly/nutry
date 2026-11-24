@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
 import { completeOnboarding, dismissCelebration } from './helpers';
 
@@ -7,6 +8,18 @@ import { completeOnboarding, dismissCelebration } from './helpers';
  */
 test.skip(!process.env['CAPTURES'], 'captures à la demande (CAPTURES=1)');
 test.use({ deviceScaleFactor: 2, colorScheme: 'light' });
+
+/** Attend que les photos visibles soient chargées (vraies images Unsplash : réseau). */
+async function photosLoaded(page: Page): Promise<void> {
+  await page.waitForFunction(
+    () => Array.from(document.images).every((img) => img.complete),
+    undefined,
+    {
+      timeout: 20_000,
+    },
+  );
+  await page.waitForTimeout(300);
+}
 
 test('capture onboarding : Nutry accueille la personne', async ({ page }) => {
   await page.goto('./');
@@ -26,6 +39,7 @@ test('captures Semaine, Courses, Profil et Recette', async ({ page }) => {
   // Le dîner du jour.
   await page.getByRole('tab', { name: 'Dîner' }).click();
   await page.waitForTimeout(400);
+  await photosLoaded(page);
   await page.screenshot({ path: 'docs/captures/semaine.png' });
 
   await page
@@ -34,6 +48,7 @@ test('captures Semaine, Courses, Profil et Recette', async ({ page }) => {
     .click();
   await expect(page.getByRole('tab', { name: 'Ingrédients' })).toBeVisible();
   await page.waitForTimeout(400);
+  await photosLoaded(page);
   await page.screenshot({ path: 'docs/captures/recette.png' });
 
   await page.getByRole('link', { name: 'Courses' }).click();
@@ -64,14 +79,17 @@ test('captures tablette (iPad) et ordinateur (1440 × 900) : Semaine', async ({ 
   await completeOnboarding(page);
   await expect(page.getByTestId('meal')).toHaveCount(2);
   await page.waitForTimeout(500);
+  await photosLoaded(page);
   await page.screenshot({ path: 'docs/captures/tablette.png' });
 
   await page.setViewportSize({ width: 1180, height: 820 });
   await page.waitForTimeout(500);
+  await photosLoaded(page);
   await page.screenshot({ path: 'docs/captures/tablette-paysage.png' });
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.waitForTimeout(500);
+  await photosLoaded(page);
   await page.screenshot({ path: 'docs/captures/ordinateur.png' });
 });
 

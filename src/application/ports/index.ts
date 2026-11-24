@@ -16,4 +16,4 @@ export type { ShareResult, Sharer } from './Sharer';
 export type { ShoppingRepository } from './ShoppingRepository';
 export type { StoragePersistence } from './StoragePersistence';
 export type { UserDataStore } from './UserDataStore';
-export type { PhotoCatalog, RecipePhoto } from './PhotoCatalog';
+export type { PhotoCatalog, PhotoProvider, RecipePhoto } from './PhotoCatalog';

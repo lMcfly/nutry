@@ -37,16 +37,30 @@ export function PhotoCreditsPage() {
                   {credit.dishName}
                   {credit.illustrative && <Badge>{T.illustrative}</Badge>}
                 </h2>
-                <p className={styles.line}>
-                  Photo : {credit.author} · {credit.licenseLabel}
-                </p>
+                {credit.provider === 'unsplash' && credit.authorUrl ? (
+                  <p className={styles.line}>
+                    {T.unsplashBy}{' '}
+                    <a href={credit.authorUrl} target="_blank" rel="noopener noreferrer">
+                      {credit.author}
+                    </a>{' '}
+                    {T.unsplashOn}{' '}
+                    <a href={T.unsplashHomeUrl} target="_blank" rel="noopener noreferrer">
+                      {T.unsplashName}
+                    </a>{' '}
+                    · {credit.licenseLabel}
+                  </p>
+                ) : (
+                  <p className={styles.line}>
+                    Photo : {credit.author} · {credit.licenseLabel}
+                  </p>
+                )}
                 <p className={styles.line}>{T.modified}</p>
                 <p className={styles.links}>
                   <a href={credit.licenseUrl} target="_blank" rel="noopener noreferrer">
                     Licence<span className="visually-hidden"> de la photo : {credit.dishName}</span>
                   </a>
                   <a href={credit.sourceUrl} target="_blank" rel="noopener noreferrer">
-                    {T.source}
+                    {T.sourceByProvider[credit.provider]}
                     <span className="visually-hidden"> pour : {credit.dishName}</span>
                   </a>
                 </p>

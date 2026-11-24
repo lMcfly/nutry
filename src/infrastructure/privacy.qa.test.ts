@@ -28,12 +28,18 @@ const NETWORK = [
   /https?:\/\//,
 ];
 
+/**
+ * Seules adresses admises : les liens d'attribution Unsplash (texte des crédits) et son CDN
+ * d'images (ADR 0014, CSP `img-src`). Jamais de `fetch` : ce sont des `<img>` et des `<a>`.
+ */
+const ALLOWED_URLS = /https:\/\/(images\.)?unsplash\.com[^\s'"`)]*/g;
+
 describe('QA confidentialité', () => {
   it.each(['domain', 'application', 'infrastructure'])('%s : aucune API réseau ni URL', (layer) => {
     const files = sources(join(ROOT, layer));
     expect(files.length).toBeGreaterThan(5);
     const hits = files.flatMap((file) => {
-      const text = readFileSync(file, 'utf8');
+      const text = readFileSync(file, 'utf8').replace(ALLOWED_URLS, '');
       return NETWORK.filter((re) => re.test(text)).map(
         (re) => `${relative(ROOT, file)} : ${String(re)}`,
       );

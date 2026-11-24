@@ -66,7 +66,9 @@ export function MealCard({
     >
       <DishImage
         recipe={recipe}
-        src={photo}
+        src={photo?.src}
+        srcSet={photo?.srcSet}
+        sizes="(min-width: 1000px) 40vw, (min-width: 768px) 50vw, 100vw"
         alt={name}
         ratio="4 / 3"
         priority

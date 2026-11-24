@@ -4,12 +4,13 @@
     <meta charset="UTF-8" />
     <!--
       CSP : tout vient de l'app elle-même, aucun script ni style en ligne, aucune connexion
-      tierce. Retirée par vite.config.ts en `npm run dev` seulement (préambule React Refresh
+      tierce. Seule exception : les photos de certains plats, des images (img-src) chargées
+      depuis le CDN d'Unsplash (ADR 0014). Retirée par vite.config.ts en `npm run dev` seulement (préambule React Refresh
       en ligne) ; le build et `vite preview` l'appliquent. Voir docs/DEPLOIEMENT.md.
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://images.unsplash.com; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"
     />
     <meta
       name="viewport"

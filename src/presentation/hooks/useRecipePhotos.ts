@@ -1,26 +1,27 @@
 import { useEffect, useState } from 'react';
+import type { PhotoImage } from '@application/usecases';
 import { useDependencies } from '../app/dependencies';
 
-type PhotoUrls = Readonly<Record<string, string>>;
+type PhotoImages = Readonly<Record<string, PhotoImage>>;
 
 /** Photos déjà chargées, par cas d'usage : pas de scintillement à chaque nouvelle carte. */
-const loaded = new WeakMap<object, PhotoUrls>();
+const loaded = new WeakMap<object, PhotoImages>();
 
 /**
- * Adresse de la photo d'une recette, ou `undefined` (pas de photo, chargement en cours ou
+ * Image (adresse, variantes) de la photo d'une recette, ou `undefined` (pas de photo, chargement en cours ou
  * échec) : `DishImage` affiche alors l'illustration.
  */
-export function useRecipePhoto(recipeId: string | undefined): string | undefined {
-  const { getPhotoUrls } = useDependencies();
-  const [urls, setUrls] = useState<PhotoUrls | undefined>(() => loaded.get(getPhotoUrls));
+export function useRecipePhoto(recipeId: string | undefined): PhotoImage | undefined {
+  const { getPhotoImages } = useDependencies();
+  const [images, setImages] = useState<PhotoImages | undefined>(() => loaded.get(getPhotoImages));
 
   useEffect(() => {
-    if (loaded.has(getPhotoUrls)) return;
+    if (loaded.has(getPhotoImages)) return;
     let active = true;
-    getPhotoUrls().then(
+    getPhotoImages().then(
       (value) => {
-        loaded.set(getPhotoUrls, value);
-        if (active) setUrls(value);
+        loaded.set(getPhotoImages, value);
+        if (active) setImages(value);
       },
       () => {
         // Les illustrations suffisent : rien à signaler.
@@ -29,7 +30,7 @@ export function useRecipePhoto(recipeId: string | undefined): string | undefined
     return () => {
       active = false;
     };
-  }, [getPhotoUrls]);
+  }, [getPhotoImages]);
 
-  return recipeId === undefined ? undefined : urls?.[recipeId];
+  return recipeId === undefined ? undefined : images?.[recipeId];
 }

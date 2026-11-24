@@ -109,7 +109,7 @@ couleur, de densité et de pictogrammes de la première version.
 - **`DishImage`** prépare les vraies photos : `src` facultative et texte alternatif, repli sur
   l'illustration si elle manque ou ne charge pas (hors ligne), `object-fit: cover`, ratio fixe
   (4/3 sur la carte, 16/10 en tête de recette), `loading="lazy"` sauf l'image principale, même
-  origine (CSP `img-src 'self'` inchangée). Aucune URL de photo n'est encore fournie.
+  origine (CSP `img-src 'self'` à l'époque ; élargie par l'ADR 0014).
 
 ### Points de rupture
 

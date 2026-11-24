@@ -108,6 +108,10 @@ describe('<PrivacyPage />', () => {
     expect(screen.getByRole('heading', { name: 'Tout reste sur ton appareil' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Aucun traceur' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Hébergée par GitHub Pages' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Photos chargées depuis Unsplash' })).toBeVisible();
+    expect(
+      screen.getByText(/images\.unsplash\.com.*adresse IP.*Aucune donnée personnelle ni de santé/),
+    ).toBeVisible();
     expect(screen.getByText(/GitHub voit ton adresse IP/)).toBeVisible();
     expect(screen.getByText(/thème choisi .* est gardé dans ce navigateur/)).toBeVisible();
     expect(screen.getByText(MEDICAL_DISCLAIMER)).toBeVisible();

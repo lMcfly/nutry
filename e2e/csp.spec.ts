@@ -1,8 +1,8 @@
 import { completeOnboarding, dismissQuiz } from './helpers';
-import { expect, test } from './fixtures';
+import { UNSPLASH_HOST, expect, test } from './fixtures';
 
 const EXPECTED_CSP =
-  "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; " +
+  "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://images.unsplash.com; " +
   "connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; " +
   "base-uri 'self'; form-action 'none'";
 
@@ -59,6 +59,68 @@ test.describe('Content Security Policy', () => {
     await page.evaluate(async () => {
       await navigator.serviceWorker.ready;
     });
+  });
+
+  test('les photos Unsplash passent la CSP et le service worker les met en cache', async ({
+    page,
+  }) => {
+    await page.goto('./');
+    await page.evaluate(async () => {
+      await navigator.serviceWorker.ready;
+    });
+    // Le service worker contrôle la page après un rechargement (clientsClaim).
+    await page.reload();
+    await expect
+      .poll(() => page.evaluate(() => navigator.serviceWorker.controller !== null))
+      .toBe(true);
+    const loaded = await page.evaluate(
+      (url) =>
+        new Promise<boolean>((resolve) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            resolve(true);
+          };
+          img.onerror = () => {
+            resolve(false);
+          };
+          img.srcset = `${url}&w=400 400w`;
+          img.src = `${url}&w=800`;
+          document.body.append(img);
+        }),
+      `${UNSPLASH_HOST}/photo-test?ixid=x`,
+    );
+    expect(loaded).toBe(true);
+    // CacheFirst sous la CSP de la page : aucune violation, aucune connect-src nécessaire.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(async () => {
+            const cache = await caches.open('nutry-photos-unsplash');
+            return (await cache.keys()).length;
+          }),
+        { timeout: 10_000 },
+      )
+      .toBeGreaterThan(0);
+  });
+
+  test('une image d’un autre hôte reste bloquée (témoin img-src)', async ({
+    page,
+    cspViolations,
+  }) => {
+    await page.goto('./');
+    await expect(page.locator('#root')).not.toBeEmpty();
+    await page.evaluate(() => {
+      const img = new Image();
+      img.src = 'https://example.com/photo.png';
+      document.body.append(img);
+    });
+    // L'événement (img-src) et le message de console arrivent séparément : on attend les deux.
+    await expect
+      .poll(() => new Set(cspViolations.map((v) => v.directive)).size)
+      .toBeGreaterThanOrEqual(2);
+    expect(cspViolations.some((v) => v.directive === 'img-src')).toBe(true);
+    cspViolations.length = 0;
   });
 
   test('le garde-fou détecte bien une violation (témoin)', async ({ page, cspViolations }) => {

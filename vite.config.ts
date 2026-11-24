@@ -93,14 +93,27 @@ export default defineConfig({
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         clientsClaim: true,
-        // Aucune ressource tierce : seules les photos de l'app elle-même sont mises en cache.
+        // Seules ressources mises en cache à l'exécution : les photos de l'app elle-même et
+        // celles d'Unsplash (images.unsplash.com, ADR 0014). Réponses opaques (statut 0) :
+        // les <img> cross-origin sans CORS.
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.startsWith(`${BASE}photos/`),
+            // Expression régulière (pas une fonction) : le service worker est généré en
+            // sérialisant ce code, où la constante BASE n'existe pas.
+            urlPattern: new RegExp(`${BASE}photos/`),
             handler: 'CacheFirst',
             options: {
               cacheName: 'nutry-photos',
               expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 60 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/images\.unsplash\.com\//,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'nutry-photos-unsplash',
+              expiration: { maxEntries: 150, maxAgeSeconds: 60 * 60 * 24 * 60 },
               cacheableResponse: { statuses: [200] },
             },
           },

@@ -28,7 +28,8 @@ describe('photos des plats', () => {
   if (!first || !second) throw new Error('fixture');
   const photo = (recipeId: string, overrides: Partial<RecipePhoto> = {}): RecipePhoto => ({
     recipeId,
-    url: `/nutry/photos/${recipeId}.webp`,
+    provider: 'wikimedia',
+    src: `/nutry/photos/${recipeId}.webp`,
     title: 'Plat.jpg',
     author: 'Auteur',
     license: 'CC BY-SA 4.0',
@@ -39,12 +40,16 @@ describe('photos des plats', () => {
     ...overrides,
   });
 
-  it('getPhotoUrls : une adresse par recette illustrée, rien pour les autres', async () => {
+  it('getPhotoImages : adresse et variantes par recette illustrée, rien pour les autres', async () => {
     const uc = createUseCases(
-      createInMemoryPorts({ recipes: FIXTURE_RECIPES, photos: [photo(first.id)] }),
+      createInMemoryPorts({
+        recipes: FIXTURE_RECIPES,
+        photos: [photo(first.id), photo(second.id, { srcSet: 'a 400w, b 800w' })],
+      }),
     );
-    await expect(uc.getPhotoUrls()).resolves.toEqual({
-      [first.id]: `/nutry/photos/${first.id}.webp`,
+    await expect(uc.getPhotoImages()).resolves.toEqual({
+      [first.id]: { src: `/nutry/photos/${first.id}.webp`, srcSet: undefined },
+      [second.id]: { src: `/nutry/photos/${second.id}.webp`, srcSet: 'a 400w, b 800w' },
     });
   });
 
@@ -66,5 +71,6 @@ describe('photos des plats', () => {
       modified: 'recadrée et compressée',
     });
     expect(licenseLabel('CC0')).toBe('CC0');
+    expect(licenseLabel('Unsplash')).toBe('Licence Unsplash');
   });
 });

@@ -213,20 +213,31 @@ Les garde-fous sont codés dans le `domain` et testés
 
 ## Crédits photos
 
-Les photos des plats viennent de [Wikimedia Commons](https://commons.wikimedia.org/), sous
-licences libres (CC0, domaine public, CC BY, CC BY-SA). Chaque image est recadrée en 800 × 600 et
-compressée en WebP : elle est **modifiée** par rapport à l'original, ce que la mention
-« modifiée : recadrée et compressée » indique. Les auteurs, licences et sources de chaque photo
-sont listés dans l'app (Profil → Confidentialité → **Crédits photos**) et dans
-[docs/PHOTOS.md](docs/PHOTOS.md), généré par `npm run photos:doc` à partir de
-`src/infrastructure/data/photoCredits.json`. Un plat sans photo garde son illustration, tout
-comme une photo qui ne charge pas (hors ligne, par exemple).
+Les photos des plats viennent de trois sources, toutes libres de droits :
 
-Les fichiers sont dans `public/photos/` (`<id-de-la-recette>.webp`, moins de 80 Ko). Ils ne
-sont **pas précachés** : le service worker les garde à la première vue (cache `nutry-photos`,
-120 images, 60 jours). Pour en ajouter une : déposer le WebP, ajouter son entrée complète
-(auteur, licence, `licenseUrl`, `sourceUrl`) dans `photoCredits.json`, puis lancer
-`npm run photos:doc` ; les tests refusent une licence non libre ou un crédit incomplet.
+- **[Foodiesfeed](https://www.foodiesfeed.com/)** (CC0) et **[Wikimedia Commons](https://commons.wikimedia.org/)**
+  (CC0, domaine public, CC BY, CC BY-SA) : recadrées en 800 × 600, compressées en WebP, servies
+  par l'app (`public/photos/<id-de-la-recette>.webp`, environ 80 Ko). Elles sont donc
+  **modifiées** par rapport à l'original, ce que la mention « modifiée : recadrée et
+  compressée » indique.
+- **[Unsplash](https://unsplash.com/?utm_source=nutry&utm_medium=referral)** (licence Unsplash) :
+  **chargées depuis `images.unsplash.com`**, jamais téléchargées (règle de l'API Unsplash),
+  rognées en 4:3 par leur CDN autour d'un point de cadrage (`srcset` 400 / 800 / 1200 px).
+  Attribution « Photo de _auteur_ sur Unsplash », avec les deux liens (paramètres `utm_*`
+  conservés). L'app n'a besoin d'aucune clé d'API.
+
+Les auteurs, licences et sources de chaque photo sont listés dans l'app (Profil →
+Confidentialité → **Crédits photos**) et dans [docs/PHOTOS.md](docs/PHOTOS.md), généré par
+`npm run photos:doc` à partir de `src/infrastructure/data/photoCredits.json`. Un plat sans
+photo garde son illustration, tout comme une photo qui ne charge pas (hors ligne, par exemple).
+
+Aucune photo n'est précachée : le service worker garde les photos locales (cache `nutry-photos`,
+120 images, 60 jours) et celles d'Unsplash (`nutry-photos-unsplash`, 150 images, 60 jours) à la
+première vue. Pour en ajouter une : un WebP local **ou** une entrée `provider: "unsplash"`
+(`rawUrl`, `focal`, auteur…) dans `photoCredits.json`, puis `npm run photos:doc` ; les tests
+refusent une licence non libre, un crédit incomplet, un fichier orphelin ou une adresse hors
+`images.unsplash.com`. La CSP autorise ce seul hôte tiers, pour les images
+(`img-src … https://images.unsplash.com`) ; voir la section Confidentialité et l'ADR 0014.
 
 ## Confidentialité
 
