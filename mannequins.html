@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      Page de développement : planche des mannequins d'exercice. Même CSP que l'app (aucun style
+      ni script en ligne). Jamais publiée : `npm run build` ne construit que index.html. Voir
+      scripts/training/planche.ts.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Nutry — planche des mannequins</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/presentation/dev/mannequins.tsx"></script>
+  </body>
+</html>

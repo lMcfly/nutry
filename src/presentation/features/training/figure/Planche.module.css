@@ -1,0 +1,86 @@
+.page {
+  padding: var(--space-5);
+  background: var(--color-bg);
+  color: var(--color-text);
+  width: max-content;
+}
+
+.title {
+  margin-bottom: var(--space-4);
+}
+
+.title span {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: var(--space-3);
+}
+
+.cell {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.frames {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.frames svg {
+  display: block;
+}
+
+.arrow {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+}
+
+.caption {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.caption span {
+  color: var(--color-text-muted);
+}
+
+.sequence .frames {
+  gap: var(--space-3);
+}
+
+.seqFrame {
+  margin: 0;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.cols1 {
+  grid-template-columns: max-content;
+}
+
+.cols2 {
+  grid-template-columns: repeat(2, max-content);
+}
+
+.cols3 {
+  grid-template-columns: repeat(3, max-content);
+}
+
+.cols5 {
+  grid-template-columns: repeat(5, max-content);
+}
+
+.cols6 {
+  grid-template-columns: repeat(6, max-content);
+}
