@@ -14,6 +14,7 @@ const squat = {
   name: 'Squat au poids du corps',
   kind: 'force',
   pattern: 'genou',
+  movement: 'squat',
   primaryMuscles: ['quadriceps', 'fessiers'],
   secondaryMuscles: ['ischio-jambiers'],
   equipment: [],
@@ -34,8 +35,8 @@ const squat = {
       width: 480,
       height: 360,
       alt: 'Position de départ du squat, debout.',
-      author: 'Auteur wger',
-      license: 'CC-BY-SA-4.0',
+      author: 'Nutry',
+      license: 'MIT',
     },
   ],
   videos: [
@@ -44,20 +45,18 @@ const squat = {
       poster: 'exercices/videos/squat-poids-du-corps-1.webp',
       durationSeconds: 12,
       sizeKb: 640,
-      provider: 'wger',
-      author: 'Auteur wger',
+      provider: 'wikimedia',
+      author: 'Auteur Wikimedia',
       license: 'CC-BY-SA-4.0',
-      sourceUrl: 'https://wger.de/exercise/111/view/',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Squat.webm',
     },
   ],
   youtubeSearchUrl: 'https://www.youtube.com/results?search_query=squat+poids+du+corps',
   credit: {
-    provider: 'wger',
-    wgerId: 111,
-    sourceUrl: 'https://wger.de/exercise/111/view/',
-    authors: ['Auteur wger'],
-    license: 'CC-BY-SA-4.0',
-    modified: 'Texte traduit et adapté ; images recadrées et compressées.',
+    provider: 'nutry',
+    authors: ['Nutry'],
+    license: 'MIT',
+    modified: 'Rédigé pour Nutry.',
   },
 };
 
@@ -76,6 +75,7 @@ const planche = {
   name: 'Planche',
   kind: 'force',
   pattern: 'gainage',
+  movement: 'planche',
   primaryMuscles: ['abdominaux'],
   secondaryMuscles: [],
   equipment: ['tapis'],
@@ -100,14 +100,14 @@ const planche = {
   credit: {
     provider: 'nutry',
     authors: ['Nutry'],
-    license: 'CC-BY-SA-4.0',
+    license: 'MIT',
     modified: 'Rédigé pour Nutry.',
   },
 };
 
 const file = (exercises: readonly unknown[]) => ({
   version: 1,
-  source: { name: 'wger', url: 'https://wger.de', retrievedOn: '2026-11-25' },
+  source: { name: 'nutry', license: 'MIT' },
   exercises,
 });
 
@@ -123,10 +123,10 @@ describe('catalogue d’exercices : format cible', () => {
 
   it('donne une adresse à chaque licence', () => {
     for (const license of EXERCISE_LICENSES) {
-      expect(EXERCISE_LICENSE_URLS[license]).toMatch(/^https:\/\/creativecommons\.org\//);
+      expect(EXERCISE_LICENSE_URLS[license]).toBe('LICENSE');
     }
     for (const license of VIDEO_LICENSES) {
-      expect(VIDEO_LICENSE_URLS[license]).toMatch(/^https:\/\//);
+      expect(VIDEO_LICENSE_URLS[license]).toMatch(/^(https:\/\/|LICENSE$)/);
     }
   });
 
@@ -163,7 +163,7 @@ describe('catalogue d’exercices : format cible', () => {
       /coverr\.co attendue/,
     ],
     [
-      'une licence Mixkit sur une vidéo wger',
+      'une licence Mixkit sur une vidéo Wikimedia',
       { ...squat, videos: [{ ...squat.videos[0], license: 'Mixkit' }] },
       /licence incohérente/,
     ],
@@ -178,15 +178,17 @@ describe('catalogue d’exercices : format cible', () => {
       /exercices\/<id>/,
     ],
     [
-      'une fiche wger sans identifiant ni page',
-      { ...squat, credit: { ...squat.credit, wgerId: undefined, sourceUrl: undefined } },
-      /wgerId requis/,
-    ],
-    [
-      'un mouvement Nutry avec une source',
-      { ...planche, credit: { ...planche.credit, wgerId: 3 } },
+      'un contenu Nutry avec une source',
+      { ...planche, credit: { ...planche.credit, sourceUrl: 'https://example.com/x' } },
       /sans source/,
     ],
+    [
+      'une licence Creative Commons sur un texte Nutry',
+      { ...squat, credit: { ...squat.credit, license: 'CC0-1.0' } },
+      /./,
+    ],
+    ['une fiche sans pose de mannequin', { ...squat, movement: undefined }, /./],
+    ['une source wger', { ...squat, credit: { ...squat.credit, provider: 'wger' } }, /./],
     ['une clé inconnue', { ...squat, video: 'x' }, /./],
   ])('refuse %s', (_label, entry, expected) => {
     const result = exerciseEntrySchema.safeParse(JSON.parse(JSON.stringify(entry)));

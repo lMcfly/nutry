@@ -21,6 +21,7 @@ export type {
   ExerciseCatalog,
   ExerciseCredit,
   ExerciseImage,
+  CreativeCommonsLicense,
   ExerciseLicense,
   ExerciseLink,
   ExerciseMedia,

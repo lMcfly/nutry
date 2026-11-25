@@ -31,6 +31,11 @@ export interface Exercise {
   readonly name: string;
   readonly kind: ExerciseKind;
   readonly pattern: MovementPattern;
+  /**
+   * Clé de pose du mannequin SVG (kebab-case, ex. `squat`) : plusieurs exercices peuvent
+   * partager une pose. Le domain ne connaît pas le dessin, seulement sa clé.
+   */
+  readonly movement: string;
   /** Groupes travaillés en premier lieu (comptent 1 série dans le volume). */
   readonly primaryMuscles: readonly MuscleGroup[];
   /** Groupes sollicités en renfort (comptent 0,5 série). */
@@ -189,6 +194,8 @@ export interface PlannedExercise {
   readonly exerciseId: string;
   readonly pattern: MovementPattern;
   readonly role: SlotRole;
+  /** Se fait côté par côté : la durée estimée double (recopié de l'exercice). */
+  readonly unilateral: boolean;
   readonly prescription: Prescription;
 }
 

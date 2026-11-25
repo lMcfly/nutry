@@ -2,9 +2,11 @@ export {
   ACCESSORY_REP_BONUS,
   ACCESSORY_REST_REDUCTION_SECONDS,
   ACTIVITY_FLOOR_BY_WEEKLY_MINUTES,
+  ASSISTED_ID_PATTERN,
   ALWAYS_AVAILABLE_EQUIPMENT,
   BALANCE_RULES,
   BODYWEIGHT_REP_CEILING,
+  CAUTIOUS_MIN_REST_SECONDS,
   DEFAULT_TRAINING_DAYS,
   DELOAD,
   DELOAD_EVERY_WEEKS,
@@ -15,6 +17,9 @@ export {
   EXERCISE_KINDS,
   EXERCISE_MEASURES,
   EXERCISE_TAGS,
+  GENTLE_SESSION,
+  GUIDED_EQUIPMENT,
+  GUIDED_EQUIPMENT_BONUS,
   HOLD_REST_SECONDS,
   HOLD_SECONDS,
   LOAD_DECREASE_RATIO,
@@ -99,28 +104,46 @@ export type {
   WeeklyTrainingPlan,
 } from './training.types';
 export type {
-  AssessTrainingSafety,
-  AvoidedExerciseIds,
-  ComputeCycle,
   EligibilityContext,
-  EstimateSessionMinutes,
-  ExcludedTagsOf,
   ExerciseHistoryEntry,
-  FindAlternatives,
-  FitSessionToDuration,
-  IsExerciseEligible,
-  IsSessionComplete,
-  PainMessages,
-  PickExercise,
-  PlanTrainingWeek,
   PlanTrainingWeekInput,
-  Prescribe,
-  RankExercises,
   SuggestActivityLevel,
-  TemplateHeavyGroups,
-  TrainingConstraintsKey,
-  TrainingDaysOf,
 } from './training.contracts';
+export { assessTrainingSafety, excludedTagsOf } from './safety';
+export { avoidedExerciseIds, painAvoidanceEnd, painMessages } from './pain';
+export { computeCycle } from './cycle';
+export {
+  findAlternatives,
+  isExerciseEligible,
+  isLoadedExercise,
+  loadEquipmentOf,
+  pickExercise,
+  rankExercises,
+} from './select';
+export { plannedSets, prescribe } from './progression';
+export {
+  MAX_TRIM_LEVEL,
+  applyTrimLevel,
+  estimateSessionMinutes,
+  fitSessionToDuration,
+  minimalTrimLevel,
+  trimSession,
+} from './duration';
+export { planTrainingWeek } from './plan';
+export { trainingConstraintsKey } from './fingerprint';
+export {
+  finishSessionLog,
+  isSessionComplete,
+  logSet,
+  markExerciseDone,
+  replaceExerciseInLog,
+  sessionCompletion,
+  sessionLogId,
+  startSessionLog,
+} from './session';
+export { trainingDaysOf } from './meals';
+export { weeklySetsByPattern, weeklyVolumeByGroup } from './volume';
+export { TRAINING_NOTICES } from './notices';
 export {
   SAFETY_DISCOURAGED_TAGS,
   SAFETY_EXCLUDED_TAGS,

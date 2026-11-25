@@ -1,10 +1,13 @@
 import type { Exercise } from '@domain/training';
 
-/** Origine d'une fiche : la base wger (CC BY-SA) ou un mouvement rédigé pour Nutry. */
-export type ExerciseProvider = 'wger' | 'nutry';
+/** Origine d'une fiche : le contenu est celui de Nutry (textes, mannequins, ADR 0015). */
+export type ExerciseProvider = 'nutry';
 
-/** Licences admises pour les textes et les images d'exercices (ADR 0015). */
-export type ExerciseLicense = 'CC0-1.0' | 'CC-BY-4.0' | 'CC-BY-SA-3.0' | 'CC-BY-SA-4.0';
+/** Licence des textes et des images d'exercices : celle du dépôt (MIT). */
+export type ExerciseLicense = 'MIT';
+
+/** Licences Creative Commons admises pour une éventuelle vidéo libre externe. */
+export type CreativeCommonsLicense = 'CC0-1.0' | 'CC-BY-4.0' | 'CC-BY-SA-3.0' | 'CC-BY-SA-4.0';
 
 /** Image d'un exercice, servie par l'app elle-même (`img-src 'self'`). */
 export interface ExerciseImage {
@@ -17,13 +20,13 @@ export interface ExerciseImage {
 }
 
 /** Origine d'une vidéo libre, auto-hébergée en MP4 court et compressé. */
-export type VideoProvider = 'wger' | 'mixkit' | 'coverr' | 'wikimedia';
+export type VideoProvider = 'mixkit' | 'coverr' | 'wikimedia';
 
 /**
  * Licences des vidéos : celles des fiches, plus les licences propres à Mixkit et Coverr
  * (usage libre, sans attribution exigée ; on crédite quand même).
  */
-export type VideoLicense = ExerciseLicense | 'Mixkit' | 'Coverr';
+export type VideoLicense = ExerciseLicense | CreativeCommonsLicense | 'Mixkit' | 'Coverr';
 
 /** Vidéo de démonstration, servie par l'app elle-même (`media-src 'self'`), jamais intégrée d'ailleurs. */
 export interface ExerciseVideo {
@@ -50,12 +53,12 @@ export interface ExerciseLink {
 /** Ce qu'exige la licence de la fiche (texte et métadonnées). */
 export interface ExerciseCredit {
   readonly provider: ExerciseProvider;
-  /** Page de la fiche d'origine (wger) ; absente pour un mouvement Nutry. */
+  /** Sans objet pour un contenu Nutry ; réservé à une source externe future. */
   readonly sourceUrl?: string | undefined;
   readonly authors: readonly string[];
   readonly license: ExerciseLicense;
   readonly licenseUrl: string;
-  /** Modification apportée à l'original (exigence CC BY-SA). */
+  /** Mention de modification (vide de sens pour un contenu original ; texte libre). */
   readonly modified: string;
 }
 

@@ -1,6 +1,6 @@
 # ADR 0015 — Module Sport : programme de la semaine, séance guidée, lien avec la Nourriture
 
-- Statut : proposé (conception ; implémentation par phases ci-dessous)
+- Statut : accepté ; phase 1 (domaine) livrée, phases 2 à 6 à venir
 - Date : 2026-11-25
 - Complète : ADR 0001 (frontières), 0005 (Zod), 0006 (moteur de menu), 0007 (garde-fous
   santé), 0009 (persistance), 0010 (textes), 0012 (compagnon), 0013 (interface sans scroll),
@@ -42,35 +42,37 @@ musculaire en SVG, statistiques de charge, notifications (impossibles sans serve
 
 ### 2. Sources et licences
 
-- **wger** (wger.de) : fiches d'exercices (nom et consignes en français quand ils existent,
-  muscles, matériel), images et quelques vidéos. Licences admises : CC0, CC BY 4.0,
-  CC BY-SA 3.0 et 4.0 (pas d'ODbL pour les médias). Chaque fiche garde son **attribution** :
-  auteurs, licence, page d'origine, et la mention de modification (« texte traduit et adapté ;
-  images recadrées et compressées »). Les textes adaptés d'une fiche CC BY-SA sont une œuvre
-  dérivée : `exercises.json` et les médias sont publiés sous **CC BY-SA 4.0** (une adaptation
-  d'une œuvre 3.0 peut l'être sous 4.0) ; le code reste MIT. Écran « Crédits exercices » sur
-  le modèle de « Crédits photos » (ADR 0014), et une ligne de crédit sous chaque fiche.
-- **Vidéos libres** : wger, Mixkit, Coverr, Wikimedia Commons. **Auto-hébergées** en MP4 courts
-  (≤ 60 s, ≤ 1,5 Mo, H.264, sans son, avec affiche WebP) dans `public/exercices/videos/`,
+_Révisé après validation de l'utilisateur (phase 1) : le catalogue est le contenu propre de
+Nutry, plus aucune source externe de fiches._
+
+- **Contenu propre** : fiches d'exercices (noms, consignes, conseils, muscles, matériel) rédigées
+  pour Nutry (`provider: 'nutry'`) et illustrées par les **mannequins SVG** de Nutry (clé de pose
+  `Exercise.movement`). Licence identique à celle du dépôt : **MIT** (code, textes et dessins).
+  Plus de wger, plus de CC BY-SA, plus d'attribution d'auteurs tiers pour les fiches. Écran
+  « Crédits exercices » : il présente le contenu Nutry et sa licence MIT (texte : fichier
+  `LICENSE` du dépôt ; `EXERCISE_LICENSE_URLS.MIT` vaut `LICENSE`, sans adresse externe, la garde
+  de confidentialité de `privacy.qa.test.ts` n'admettant que les pages de licence CC, Mixkit et
+  Coverr).
+- **Vidéos libres** (facultatives) : Mixkit, Coverr, Wikimedia Commons, **auto-hébergées** en MP4
+  courts (≤ 60 s, ≤ 1,5 Mo, H.264, sans son, avec affiche WebP) dans `public/exercices/videos/`,
   chacune créditée (auteur, licence, page d'origine). Mixkit et Coverr ont leur propre licence
   libre (sans attribution exigée) : on crédite quand même. Lues par une balise `<video>` de
   l'app (`media-src 'self'`, à écrire explicitement dans la CSP ; il est déjà couvert par
-  `default-src 'self'`).
+  `default-src 'self'`). `wger` n'est plus un fournisseur de vidéos.
 - **Seul lien sortant** : une **recherche YouTube** sur le nom de l'exercice
   (`https://www.youtube.com/results?search_query=…`), ouverte dans un nouvel onglet
   (`rel="noopener noreferrer"`), libellée « Chercher une vidéo sur YouTube (site externe) ».
   Ni iframe, ni lecture intégrée, ni vidéo YouTube précise (lien qui casse, contenu non
   vérifié). La CSP ne change pas pour ce lien (une navigation n'est pas une ressource).
-- Historique : une autre base propriétaire d'exercices a été source envisagée puis écartée
-  (contenu non libre, accès automatisé refusé) ; rien n'en est repris, aucun lien n'y mène.
-- **Images** : WebP 480 px de large (≤ 40 Ko) auto-hébergées dans `public/exercices/`, comme
-  les photos de plats : exclues du précache, `runtimeCaching` CacheFirst `nutry-exercices`
-  (images et vidéos, 300 entrées, 60 jours). Hors ligne sans cache : pictogramme du schéma de
-  mouvement à la place de l'image, consignes toujours disponibles (elles sont dans le JSON).
-- **Curation** : on ne garde que ~150 à 200 exercices utiles (pas les ~800 de wger), choisis
-  pour couvrir chaque schéma × cadre × niveau (voir les critères de la phase 2). Les mouvements
-  d'échauffement, de mobilité et d'équilibre absents de wger sont rédigés pour Nutry
-  (`provider: 'nutry'`, mêmes règles de format).
+- Historique : wger (CC BY-SA) puis une base propriétaire d'exercices ont été envisagées puis
+  écartées ; rien n'en est repris, aucun lien n'y mène.
+- **Images** : les mannequins SVG (poses partagées entre exercices) sont servis par l'app ;
+  d'éventuelles images WebP restent auto-hébergées dans `public/exercices/`, exclues du précache,
+  `runtimeCaching` CacheFirst `nutry-exercices` (images et vidéos, 300 entrées, 60 jours). Hors
+  ligne sans cache : pictogramme du schéma de mouvement, consignes toujours disponibles (elles
+  sont dans le JSON).
+- **Curation** : ~150 à 200 exercices utiles, choisis pour couvrir chaque schéma × cadre × niveau
+  (voir les critères de la phase 2).
 
 ### 3. Modèle de domaine (`src/domain/training/`)
 
@@ -78,20 +80,20 @@ Types figés dans `training.types.ts`, vocabulaires et barèmes dans `training.c
 (tableaux `as const` dont dérivent les schémas Zod), gabarits dans `templates.ts`, textes de
 santé dans `safety.constants.ts`, signatures à implémenter dans `training.contracts.ts`.
 
-| Concept             | Type                                                                      | Rôle                                                                                                                         |
-| ------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Exercice            | `Exercise`                                                                | schéma de mouvement, muscles principaux/secondaires, matériel, niveau, mesure (répétitions ou durée), étiquettes, consignes  |
-| Groupe musculaire   | `MuscleGroup` (11)                                                        | pectoraux, dos, épaules, biceps, triceps, abdominaux, lombaires, fessiers, quadriceps, ischio-jambiers, mollets              |
-| Schéma de mouvement | `MovementPattern` (13)                                                    | poussée/tirage horizontal·vertical, genou, hanche, gainage, flexion/extension du coude, mollets, cardio, mobilité, équilibre |
-| Matériel            | `Equipment` (11) + `EquipmentSetting`                                     | maison (poids du corps), maison équipée (haltères, élastiques), salle ; le tapis est toujours supposé disponible             |
-| Niveau              | `TrainingLevel`                                                           | débutant, intermédiaire, confirmé (distinct du `Level` des recettes)                                                         |
-| Objectif            | `TrainingGoal`                                                            | forme, force, muscle, endurance → fourchette de répétitions et repos (`REP_SCHEMES`)                                         |
-| Profil sportif      | `TrainingProfile`                                                         | fréquence, jours, cadre, matériel, niveau, objectif, durée, étape de grossesse, début                                        |
-| Gabarit de séance   | `SessionTemplate`, `SessionBlock`, `SessionSlot`                          | blocs de 1 ou 2 créneaux (schéma + rôle principal/secondaire/accessoire)                                                     |
-| Programme           | `WeeklyTrainingPlan`, `PlannedSession`, `PlannedExercise`, `Prescription` | la semaine : split, cycle, séances, exercices prescrits                                                                      |
-| Journal             | `SessionLog`, `ExerciseLog`, `SetLog`                                     | ce qui a été fait, série par série (répétitions, secondes, charge)                                                           |
-| Douleur             | `PainReport`                                                              | « Ça fait mal » : exercice écarté 28 jours, muscles concernés                                                                |
-| Sécurité            | `TrainingSafety`                                                          | étiquettes exclues/déconseillées, intensité, progression de charge, plafond de séances, messages                             |
+| Concept             | Type                                                                      | Rôle                                                                                                                              |
+| ------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Exercice            | `Exercise`                                                                | schéma de mouvement, pose du mannequin (`movement`), muscles, matériel, niveau, mesure, étiquettes, consignes                     |
+| Groupe musculaire   | `MuscleGroup` (11)                                                        | pectoraux, dos, épaules, biceps, triceps, abdominaux, lombaires, fessiers, quadriceps, ischio-jambiers, mollets                   |
+| Schéma de mouvement | `MovementPattern` (13)                                                    | poussée/tirage horizontal·vertical, genou, hanche, gainage, flexion/extension du coude, mollets, cardio, mobilité, équilibre      |
+| Matériel            | `Equipment` (12) + `EquipmentSetting`                                     | maison (poids du corps), maison équipée (haltères, élastiques), salle (dont `machine`) ; le tapis est toujours supposé disponible |
+| Niveau              | `TrainingLevel`                                                           | débutant, intermédiaire, confirmé (distinct du `Level` des recettes)                                                              |
+| Objectif            | `TrainingGoal`                                                            | forme, force, muscle, endurance → fourchette de répétitions et repos (`REP_SCHEMES`)                                              |
+| Profil sportif      | `TrainingProfile`                                                         | fréquence, jours, cadre, matériel, niveau, objectif, durée, étape de grossesse, début                                             |
+| Gabarit de séance   | `SessionTemplate`, `SessionBlock`, `SessionSlot`                          | blocs de 1 ou 2 créneaux (schéma + rôle principal/secondaire/accessoire)                                                          |
+| Programme           | `WeeklyTrainingPlan`, `PlannedSession`, `PlannedExercise`, `Prescription` | la semaine : split, cycle, séances, exercices prescrits                                                                           |
+| Journal             | `SessionLog`, `ExerciseLog`, `SetLog`                                     | ce qui a été fait, série par série (répétitions, secondes, charge)                                                                |
+| Douleur             | `PainReport`                                                              | « Ça fait mal » : exercice écarté 28 jours, muscles concernés                                                                     |
+| Sécurité            | `TrainingSafety`                                                          | étiquettes exclues/déconseillées, intensité, progression de charge, plafond de séances, messages                                  |
 
 `WeeklyTrainingPlan` porte ce nom (et non `WeeklyPlan`) pour ne pas croiser le menu des repas.
 Le domain ne voit ni chemin d'image, ni vidéo, ni licence : ils passent par le port
@@ -145,7 +147,7 @@ rotation dépend des numéros de bloc et de semaine. Ordre des étapes :
 7. **Sélection** par créneau : filtre dur (`isExerciseEligible` : schéma, matériel disponible,
    niveau de l'exercice ≤ niveau, aucune étiquette exclue, pas écarté pour douleur, muscles
    principaux permis), puis classement (`rankExercises` : +3 matériel préféré du cadre pour un
-   créneau principal, +1 niveau égal, −2 par étiquette déconseillée, −5 déjà utilisé dans la
+   créneau principal, +4 machine guidée pour un débutant (principal et secondaire), +1 niveau égal, −2 par étiquette déconseillée, −5 déjà utilisé dans la
    semaine ; égalité : `id`).
 8. **Rotation** : principal et secondaire restent **les mêmes sur tout un bloc** (sinon la
    progression n'a pas de sens) et changent au bloc suivant (`rang = numéro de bloc mod
@@ -282,11 +284,11 @@ Moi**. Alternatives écartées :
   après `exportedAt` + 1 jour, `days` triés, uniques et de longueur `frequency`).
   `UserDataStore` (export, import atomique, `clearAll`) couvre les quatre tables.
 - **Catalogue** : `src/infrastructure/data/exercises.json`, format `exerciseCatalogFileSchema`
-  (`exerciseSchemas.ts`, testé) : en-tête de provenance, puis pour chaque exercice les champs
+  (`exerciseSchemas.ts`, testé) : en-tête de provenance (`source: { name: 'nutry', license: 'MIT' }`), puis pour chaque exercice les champs
   de `Exercise` + `images` + `videos` + `youtubeSearchUrl?` + `credit`. Contrôles : nature
   cohérente avec le schéma, muscles principaux permis, séries en durée seulement pour gainage,
   cardio, mobilité, équilibre, variantes existantes et du même schéma, médias sans doublon,
-  licences et hôtes des sources vérifiés, lien YouTube limité à une recherche. Chargé à la
+  licences et hôtes des sources de vidéos vérifiés, pose `movement` obligatoire, lien YouTube limité à une recherche. Chargé à la
   demande (import dynamique), validé par `npm run validate-data`.
 
 ### 9. Onboarding Sport
@@ -339,11 +341,9 @@ parallélisables ; 3 dépend de 1 et 2 ; 4 et 5 dépendent de 3 ; 6 clôt.
 - Fin : contrats implémentés sous leur nom, `training.contracts.ts` réduit aux types encore
   utiles, couverture ≥ 90 %.
 
-### Phase 2 — Données (agent « données », reprend le jeu préparé depuis wger)
+### Phase 2 — Données (agent « données », contenu propre de Nutry)
 
-- Fichiers : `scripts/exercises/build.ts` (brut wger → `exercises.json` : correspondance des
-  muscles et du matériel décrite dans `training.constants.ts`, normalisation des licences,
-  choix de la traduction française, crédits) ; `scripts/exercises/media.ts` (WebP 480 px,
+- Fichiers : `scripts/exercises/build.ts` (sources rédigées par Nutry → `exercises.json`) ; `scripts/exercises/media.ts` (WebP 480 px,
   MP4 ≤ 1,5 Mo avec affiche) ; `src/infrastructure/data/exercises.json` ;
   `public/exercices/` ; `docs/EXERCICES.md` (crédits générés) ; `validate-data` étendu.
 - Tests de contenu : schéma Zod ; fichiers présents et sans orphelin ; pour chaque schéma de
@@ -407,7 +407,53 @@ parallélisables ; 3 dépend de 1 et 2 ; 4 et 5 dépendent de 3 ; 6 clôt.
 - Toute nouvelle règle de sécurité s'ajoute dans `safety.constants.ts` et s'applique partout
   par le filtre d'éligibilité ; un test « aucune étiquette exclue » la protège.
 - Le dépôt grossit (~10 à 15 Mo d'images et de vidéos) ; les médias restent hors précache.
-- Questions ouvertes (valeurs par défaut retenues tant qu'elles ne sont pas tranchées) :
-  plafond de 3 séances de renforcement pour une condition de santé déclarée ; accessoires
-  sportifs débloqués par séances cumulées plutôt que par la série ; jour unique par défaut le
-  samedi.
+- **Décisions validées par l'utilisateur** (phase 1) :
+  1. une condition de santé déclarée limite à **3 séances de renforcement** par semaine
+     (`MAX_STRENGTH_SESSIONS_PROTECTED`, comme les 70 ans et plus) ;
+  2. les accessoires sportifs de Nutry se débloquent au **nombre cumulé de séances terminées**
+     (et non par la série), dérivé des journaux (phase 5) ;
+  3. pour la grossesse, l'onboarding Sport demande **l'étape** (1er trimestre, 2e/3e trimestre,
+     post-partum) ; sans réponse, la règle la plus prudente s'applique (`apres-premier-trimestre`) ;
+  4. **machines de salle** : `machine` rejoint le matériel (salle uniquement) ; un débutant en
+     salle voit les machines guidées en tête (+4) ;
+  5. le catalogue est le contenu propre de Nutry, sous licence MIT (section 2) ; `Exercise`
+     porte la clé de pose `movement`.
+- Toujours ouvert (valeur par défaut retenue) : le jour unique par défaut est le samedi.
+- Les seuils de santé (plafonds, repos plancher de 60 s pour un débutant ou une intensité
+  modérée, planchers de répétitions) restent à faire valider par un professionnel de santé.
+
+## Complément (phase 1, domaine)
+
+Livré dans `src/domain/training/` : `safety.ts`, `select.ts`, `cycle.ts`, `progression.ts`,
+`duration.ts`, `plan.ts`, `pain.ts`, `fingerprint.ts`, `session.ts`, `meals.ts` (`trainingDaysOf`),
+`volume.ts`, `notices.ts` ; catalogue de test `src/domain/testing/exercises.fixtures.ts`.
+Écarts assumés avec le texte ci-dessus :
+
+- **Raccourcissement uniforme** : le niveau de raccourcissement (retraits d'accessoires, séries à
+  2, derniers blocs, repos) est le même pour toutes les séances de renforcement de la semaine
+  (le plus fort nécessaire à l'une d'elles). Sans cela, poussée et tirage pouvaient se
+  désaligner dans le split poussée/tirage/jambes.
+- **Plafond de volume** : le planificateur resserre ce même niveau tant qu'un groupe dépasse
+  `WEEKLY_VOLUME.max` (il n'est pas garanti par les gabarits seuls : trois séances corps entier
+  débutant dépassaient 12 séries de fessiers).
+- **Repos raccourci** (dernière étape) : repos plafonné à 45 s, ou 60 s pour un débutant ou une
+  intensité modérée, quand la durée cible l'exige encore.
+- **Durée de 20 min** : même au plancher des gabarits (2 blocs en corps entier, bloc équilibre
+  des 70 ans et plus), 4 exercices à 2 séries dépassent parfois 22 min (jusqu'à 1,6 × la cible
+  mesurée ; un cas de 70 ans et plus à 30 min : 1,2 ×). Le plancher d'équilibre prime sur la durée.
+  À arbitrer : gabarits de 20 min dédiés, ou `minBlocks` à 1 avec alternance des blocs.
+- **Cible minimale de volume** : avec trois séances corps entier, elle n'est tenue que pour le
+  niveau débutant (pectoraux à 50 % de la cible en intermédiaire, 40 % en confirmé).
+- **Choix principal/secondaire avant les accessoires** : la rotation par bloc ne dépend pas des
+  accessoires, qui changent chaque semaine.
+- **Exercices assistés** (id contenant `assiste`) : progression comme au poids du corps ; la
+  charge réglée est une aide, jamais augmentée (`ASSISTED_ID_PATTERN`).
+- `PlannedExercise.unilateral` (durée estimée doublée), `Exercise.movement`,
+  `LOAD_INCREMENT_KG.machine` (5 kg), `GUIDED_EQUIPMENT`, `GENTLE_SESSION` sont ajoutés.
+- Après une douleur, la variante `easierId` est seule dispensée du filtre « sans les étiquettes de
+  l'exercice douloureux ».
+- La « série d'approche légère » avant le premier exercice chargé n'est pas dans le programme :
+  elle se déduit côté interface (premier exercice dont `loadEquipmentOf` existe).
+- Pour un exercice en durée, « Ajoute une répétition » veut dire « tiens un peu plus longtemps ».
+- Contrats : `training.contracts.ts` ne garde que les types d'entrée et `SuggestActivityLevel`
+  (phase 5) ; les fonctions portent leur nom en camelCase dans leur fichier.

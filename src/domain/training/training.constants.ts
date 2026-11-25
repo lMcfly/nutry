@@ -66,6 +66,10 @@ export type ExerciseMeasure = (typeof EXERCISE_MEASURES)[number];
  * Kettlebell → kettlebell, Resistance band → elastique, Bench → banc, Incline bench →
  * banc-incline, Pull-up bar → barre-traction, Cable machine → poulie, Swiss Ball →
  * swiss-ball, Gym mat → tapis, none (bodyweight) → aucun matériel (liste vide).
+ * `machine` : toute machine guidée de salle (presse, leg extension, leg curl, chest press,
+ * pec deck, shoulder press, tirage et rowing machine, abducteurs/adducteurs, mollets, hip
+ * thrust, dips ou tractions assistés, crunch, banc à lombaires) ; chaque machine est un
+ * exercice distinct qui requiert `machine`.
  */
 export const EQUIPMENT = [
   'tapis',
@@ -79,6 +83,7 @@ export const EQUIPMENT = [
   'barre-traction',
   'poulie',
   'swiss-ball',
+  'machine',
 ] as const;
 export type Equipment = (typeof EQUIPMENT)[number];
 
@@ -240,6 +245,7 @@ export const EQUIPMENT_BY_SETTING: Readonly<Record<EquipmentSetting, readonly Eq
     'barre-traction',
     'poulie',
     'swiss-ball',
+    'machine',
   ],
 };
 
@@ -303,6 +309,8 @@ export const HOLD_REST_SECONDS = 45;
 export const ACCESSORY_REP_BONUS = 2;
 export const ACCESSORY_REST_REDUCTION_SECONDS = 30;
 export const MIN_REST_SECONDS = 45;
+/** Repos plancher quand la durée cible oblige à le raccourcir, pour un débutant ou une intensité modérée. */
+export const CAUTIOUS_MIN_REST_SECONDS = 60;
 
 /** Séries par créneau selon le rôle et le niveau. */
 export const SETS_BY_ROLE: Readonly<Record<SlotRole, Readonly<Record<TrainingLevel, number>>>> = {
@@ -310,6 +318,16 @@ export const SETS_BY_ROLE: Readonly<Record<SlotRole, Readonly<Record<TrainingLev
   secondaire: { debutant: 3, intermediaire: 3, confirme: 3 },
   accessoire: { debutant: 2, intermediaire: 2, confirme: 3 },
 };
+/**
+ * Séance douce (mobilité, équilibre, cardio léger) : le cardio se fait en une série continue,
+ * la mobilité et l'équilibre en deux séries tenues avec un repos bref.
+ */
+export const GENTLE_SESSION = {
+  cardioSeconds: { min: 240, max: 360 },
+  holdSets: 2,
+  holdRestSeconds: 20,
+} as const;
+
 /** Plancher de séries quand la durée cible oblige à raccourcir. */
 export const MIN_SETS_WHEN_TRIMMED = 2;
 
@@ -364,7 +382,23 @@ export const LOAD_INCREMENT_KG: Readonly<Partial<Record<Equipment, number>>> = {
   barre: 2.5,
   'barre-ez': 2.5,
   poulie: 2.5,
+  machine: 5,
 };
+/**
+ * Matériel « guidé » : trajectoire fixe, bon choix d'entrée. À la salle, un débutant voit ces
+ * exercices classés devant les charges libres (`GUIDED_EQUIPMENT_BONUS`, créneaux principal et
+ * secondaire).
+ */
+export const GUIDED_EQUIPMENT: readonly Equipment[] = ['machine'];
+export const GUIDED_EQUIPMENT_BONUS = 4;
+
+/**
+ * Exercices « assistés » (dips ou tractions assistés) : la charge réglée est une aide, qu'on
+ * réduit avec le temps. Reconnus par leur identifiant (`assiste` entre tirets) ; ils
+ * progressent comme un exercice au poids du corps (répétitions, puis variante plus difficile).
+ */
+export const ASSISTED_ID_PATTERN = /(^|-)assiste(e|es|s)?(-|$)/;
+
 /** Au poids du corps : au-delà de ce nombre de répétitions, proposer la variante plus dure. */
 export const BODYWEIGHT_REP_CEILING = 20;
 /** Baisse de charge après deux séances sous la borne basse. */
