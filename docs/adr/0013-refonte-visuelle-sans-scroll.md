@@ -179,3 +179,16 @@ pourcentages déplaisent, Nutry doit être mis en valeur, Profil et Progrès son
   reste en pied de page. Dès 768 px : deux colonnes (Nutry et série à gauche, progrès à droite).
   Le quiz n'a pas de carte propre : ses statistiques ne sont exposées par aucun cas d'usage hors de la
   question du moment.
+
+## Onboarding regroupé en neuf écrans, règle graduée (révision du 2026-11-25)
+
+- L'onboarding passe de 21 questions à neuf écrans thématiques (`ONBOARDING_SCREENS`,
+  `domain/profile/questions.ts`) : âge, sexe (la grossesse apparaît en interrupteur sur le même
+  écran si le sexe n'est pas « homme »), taille et poids côte à côte (tour de taille replié),
+  activité, santé, objectif, régime et allergies, goûts, organisation. Une seule action « Continuer »
+  par écran, « Passer » si tout l'écran est facultatif ; l'avance au toucher ne vaut que pour les
+  écrans à choix unique (activité, santé, objectif). Les groupes hauts défilent dans le `ScrollArea`
+  interne, jamais la page (test e2e des neuf écrans à 360 × 640, 360 × 340 et 1440 × 900).
+- `NumberDial` remplace le curseur par une règle graduée à défilement natif (`Ruler`, accroche sur
+  chaque graduation, repère central, `role="slider"`). Ses plages (`SLIDER_RANGES`) sont de
+  l'interface seulement : saisie et − / + acceptent tout le domaine, la règle reste en butée.

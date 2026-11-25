@@ -199,14 +199,145 @@ export const PROFILE_STEPS: readonly ProfileStep[] = [
 ];
 
 /**
+ * Écran de l'onboarding : un thème, plusieurs questions réunies sous une seule bulle de Nutry
+ * (neuf écrans au lieu de vingt et une questions). Les textes sont ici (ADR 0010).
+ */
+export type OnboardingScreenId =
+  'age' | 'sex' | 'body' | 'activity' | 'health' | 'goal' | 'diet' | 'tastes' | 'organisation';
+
+export interface OnboardingScreen {
+  readonly id: OnboardingScreenId;
+  /** Petit titre au-dessus de la question (par défaut, celui de la partie du profil). */
+  readonly eyebrow?: string;
+  /** Ce que Nutry demande, dans sa bulle (titre de niveau 1 de l'écran). */
+  readonly prompt: string;
+  readonly hint?: string;
+  /** Nom accessible de la zone de réponse. */
+  readonly label: string;
+  /** Questions de l'écran, dans l'ordre ; « pregnancy » n'apparaît que si le sexe le permet. */
+  readonly questions: readonly ProfileQuestionId[];
+  /** Tout l'écran est facultatif : l'onboarding propose « Passer ». */
+  readonly optional: boolean;
+  /**
+   * Un seul choix unique à l'écran : le toucher passe seul à la suite. Les écrans qui
+   * réunissent plusieurs réponses se valident avec « Continuer ».
+   */
+  readonly autoAdvance: boolean;
+}
+
+/** Premier écran : l'âge. */
+export const FIRST_ONBOARDING_SCREEN: OnboardingScreen = {
+  id: 'age',
+  prompt: PROFILE_QUESTIONS.age.prompt,
+  label: 'Âge',
+  questions: ['age'],
+  optional: false,
+  autoAdvance: false,
+};
+
+export const ONBOARDING_SCREENS: readonly OnboardingScreen[] = [
+  FIRST_ONBOARDING_SCREEN,
+  {
+    id: 'sex',
+    prompt: PROFILE_QUESTIONS.sex.prompt,
+    hint: PROFILE_QUESTIONS.sex.hint ?? '',
+    label: 'Sexe',
+    questions: ['sex', 'pregnancy'],
+    optional: false,
+    autoAdvance: false,
+  },
+  {
+    id: 'body',
+    prompt: 'Ta taille et ton poids ?',
+    hint: PROFILE_QUESTIONS.weight.hint ?? '',
+    label: 'Taille, poids et tour de taille',
+    questions: ['height', 'weight', 'waist'],
+    optional: false,
+    autoAdvance: false,
+  },
+  {
+    id: 'activity',
+    prompt: PROFILE_QUESTIONS.activity.prompt,
+    label: PROFILE_QUESTIONS.activity.label,
+    questions: ['activity'],
+    optional: false,
+    autoAdvance: true,
+  },
+  {
+    id: 'health',
+    prompt: PROFILE_QUESTIONS.healthCondition.prompt,
+    hint: PROFILE_QUESTIONS.healthCondition.hint ?? '',
+    label: 'Condition de santé',
+    questions: ['healthCondition'],
+    optional: true,
+    autoAdvance: true,
+  },
+  {
+    id: 'goal',
+    prompt: PROFILE_QUESTIONS.goal.prompt,
+    label: PROFILE_QUESTIONS.goal.label,
+    questions: ['goal'],
+    optional: false,
+    autoAdvance: true,
+  },
+  {
+    id: 'diet',
+    eyebrow: 'Ton assiette',
+    prompt: PROFILE_QUESTIONS.dietBase.prompt,
+    hint: 'Ton régime, un « sans » si besoin, tes allergies : ces plats ne seront jamais proposés.',
+    label: 'Alimentation, « sans » et allergies',
+    questions: ['dietBase', 'dietExtras', 'allergens'],
+    optional: false,
+    autoAdvance: false,
+  },
+  {
+    id: 'tastes',
+    prompt: 'Qu’est-ce que tu aimes, ou pas ?',
+    hint: 'Facultatif. Touche ce que tu adores et ce que tu évites.',
+    label: 'Tes goûts',
+    questions: ['likes', 'dislikes'],
+    optional: true,
+    autoAdvance: false,
+  },
+  {
+    id: 'organisation',
+    prompt: 'Comment tu t’organises ?',
+    hint: 'Facultatif. Pour un menu qui tient dans ta semaine.',
+    label: 'Ton organisation',
+    questions: [
+      'household',
+      'weekdayMinutes',
+      'weekendMinutes',
+      'weekdayLevel',
+      'weekendLevel',
+      'breakfast',
+      'batchCooking',
+    ],
+    optional: true,
+    autoAdvance: false,
+  },
+];
+
+/** La grossesse n'est posée qu'une fois le sexe connu et différent de « homme » (garde-fou). */
+export function asksPregnancy(sex: Sex | undefined): boolean {
+  return sex !== undefined && sex !== 'homme';
+}
+
+/** Écrans de l'onboarding, avec la question de grossesse retirée quand elle ne s'applique pas. */
+export function onboardingScreens(sex: Sex | undefined): readonly OnboardingScreen[] {
+  const askPregnancy = asksPregnancy(sex);
+  return ONBOARDING_SCREENS.map((screen) => ({
+    ...screen,
+    questions: screen.questions.filter((id) => id !== 'pregnancy' || askPregnancy),
+  }));
+}
+
+/**
  * Questions à poser dans l'ordre. Garde-fou de santé : la question de grossesse et
  * d'allaitement n'est posée qu'une fois le sexe connu et différent de « homme ».
  */
 export function onboardingQuestions(sex: Sex | undefined): readonly ProfileQuestionId[] {
-  const askPregnancy = sex !== undefined && sex !== 'homme';
-  return PROFILE_STEPS.flatMap((step) => step.questions).filter(
-    (id) => id !== 'pregnancy' || askPregnancy,
-  );
+  return onboardingScreens(sex).flatMap((screen) => screen.questions);
 }
 
 /** Partie du profil à laquelle appartient une question. */

@@ -41,11 +41,17 @@ export type { ProfileField, ProfileIssue } from './validate';
 export {
   PROFILE_QUESTIONS,
   PROFILE_QUESTION_IDS,
+  FIRST_ONBOARDING_SCREEN,
+  ONBOARDING_SCREENS,
   PROFILE_STEPS,
+  asksPregnancy,
   onboardingQuestions,
+  onboardingScreens,
   stepOfQuestion,
 } from './questions';
 export type {
+  OnboardingScreen,
+  OnboardingScreenId,
   ProfileQuestionId,
   ProfileQuestionText,
   ProfileStep,

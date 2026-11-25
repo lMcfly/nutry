@@ -7,12 +7,14 @@ type User = ReturnType<typeof renderScreen>['user'];
 
 const question = (name: string | RegExp) => screen.findByRole('heading', { name, level: 1 });
 
+const next = (user: User) => user.click(screen.getByRole('button', { name: 'Continuer' }));
+
 async function typeNumber(user: User, label: string, value: string) {
   await user.type(screen.getByLabelText(label), value);
-  await user.click(screen.getByRole('button', { name: 'Continuer' }));
+  await next(user);
 }
 
-/** Âge, sexe (au doigt : la carte passe seule à la suite), taille, poids. */
+/** Âge, sexe (avec la grossesse si elle est posée), puis taille et poids côte à côte. */
 async function fillAboutYou(
   user: User,
   values: { age: string; height: string; weight: string; sex: string },
@@ -21,23 +23,15 @@ async function fillAboutYou(
   await typeNumber(user, 'Âge', values.age);
   await question('Tu es…');
   await user.click(screen.getByRole('radio', { name: values.sex }));
-  if (values.sex === 'Homme') {
-    await question('Tu mesures combien ?');
-    await typeNumber(user, 'Taille', values.height);
-  } else {
-    await question(/enceinte ou tu allaites/);
-    await user.click(screen.getByRole('button', { name: 'Continuer' }));
-    await question('Tu mesures combien ?');
-    await typeNumber(user, 'Taille', values.height);
-  }
-  await question('Et tu pèses combien ?');
-  await typeNumber(user, 'Poids', values.weight);
+  await next(user);
+  await question('Ta taille et ton poids ?');
+  await user.type(screen.getByLabelText('Taille'), values.height);
+  await user.type(screen.getByLabelText('Poids'), values.weight);
+  await next(user);
 }
 
-/** Passe le tour de taille, l'activité (choix) et la santé jusqu'à la question de l'objectif. */
+/** L'activité (choix unique : passe seule à la suite) et la santé jusqu'à l'objectif. */
 async function toGoal(user: User) {
-  await question('Tu connais ton tour de taille ?');
-  await user.click(screen.getByRole('button', { name: 'Passer' }));
   await question('Tu bouges comment au quotidien ?');
   await user.click(screen.getByRole('radio', { name: /Un peu actif/ }));
   await question(/condition de santé/);
@@ -46,7 +40,7 @@ async function toGoal(user: User) {
 }
 
 describe('<OnboardingPage />', () => {
-  it('une question par écran, posée par Nutry, avec la progression', async () => {
+  it('un thème par écran, posé par Nutry, avec la progression', async () => {
     renderScreen(<OnboardingPage />, { profile: undefined, status: 'none' });
     await question('Tu as quel âge ?');
     expect(screen.getByRole('progressbar', { name: 'Progression' })).toHaveAttribute(
@@ -54,7 +48,8 @@ describe('<OnboardingPage />', () => {
       '1',
     );
     expect(screen.getByRole('img', { name: /^Nutry, la petite boule/ })).toBeVisible();
-    // Un seul champ : pas de formulaire à rallonge.
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '9');
+    // Un seul thème : pas de formulaire à rallonge.
     expect(screen.queryByLabelText('Taille')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Retour' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Passer' })).toBeNull();
@@ -72,7 +67,10 @@ describe('<OnboardingPage />', () => {
     expect(age).toHaveValue('30');
     await user.clear(age);
     await user.type(age, '42');
-    expect(screen.getByRole('slider', { name: 'Âge, curseur' })).toHaveValue('42');
+    expect(screen.getByRole('slider', { name: 'Âge, règle' })).toHaveAttribute(
+      'aria-valuenow',
+      '42',
+    );
   });
 
   it('un nombre manquant est signalé avec douceur', async () => {
@@ -93,29 +91,38 @@ describe('<OnboardingPage />', () => {
     expect(screen.getByText(/Avant 18 ans/)).toBeVisible();
   });
 
-  it('grossesse : question posée à une femme seulement, perte grisée', async () => {
+  it('grossesse : interrupteur proposé à une femme seulement, perte grisée', async () => {
     const { user } = renderScreen(<OnboardingPage />, { profile: undefined, status: 'none' });
     await question('Tu as quel âge ?');
     await typeNumber(user, 'Âge', '30');
     await question('Tu es…');
+    expect(screen.queryByRole('switch', { name: /Enceinte ou allaitante/ })).toBeNull();
     await user.click(screen.getByRole('radio', { name: 'Femme' }));
-    await question('Tu es enceinte ou tu allaites ?');
-    await user.click(screen.getByRole('radio', { name: 'Oui' }));
-    await user.click(screen.getByRole('button', { name: 'Continuer' }));
-    await typeNumber(user, 'Taille', '165');
-    await typeNumber(user, 'Poids', '70');
+    // Le choix du sexe ne change pas d'écran : la grossesse apparaît sur le même écran.
+    const pregnancy = await screen.findByRole('switch', { name: /Enceinte ou allaitante/ });
+    expect(screen.getByRole('heading', { name: 'Tu es…' })).toBeVisible();
+    await user.click(pregnancy);
+    await next(user);
+    await question('Ta taille et ton poids ?');
+    await user.type(screen.getByLabelText('Taille'), '165');
+    await user.type(screen.getByLabelText('Poids'), '70');
+    await next(user);
     await toGoal(user);
     expect(screen.getByRole('radio', { name: /Perdre en douceur/ })).toBeDisabled();
   });
 
-  it('un homme ne se voit pas poser la question de grossesse', async () => {
+  it('un homme ne se voit pas proposer la grossesse, même après un autre choix', async () => {
     const { user } = renderScreen(<OnboardingPage />, { profile: undefined, status: 'none' });
     await question('Tu as quel âge ?');
     await typeNumber(user, 'Âge', '30');
     await question('Tu es…');
+    await user.click(screen.getByRole('radio', { name: 'Autre' }));
+    expect(screen.getByRole('switch', { name: /Enceinte ou allaitante/ })).toBeVisible();
     await user.click(screen.getByRole('radio', { name: 'Homme' }));
-    await question('Tu mesures combien ?');
-    expect(screen.queryByText(/enceinte/)).toBeNull();
+    expect(screen.queryByRole('switch', { name: /Enceinte ou allaitante/ })).toBeNull();
+    await next(user);
+    await question('Ta taille et ton poids ?');
+    expect(screen.queryByText(/enceinte/i)).toBeNull();
   });
 
   it('adulte sans contre-indication : perte proposée, et le choix passe seul à la suite', async () => {
@@ -128,36 +135,64 @@ describe('<OnboardingPage />', () => {
     await question('Tu manges comment ?');
   });
 
-  it('valeurs aberrantes signalées avec douceur', async () => {
+  it('valeurs aberrantes signalées avec douceur, l’écran ne change pas', async () => {
     const { user } = renderScreen(<OnboardingPage />, { profile: undefined, status: 'none' });
     await question('Tu as quel âge ?');
     await typeNumber(user, 'Âge', '30');
     await question('Tu es…');
     await user.click(screen.getByRole('radio', { name: 'Autre' }));
-    await question(/enceinte/);
-    await user.click(screen.getByRole('button', { name: 'Continuer' }));
-    await question('Tu mesures combien ?');
-    await typeNumber(user, 'Taille', '1,75');
+    await next(user);
+    await question('Ta taille et ton poids ?');
+    await user.type(screen.getByLabelText('Taille'), '1,75');
+    await user.type(screen.getByLabelText('Poids'), '70');
+    await next(user);
     expect(screen.getByText(/entre 100 et 250 cm/)).toBeVisible();
-    expect(screen.getByRole('heading', { name: 'Tu mesures combien ?' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Ta taille et ton poids ?' })).toBeVisible();
   });
 
-  it('« Passer » sur les questions facultatives, puis retour arrière', async () => {
+  it('taille et poids côte à côte, tour de taille facultatif replié', async () => {
+    const { user } = renderScreen(<OnboardingPage />, { profile: undefined, status: 'none' });
+    await fillAboutYou(user, { age: '30', height: '170', weight: '65', sex: 'Homme' });
+    await question('Tu bouges comment au quotidien ?');
+    await user.click(screen.getByRole('button', { name: 'Retour' }));
+    await question('Ta taille et ton poids ?');
+    expect(screen.queryByLabelText('Tour de taille')).toBeNull();
+    await user.click(screen.getByRole('button', { name: '+ Ajouter mon tour de taille' }));
+    const waist = screen.getByLabelText('Tour de taille');
+    // Une valeur facultative mal saisie bloque, avec douceur, jusqu'à être corrigée ou retirée.
+    await user.type(waist, '5');
+    await next(user);
+    expect(screen.getByRole('heading', { name: 'Ta taille et ton poids ?' })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Retirer mon tour de taille' }));
+    expect(screen.queryByLabelText('Tour de taille')).toBeNull();
+    await next(user);
+    await question('Tu bouges comment au quotidien ?');
+  });
+
+  it('« Passer » sur les écrans facultatifs, régime et allergies sans avance auto, retour', async () => {
     const { user } = renderScreen(<OnboardingPage />, { profile: undefined, status: 'none' });
     await fillAboutYou(user, { age: '30', height: '170', weight: '65', sex: 'Homme' });
     await toGoal(user);
     await user.click(screen.getByRole('radio', { name: /Rééquilibrer/ }));
     await question('Tu manges comment ?');
-    await user.click(screen.getByRole('radio', { name: /Omnivore/ }));
-    await question(/« sans »/);
-    await user.click(screen.getByRole('button', { name: 'Passer' }));
-    await question('Tu as des allergies ?');
+    // Régime et allergies sur le même écran : on coche sans quitter l'écran.
+    await user.click(screen.getByRole('radio', { name: /Végétarien/ }));
     await user.click(screen.getByRole('checkbox', { name: /Arachides/ }));
     expect(screen.getByRole('checkbox', { name: /Arachides/ })).toBeChecked();
+    expect(screen.getByText(/ne sont pas prises en compte/)).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Passer' })).toBeNull();
+    expect(screen.getByRole('heading', { name: 'Tu manges comment ?' })).toBeVisible();
+    await next(user);
+    await question(/aimes, ou pas/);
+    await user.click(screen.getByRole('button', { name: 'Passer' }));
+    await question('Comment tu t’organises ?');
     await user.click(screen.getByRole('button', { name: 'Retour' }));
-    await question(/« sans »/);
+    await question(/aimes, ou pas/);
+    await user.click(screen.getByRole('button', { name: 'Retour' }));
+    await question('Tu manges comment ?');
     await waitFor(() => {
-      expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '10');
+      expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '7');
     });
+    expect(screen.getByRole('radio', { name: /Végétarien/ })).toBeChecked();
   });
 });

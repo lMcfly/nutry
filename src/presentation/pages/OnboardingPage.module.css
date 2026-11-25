@@ -1,5 +1,5 @@
 /*
- * Une question par écran : Nutry la pose dans une bulle, la réponse occupe le centre, les
+ * Un thème par écran : Nutry la pose dans une bulle, la réponse occupe le centre, les
  * actions restent sous le pouce. Sur grand écran, une carte centrée.
  */
 .onboarding {
@@ -162,6 +162,7 @@
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.25;
+  text-wrap: balance;
 }
 
 .question:focus-visible {
@@ -218,6 +219,26 @@
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   text-align: center;
+}
+
+/* Taille et poids côte à côte ; le tour de taille, facultatif, reste replié. */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.waist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.addWaist {
+  align-self: center;
+  min-height: var(--touch-min);
 }
 
 /* Clavier ouvert ou écran bas : Nutry s'efface, la bulle et la réponse gardent la place. */

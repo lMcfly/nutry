@@ -31,44 +31,37 @@ describe('<App />', () => {
     await next();
     await ask('Tu es…');
     await user.click(screen.getByRole('radio', { name: 'Homme' }));
-    await ask('Tu mesures combien ?');
-    await user.type(screen.getByLabelText('Taille'), '170');
     await next();
-    await ask('Et tu pèses combien ?');
+    await ask('Ta taille et ton poids ?');
+    await user.type(screen.getByLabelText('Taille'), '170');
     await user.type(screen.getByLabelText('Poids'), '68,5');
     await next();
-    await ask('Tu connais ton tour de taille ?');
-    await skip();
     await ask('Tu bouges comment au quotidien ?');
     await user.click(screen.getByRole('radio', { name: /Actif/ }));
-    // Le titre de la question prend le focus à chaque écran.
+    // Le titre de l'écran prend le focus à chaque écran.
     expect(await ask(/condition de santé/)).toHaveFocus();
     await skip();
 
     await ask('Quel est ton objectif ?');
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '8');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '6');
     await user.click(screen.getByRole('radio', { name: /Rééquilibrer/ }));
     await ask('Tu manges comment ?');
     await user.click(screen.getByRole('radio', { name: /Omnivore/ }));
-    await ask(/« sans »/);
-    await skip();
-    await ask('Tu as des allergies ?');
     expect(screen.getByText(/ne sont pas prises en compte/)).toBeVisible();
     await user.click(screen.getByRole('checkbox', { name: /Arachides/ }));
     await next();
 
-    await ask('Qu’est-ce que tu adores ?');
-    await user.click(screen.getByRole('checkbox', { name: /Tomate/ }));
-    await skip();
-    await ask('Et ce que tu n’aimes pas ?');
-    await skip();
+    await ask(/aimes, ou pas/);
+    await user.click(
+      within(screen.getByRole('group', { name: 'J’adore' })).getByRole('checkbox', {
+        name: /Tomate/,
+      }),
+    );
+    await next();
 
-    await ask('Vous êtes combien à table ?');
+    await ask('Comment tu t’organises ?');
     await user.click(screen.getByRole('button', { name: 'Une personne de plus' }));
     expect(screen.getByLabelText('Combien êtes-vous à table ?')).toHaveValue('2');
-    await next();
-    for (let i = 0; i < 5; i += 1) await skip();
-    await ask('Tu veux cuisiner en avance le dimanche ?');
     await user.click(screen.getByRole('button', { name: 'Voir mon menu' }));
 
     expect(await screen.findByRole('heading', { name: 'Ma semaine' })).toBeVisible();

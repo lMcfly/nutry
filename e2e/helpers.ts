@@ -11,71 +11,57 @@ const next = (page: Page) => page.getByRole('button', { name: 'Continuer' });
 const skip = (page: Page) => page.getByRole('button', { name: 'Passer' });
 
 /**
- * Onboarding complet, au plus court mais avec des choix réels : une question par écran, les
- * cartes de choix passent seules à la suite, « Passer » écarte les questions facultatives.
+ * Onboarding complet, au plus court mais avec des choix réels : neuf écrans thématiques, les
+ * écrans à choix unique passent seuls à la suite, « Passer » écarte les écrans facultatifs.
+ * `onScreen` est appelé à l'arrivée sur chaque écran (numéro de 1 à 9).
  */
-export async function completeOnboarding(page: Page): Promise<void> {
+export async function completeOnboarding(
+  page: Page,
+  onScreen?: (screen: number) => Promise<void>,
+): Promise<void> {
+  let screen = 0;
   await expectQuestion(page, 'Tu as quel âge ?');
+  await onScreen?.((screen += 1));
   await page.getByLabel('Âge', { exact: true }).fill('34');
   await next(page).click();
 
   await expectQuestion(page, 'Tu es…');
+  await onScreen?.((screen += 1));
   await page.getByText('Homme', { exact: true }).click();
-
-  await expectQuestion(page, 'Tu mesures combien ?');
-  await page.getByLabel('Taille', { exact: true }).fill('172');
   await next(page).click();
 
-  await expectQuestion(page, 'Et tu pèses combien ?');
+  await expectQuestion(page, 'Ta taille et ton poids ?');
+  await onScreen?.((screen += 1));
+  await page.getByLabel('Taille', { exact: true }).fill('172');
   await page.getByLabel('Poids', { exact: true }).fill('70');
   await next(page).click();
 
-  await expectQuestion(page, 'Tu connais ton tour de taille ?');
-  await skip(page).click();
-
   await expectQuestion(page, 'Tu bouges comment au quotidien ?');
+  await onScreen?.((screen += 1));
   await page.getByText('Un peu actif', { exact: true }).click();
 
   await expectQuestion(page, /condition de santé/);
+  await onScreen?.((screen += 1));
   await skip(page).click();
 
   await expectQuestion(page, 'Quel est ton objectif ?');
+  await onScreen?.((screen += 1));
   await page.getByText('Rééquilibrer', { exact: true }).click();
 
   await expectQuestion(page, 'Tu manges comment ?');
+  await onScreen?.((screen += 1));
   await page.getByText('Omnivore', { exact: true }).click();
-
-  await expectQuestion(page, /« sans »/);
-  await skip(page).click();
-
-  await expectQuestion(page, 'Tu as des allergies ?');
   await page.getByText('Arachides', { exact: true }).click();
   await next(page).click();
 
-  await expectQuestion(page, 'Qu’est-ce que tu adores ?');
-  await page.getByText('Tomate', { exact: true }).click();
+  await expectQuestion(page, /aimes, ou pas/);
+  await onScreen?.((screen += 1));
+  await page.getByRole('group', { name: 'J’adore' }).getByText('Tomate', { exact: true }).click();
   await next(page).click();
 
-  await expectQuestion(page, 'Et ce que tu n’aimes pas ?');
-  await skip(page).click();
-
-  await expectQuestion(page, 'Vous êtes combien à table ?');
+  await expectQuestion(page, 'Comment tu t’organises ?');
+  await onScreen?.((screen += 1));
   await page.getByRole('button', { name: 'Une personne de plus' }).click();
-  await next(page).click();
-
-  // Temps, niveaux, petit-déjeuner : les réponses par défaut conviennent.
-  for (const question of [
-    'Tu as combien de temps pour cuisiner en semaine ?',
-    'Et le week-end ?',
-    'En semaine, tu préfères cuisiner comment ?',
-    'Et le week-end ?',
-    'Je te propose aussi un petit-déjeuner ?',
-  ]) {
-    await expectQuestion(page, question);
-    await skip(page).click();
-  }
-
-  await expectQuestion(page, 'Tu veux cuisiner en avance le dimanche ?');
   await page.getByRole('button', { name: 'Voir mon menu' }).click();
   await expect(page.getByRole('heading', { name: 'Ma semaine' })).toBeVisible();
 }

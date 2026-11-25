@@ -34,7 +34,14 @@ import {
   YES_NO_LABELS,
   formatMinutes,
 } from '../../i18n/labels';
-import { DIET_BASES, DIET_EXTRAS, PLAUSIBLE_RANGES, lossBlockedReason } from './draft';
+import {
+  DIAL_STARTS,
+  DIET_BASES,
+  DIET_EXTRAS,
+  PLAUSIBLE_RANGES,
+  SLIDER_RANGES,
+  lossBlockedReason,
+} from './draft';
 import type { AboutIssues, ProfileDraft } from './draft';
 import styles from './ProfileSections.module.css';
 import { HeartIcon, InfoIcon } from '../../components/icons';
@@ -47,8 +54,11 @@ export interface SectionProps {
   readonly onChange: (patch: Partial<ProfileDraft>) => void;
 }
 
-/** `wizard` : une question plein écran ; `list` : question parmi d'autres dans une feuille. */
-export type QuestionVariant = 'wizard' | 'list';
+/**
+ * `wizard` : une question en grand, seule à l'écran ; `group` : question compacte parmi d'autres
+ * du même écran d'onboarding ; `list` : question parmi d'autres dans une feuille d'édition.
+ */
+export type QuestionVariant = 'wizard' | 'group' | 'list';
 
 interface QuestionInputProps extends SectionProps {
   readonly id: ProfileQuestionId;
@@ -57,7 +67,7 @@ interface QuestionInputProps extends SectionProps {
   readonly issues?: AboutIssues;
   /** Garde-fous calculés en direct (`previewProfile`) ; absent si les mesures sont incomplètes. */
   readonly health?: HealthSummary | undefined;
-  /** Choix fait au doigt : l'onboarding passe à la question suivante. */
+  /** Choix fait au doigt : l'onboarding passe à l'écran suivant. */
   readonly onPick?: () => void;
 }
 
@@ -96,6 +106,7 @@ export function QuestionInput({
 }: QuestionInputProps) {
   const text = PROFILE_QUESTIONS[id];
   const wizard = variant === 'wizard';
+  const group = variant === 'group';
 
   /** Booléen : grandes cartes Oui / Non à l'onboarding, interrupteur dans les feuilles. */
   const yesNo = (value: boolean, set: (v: boolean) => void) =>
@@ -123,7 +134,9 @@ export function QuestionInput({
           compact={!wizard}
           min={PLAUSIBLE_RANGES.age[0]}
           max={PLAUSIBLE_RANGES.age[1]}
-          start={30}
+          sliderMin={SLIDER_RANGES.age[0]}
+          sliderMax={SLIDER_RANGES.age[1]}
+          start={DIAL_STARTS.age}
           unit="ans"
           value={draft.age}
           error={issues.age}
@@ -137,9 +150,12 @@ export function QuestionInput({
         <NumberDial
           label={text.label}
           compact={!wizard}
+          dense={group}
           min={PLAUSIBLE_RANGES.heightCm[0]}
           max={PLAUSIBLE_RANGES.heightCm[1]}
-          start={170}
+          sliderMin={SLIDER_RANGES.heightCm[0]}
+          sliderMax={SLIDER_RANGES.heightCm[1]}
+          start={DIAL_STARTS.heightCm}
           unit="cm"
           value={draft.heightCm}
           error={issues.heightCm}
@@ -153,11 +169,14 @@ export function QuestionInput({
         <NumberDial
           label={text.label}
           compact={!wizard}
+          dense={group}
           decimal
           step={0.5}
           min={PLAUSIBLE_RANGES.weightKg[0]}
           max={PLAUSIBLE_RANGES.weightKg[1]}
-          start={70}
+          sliderMin={SLIDER_RANGES.weightKg[0]}
+          sliderMax={SLIDER_RANGES.weightKg[1]}
+          start={DIAL_STARTS.weightKg}
           unit="kg"
           value={draft.weightKg}
           error={issues.weightKg}
@@ -171,11 +190,14 @@ export function QuestionInput({
         <NumberDial
           label={text.label}
           compact={!wizard}
+          dense={group}
           decimal
           step={1}
           min={PLAUSIBLE_RANGES.waistCm[0]}
           max={PLAUSIBLE_RANGES.waistCm[1]}
-          start={80}
+          sliderMin={SLIDER_RANGES.waistCm[0]}
+          sliderMax={SLIDER_RANGES.waistCm[1]}
+          start={DIAL_STARTS.waistCm}
           unit="cm"
           {...(wizard ? {} : { hint: text.hint ?? '' })}
           value={draft.waistCm}
@@ -275,7 +297,7 @@ export function QuestionInput({
         <RadioGroup
           legend={text.label}
           hideLegend={wizard}
-          layout="cards"
+          layout={group ? 'chips' : 'cards'}
           options={DIET_BASES.map((d) => ({
             value: d,
             label: DIET_LABELS[d],
@@ -294,7 +316,7 @@ export function QuestionInput({
         <ChipGroup
           legend={text.label}
           hideLegend={wizard}
-          {...(wizard ? {} : { hint: text.hint })}
+          {...(wizard || group ? {} : { hint: text.hint })}
           options={DIET_EXTRAS.map((d) => ({
             value: d,
             label: DIET_LABELS[d],
@@ -312,7 +334,7 @@ export function QuestionInput({
           <ChipGroup
             legend={text.label}
             hideLegend={wizard}
-            {...(wizard ? {} : { hint: text.hint })}
+            {...(wizard || group ? {} : { hint: text.hint })}
             options={ALLERGENS.map((a) => ({
               value: a,
               label: ALLERGEN_LABELS[a],
@@ -333,7 +355,7 @@ export function QuestionInput({
         <ChipGroup
           legend={text.label}
           hideLegend={wizard}
-          {...(wizard ? {} : { hint: text.hint })}
+          {...(wizard || group ? {} : { hint: text.hint })}
           options={FOOD_OPTIONS}
           selected={draft.likes}
           onChange={(likes) => {
@@ -346,7 +368,7 @@ export function QuestionInput({
         <ChipGroup
           legend={text.label}
           hideLegend={wizard}
-          {...(wizard ? {} : { hint: text.hint })}
+          {...(wizard || group ? {} : { hint: text.hint })}
           options={FOOD_OPTIONS}
           selected={draft.dislikes}
           onChange={(dislikes) => {
@@ -406,7 +428,7 @@ export function QuestionInput({
         <RadioGroup
           legend={text.label}
           hideLegend={wizard}
-          layout="cards"
+          layout={group ? 'chips' : 'cards'}
           options={levelOptions}
           value={draft.weekdayLevel}
           onPick={() => onPick?.()}
@@ -420,7 +442,7 @@ export function QuestionInput({
         <RadioGroup
           legend={text.label}
           hideLegend={wizard}
-          layout="cards"
+          layout={group ? 'chips' : 'cards'}
           options={levelOptions}
           value={draft.weekendLevel}
           onPick={() => onPick?.()}

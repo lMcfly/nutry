@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useRef } from 'react';
 import type { ChangeEvent, MouseEvent, PointerEvent } from 'react';
+import { Ruler } from './Ruler';
 import styles from './NumberDial.module.css';
 
 interface NumberDialProps {
@@ -8,10 +9,14 @@ interface NumberDialProps {
   /** Texte saisi : il reste du texte tant qu'on tape (« 1,7 » n'est pas encore un nombre). */
   readonly value: string;
   readonly onChange: (value: string) => void;
+  /** Valeurs permises : bornes de la saisie au clavier et des boutons − / +. */
   readonly min: number;
   readonly max: number;
+  /** Plage de la règle (par défaut `min`–`max`) : plus étroite pour un glissé précis, en butée au-delà. */
+  readonly sliderMin?: number;
+  readonly sliderMax?: number;
   readonly step?: number;
-  /** Valeur de départ quand le champ est vide et qu'on touche + ou − ou le curseur. */
+  /** Valeur de départ quand le champ est vide et qu'on touche + ou − ou la règle. */
   readonly start: number;
   /** Unité affichée à côté du chiffre (« ans », « cm »). */
   readonly unit: string;
@@ -20,9 +25,11 @@ interface NumberDialProps {
   readonly hint?: string;
   /** Version en liste (écrans d'édition) : plus petite, avec le nom visible. */
   readonly compact?: boolean;
+  /** Deux par ligne (onboarding) : chiffre au-dessus, − et + dessous, curseur mince. */
+  readonly dense?: boolean;
   readonly decrementLabel?: string;
   readonly incrementLabel?: string;
-  /** Sans curseur (petites plages comme le nombre de personnes). */
+  /** Sans règle (petites plages comme le nombre de personnes). */
   readonly noSlider?: boolean;
 }
 
@@ -39,8 +46,8 @@ function parse(raw: string): number | undefined {
 const round1 = (n: number): number => Math.round(n * 10) / 10;
 
 /**
- * Grand chiffre central avec − / + (appui long : ça défile, et de plus en plus vite) et un
- * curseur. Le chiffre est un vrai champ : on touche dessus pour taper au clavier numérique.
+ * Grand chiffre central avec − / + (appui long : ça défile, et de plus en plus vite) et une
+ * règle graduée à faire défiler. Le chiffre est un vrai champ : on touche dessus pour taper au clavier numérique.
  */
 export function NumberDial({
   label,
@@ -48,6 +55,8 @@ export function NumberDial({
   onChange,
   min,
   max,
+  sliderMin = min,
+  sliderMax = max,
   step = 1,
   start,
   unit,
@@ -55,6 +64,7 @@ export function NumberDial({
   error,
   hint,
   compact = false,
+  dense = false,
   decrementLabel,
   incrementLabel,
   noSlider = false,
@@ -115,10 +125,10 @@ export function NumberDial({
 
   const describedBy = [hint ? hintId : '', error ? errorId : ''].filter(Boolean).join(' ');
   const shown = current === undefined ? '' : value;
-  const sliderValue = Math.min(max, Math.max(min, current ?? start));
+  const sliderValue = Math.min(sliderMax, Math.max(sliderMin, current ?? start));
 
   return (
-    <div className={`${styles.dial} ${compact ? styles.compact : ''}`}>
+    <div className={`${styles.dial} ${compact ? styles.compact : ''} ${dense ? styles.dense : ''}`}>
       <label
         htmlFor={id}
         className={compact ? styles.label : 'visually-hidden'}
@@ -178,20 +188,16 @@ export function NumberDial({
         </button>
       </div>
       {!noSlider && (
-        <input
-          type="range"
-          className={styles.slider}
-          min={min}
-          max={max}
-          step={decimal ? step : 1}
+        <Ruler
+          label={`${label}, règle`}
+          min={sliderMin}
+          max={sliderMax}
+          unit={decimal ? step : 1}
           value={sliderValue}
-          aria-label={`${label}, curseur`}
-          aria-valuetext={`${format(sliderValue)} ${unit}`}
-          style={
-            { '--fill': `${((sliderValue - min) / (max - min)) * 100}%` } as React.CSSProperties
-          }
-          onChange={(event) => {
-            onChange(format(Number(event.target.value)));
+          valueText={`${format(sliderValue)} ${unit}`}
+          format={format}
+          onChange={(next) => {
+            onChange(format(next));
           }}
         />
       )}

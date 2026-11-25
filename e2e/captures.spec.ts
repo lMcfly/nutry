@@ -21,7 +21,7 @@ async function photosLoaded(page: Page): Promise<void> {
   await page.waitForTimeout(300);
 }
 
-test('captures onboarding : une question par écran, présentée par Nutry', async ({ page }) => {
+test('captures onboarding : un thème par écran, présenté par Nutry', async ({ page }) => {
   await page.goto('./');
   await expectQuestion(page, 'Tu as quel âge ?');
   await page.getByRole('button', { name: 'Augmenter : Âge' }).click();
@@ -32,27 +32,48 @@ test('captures onboarding : une question par écran, présentée par Nutry', asy
   await page.getByRole('button', { name: 'Continuer' }).click();
 
   await expectQuestion(page, 'Tu es…');
+  await page.getByText('Femme', { exact: true }).click();
+  await expect(page.getByRole('switch', { name: /Enceinte ou allaitante/ })).toBeVisible();
   await page.waitForTimeout(400);
   await page.screenshot({ path: 'docs/captures/onboarding-choix.png' });
-  await page.getByText('Femme', { exact: true }).click();
-  await expectQuestion(page, 'Tu es enceinte ou tu allaites ?');
   await page.getByRole('button', { name: 'Continuer' }).click();
-  await expectQuestion(page, 'Tu mesures combien ?');
+
+  await expectQuestion(page, 'Ta taille et ton poids ?');
   await page.getByLabel('Taille', { exact: true }).fill('165');
-  await page.getByRole('button', { name: 'Continuer' }).click();
   await page.getByLabel('Poids', { exact: true }).fill('62');
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: 'docs/captures/onboarding-mesures.png' });
   await page.getByRole('button', { name: 'Continuer' }).click();
-  await page.getByRole('button', { name: 'Passer' }).click();
   await page.getByText('Un peu actif', { exact: true }).click();
   await page.getByRole('button', { name: 'Passer' }).click();
   await page.getByText('Rééquilibrer', { exact: true }).click();
+  await expectQuestion(page, 'Tu manges comment ?');
   await page.getByText('Végétarien', { exact: true }).click();
-  await page.getByRole('button', { name: 'Passer' }).click();
-  await expectQuestion(page, 'Tu as des allergies ?');
   await page.getByText('Arachides', { exact: true }).click();
   await page.getByText('Œufs', { exact: true }).click();
   await page.waitForTimeout(400);
   await page.screenshot({ path: 'docs/captures/onboarding-nuage.png' });
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await expectQuestion(page, /aimes, ou pas/);
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await expectQuestion(page, 'Comment tu t’organises ?');
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: 'docs/captures/onboarding-organisation.png' });
+});
+
+test('capture onboarding sur ordinateur : la carte reste centrée', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('./');
+  await expectQuestion(page, 'Tu as quel âge ?');
+  await page.getByLabel('Âge', { exact: true }).fill('34');
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await page.getByText('Femme', { exact: true }).click();
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await expectQuestion(page, 'Ta taille et ton poids ?');
+  await page.getByLabel('Taille', { exact: true }).fill('168');
+  await page.getByLabel('Poids', { exact: true }).fill('64');
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: 'docs/captures/onboarding-ordinateur.png' });
 });
 
 test('captures Semaine, Courses, Moi, Nutry et Recette', async ({ page }) => {

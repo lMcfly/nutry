@@ -62,6 +62,23 @@ export const DEFAULT_DRAFT: ProfileDraft = {
 export type AboutField = 'age' | 'sex' | 'heightCm' | 'weightKg' | 'waistCm';
 export type AboutIssues = Partial<Record<AboutField, string>>;
 
+/**
+ * Plages des règles graduées : réalistes, pour un défilement précis. Ce n'est qu'une plage d'interface : la
+ * saisie au clavier et les boutons − / + acceptent toute valeur valide du domain
+ * (`PLAUSIBLE_RANGES`), et la règle reste alors en butée.
+ */
+export const SLIDER_RANGES: Readonly<
+  Record<Exclude<AboutField, 'sex'>, readonly [number, number]>
+> = {
+  age: [16, 80],
+  heightCm: [145, 200],
+  weightKg: [40, 140],
+  waistCm: [55, 130],
+};
+
+/** Valeurs de départ, au centre de la population. */
+export const DIAL_STARTS = { age: 30, heightCm: 170, weightKg: 70, waistCm: 85 } as const;
+
 /** Bornes de saisie : celles du domain (`PROFILE_BOUNDS`), validées par `saveProfile`. */
 export const PLAUSIBLE_RANGES: Readonly<
   Record<Exclude<AboutField, 'sex'>, readonly [number, number]>

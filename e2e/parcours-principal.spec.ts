@@ -113,6 +113,25 @@ test('accessibilité : aucune violation axe sérieuse sur les écrans principaux
   await page.getByRole('button', { name: 'Continuer' }).click();
   await expect(page.getByRole('heading', { name: 'Tu es…', level: 1 })).toBeVisible();
   report['onboarding-choix'] = await seriousViolations(page);
+  // Écrans groupés : taille et poids côte à côte, puis régime et allergies en nuages.
+  await page.getByText('Homme', { exact: true }).click();
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Ta taille et ton poids ?', level: 1 }),
+  ).toBeVisible();
+  report['onboarding-mesures'] = await seriousViolations(page);
+  await page.getByRole('button', { name: '+ Ajouter mon tour de taille' }).click();
+  await expect(page.getByLabel('Tour de taille', { exact: true })).toBeVisible();
+  report['onboarding-mesures-tour-de-taille'] = await seriousViolations(page);
+  await page.getByLabel('Taille', { exact: true }).fill('172');
+  await page.getByLabel('Poids', { exact: true }).fill('70');
+  await page.getByRole('button', { name: 'Retirer mon tour de taille' }).click();
+  await page.getByRole('button', { name: 'Continuer' }).click();
+  await page.getByText('Un peu actif', { exact: true }).click();
+  await page.getByRole('button', { name: 'Passer' }).click();
+  await page.getByText('Rééquilibrer', { exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Tu manges comment ?', level: 1 })).toBeVisible();
+  report['onboarding-regime-allergies'] = await seriousViolations(page);
   await page.reload();
   await completeOnboarding(page);
   await expect(page.getByTestId('meal')).toHaveCount(1);

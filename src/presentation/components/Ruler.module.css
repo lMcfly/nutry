@@ -1,0 +1,104 @@
+/*
+ * Règle graduée : une graduation par unité (--tick de large), un trait plus long tous les 5, le
+ * nombre tous les 10. Repère fixe au centre, bords en fondu.
+ */
+.wrap {
+  position: relative;
+  width: min(100%, 24rem);
+  height: 3.5rem;
+}
+
+.scroller {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  cursor: grab;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.scroller[data-dragging='true'] {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+}
+
+.scroller:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* Les marges de moitié de largeur laissent la première et la dernière graduation atteindre le repère. */
+.track {
+  display: flex;
+  align-items: flex-start;
+  width: max-content;
+  height: 100%;
+  padding-inline: calc(50% - var(--tick) / 2);
+}
+
+.tick {
+  position: relative;
+  flex: none;
+  width: var(--tick);
+  height: 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.tick::before {
+  content: '';
+  position: absolute;
+  top: 0.25rem;
+  left: 50%;
+  width: 2px;
+  height: 0.75rem;
+  border-radius: 1px;
+  background: var(--color-border-strong);
+  transform: translateX(-50%);
+}
+
+.half::before {
+  height: 0.45rem;
+  opacity: 0.7;
+}
+
+.major::before,
+.label::before {
+  height: 1.35rem;
+  background: var(--color-text-muted);
+}
+
+.number {
+  position: absolute;
+  top: 1.75rem;
+  left: 50%;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transform: translateX(-50%);
+}
+
+/* Repère fixe, couleur de l'accent : la valeur est celle qui est dessous. */
+.marker {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4px;
+  height: 1.9rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  transform: translateX(-50%);
+  pointer-events: none;
+}

@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   PROFILE_QUESTIONS,
   PROFILE_QUESTION_IDS,
+  ONBOARDING_SCREENS,
   PROFILE_STEPS,
   onboardingQuestions,
+  onboardingScreens,
   stepOfQuestion,
 } from './questions';
 
@@ -34,12 +36,37 @@ describe('questions du profil', () => {
       expect(ids.indexOf('pregnancy')).toBe(ids.indexOf('sex') + 1);
     }
     expect(onboardingQuestions('homme')).toHaveLength(PROFILE_QUESTION_IDS.length - 1);
+    expect(onboardingScreens('femme')).toHaveLength(onboardingScreens('homme').length);
   });
 
   it('l’âge ouvre le parcours et la santé arrive avant l’objectif', () => {
     const ids = onboardingQuestions('femme');
     expect(ids[0]).toBe('age');
     expect(ids.indexOf('healthCondition')).toBeLessThan(ids.indexOf('goal'));
+  });
+
+  it('l’onboarding tient en 9 écrans au plus et couvre chaque question une seule fois', () => {
+    expect(ONBOARDING_SCREENS.length).toBeLessThanOrEqual(9);
+    const all = ONBOARDING_SCREENS.flatMap((s) => s.questions);
+    expect([...all].sort()).toEqual([...PROFILE_QUESTION_IDS].sort());
+    for (const screen of ONBOARDING_SCREENS) {
+      expect(screen.prompt.length).toBeGreaterThan(5);
+      // Un écran facultatif ne contient que des questions facultatives.
+      if (screen.optional) {
+        expect(screen.questions.every((id) => PROFILE_QUESTIONS[id].optional)).toBe(true);
+      }
+      // L'avance au toucher ne vaut que pour un écran à choix unique.
+      if (screen.autoAdvance) expect(screen.questions).toHaveLength(1);
+    }
+  });
+
+  it('garde-fou : l’écran du sexe ne porte la grossesse que pour une personne concernée', () => {
+    const sexQuestions = (sex: 'homme' | 'femme' | 'autre' | undefined) =>
+      onboardingScreens(sex).find((s) => s.id === 'sex')?.questions;
+    expect(sexQuestions(undefined)).toEqual(['sex']);
+    expect(sexQuestions('homme')).toEqual(['sex']);
+    expect(sexQuestions('femme')).toEqual(['sex', 'pregnancy']);
+    expect(sexQuestions('autre')).toEqual(['sex', 'pregnancy']);
   });
 
   it('ton bienveillant : aucune injonction culpabilisante', () => {

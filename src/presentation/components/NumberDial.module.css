@@ -96,63 +96,6 @@
   font-size: var(--font-size-lg);
 }
 
-.slider {
-  --fill: 50%;
-  width: min(100%, 22rem);
-  height: 2.75rem;
-  margin: 0;
-  background: transparent;
-  cursor: pointer;
-  appearance: none;
-}
-
-.slider::-webkit-slider-runnable-track {
-  height: 0.5rem;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(
-    to right,
-    var(--color-primary) var(--fill),
-    var(--color-surface-alt) var(--fill)
-  );
-}
-
-.slider::-moz-range-track {
-  height: 0.5rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-surface-alt);
-}
-
-.slider::-moz-range-progress {
-  height: 0.5rem;
-  border-radius: var(--radius-pill);
-  background: var(--color-primary);
-}
-
-.slider::-webkit-slider-thumb {
-  width: 1.75rem;
-  height: 1.75rem;
-  margin-top: -0.625rem;
-  border: 3px solid var(--color-surface);
-  border-radius: 50%;
-  background: var(--color-primary);
-  box-shadow: 0 1px 6px rgb(0 0 0 / 25%);
-  appearance: none;
-}
-
-.slider::-moz-range-thumb {
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 3px solid var(--color-surface);
-  border-radius: 50%;
-  background: var(--color-primary);
-}
-
-.slider:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 2px;
-  border-radius: var(--radius-pill);
-}
-
 .hint {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
@@ -186,8 +129,30 @@
   font-size: 2rem;
 }
 
-.compact .slider {
+/* Deux par ligne : le chiffre en haut, − et + côte à côte dessous, sans curseur. */
+.dense {
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-2) var(--space-3);
+}
+
+.dense .label {
   align-self: center;
+}
+
+.dense .row {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  gap: var(--space-1) var(--space-4);
+}
+
+.dense .number {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+.dense .input {
+  font-size: 2.25rem;
 }
 
 @media (max-height: 560px) {

@@ -184,6 +184,35 @@ async function expectReachable(locator: ReturnType<Page['locator']>): Promise<vo
     .toBe(true);
 }
 
+test.describe('Onboarding : les neuf écrans', () => {
+  for (const size of [
+    { width: 360, height: 640 },
+    { width: 360, height: 340 },
+    { width: 1440, height: 900 },
+  ]) {
+    test(`aucun scroll de page à ${size.width} × ${size.height}`, async ({ page }) => {
+      await page.setViewportSize(size);
+      await page.goto('./');
+      let seen = 0;
+      await completeOnboarding(page, async (screen) => {
+        seen = screen;
+        const fit = await measure(page);
+        const where = `écran ${screen} : ${JSON.stringify(fit)}`;
+        expect(fit.scrollHeight, `défilement de la page, ${where}`).toBeLessThanOrEqual(
+          fit.innerHeight + 1,
+        );
+        expect(fit.overflowX, `débordement horizontal, ${where}`).toBeLessThanOrEqual(1);
+        // Le titre, la réponse et les boutons restent à l'écran (le milieu défile à l'intérieur).
+        await expectReachable(page.getByRole('heading', { level: 1 }));
+        await expectReachable(
+          page.getByRole('button', { name: /Continuer|Passer|Voir mon menu/ }).last(),
+        );
+      });
+      expect(seen).toBe(9);
+    });
+  }
+});
+
 test.describe('Texte zoomé, clavier ouvert, explication dépliée', () => {
   test('texte à 130 % : la carte du repas, ses actions et les cartes de Moi restent atteignables', async ({
     page,
