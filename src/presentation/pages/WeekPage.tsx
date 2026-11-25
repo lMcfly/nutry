@@ -418,7 +418,8 @@ interface WeekContentProps {
 /** Tablette et ordinateur : les repas du jour sont affichés ensemble, sans onglets. */
 const DAY_VIEW_QUERY = '(min-width: 768px) and (min-height: 540px)';
 /** Très grand écran : colonne « Ta semaine » à droite. */
-const ASIDE_QUERY = '(min-width: 1280px) and (min-height: 540px)';
+const ASIDE_QUERY =
+  '(min-width: 1280px) and (min-height: 540px), (min-width: 768px) and (max-width: 999px) and (min-height: 1000px)';
 
 function WeekContent({
   data,

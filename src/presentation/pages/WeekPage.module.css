@@ -112,6 +112,31 @@
   }
 }
 
+/* Tablette en portrait haute : repas sous les jours, « Ta semaine » en bande dessous. */
+@media (min-width: 768px) and (max-width: 999px) and (min-height: 1000px) {
+  .dayMeals {
+    align-content: start;
+  }
+
+  .layout.withAside .aside {
+    flex: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .layout.withAside .asideGauges {
+    display: grid;
+    flex: 1 1 24rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-5);
+    width: auto;
+  }
+}
+
 /*
  * Paysage et ordinateur : jours à gauche, cartes verticales côte à côte sur toute la largeur
  * restante. Très grand écran : « Ta semaine » (Nutry, équilibre) forme une bande sous les cartes
