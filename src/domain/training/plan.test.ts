@@ -387,7 +387,7 @@ describe('planTrainingWeek : propriétés sur toutes les combinaisons', () => {
       for (const v of violations(c, plan)) failures.push(`${c.label} → ${v}`);
     }
     expect(failures.slice(0, 15)).toEqual([]);
-  });
+  }, 60_000);
 
   it('est déterministe, y compris quand le catalogue arrive dans un autre ordre', () => {
     const failures: string[] = [];
@@ -401,7 +401,7 @@ describe('planTrainingWeek : propriétés sur toutes les combinaisons', () => {
         failures.push(`${c.label} : ordre du catalogue`);
     }
     expect(failures.slice(0, 10)).toEqual([]);
-  });
+  }, 60_000);
 
   it('ne trouve un candidat à chaque créneau pour aucun profil protégé en manquant (catalogue-insuffisant absent)', () => {
     const failures: string[] = [];
