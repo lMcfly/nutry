@@ -29,13 +29,14 @@ const NETWORK = [
 ];
 
 /**
- * Seules adresses admises : les liens d'attribution Unsplash (texte des crédits) et son CDN
+ * Seules adresses admises : la recherche YouTube des fiches d'exercices (lien sortant, jamais une
+ * requête ; ADR 0015), les liens d'attribution Unsplash (texte des crédits) et son CDN
  * d'images (ADR 0014, CSP `img-src`), et les pages de licence des exercices et de leurs
- * vidéos (ADR 0015 : Creative Commons, Mixkit, Coverr). Jamais de `fetch` : ce sont des
+ * vidéos (ADR 0015 : MIT, Creative Commons, Mixkit, Coverr). Jamais de `fetch` : ce sont des
  * `<img>` et des `<a>`.
  */
 const ALLOWED_URLS =
-  /https:\/\/(?:(?:images\.)?unsplash\.com|creativecommons\.org\/|mixkit\.co\/license\/|coverr\.co\/license)[^\s'"`)]*/g;
+  /https:\/\/(?:(?:images\.)?unsplash\.com|creativecommons\.org\/|opensource\.org\/licenses\/MIT|www\.youtube\.com\/results\?|mixkit\.co\/license\/|coverr\.co\/license)[^\s'"`)]*/g;
 
 describe('QA confidentialité', () => {
   it.each(['domain', 'application', 'infrastructure'])('%s : aucune API réseau ni URL', (layer) => {

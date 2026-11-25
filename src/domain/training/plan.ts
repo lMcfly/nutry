@@ -1,5 +1,11 @@
 import { addDays, startOfWeek, type IsoDate } from '../shared';
-import { MAX_TRIM_LEVEL, applyTrimLevel, fitSessionToDuration, minimalTrimLevel } from './duration';
+import {
+  MAX_TRIM_LEVEL,
+  applyTrimLevel,
+  fitSessionToDuration,
+  minimalTrimLevel,
+  trimOptionsFor,
+} from './duration';
 import { computeCycle } from './cycle';
 import { TRAINING_NOTICES } from './notices';
 import { avoidedExerciseIds } from './pain';
@@ -16,6 +22,7 @@ import {
   PREFERRED_EQUIPMENT,
   RECOVERY_EXEMPT_PATTERNS,
   TIMING,
+  UNILATERAL_PENALTY_MAX_MINUTES,
   WEEKLY_VOLUME,
   type MovementPattern,
   type MuscleGroup,
@@ -163,6 +170,8 @@ export function planTrainingWeek(input: PlanTrainingWeekInput): WeeklyTrainingPl
     safety,
     avoidedExerciseIds: avoided,
   });
+  // Séance de 30 min ou moins : les exercices unilatéraux (durée doublée) passent après les autres.
+  const shortSession = training.sessionMinutes <= UNILATERAL_PENALTY_MAX_MINUTES;
   const used: string[] = [];
   const missingSlots: MovementPattern[] = [];
 
@@ -173,6 +182,7 @@ export function planTrainingWeek(input: PlanTrainingWeekInput): WeeklyTrainingPl
       ...context,
       preferredEquipment: PREFERRED_EQUIPMENT[training.setting],
       usedThisWeek: used,
+      shortSession,
     });
     const chosen = pickExercise(ranked, role, cycle);
     if (chosen) used.push(chosen.id);
@@ -305,17 +315,32 @@ export function planTrainingWeek(input: PlanTrainingWeekInput): WeeklyTrainingPl
     },
   );
 
+  // Rang des séances de renforcement : pour 20 min (un seul bloc par séance), le bloc gardé
+  // alterne d'une séance à l'autre dans la semaine, et d'une semaine active à l'autre.
+  const rotations = new Map<string, number>();
+  drafts
+    .filter((d) => d.strength)
+    .forEach((d, rank) => rotations.set(d.draft.id, rank + cycle.activeWeeks));
+  const rotationOf = (id: string): number => rotations.get(id) ?? 0;
+
   // Durée cible : niveau de raccourcissement commun aux séances de renforcement.
   const strengthLevel = Math.max(
     0,
     ...drafts
       .filter((d) => d.strength)
-      .map((d) => minimalTrimLevel(d.draft, training.sessionMinutes, d.blocks)),
+      .map((d) =>
+        minimalTrimLevel(d.draft, training.sessionMinutes, d.blocks, rotationOf(d.draft.id)),
+      ),
   );
   const build = (level: number): PlannedSession[] =>
     drafts.map(({ draft, blocks, strength }) => {
       const fitted = strength
-        ? applyTrimLevel(draft, blocks, level)
+        ? applyTrimLevel(
+            draft,
+            blocks,
+            level,
+            trimOptionsFor(training.sessionMinutes, rotationOf(draft.id)),
+          )
         : fitSessionToDuration(draft, training.sessionMinutes, blocks);
       const groups = new Set<MuscleGroup>();
       for (const item of fitted.main) {

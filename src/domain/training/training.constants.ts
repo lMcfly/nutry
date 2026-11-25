@@ -328,6 +328,17 @@ export const GENTLE_SESSION = {
   holdRestSeconds: 20,
 } as const;
 
+/** Durée cible d'une séance courte : un seul bloc de gabarit suffit (alternance entre séances). */
+export const SHORT_SESSION_MINUTES = 20;
+
+/**
+ * Séance de 30 min ou moins : un exercice unilatéral (durée doublée) perd ce nombre de points
+ * au classement, à égalité de rang les bilatéraux passent devant (la durée cible tient mieux).
+ */
+export const SHORT_SESSION_UNILATERAL_PENALTY = 1;
+/** Durée cible à partir de laquelle les exercices unilatéraux ne sont plus pénalisés. */
+export const UNILATERAL_PENALTY_MAX_MINUTES = 30;
+
 /** Plancher de séries quand la durée cible oblige à raccourcir. */
 export const MIN_SETS_WHEN_TRIMMED = 2;
 

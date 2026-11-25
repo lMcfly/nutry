@@ -143,8 +143,13 @@ export interface SessionTemplate {
   readonly title: string;
   /** Blocs dans l'ordre d'exécution ; les derniers sont abandonnés en premier. */
   readonly blocks: readonly SessionBlock[];
-  /** Blocs gardés au minimum, même si la durée cible est dépassée. */
+  /** Blocs gardés au minimum, même si la durée cible est dépassée (1 pour les séances de 20 min). */
   readonly minBlocks: number;
+  /**
+   * Blocs « autonomes » (équilibrés à eux seuls : poussée et tirage, ou genou et hanche) :
+   * pour 20 min, un seul bloc est gardé, qui alterne parmi ceux-là d'une séance à l'autre.
+   */
+  readonly shortBlocks: readonly number[];
 }
 
 // ------------------------------------------------------------------ Planning

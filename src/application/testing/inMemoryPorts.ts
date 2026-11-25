@@ -13,6 +13,8 @@ import type {
   EncryptedPayload,
   FileSaver,
   FileToSave,
+  ExerciseCatalog,
+  ExerciseMedia,
   PhotoCatalog,
   PlanRepository,
   ProfileRepository,
@@ -34,6 +36,7 @@ import type { AppPorts } from '../usecases/context';
 import { INITIAL_COMPANION_STATE } from '@domain/companion';
 import type { CompanionState } from '@domain/companion';
 import type { Profile } from '@domain/profile';
+import type { Exercise } from '@domain/training';
 import type { ProgressEntry } from '@domain/progress';
 import { INITIAL_QUIZ_STATE } from '@domain/quiz';
 import type { QuizQuestion, QuizState } from '@domain/quiz';
@@ -271,6 +274,19 @@ export class InMemoryRecipeRepository implements RecipeRepository {
   }
 }
 
+export class InMemoryExerciseCatalog implements ExerciseCatalog {
+  constructor(
+    public exercises: readonly Exercise[] = [],
+    public media: readonly ExerciseMedia[] = [],
+  ) {}
+  getExercises(): Promise<readonly Exercise[]> {
+    return Promise.resolve(this.exercises);
+  }
+  getMedia(exerciseId: string): Promise<ExerciseMedia | undefined> {
+    return Promise.resolve(this.media.find((m) => m.exerciseId === exerciseId));
+  }
+}
+
 export class InMemoryPhotoCatalog implements PhotoCatalog {
   constructor(public photos: readonly RecipePhoto[]) {}
   getAll() {
@@ -383,6 +399,7 @@ export interface InMemoryPorts extends AppPorts {
   readonly clock: FixedClock;
   readonly recipes: InMemoryRecipeRepository;
   readonly photos: InMemoryPhotoCatalog;
+  readonly exercises: InMemoryExerciseCatalog;
   readonly quizBank: InMemoryQuizRepository;
   readonly sharer: RecordingSharer;
   readonly fileSaver: RecordingFileSaver;
@@ -396,6 +413,7 @@ export function createInMemoryPorts(
   options: {
     readonly recipes?: readonly Recipe[];
     readonly photos?: readonly RecipePhoto[];
+    readonly exercises?: readonly Exercise[];
     readonly questions?: readonly QuizQuestion[];
     readonly clock?: FixedClock;
     readonly seed?: number;
@@ -419,6 +437,7 @@ export function createInMemoryPorts(
     settings: new InMemorySettingsRepository(state),
     recipes: new InMemoryRecipeRepository(options.recipes ?? []),
     photos: new InMemoryPhotoCatalog(options.photos ?? []),
+    exercises: new InMemoryExerciseCatalog(options.exercises ?? []),
     sharer: new RecordingSharer(options.shareResult),
     userData: new InMemoryUserDataStore(state),
     cipher: new FakeCipher(),

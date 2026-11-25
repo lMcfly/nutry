@@ -4,6 +4,7 @@ import type {
   Clock,
   CompanionRepository,
   DeviceStorage,
+  ExerciseCatalog,
   FileSaver,
   PhotoCatalog,
   PlanRepository,
@@ -42,6 +43,7 @@ export interface AppPorts {
   readonly settings: SettingsRepository;
   readonly recipes: RecipeRepository;
   readonly photos: PhotoCatalog;
+  readonly exercises: ExerciseCatalog;
   readonly sharer: Sharer;
   readonly userData: UserDataStore;
   readonly cipher: Cipher;

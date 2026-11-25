@@ -28,16 +28,9 @@ import {
  * l'adaptateur `StaticExerciseCatalog` sépare (le domain ne voit ni chemin ni licence).
  */
 
-export const EXERCISE_LICENSES = ['MIT'] as const satisfies readonly ExerciseLicense[];
+export { EXERCISE_LICENSE_URLS, VIDEO_LICENSE_URLS } from './exerciseLicenses';
 
-/**
- * Pas d'adresse externe pour la licence du dépôt (MIT) : le texte est le fichier `LICENSE`
- * à la racine du dépôt (la garde de confidentialité n'admet que les pages de licence CC,
- * Mixkit et Coverr). L'écran « Crédits exercices » le présente en clair.
- */
-export const EXERCISE_LICENSE_URLS: Readonly<Record<ExerciseLicense, string>> = {
-  MIT: 'LICENSE',
-};
+export const EXERCISE_LICENSES = ['MIT'] as const satisfies readonly ExerciseLicense[];
 
 const CC_LICENSES = [
   'CC0-1.0',
@@ -45,13 +38,6 @@ const CC_LICENSES = [
   'CC-BY-SA-3.0',
   'CC-BY-SA-4.0',
 ] as const satisfies readonly CreativeCommonsLicense[];
-
-const CC_LICENSE_URLS: Readonly<Record<CreativeCommonsLicense, string>> = {
-  'CC0-1.0': 'https://creativecommons.org/publicdomain/zero/1.0/',
-  'CC-BY-4.0': 'https://creativecommons.org/licenses/by/4.0/',
-  'CC-BY-SA-3.0': 'https://creativecommons.org/licenses/by-sa/3.0/',
-  'CC-BY-SA-4.0': 'https://creativecommons.org/licenses/by-sa/4.0/',
-};
 
 const PROVIDERS = ['nutry'] as const satisfies readonly ExerciseProvider[];
 
@@ -66,13 +52,6 @@ export const VIDEO_LICENSES = [
   'Mixkit',
   'Coverr',
 ] as const satisfies readonly VideoLicense[];
-
-export const VIDEO_LICENSE_URLS: Readonly<Record<VideoLicense, string>> = {
-  ...EXERCISE_LICENSE_URLS,
-  ...CC_LICENSE_URLS,
-  Mixkit: 'https://mixkit.co/license/',
-  Coverr: 'https://coverr.co/license',
-};
 
 /** Hôte de la page d'origine attendu pour chaque fournisseur de vidéo. */
 export const VIDEO_SOURCE_HOSTS: Readonly<Record<VideoProvider, string>> = {
@@ -226,13 +205,15 @@ export const exerciseEntrySchema = z
     if (entry.kind !== PATTERN_KIND[entry.pattern]) {
       issue('kind', `nature attendue pour ${entry.pattern} : ${PATTERN_KIND[entry.pattern]}`);
     }
-    if (entry.kind === 'force') {
-      if (entry.primaryMuscles.length === 0) issue('primaryMuscles', 'au moins un muscle');
-      const allowed = PATTERN_PRIMARY_GROUPS[entry.pattern];
-      const outside = entry.primaryMuscles.filter((m) => !allowed.includes(m));
-      if (outside.length > 0) {
-        issue('primaryMuscles', `hors du schéma ${entry.pattern} : ${outside.join(', ')}`);
-      }
+    if (entry.kind === 'force' && entry.primaryMuscles.length === 0) {
+      issue('primaryMuscles', 'au moins un muscle');
+    }
+    // Cardio, mobilité et équilibre n'ont aucun muscle principal permis : le planificateur
+    // écarterait l'exercice (`isExerciseEligible`) ; leurs muscles vont en secondaire.
+    const allowed = PATTERN_PRIMARY_GROUPS[entry.pattern];
+    const outside = entry.primaryMuscles.filter((m) => !allowed.includes(m));
+    if (outside.length > 0) {
+      issue('primaryMuscles', `hors du schéma ${entry.pattern} : ${outside.join(', ')}`);
     }
     if (entry.primaryMuscles.some((m) => entry.secondaryMuscles.includes(m))) {
       issue('secondaryMuscles', 'muscle à la fois principal et secondaire');

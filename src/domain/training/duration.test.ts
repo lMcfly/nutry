@@ -6,6 +6,7 @@ import {
   estimateSessionMinutes,
   fitSessionToDuration,
   minimalTrimLevel,
+  trimOptionsFor,
   trimSession,
   type MovementPattern,
   type PlannedExercise,
@@ -194,6 +195,83 @@ describe('trimSession : étapes de raccourcissement', () => {
     ]);
     const kept = trimSession(senior, blocks(senior), MAX_TRIM_LEVEL).main.map((m) => m.slotId);
     expect(kept).toEqual(['b0-s0', 'b1-s0', 'b1-s1']);
+  });
+
+  describe('séance de 20 min : un seul bloc, en alternance', () => {
+    const full = () =>
+      draft('full-a', [
+        item('b0-s0', 'principal'),
+        item('b0-s1', 'secondaire', { pattern: 'hanche' }),
+        item('b1-s0', 'principal', { pattern: 'poussee-horizontale' }),
+        item('b1-s1', 'principal', { pattern: 'tirage-horizontal' }),
+        item('b2-s0', 'accessoire', { pattern: 'tirage-vertical' }),
+        item('b2-s1', 'accessoire', { pattern: 'gainage' }),
+      ]);
+    const keptWith = (session: Draft, rotation: number, minutes = 20) =>
+      trimSession(session, blocks(session), MAX_TRIM_LEVEL, trimOptionsFor(minutes, rotation))
+        .main.map((m) => m.slotId)
+        .join();
+
+    it('ne garde qu’un bloc (minBlocks ramené à 1) et alterne selon le rang de la séance', () => {
+      const session = full();
+      expect(keptWith(session, 0)).toBe('b0-s0,b0-s1');
+      expect(keptWith(session, 1)).toBe('b1-s0,b1-s1');
+      expect(keptWith(session, 2)).toBe('b0-s0,b0-s1');
+      expect(keptWith(session, 3)).toBe('b1-s0,b1-s1');
+    });
+
+    it('ne garde jamais le bloc d’accessoires seul (non équilibré)', () => {
+      for (let rotation = 0; rotation < 6; rotation += 1) {
+        expect(keptWith(full(), rotation)).not.toContain('b2');
+      }
+    });
+
+    it('garde deux blocs au-delà de 20 min, sans alternance (corps entier)', () => {
+      expect(keptWith(full(), 1, 30)).toBe('b0-s0,b0-s1,b1-s0,b1-s1');
+    });
+
+    it('ne change rien pour une poussée ou un tirage (un seul bloc autonome)', () => {
+      const poussee = draft('poussee', [
+        item('b0-s0', 'principal', { pattern: 'poussee-horizontale' }),
+        item('b0-s1', 'secondaire', { pattern: 'poussee-verticale' }),
+        item('b1-s0', 'secondaire', { pattern: 'poussee-horizontale' }),
+      ]);
+      expect(keptWith(poussee, 1)).toBe('b0-s0,b0-s1');
+    });
+
+    it('garde le bloc équilibre des 70 ans et plus en plus du bloc alterné', () => {
+      const senior = draft('full-a', [
+        item('b0-s0', 'secondaire', { pattern: 'equilibre', seconds: [20, 30] }),
+        item('b1-s0', 'principal'),
+        item('b1-s1', 'secondaire', { pattern: 'hanche' }),
+        item('b2-s0', 'principal', { pattern: 'poussee-horizontale' }),
+        item('b2-s1', 'principal', { pattern: 'tirage-horizontal' }),
+        item('b3-s0', 'accessoire', { pattern: 'gainage' }),
+      ]);
+      expect(keptWith(senior, 0)).toBe('b0-s0,b1-s0,b1-s1');
+      expect(keptWith(senior, 1)).toBe('b0-s0,b2-s0,b2-s1');
+    });
+
+    it('se replie sur le premier bloc restant quand le bloc prévu manque', () => {
+      const partial = draft('full-a', [
+        item('b0-s0', 'principal'),
+        item('b0-s1', 'secondaire', { pattern: 'hanche' }),
+        item('b2-s0', 'accessoire', { pattern: 'gainage' }),
+      ]);
+      expect(keptWith(partial, 1)).toBe('b0-s0,b0-s1');
+    });
+
+    it('fait tenir 4 exercices à 2 séries dans 20 min + 10 % avec un seul bloc', () => {
+      const session = { ...full(), warmup: [chained('w0', 180)], cooldown: [chained('c0', 120)] };
+      const fitted = fitSessionToDuration(session, 20, blocks(session), 1);
+      expect(fitted.estimatedMinutes).toBeLessThanOrEqual(22);
+      expect(new Set(fitted.main.map((m) => m.slotId.slice(0, 2))).size).toBe(1);
+    });
+
+    it('applique le rang aussi au niveau minimal et le reconnaît à 20 min seulement', () => {
+      expect(trimOptionsFor(20, 3)).toEqual({ short: true, rotation: 3 });
+      expect(trimOptionsFor(30)).toEqual({ short: false, rotation: 0 });
+    });
   });
 
   it('traite un créneau sans bloc connu comme le bloc 0 et supporte un bloc vide', () => {

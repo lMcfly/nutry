@@ -1,6 +1,6 @@
 # ADR 0015 — Module Sport : programme de la semaine, séance guidée, lien avec la Nourriture
 
-- Statut : accepté ; phase 1 (domaine) livrée, phases 2 à 6 à venir
+- Statut : accepté ; phases 1 (domaine) et 2 (données) livrées, phases 3 à 6 à venir
 - Date : 2026-11-25
 - Complète : ADR 0001 (frontières), 0005 (Zod), 0006 (moteur de menu), 0007 (garde-fous
   santé), 0009 (persistance), 0010 (textes), 0012 (compagnon), 0013 (interface sans scroll),
@@ -50,9 +50,9 @@ Nutry, plus aucune source externe de fiches._
   `Exercise.movement`). Licence identique à celle du dépôt : **MIT** (code, textes et dessins).
   Plus de wger, plus de CC BY-SA, plus d'attribution d'auteurs tiers pour les fiches. Écran
   « Crédits exercices » : il présente le contenu Nutry et sa licence MIT (texte : fichier
-  `LICENSE` du dépôt ; `EXERCISE_LICENSE_URLS.MIT` vaut `LICENSE`, sans adresse externe, la garde
-  de confidentialité de `privacy.qa.test.ts` n'admettant que les pages de licence CC, Mixkit et
-  Coverr).
+  `LICENSE` du dépôt ; `EXERCISE_LICENSE_URLS.MIT` vaut `https://opensource.org/licenses/MIT`,
+  admise par la garde de confidentialité de `privacy.qa.test.ts` avec les pages de licence CC,
+  Mixkit et Coverr et la recherche YouTube).
 - **Vidéos libres** (facultatives) : Mixkit, Coverr, Wikimedia Commons, **auto-hébergées** en MP4
   courts (≤ 60 s, ≤ 1,5 Mo, H.264, sans son, avec affiche WebP) dans `public/exercices/videos/`,
   chacune créditée (auteur, licence, page d'origine). Mixkit et Coverr ont leur propre licence
@@ -170,7 +170,10 @@ min(n, 3)`) ; les accessoires tournent chaque semaine (`numéro de semaine mod m
 11. **Durée cible** (20, 30, 45 ou 60 min, échauffement compris) : estimation = transitions
     (60 s) + séries × (répétitions moyennes × 4 s, ou secondes tenues, × 2 si unilatéral) +
     repos. Tant que l'estimation dépasse la cible de plus de 10 % : retirer les accessoires,
-    ramener les séries à 2, abandonner les derniers blocs jusqu'à `minBlocks`.
+    ramener les séries à 2, abandonner les blocs jusqu'à `minBlocks`. **Séance de 20 min :
+    `minBlocks` vaut 1** (un seul bloc) ; le bloc gardé alterne d'une séance à l'autre
+    (`SessionTemplate.shortBlocks`, rang = séance de la semaine + semaines actives), parmi les
+    blocs équilibrés à eux seuls (poussée et tirage, ou genou et hanche).
 12. **Programme enregistré** : comme le menu (ADR 0009), il porte une empreinte des contraintes
     (`trainingConstraintsKey` : jours, matériel, niveau, objectif, durée, étape de grossesse,
     champs santé du profil). Il est régénéré si l'empreinte change ou si un exercice n'existe
@@ -283,13 +286,16 @@ Moi**. Alternatives écartées :
   (`id` = `weekStart:sessionId`, `weekStart` un lundi, `date` dans la semaine ou après, rien
   après `exportedAt` + 1 jour, `days` triés, uniques et de longueur `frequency`).
   `UserDataStore` (export, import atomique, `clearAll`) couvre les quatre tables.
-- **Catalogue** : `src/infrastructure/data/exercises.json`, format `exerciseCatalogFileSchema`
+- **Catalogue** : `src/infrastructure/data/exercises.json` (192 exercices, phase 2), format `exerciseCatalogFileSchema`
   (`exerciseSchemas.ts`, testé) : en-tête de provenance (`source: { name: 'nutry', license: 'MIT' }`), puis pour chaque exercice les champs
   de `Exercise` + `images` + `videos` + `youtubeSearchUrl?` + `credit`. Contrôles : nature
   cohérente avec le schéma, muscles principaux permis, séries en durée seulement pour gainage,
   cardio, mobilité, équilibre, variantes existantes et du même schéma, médias sans doublon,
-  licences et hôtes des sources de vidéos vérifiés, pose `movement` obligatoire, lien YouTube limité à une recherche. Chargé à la
-  demande (import dynamique), validé par `npm run validate-data`.
+  licences et hôtes des sources de vidéos vérifiés, pose `movement` obligatoire (clés connues :
+  `movementKeys.ts`), lien YouTube limité à une recherche. Muscles principaux permis par le schéma
+  pour **toutes** les natures (cardio, mobilité et équilibre : aucun, leurs muscles sont
+  secondaires). Chargé à la demande par `StaticExerciseCatalog` (import dynamique, validé par
+  Zod à chaque chargement), validé aussi par `npm run validate-data` et par `exercises.test.ts`.
 
 ### 9. Onboarding Sport
 
@@ -341,18 +347,33 @@ parallélisables ; 3 dépend de 1 et 2 ; 4 et 5 dépendent de 3 ; 6 clôt.
 - Fin : contrats implémentés sous leur nom, `training.contracts.ts` réduit aux types encore
   utiles, couverture ≥ 90 %.
 
-### Phase 2 — Données (agent « données », contenu propre de Nutry)
+### Phase 2 — Données (livrée ; contenu propre de Nutry)
 
-- Fichiers : `scripts/exercises/build.ts` (sources rédigées par Nutry → `exercises.json`) ; `scripts/exercises/media.ts` (WebP 480 px,
-  MP4 ≤ 1,5 Mo avec affiche) ; `src/infrastructure/data/exercises.json` ;
-  `public/exercices/` ; `docs/EXERCICES.md` (crédits générés) ; `validate-data` étendu.
-- Tests de contenu : schéma Zod ; fichiers présents et sans orphelin ; pour chaque schéma de
-  force × cadre × niveau, au moins 2 candidats éligibles ; pour chaque profil protégé
-  (grossesse après T1, 70 ans, condition de santé), au moins 1 candidat par créneau des
-  gabarits ; consignes en français (pas d'anglais résiduel, contrôle par mots fréquents) ;
-  `docs/EXERCICES.md` à jour.
-- Fin : 150 à 200 exercices, chacun avec au moins une image ou une consigne illustrée par un
-  pictogramme ; aucune licence hors liste.
+- Livré : `src/infrastructure/data/exercises.json` (192 exercices : 168 de force, 7 de cardio,
+  13 de mobilité, 4 d'équilibre ; `provider: 'nutry'`, licence MIT, sans image ni vidéo, les
+  mannequins SVG s'appuyant sur `movement`), `movementKeys.ts` (136 clés de pose),
+  `StaticExerciseCatalog` (port `ExerciseCatalog`, branché dans `main.tsx` et `AppPorts.exercises`),
+  `validate-data` étendu. Reste à faire plus tard : `scripts/exercises/media.ts`,
+  `public/exercices/`, `docs/EXERCICES.md` (aucun média pour l'instant).
+- **Adducteurs** : pas de groupe musculaire propre ; la machine à adducteurs est un exercice de
+  schéma `hanche`, muscle principal `ischio-jambiers`, secondaire `fessiers` (comme le catalogue de
+  test du domaine).
+- Tests de données (`exercises.test.ts`) : schéma Zod ; 150 à 200 exercices, identifiants
+  uniques ; `easierId` et `harderId` existants, du même schéma, niveau jamais inversé ;
+  11 groupes × 3 cadres (au moins 2 exercices, dont 1 débutant) ; pour chaque schéma de
+  mouvement, au moins un exercice sans matériel ni étiquette de sécurité (exigence du
+  planificateur) ; un seul muscle principal par exercice ; chaque `movement` dans `MOVEMENT_KEYS`,
+  chaque clé utilisée.
+- Test d'intégration (`exercises.plan.test.ts`) : les propriétés de `plan.test.ts` (matrice
+  partagée `domain/testing/planProperties.ts`) rejouées avec le vrai catalogue, y compris le
+  déterminisme, l'absence de `catalogue-insuffisant` et la cible minimale de volume.
+- **Corrections de données** faites pour que ces propriétés tiennent : 4 exercices à poids du
+  corps ou à l'élastique ajoutés pour les schémas `tirage-vertical` et `extension-coude` (aucun
+  n'existait sans salle ni haltères), 3 exercices bilatéraux (squat sumo, charnière de hanche au
+  mur, rowing penché avec sac à dos) pour tenir les séances de 30 min d'un profil protégé ; muscles
+  principaux ramenés à un seul par exercice (les autres en secondaire : les fessiers dépassaient
+  le plafond de volume des débutants) ; cardio, mobilité et équilibre sans muscle principal (le
+  filtre d'éligibilité les écartait) ; adducteurs réalignés sur le domaine.
 
 ### Phase 3 — Application et infrastructure (agent « application/infra »)
 
@@ -438,10 +459,16 @@ Livré dans `src/domain/training/` : `safety.ts`, `select.ts`, `cycle.ts`, `prog
   débutant dépassaient 12 séries de fessiers).
 - **Repos raccourci** (dernière étape) : repos plafonné à 45 s, ou 60 s pour un débutant ou une
   intensité modérée, quand la durée cible l'exige encore.
-- **Durée de 20 min** : même au plancher des gabarits (2 blocs en corps entier, bloc équilibre
-  des 70 ans et plus), 4 exercices à 2 séries dépassent parfois 22 min (jusqu'à 1,6 × la cible
-  mesurée ; un cas de 70 ans et plus à 30 min : 1,2 ×). Le plancher d'équilibre prime sur la durée.
-  À arbitrer : gabarits de 20 min dédiés, ou `minBlocks` à 1 avec alternance des blocs.
+- **Durée de 20 min** (arbitrée en phase 2) : `minBlocks` vaut 1 pour les séances de 20 min, avec
+  alternance du bloc gardé d'une séance à l'autre (`shortBlocks`, `trimOptionsFor`). Le test de
+  durée n'a plus aucune tolérance de plancher : toute séance tient dans cible × 1,1. Seule
+  exception conservée, **pour les 70 ans et plus** : le bloc équilibre et mobilité (obligatoire)
+  s'ajoute au plancher du gabarit (30 min : 3 blocs en corps entier ; 20 min : équilibre + 1
+  bloc) et la séance peut alors dépasser, de 1,3 × la cible au plus (`SENIOR_FLOOR_OVERRUN`,
+  1,23 × mesuré) ; elle est indispensable tant que cet équilibre prime sur la durée.
+- **Séances de 30 min ou moins** : au classement, un exercice unilatéral (durée doublée) perd
+  1 point (`SHORT_SESSION_UNILATERAL_PENALTY`), pour que le plancher de blocs tienne dans la
+  durée avec le vrai catalogue (objectif endurance : 15 à 20 répétitions).
 - **Cible minimale de volume** : avec trois séances corps entier, elle n'est tenue que pour le
   niveau débutant (pectoraux à 50 % de la cible en intermédiaire, 40 % en confirmé).
 - **Choix principal/secondaire avant les accessoires** : la rotation par bloc ne dépend pas des

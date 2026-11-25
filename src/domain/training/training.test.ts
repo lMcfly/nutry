@@ -120,6 +120,24 @@ describe('vocabulaires et barèmes', () => {
 });
 
 describe('gabarits de séance', () => {
+  it('ne propose en séance courte (20 min) que des blocs équilibrés à eux seuls', () => {
+    // Poussée = tirage, ou genou = hanche, bloc par bloc : l'équilibre hebdomadaire tient quel que
+    // soit le bloc qui reste, séance après séance (le niveau est le même pour toutes).
+    for (const kind of SESSION_KINDS) {
+      if (kind === 'douce') continue;
+      for (const index of SESSION_TEMPLATES[kind].shortBlocks) {
+        const patterns = (SESSION_TEMPLATES[kind].blocks[index] ?? []).map((s) => s.pattern);
+        const count = (list: readonly string[]) => patterns.filter((p) => list.includes(p)).length;
+        const balanced =
+          (count(PUSH_PATTERNS) === 1 && count(PULL_PATTERNS) === 1) ||
+          (count(['genou']) === 1 && count(['hanche']) === 1) ||
+          kind === 'poussee' ||
+          kind === 'tirage';
+        expect(balanced, `${kind} bloc ${index}`).toBe(true);
+      }
+    }
+  });
+
   it('décrit chaque type de séance avec des blocs de un ou deux créneaux', () => {
     for (const kind of SESSION_KINDS) {
       const template = SESSION_TEMPLATES[kind];
@@ -127,6 +145,10 @@ describe('gabarits de séance', () => {
       expect(template.title.length).toBeGreaterThan(0);
       expect(template.minBlocks).toBeGreaterThanOrEqual(1);
       expect(template.minBlocks).toBeLessThanOrEqual(template.blocks.length);
+      expect(template.shortBlocks.length).toBeGreaterThanOrEqual(1);
+      for (const index of template.shortBlocks) {
+        expect(Number.isInteger(index) && index >= 0 && index < template.blocks.length).toBe(true);
+      }
       expect(templateSlots(kind).length).toBeGreaterThanOrEqual(template.blocks.length);
     }
   });

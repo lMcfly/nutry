@@ -29,6 +29,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('tirage-vertical', 'accessoire'), slot('gainage', 'accessoire')],
     ],
     minBlocks: 2,
+    shortBlocks: [0, 1],
   },
   'full-b': {
     kind: 'full-b',
@@ -39,6 +40,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('tirage-horizontal', 'accessoire'), slot('gainage', 'accessoire')],
     ],
     minBlocks: 2,
+    shortBlocks: [0, 1],
   },
   'full-c': {
     kind: 'full-c',
@@ -49,6 +51,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('flexion-coude', 'accessoire'), slot('gainage', 'accessoire')],
     ],
     minBlocks: 2,
+    shortBlocks: [0, 1],
   },
   'haut-a': {
     kind: 'haut-a',
@@ -59,6 +62,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('flexion-coude', 'accessoire'), slot('extension-coude', 'accessoire')],
     ],
     minBlocks: 1,
+    shortBlocks: [0, 1],
   },
   'haut-b': {
     kind: 'haut-b',
@@ -69,6 +73,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('extension-coude', 'accessoire'), slot('flexion-coude', 'accessoire')],
     ],
     minBlocks: 1,
+    shortBlocks: [0, 1],
   },
   'bas-a': {
     kind: 'bas-a',
@@ -79,6 +84,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('mollets', 'accessoire'), slot('gainage', 'accessoire')],
     ],
     minBlocks: 1,
+    shortBlocks: [0, 1],
   },
   'bas-b': {
     kind: 'bas-b',
@@ -89,6 +95,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('mollets', 'accessoire'), slot('gainage', 'accessoire')],
     ],
     minBlocks: 1,
+    shortBlocks: [0, 1],
   },
   poussee: {
     kind: 'poussee',
@@ -99,6 +106,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('gainage', 'accessoire')],
     ],
     minBlocks: 1,
+    shortBlocks: [0],
   },
   tirage: {
     kind: 'tirage',
@@ -109,6 +117,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('gainage', 'accessoire')],
     ],
     minBlocks: 1,
+    shortBlocks: [0],
   },
   jambes: {
     kind: 'jambes',
@@ -119,6 +128,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('mollets', 'accessoire'), slot('gainage', 'accessoire')],
     ],
     minBlocks: 1,
+    shortBlocks: [0, 1],
   },
   douce: {
     kind: 'douce',
@@ -128,6 +138,7 @@ export const SESSION_TEMPLATES: Readonly<Record<SessionKind, SessionTemplate>> =
       [slot('equilibre', 'secondaire'), slot('mobilite', 'accessoire')],
     ],
     minBlocks: 1,
+    shortBlocks: [0, 1],
   },
 };
 

@@ -123,10 +123,10 @@ describe('catalogue d’exercices : format cible', () => {
 
   it('donne une adresse à chaque licence', () => {
     for (const license of EXERCISE_LICENSES) {
-      expect(EXERCISE_LICENSE_URLS[license]).toBe('LICENSE');
+      expect(EXERCISE_LICENSE_URLS[license]).toBe('https://opensource.org/licenses/MIT');
     }
     for (const license of VIDEO_LICENSES) {
-      expect(VIDEO_LICENSE_URLS[license]).toMatch(/^(https:\/\/|LICENSE$)/);
+      expect(VIDEO_LICENSE_URLS[license]).toMatch(/^https:\/\//);
     }
   });
 

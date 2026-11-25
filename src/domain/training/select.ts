@@ -6,6 +6,7 @@ import {
   PATTERN_KIND,
   PATTERN_PRIMARY_GROUPS,
   ROTATION_POOL,
+  SHORT_SESSION_UNILATERAL_PENALTY,
   TRAINING_LEVELS,
   type Equipment,
   type SlotRole,
@@ -38,13 +39,15 @@ export function isExerciseEligible(exercise: Exercise, context: EligibilityConte
   );
 }
 
-function score(
-  exercise: Exercise,
-  context: EligibilityContext & {
-    readonly preferredEquipment: readonly Equipment[];
-    readonly usedThisWeek: readonly string[];
-  },
-): number {
+/** Contexte de classement : éligibilité, plus ce qui départage les candidats. */
+export type RankContext = EligibilityContext & {
+  readonly preferredEquipment: readonly Equipment[];
+  readonly usedThisWeek: readonly string[];
+  /** Séance courte : les exercices unilatéraux (durée doublée) passent après les autres. */
+  readonly shortSession?: boolean;
+};
+
+function score(exercise: Exercise, context: RankContext): number {
   let total = 0;
   if (
     context.role === 'principal' &&
@@ -62,21 +65,19 @@ function score(
   if (exercise.level === context.level) total += 1;
   total -= 2 * exercise.tags.filter((tag) => context.safety.discouragedTags.includes(tag)).length;
   if (context.usedThisWeek.includes(exercise.id)) total -= 5;
+  if (context.shortSession === true && exercise.unilateral) {
+    total -= SHORT_SESSION_UNILATERAL_PENALTY;
+  }
   return total;
 }
 
 /**
  * Classement déterministe des exercices éligibles : +3 matériel préféré du cadre (créneau
  * principal), +4 machine guidée pour un débutant (créneaux principal et secondaire), +1 niveau
- * égal, −2 par étiquette déconseillée, −5 déjà utilisé dans la semaine ; égalité : `id`.
+ * égal, −2 par étiquette déconseillée, −5 déjà utilisé dans la semaine, −1 unilatéral en séance courte
+ * (30 min ou moins) ; égalité : `id`.
  */
-export function rankExercises(
-  candidates: readonly Exercise[],
-  context: EligibilityContext & {
-    readonly preferredEquipment: readonly Equipment[];
-    readonly usedThisWeek: readonly string[];
-  },
-): Exercise[] {
+export function rankExercises(candidates: readonly Exercise[], context: RankContext): Exercise[] {
   return candidates
     .map((exercise) => ({ exercise, points: score(exercise, context) }))
     .sort(

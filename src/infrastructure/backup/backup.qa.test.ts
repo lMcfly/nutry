@@ -10,6 +10,7 @@ import type { AppPorts, UseCases } from '@application/usecases';
 import {
   FakePersistence,
   FixedClock,
+  InMemoryExerciseCatalog,
   InMemoryPhotoCatalog,
   InMemoryQuizRepository,
   RecordingFileSaver,
@@ -93,6 +94,7 @@ function realEnv(cipher = new WebCryptoCipher()): Env {
     settings: new DexieSettingsRepository(db),
     recipes: new JsonRecipeRepository(),
     photos: new InMemoryPhotoCatalog([]),
+    exercises: new InMemoryExerciseCatalog(),
     sharer: new RecordingSharer(),
     userData: new DexieUserDataStore(db),
     cipher,

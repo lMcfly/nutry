@@ -47,6 +47,7 @@ export {
   SESSION_DURATIONS,
   SESSION_KINDS,
   SETS_BY_ROLE,
+  SHORT_SESSION_MINUTES,
   SLOT_ROLES,
   TIMING,
   TRAINING_FREQUENCIES,
@@ -121,12 +122,14 @@ export {
   rankExercises,
 } from './select';
 export { plannedSets, prescribe } from './progression';
+export type { TrimOptions } from './duration';
 export {
   MAX_TRIM_LEVEL,
   applyTrimLevel,
   estimateSessionMinutes,
   fitSessionToDuration,
   minimalTrimLevel,
+  trimOptionsFor,
   trimSession,
 } from './duration';
 export { planTrainingWeek } from './plan';

@@ -3,6 +3,7 @@ import {
   CAUTIOUS_MIN_REST_SECONDS,
   MIN_REST_SECONDS,
   MIN_SETS_WHEN_TRIMMED,
+  SHORT_SESSION_MINUTES,
   TIMING,
 } from './training.constants';
 import type { PlannedExercise, PlannedSession, SetTarget } from './training.types';
@@ -54,24 +55,74 @@ function blockOf(slotId: string, blocksBySlot: Readonly<Record<string, number>>)
   return blocksBySlot[slotId] ?? 0;
 }
 
-/** Blocs gardés au minimum : ceux du gabarit, plus le bloc équilibre des 70 ans et plus. */
-function minimumBlocks(
+/**
+ * Réglages du raccourcissement propres à la séance.
+ * - `short` : séance de 20 min, un seul bloc suffit (`minBlocks` ramené à 1) ; le bloc gardé
+ *   alterne d'une séance à l'autre parmi `SessionTemplate.shortBlocks` ;
+ * - `rotation` : rang de la séance (séance de la semaine + semaines actives), qui décide du
+ *   bloc gardé. Sans lui, le premier bloc.
+ */
+export interface TrimOptions {
+  readonly short?: boolean;
+  readonly rotation?: number;
+}
+
+/** Réglages d'une séance pour une durée cible (20 min : un bloc, en alternance). */
+export function trimOptionsFor(minutes: number, rotation = 0): TrimOptions {
+  return { short: minutes === SHORT_SESSION_MINUTES, rotation };
+}
+
+/** Vrai si le bloc équilibre des 70 ans et plus ouvre la séance (bloc 0). */
+function startsWithBalance(
   session: DraftSession,
   blocksBySlot: Readonly<Record<string, number>>,
-): number {
-  const balanceFirst =
+): boolean {
+  return (
     session.kind !== 'douce' &&
     session.main.some(
       (item) => blockOf(item.slotId, blocksBySlot) === 0 && item.pattern === 'equilibre',
-    );
-  return SESSION_TEMPLATES[session.kind].minBlocks + (balanceFirst ? 1 : 0);
+    )
+  );
+}
+
+/**
+ * Blocs gardés au minimum : ceux du gabarit (un seul pour 20 min), plus le bloc équilibre des
+ * 70 ans et plus.
+ */
+function minimumBlocks(
+  session: DraftSession,
+  blocksBySlot: Readonly<Record<string, number>>,
+  options: TrimOptions,
+): number {
+  const base = options.short ? 1 : SESSION_TEMPLATES[session.kind].minBlocks;
+  return base + (startsWithBalance(session, blocksBySlot) ? 1 : 0);
+}
+
+/**
+ * Bloc qui reste d'une séance courte : les blocs « autonomes » du gabarit (poussée et tirage,
+ * ou genou et hanche, donc équilibrés à eux seuls) se relaient selon le rang de la séance.
+ * Repli : le premier bloc de la séance qui reste.
+ */
+function shortBlockToKeep(
+  session: DraftSession,
+  present: readonly number[],
+  offset: number,
+  rotation: number,
+): number {
+  const candidates = SESSION_TEMPLATES[session.kind].shortBlocks
+    .map((block) => block + offset)
+    .filter((block) => present.includes(block));
+  const pool = candidates.length > 0 ? candidates : present.filter((block) => block >= offset);
+  return pool[Math.abs(rotation) % pool.length] ?? (present[0] as number);
 }
 
 /**
  * Applique les `level` premières étapes de raccourcissement, dans l'ordre de l'ADR :
  * 1 à 3 : retirer les accessoires du dernier bloc qui en a encore ;
  * 4 : ramener les séries à `MIN_SETS_WHEN_TRIMMED` ;
- * 5 et 6 : abandonner le dernier bloc, jusqu'au minimum du gabarit ;
+ * 5 et 6 : abandonner le dernier bloc, jusqu'au minimum du gabarit ; pour 20 min (`short`), le
+ *     minimum est un seul bloc : on garde celui que désigne la rotation (alternance d'une
+ *     séance à l'autre) et on abandonne les autres, le dernier d'abord ;
  * 7 : plafonner le repos à `MIN_REST_SECONDS` (45 s), ou à `CAUTIOUS_MIN_REST_SECONDS` (60 s)
  *     pour les exercices à 3 répétitions en réserve (débutant, ou intensité modérée :
  *     grossesse, post-partum, condition de santé). Seuil à faire valider par un professionnel.
@@ -81,9 +132,19 @@ export function trimSession(
   session: DraftSession,
   blocksBySlot: Readonly<Record<string, number>>,
   level: number,
+  options: TrimOptions = {},
 ): DraftSession {
   let main = session.main;
-  const minBlocks = minimumBlocks(session, blocksBySlot);
+  const minBlocks = minimumBlocks(session, blocksBySlot, options);
+  const balanceOffset = startsWithBalance(session, blocksBySlot) ? 1 : 0;
+  const keepBlock = options.short
+    ? shortBlockToKeep(
+        session,
+        [...new Set(session.main.map((item) => blockOf(item.slotId, blocksBySlot)))],
+        balanceOffset,
+        options.rotation ?? 0,
+      )
+    : undefined;
   for (let step = 1; step <= level; step += 1) {
     if (step <= ACCESSORY_STEPS) {
       const blocks = main
@@ -109,9 +170,17 @@ export function trimSession(
           : { ...item, prescription: { ...item.prescription, restSeconds: floor } };
       });
     } else {
-      const present = [...new Set(main.map((item) => blockOf(item.slotId, blocksBySlot)))];
+      const present = [...new Set(main.map((item) => blockOf(item.slotId, blocksBySlot)))].sort(
+        (a, b) => a - b,
+      );
       if (present.length <= minBlocks) continue;
-      const last = Math.max(...present);
+      // Séance courte : on abandonne les blocs autres que celui que la rotation désigne (et que
+      // le bloc équilibre) ; sinon, toujours le dernier.
+      const droppable =
+        keepBlock === undefined || !present.includes(keepBlock)
+          ? present
+          : present.filter((block) => block !== keepBlock && !(balanceOffset === 1 && block === 0));
+      const last = Math.max(...(droppable.length > 0 ? droppable : present));
       main = main.filter((item) => blockOf(item.slotId, blocksBySlot) !== last);
     }
   }
@@ -123,10 +192,13 @@ export function minimalTrimLevel(
   session: DraftSession,
   minutes: number,
   blocksBySlot: Readonly<Record<string, number>>,
+  rotation = 0,
 ): number {
   const limit = minutes * (1 + TIMING.overrunRatio);
+  const options = trimOptionsFor(minutes, rotation);
   for (let level = 0; level < MAX_TRIM_LEVEL; level += 1) {
-    if (estimateSessionMinutes(trimSession(session, blocksBySlot, level)) <= limit) return level;
+    if (estimateSessionMinutes(trimSession(session, blocksBySlot, level, options)) <= limit)
+      return level;
   }
   return MAX_TRIM_LEVEL;
 }
@@ -136,20 +208,28 @@ export function applyTrimLevel(
   session: DraftSession,
   blocksBySlot: Readonly<Record<string, number>>,
   level: number,
+  options: TrimOptions = {},
 ): PlannedSession {
-  const trimmed = trimSession(session, blocksBySlot, level);
+  const trimmed = trimSession(session, blocksBySlot, level, options);
   return { ...trimmed, estimatedMinutes: estimateSessionMinutes(trimmed) };
 }
 
 /**
  * Ajuste la séance au temps cible : tant que l'estimation dépasse `minutes × 1,1`, retire les
- * accessoires, ramène les séries à 2, puis abandonne les derniers blocs jusqu'à `minBlocks`.
- * Si même ce plancher dépasse, la séance garde son minimum (les équilibres priment).
+ * accessoires, ramène les séries à 2, puis abandonne les blocs jusqu'à `minBlocks` (un seul à
+ * 20 min, en alternance selon `rotation`). Si même ce plancher dépasse, la séance garde son
+ * minimum (les équilibres priment).
  */
 export function fitSessionToDuration(
   session: DraftSession,
   minutes: number,
   blocksBySlot: Readonly<Record<string, number>>,
+  rotation = 0,
 ): PlannedSession {
-  return applyTrimLevel(session, blocksBySlot, minimalTrimLevel(session, minutes, blocksBySlot));
+  return applyTrimLevel(
+    session,
+    blocksBySlot,
+    minimalTrimLevel(session, minutes, blocksBySlot, rotation),
+    trimOptionsFor(minutes, rotation),
+  );
 }

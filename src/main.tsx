@@ -9,6 +9,7 @@ import { createUseCases } from '@application/usecases';
 import type { AppPorts } from '@application/usecases';
 import { ZodBackupValidator } from '@infrastructure/backup/ZodBackupValidator';
 import { JsonQuizRepository, JsonRecipeRepository } from '@infrastructure/catalog/JsonCatalog';
+import { StaticExerciseCatalog } from '@infrastructure/catalog/StaticExerciseCatalog';
 import { StaticPhotoCatalog } from '@infrastructure/catalog/StaticPhotoCatalog';
 import { SystemClock } from '@infrastructure/clock/SystemClock';
 import { WebCryptoCipher } from '@infrastructure/crypto/WebCryptoCipher';
@@ -77,6 +78,7 @@ const ports: AppPorts = {
   recipes: new JsonRecipeRepository(),
   quizBank: new JsonQuizRepository(),
   photos: new StaticPhotoCatalog(import.meta.env.BASE_URL),
+  exercises: new StaticExerciseCatalog(import.meta.env.BASE_URL),
   sharer: new NavigatorSharer(navigator),
   cipher: new WebCryptoCipher(),
   backupValidator: new ZodBackupValidator(),
