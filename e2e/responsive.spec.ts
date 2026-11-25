@@ -32,9 +32,11 @@ for (const wide of WIDE) {
         expect(Math.abs((a?.x ?? 0) - (b?.x ?? 1))).toBeLessThan(2);
         expect(b?.y ?? 0).toBeGreaterThan((a?.y ?? 0) + (a?.height ?? 0) - 2);
       }
-      // Colonne « Ta semaine » : seulement à partir de 1280 px.
+      // « Ta semaine » : dès 1280 px, ou en bande sur une tablette portrait haute (≥ 1000 px).
+      const { width, height } = wide.size;
+      const withAside = width >= 1280 || (width >= 768 && width <= 999 && height >= 1000);
       await expect(page.getByRole('complementary', { name: 'Ta semaine' })).toHaveCount(
-        wide.size.width >= 1280 ? 1 : 0,
+        withAside ? 1 : 0,
       );
 
       const nav = page.getByRole('navigation', { name: 'Navigation principale' });
