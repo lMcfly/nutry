@@ -22,6 +22,15 @@ test('parcours principal : onboarding → menu → remplacement → courses → 
   console.log(`Durée de l'onboarding : ${onboardingMs} ms`);
   expect(onboardingMs).toBeLessThan(120_000);
 
+  // Quatre onglets : Semaine · Sport · Courses · Moi (rail latéral sur grand écran).
+  await expect(
+    page.getByRole('navigation', { name: 'Navigation principale' }).getByRole('link'),
+  ).toHaveText(['Semaine', 'Sport', 'Courses', 'Moi']);
+  await page.getByRole('link', { name: 'Sport' }).click();
+  await expect(page.getByRole('heading', { name: /Envie de bouger avec Nutry/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Pas maintenant' }).click();
+  await expect(page.getByRole('heading', { name: 'Ma semaine', level: 1 })).toBeVisible();
+
   // Semaine : une grande carte (le repas du jour), 7 jours dans le bandeau, carte épurée sans jauge.
   const first = page.getByTestId('meal');
   await expect(first).toHaveCount(1);

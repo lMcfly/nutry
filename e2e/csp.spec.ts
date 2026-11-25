@@ -1,4 +1,10 @@
-import { completeOnboarding, dismissQuiz } from './helpers';
+import {
+  completeOnboarding,
+  completeSportOnboarding,
+  dismissQuiz,
+  openSportSession,
+  toFirstExercise,
+} from './helpers';
 import { UNSPLASH_HOST, expect, test } from './fixtures';
 
 const EXPECTED_CSP =
@@ -18,6 +24,7 @@ test.describe('Content Security Policy', () => {
   });
 
   test('aucune violation sur tous les écrans, import de sauvegarde compris', async ({ page }) => {
+    test.setTimeout(90_000);
     await page.goto('./');
     await completeOnboarding(page);
     await expect(page.getByTestId('meal')).toHaveCount(1);
@@ -32,12 +39,25 @@ test.describe('Content Security Policy', () => {
       'progres',
       'confidentialite',
       'credits-photos',
+      'credits-exercices',
+      'sport',
       'profil',
     ]) {
       await page.goto(`./#/${route}`);
       await dismissQuiz(page);
       await expect(page.locator('main')).toBeVisible();
     }
+
+    // Sport : onboarding, séance (mannequins SVG animés), tuto et lien sortant (aucune requête).
+    await page.goto('./#/semaine');
+    await dismissQuiz(page);
+    await completeSportOnboarding(page);
+    await openSportSession(page);
+    await toFirstExercise(page);
+    await page.getByRole('button', { name: 'Voir le tuto' }).click();
+    await expect(page.getByRole('link', { name: /^Voir une vidéo/ })).toBeVisible();
+    await expect(page.locator('iframe')).toHaveCount(0);
+    await page.keyboard.press('Escape');
 
     // « Mes données » : la feuille plein écran du Profil.
     await page.goto('./#/moi');

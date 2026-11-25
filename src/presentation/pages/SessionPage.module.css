@@ -1,0 +1,610 @@
+/*
+ * Séance guidée (mode concentré, sans barre d'onglets). Téléphone : le mannequin prend toute
+ * la hauteur libre, les séries et les actions restent sous le pouce. Grand écran : mannequin
+ * à gauche, détails à droite.
+ */
+.session {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 0;
+}
+
+.status {
+  padding: var(--space-7) 0;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.problem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: auto 0;
+}
+
+.problemActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* En-tête : sortir, titre de la séance, étape. */
+.top {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-small);
+}
+
+.close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--touch-small);
+  height: var(--touch-small);
+  margin-left: calc(-1 * var(--space-2));
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--color-surface-alt);
+}
+
+.titles {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title {
+  overflow: hidden;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title:focus-visible,
+.name:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* Progression : un segment par mouvement, l'échauffement et le retour au calme plus courts. */
+.progress {
+  display: flex;
+  flex: none;
+  gap: 3px;
+}
+
+.segment {
+  flex: 1 1 0;
+  height: 0.375rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-alt);
+  transition: background-color var(--duration-medium) var(--ease-out);
+}
+
+.warmup,
+.cooldown {
+  flex-grow: 0.55;
+}
+
+.segmentDone {
+  background: var(--color-primary);
+}
+
+.segmentCurrent:not(.segmentDone) {
+  background: var(--color-border-strong);
+}
+
+/* Un exercice : glisse à l'arrivée (coupé par prefers-reduced-motion). */
+.stage {
+  --from: 1.5rem;
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+  animation: stage-in 260ms var(--ease-out) both;
+}
+
+.stage[data-direction='back'] {
+  --from: -1.5rem;
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--from));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.figureCol {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 7.5rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+.figure {
+  width: 100%;
+  height: 100%;
+  padding: var(--space-2);
+}
+
+.figure > div {
+  width: 100%;
+  height: 100%;
+}
+
+.figureCol .figure svg[data-figure] {
+  width: 100%;
+  height: 100%;
+}
+
+.info {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.name {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.meta {
+  font-size: var(--font-size-sm);
+}
+
+.meta strong {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.advice {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
+}
+
+/* Minuteur (repos, échauffement) : même place que les séries, pour que rien ne saute. */
+.timerPanel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'ring text'
+    'ring actions';
+  align-items: center;
+  column-gap: var(--space-4);
+  row-gap: var(--space-2);
+  min-height: 9.75rem;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+}
+
+.timerPanel > :first-child {
+  grid-area: ring;
+  width: 6.5rem;
+  height: 6.5rem;
+}
+
+.timerText {
+  grid-area: text;
+  align-self: end;
+}
+
+.timerTitle {
+  font-weight: var(--font-weight-bold);
+}
+
+.timerHint {
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+}
+
+.timerActions {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: actions;
+  align-self: start;
+  gap: var(--space-2);
+}
+
+.clock {
+  color: var(--color-text);
+  font-size: 1.6rem;
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tuto, Remplacer, Ça fait mal : trois actions au trait, à égalité. */
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.action {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: 0;
+  min-height: var(--touch-small);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.action svg {
+  flex: none;
+}
+
+.action:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
+.action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pain {
+  color: var(--color-danger);
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.prev {
+  flex: none;
+  padding-inline: var(--space-2);
+}
+
+.next {
+  flex: 1;
+  min-height: var(--touch-min);
+  padding-inline: var(--space-3);
+  white-space: nowrap;
+}
+
+.dialogText {
+  color: var(--color-text-muted);
+}
+
+.painBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.replacement {
+  line-height: 1.5;
+}
+
+/* Fin de séance : Nutry fête ça. */
+.recap {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.recapNutry {
+  animation: hop 900ms var(--ease-out) 2 both;
+}
+
+@keyframes hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-1rem) rotate(-4deg);
+  }
+}
+
+.recapTitle {
+  text-wrap: balance;
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.recapTitle:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.recapSubtitle {
+  color: var(--color-text-muted);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 26rem;
+  list-style: none;
+}
+
+.stats li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-3) var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.stats strong {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.stats span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.unlock {
+  width: 100%;
+  max-width: 26rem;
+  text-align: left;
+}
+
+.recapNext,
+.hydrate {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.recapButton {
+  width: 100%;
+  max-width: 26rem;
+  min-height: var(--touch-min);
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.confettiPiece {
+  position: absolute;
+  top: -1rem;
+  width: 0.5rem;
+  height: 0.9rem;
+  border-radius: 2px;
+  background: var(--color-primary);
+  opacity: 0;
+  animation: fall 2.4s var(--ease-out) forwards;
+}
+
+.confettiPiece:nth-child(3n) {
+  background: var(--gauge-starch);
+}
+
+.confettiPiece:nth-child(3n + 1) {
+  background: var(--gauge-protein);
+}
+
+.confettiPiece:nth-child(1) {
+  left: 8%;
+}
+
+.confettiPiece:nth-child(2) {
+  left: 18%;
+  animation-delay: 0.15s;
+}
+
+.confettiPiece:nth-child(3) {
+  left: 27%;
+  animation-delay: 0.3s;
+}
+
+.confettiPiece:nth-child(4) {
+  left: 36%;
+  animation-delay: 0.05s;
+}
+
+.confettiPiece:nth-child(5) {
+  left: 45%;
+  animation-delay: 0.25s;
+}
+
+.confettiPiece:nth-child(6) {
+  left: 54%;
+  animation-delay: 0.1s;
+}
+
+.confettiPiece:nth-child(7) {
+  left: 63%;
+  animation-delay: 0.35s;
+}
+
+.confettiPiece:nth-child(8) {
+  left: 71%;
+  animation-delay: 0.2s;
+}
+
+.confettiPiece:nth-child(9) {
+  left: 79%;
+  animation-delay: 0.4s;
+}
+
+.confettiPiece:nth-child(10) {
+  left: 86%;
+  animation-delay: 0.12s;
+}
+
+.confettiPiece:nth-child(11) {
+  left: 92%;
+  animation-delay: 0.28s;
+}
+
+.confettiPiece:nth-child(12) {
+  left: 13%;
+  animation-delay: 0.45s;
+}
+
+@keyframes fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(70dvh) rotate(320deg);
+  }
+}
+
+/* Écran bas : tout se resserre, le mannequin garde le reste. */
+@media (max-height: 700px) {
+  .session,
+  .stage,
+  .info {
+    gap: var(--space-1);
+  }
+
+  .name {
+    font-size: var(--font-size-lg);
+  }
+
+  .timerPanel {
+    min-height: 0;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .timerPanel > :first-child {
+    width: 5.25rem;
+    height: 5.25rem;
+  }
+
+  .recap {
+    gap: var(--space-2);
+  }
+}
+
+/* Tablette et ordinateur : mannequin à gauche, toute la hauteur ; détails à droite. */
+@media (min-width: 1000px) and (min-height: 540px) {
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(22rem, 1fr);
+    gap: var(--space-5);
+  }
+
+  .figureCol {
+    min-height: 0;
+  }
+
+  .info {
+    justify-content: center;
+    gap: var(--space-4);
+  }
+
+  .name {
+    font-size: var(--font-size-2xl);
+  }
+
+  .meta {
+    font-size: var(--font-size-md);
+  }
+
+  .advice {
+    font-size: var(--font-size-sm);
+  }
+
+  .action {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Tablette portrait : le mannequin en grand au-dessus, les détails dans une colonne lisible. */
+@media (min-width: 768px) and (max-width: 999px) and (min-height: 540px) {
+  .info {
+    width: 100%;
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage,
+  .recapNutry {
+    animation: none;
+  }
+
+  .confetti {
+    display: none;
+  }
+
+  .segment {
+    transition: none;
+  }
+}

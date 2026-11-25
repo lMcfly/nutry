@@ -30,6 +30,8 @@ interface SheetProps {
   readonly initialFocusRef?: RefObject<HTMLElement | null>;
   /** Rôle ARIA : `alertdialog` pour une confirmation importante. */
   readonly role?: 'dialog' | 'alertdialog';
+  /** Plein écran large sur tablette et ordinateur (fiche d'exercice : image et texte côte à côte). */
+  readonly wide?: boolean;
 }
 
 /**
@@ -47,6 +49,7 @@ export function Sheet({
   footer,
   initialFocusRef,
   role = 'dialog',
+  wide = false,
 }: SheetProps) {
   const titleId = useId();
   const descriptionId = useId();
@@ -147,7 +150,7 @@ export function Sheet({
       />
       <div
         ref={panelRef}
-        className={`${styles.panel} ${styles[variant]}`}
+        className={`${styles.panel} ${styles[variant]} ${wide ? styles.wide : ''}`}
         role={role}
         aria-modal="true"
         aria-labelledby={titleId}

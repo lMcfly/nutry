@@ -10,6 +10,19 @@ import type { QuizCategory } from '@domain/quiz';
 import type { Aisle, Allergen, Diet, Level, ProteinType } from '@domain/recipe';
 import type { ShoppingSectionKey } from '@domain/shopping';
 import type { Theme } from '@domain/userdata';
+import type {
+  EffortFeeling,
+  Equipment,
+  EquipmentSetting,
+  MuscleGroup,
+  PregnancyStage,
+  ProgressionAdvice,
+  SessionDuration,
+  SportAccessoryUnlock,
+  TrainingFrequency,
+  TrainingGoal,
+  TrainingLevel,
+} from '@domain/training';
 
 export const LEVEL_LABELS: Readonly<Record<Level, string>> = {
   simple: 'Simple',
@@ -360,4 +373,155 @@ export function formatDecimal(value: number, digits = 1): string {
 /** Accord simple : « 1 repas », « 2 personnes ». */
 export function plural(count: number, singular: string, pluralForm = `${singular}s`): string {
   return `${count} ${count > 1 ? pluralForm : singular}`;
+}
+
+// ---------------------------------------------------------------- Sport (ADR 0015)
+
+export const MUSCLE_GROUP_LABELS: Readonly<Record<MuscleGroup, string>> = {
+  pectoraux: 'Pectoraux',
+  dos: 'Dos',
+  epaules: 'Épaules',
+  biceps: 'Biceps',
+  triceps: 'Triceps',
+  abdominaux: 'Abdominaux',
+  lombaires: 'Lombaires',
+  fessiers: 'Fessiers',
+  quadriceps: 'Quadriceps',
+  'ischio-jambiers': 'Ischio-jambiers',
+  mollets: 'Mollets',
+};
+
+export const EQUIPMENT_LABELS: Readonly<Record<Equipment, string>> = {
+  tapis: 'Tapis',
+  halteres: 'Haltères',
+  elastique: 'Élastique',
+  kettlebell: 'Kettlebell',
+  barre: 'Barre',
+  'barre-ez': 'Barre EZ',
+  banc: 'Banc',
+  'banc-incline': 'Banc inclinable',
+  'barre-traction': 'Barre de traction',
+  poulie: 'Poulie',
+  'swiss-ball': 'Swiss ball',
+  machine: 'Machines guidées',
+};
+
+export const EQUIPMENT_EMOJIS: Readonly<Record<Equipment, string>> = {
+  tapis: '🧘',
+  halteres: '🏋️',
+  elastique: '🪢',
+  kettlebell: '🔔',
+  barre: '🏋️‍♀️',
+  'barre-ez': '〰️',
+  banc: '🪑',
+  'banc-incline': '📐',
+  'barre-traction': '🧗',
+  poulie: '🛞',
+  'swiss-ball': '⚪',
+  machine: '⚙️',
+};
+
+export const EQUIPMENT_SETTING_EMOJIS: Readonly<Record<EquipmentSetting, string>> = {
+  maison: '🏠',
+  'maison-equipee': '🏡',
+  salle: '🏋️',
+};
+
+export const TRAINING_LEVEL_EMOJIS: Readonly<Record<TrainingLevel, string>> = {
+  debutant: '🌱',
+  intermediaire: '🌿',
+  confirme: '🌳',
+};
+
+export const TRAINING_GOAL_EMOJIS: Readonly<Record<TrainingGoal, string>> = {
+  forme: '☀️',
+  force: '💪',
+  muscle: '🏋️',
+  endurance: '🚴',
+};
+
+export const TRAINING_FREQUENCY_EMOJIS: Readonly<Record<TrainingFrequency, string>> = {
+  1: '🌱',
+  2: '🌿',
+  3: '🍀',
+  4: '🌳',
+  5: '🔥',
+  6: '⚡',
+};
+
+export const SESSION_DURATION_EMOJIS: Readonly<Record<SessionDuration, string>> = {
+  20: '⏱️',
+  30: '🕒',
+  45: '🕓',
+  60: '🕐',
+};
+
+export const PREGNANCY_STAGE_EMOJIS: Readonly<Record<PregnancyStage, string>> = {
+  'premier-trimestre': '🌱',
+  'apres-premier-trimestre': '🤰',
+  'post-partum': '👶',
+};
+
+export const EFFORT_LABELS: Readonly<Record<EffortFeeling, string>> = {
+  facile: 'Facile',
+  correct: 'Correct',
+  difficile: 'Difficile',
+};
+
+export const EFFORT_EMOJIS: Readonly<Record<EffortFeeling, string>> = {
+  facile: '😌',
+  correct: '🙂',
+  difficile: '😮‍💨',
+};
+
+/** Conseil de progression sous l'exercice (double progression, ADR 0015). */
+export const PROGRESSION_ADVICE_LABELS: Readonly<Record<ProgressionAdvice, string>> = {
+  'trouve-ta-charge': 'Trouve ta charge : garde 2 ou 3 répétitions en réserve',
+  'ajoute-une-repetition': 'Essaie une répétition de plus que la dernière fois',
+  'augmente-la-charge': 'Tu peux prendre un peu plus lourd',
+  maintiens: 'Garde la même charge, en douceur',
+  allege: 'On allège un peu pour mieux repartir',
+  'variante-plus-dure': 'La variante plus difficile t’attend',
+  'semaine-allegee': 'Semaine allégée : vas-y tranquillement',
+};
+
+/** Emoji des accessoires sportifs de Nutry (récapitulatif de séance). */
+export const SPORT_ACCESSORY_EMOJIS: Readonly<Record<SportAccessoryUnlock['id'], string>> = {
+  bandeau: '🎽',
+  serviette: '🧣',
+  casquette: '🧢',
+  medaille: '🏅',
+};
+
+/** Accessoire sportif avec son article (« le bandeau »). */
+export const SPORT_ACCESSORY_PHRASES: Readonly<Record<SportAccessoryUnlock['id'], string>> = {
+  bandeau: 'le bandeau',
+  serviette: 'la serviette',
+  casquette: 'la casquette',
+  medaille: 'la médaille',
+};
+
+/** Espace fine insécable avant « ? » et « ! » (le signe ne part jamais seul à la ligne). */
+export function frenchPunctuation(text: string): string {
+  return text.replace(/ ([?!:;])/g, '\u202f$1');
+}
+
+/** « 1 min 30 », « 45 s », « 2 min ». */
+export function formatSeconds(seconds: number): string {
+  const s = Math.max(0, Math.round(seconds));
+  if (s < 60) return `${s} s`;
+  const m = Math.floor(s / 60);
+  const rest = s % 60;
+  return rest === 0 ? `${m} min` : `${m} min ${String(rest).padStart(2, '0')}`;
+}
+
+/** Minuteur « 1:05 ». */
+export function formatClock(seconds: number): string {
+  const s = Math.max(0, Math.ceil(seconds));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+/** Charge à la française : « 7,5 kg ». */
+export function formatKg(kg: number): string {
+  return `${formatDecimal(kg)} kg`;
 }

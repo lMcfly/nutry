@@ -15,6 +15,7 @@ import { Sheet } from '../components/Sheet';
 import {
   CalendarIcon,
   DatabaseIcon,
+  DumbbellIcon,
   FlameIcon,
   HeartIcon,
   InfoIcon,
@@ -32,6 +33,7 @@ import { CustomizeSheet } from '../features/companion/CustomizeSheet';
 import { Nutry } from '../features/companion/Nutry';
 import { useCompanion } from '../features/companion/useCompanion';
 import { DataSection } from '../features/data/DataSection';
+import { SportSettingsSheet } from '../features/training/SportSettingsSheet';
 import { PrivacyContent } from '../features/privacy/PrivacyContent';
 import { ProgressCards } from '../features/progress/ProgressCards';
 import {
@@ -61,7 +63,14 @@ interface ProfileData {
 }
 
 type SheetId =
-  'moi' | 'objectif' | 'gouts' | 'organisation' | 'apparence' | 'donnees' | 'confidentialite';
+  | 'moi'
+  | 'objectif'
+  | 'gouts'
+  | 'organisation'
+  | 'sport'
+  | 'apparence'
+  | 'donnees'
+  | 'confidentialite';
 
 /** Feuilles qui modifient le profil (un seul brouillon, un seul enregistrement). */
 const EDITING: readonly SheetId[] = ['moi', 'objectif', 'gouts', 'organisation'];
@@ -71,6 +80,7 @@ const SHEET_TITLES: Readonly<Record<SheetId, string>> = {
   objectif: 'Objectif et alimentation',
   gouts: 'Goûts',
   organisation: 'Organisation',
+  sport: 'Sport',
   apparence: 'Apparence et suivi',
   donnees: 'Mes données',
   confidentialite: 'Confidentialité',
@@ -199,6 +209,15 @@ function SettingsList({ view, onOpen }: SettingsListProps) {
             title="Organisation"
             onClick={() => {
               onOpen('organisation');
+            }}
+          />
+          <ListRow
+            icon={<DumbbellIcon />}
+            title="Sport"
+            hint="programme"
+            ariaLabel="Sport : mon programme"
+            onClick={() => {
+              onOpen('sport');
             }}
           />
           <ListRow
@@ -435,6 +454,8 @@ function ProfileContent({
             />
           </div>
         );
+      case 'sport':
+        return null;
       case 'donnees':
         return <DataSection bare />;
       case 'confidentialite':
@@ -504,8 +525,15 @@ function ProfileContent({
         />
       </Sheet>
 
+      <SportSettingsSheet
+        open={sheet === 'sport'}
+        onClose={() => {
+          setSheet(undefined);
+        }}
+      />
+
       <Sheet
-        open={sheet !== undefined}
+        open={sheet !== undefined && sheet !== 'sport'}
         variant="full"
         title={sheet ? SHEET_TITLES[sheet] : ''}
         onClose={closeSheet}

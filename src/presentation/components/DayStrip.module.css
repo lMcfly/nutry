@@ -17,3 +17,31 @@
 .today {
   background: currentcolor;
 }
+
+/* Repères sous le numéro : point du jour, trait de séance. Même hauteur qu'un point seul. */
+.marks {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 5px;
+}
+
+.marks .dot:not(.today) {
+  display: none;
+}
+
+.marks:not(:has(.mark)) .dot {
+  display: block;
+}
+
+.mark {
+  width: 0.875rem;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1.5px var(--color-primary);
+}
+
+.done {
+  background: var(--color-primary);
+}

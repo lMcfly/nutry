@@ -1,5 +1,12 @@
 import { expect, test } from './fixtures';
-import { completeOnboarding, seriousViolations } from './helpers';
+import {
+  completeOnboarding,
+  completeSportOnboarding,
+  dismissQuiz,
+  openSportSession,
+  toFirstExercise,
+  seriousViolations,
+} from './helpers';
 
 /** Grands écrans : navigation en rail latéral, mises en page à deux colonnes, axe sans violation. */
 const WIDE = [
@@ -12,7 +19,7 @@ for (const wide of WIDE) {
   test.describe(wide.name, () => {
     test.use({ viewport: wide.size });
 
-    test('rail de navigation à gauche (3 entrées), contenu centré, axe sans violation sérieuse', async ({
+    test('rail de navigation à gauche (4 entrées), contenu centré, axe sans violation sérieuse', async ({
       page,
     }) => {
       await page.goto('./');
@@ -41,7 +48,7 @@ for (const wide of WIDE) {
 
       const nav = page.getByRole('navigation', { name: 'Navigation principale' });
       const box = await nav.boundingBox();
-      await expect(nav.getByRole('link')).toHaveCount(3);
+      await expect(nav.getByRole('link')).toHaveText(['Semaine', 'Sport', 'Courses', 'Moi']);
       expect(box?.x).toBe(0);
       expect(box?.width ?? 0).toBeLessThan(140);
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(wide.size.height - 1);
@@ -91,6 +98,46 @@ for (const wide of WIDE) {
       report['moi-panneau'] = await seriousViolations(page);
 
       console.log(`Violations axe (${wide.name}) :`, JSON.stringify(report));
+      for (const violations of Object.values(report)) expect(violations).toEqual([]);
+    });
+  });
+}
+
+for (const wide of WIDE) {
+  test.describe(`Sport, ${wide.name}`, () => {
+    test.use({ viewport: wide.size });
+
+    test('Sport et séance utilisent la largeur, axe sans violation sérieuse', async ({ page }) => {
+      test.setTimeout(90_000);
+      await page.goto('./');
+      await completeOnboarding(page);
+      await dismissQuiz(page);
+      const report: Record<string, unknown> = {};
+      await completeSportOnboarding(page);
+      report['sport'] = await seriousViolations(page);
+      await openSportSession(page);
+      await toFirstExercise(page);
+      report['seance'] = await seriousViolations(page);
+
+      // Mannequin à gauche, détails à droite dès 1000 px ; au-dessus en tablette portrait.
+      const figure = await page.locator('main [data-figure]').first().boundingBox();
+      const name = await page.getByRole('heading', { level: 2 }).boundingBox();
+      if (wide.size.width >= 1000) {
+        expect(name?.x ?? 0).toBeGreaterThan((figure?.x ?? 0) + (figure?.width ?? 0) - 2);
+      } else {
+        expect(name?.y ?? 0).toBeGreaterThan((figure?.y ?? 0) + (figure?.height ?? 0) - 2);
+      }
+      expect(figure?.height ?? 0).toBeGreaterThan(wide.size.height * 0.4);
+
+      await page.getByRole('button', { name: /Valider la série/ }).click();
+      await expect(page.getByRole('region', { name: 'Repos' })).toBeVisible();
+      report['repos'] = await seriousViolations(page);
+      await page.getByRole('button', { name: 'Passer' }).click();
+      await page.getByRole('button', { name: 'Voir le tuto' }).click();
+      await expect(page.getByRole('heading', { name: 'Comment faire' })).toBeVisible();
+      report['tuto'] = await seriousViolations(page);
+
+      console.log(`Violations axe Sport (${wide.name}) :`, JSON.stringify(report));
       for (const violations of Object.values(report)) expect(violations).toEqual([]);
     });
   });

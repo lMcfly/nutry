@@ -13,6 +13,11 @@ export interface DayStripDay {
   readonly ariaLabel: string;
   /** Aujourd'hui : petit point sous le numéro. */
   readonly isToday?: boolean;
+  /**
+   * Repère sous le numéro, sur la ligne du point (aucune hauteur en plus) : jour de séance
+   * (petit trait creux) ou séance faite (trait plein). Le nom accessible le dit aussi.
+   */
+  readonly mark?: 'seance' | 'fait' | undefined;
 }
 
 interface DayStripProps {
@@ -40,7 +45,15 @@ export function DayStrip({
       <>
         <span className={styles.weekday}>{day.weekday}</span>
         <span className={styles.number}>{day.dayOfMonth}</span>
-        <span className={`${styles.dot} ${day.isToday ? styles.today : ''}`} aria-hidden="true" />
+        <span className={styles.marks} aria-hidden="true">
+          <span className={`${styles.dot} ${day.isToday ? styles.today : ''}`} />
+          {day.mark !== undefined && (
+            <span
+              className={`${styles.mark} ${day.mark === 'fait' ? styles.done : ''}`}
+              data-mark={day.mark}
+            />
+          )}
+        </span>
       </>
     ),
   }));

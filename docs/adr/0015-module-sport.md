@@ -1,6 +1,6 @@
 # ADR 0015 — Module Sport : programme de la semaine, séance guidée, lien avec la Nourriture
 
-- Statut : accepté ; phases 1 (domaine), 2 (données) et 3 (application et infrastructure) livrées, phases 4 à 6 à venir
+- Statut : accepté ; phases 1 (domaine), 2 (données), 3 (application et infrastructure) et 4 (interface) livrées, phases 5 et 6 à venir
 - Date : 2026-11-25
 - Complète : ADR 0001 (frontières), 0005 (Zod), 0006 (moteur de menu), 0007 (garde-fous
   santé), 0009 (persistance), 0010 (textes), 0012 (compagnon), 0013 (interface sans scroll),
@@ -530,3 +530,66 @@ Livré :
   `SPORT_ACCESSORY_UNLOCKS`, accessoires débloqués renvoyés par `completeSession`) ; l'extension du
   catalogue du compagnon (`unlockAt` à deux formes, équipement, dessins SVG) est la phase 5.
 - `ImportCounts` (résultat d'import) n'est pas étendu : l'interface actuelle ne l'affiche pas.
+
+## Complément (phase 4, interface)
+
+Livré dans `src/presentation` :
+
+- **Navigation** : quatre onglets Semaine · Sport · Courses · Moi (barre en bas, rail latéral sur
+  grand écran). La Semaine repère les jours de séance (`getTrainingDays`) par un petit trait sous
+  le numéro du jour, sur la ligne du point « aujourd'hui » : aucune hauteur en plus (`DayStrip`,
+  `mark`). Le nom accessible du jour dit « jour de séance ».
+- **Onglet Sport** (`pages/SportPage.tsx`) : invitation de Nutry au premier passage (« Oui, on
+  essaie », « Pas maintenant »), puis bandeau des jours (trait creux : séance prévue, plein : faite),
+  carte de la séance du jour (titre, durée estimée, nombre d'exercices, muscles travaillés, aperçu à
+  petits mannequins, grand bouton « Commencer la séance »), carte de repos (Nutry fait la sieste,
+  « Prochaine séance »), résumé « 1 séance sur 3 » en pastilles, « Bon à savoir » pour les avis du
+  planificateur. Sous-titre du cycle : « Semaine 2 sur 6 », ou « Semaine allégée, pour bien
+  récupérer » / « Semaine de reprise, en douceur ». Menu « ⋯ » : Mon programme, Mes séances, Crédits
+  exercices. Grand écran : texte et programme détaillé à gauche, mannequins à droite, colonne de la
+  semaine.
+- **Onboarding Sport** (`/sport/bienvenue`, mode concentré) : mêmes composants et même feuille de
+  style que l'onboarding Nourriture (Nutry dans une bulle, une question par écran, passage
+  automatique au toucher pour les choix uniques), étape de grossesse seulement si elle est posée
+  (« Passer » = règle la plus prudente), puis les garde-fous et la mention de prudence avec
+  « J'ai compris ». Si un garde-fou demande encore une lecture (profil changé), « Commencer » ouvre
+  d'abord ce message.
+- **Réglages** : `SportSettingsSheet` (depuis le menu du Sport et depuis Moi › Réglages › Sport) ;
+  pour le sexe « autre », choix du corps du mannequin, retenu sur l'appareil (cas d'usage
+  `exerciseBody` / `setExerciseBody`, clé `DEVICE_KEYS.exerciseBody`) ; « homme » et « femme »
+  prennent le corps du profil.
+- **Séance** (`/sport/seance/:weekStart/:sessionId`, sans barre d'onglets ni question du moment,
+  écran maintenu allumé par `keepScreenOn` / `releaseScreen`, repris au retour au premier plan) :
+  échauffement, exercices et retour au calme en étapes, progression en segments, grand mannequin
+  animé (muscles surlignés), « 3 × 10–15 · repos 1 min », charge conseillée ou conseil de
+  progression, pastilles de séries, saisie rapide des répétitions (ou secondes) et de la charge,
+  « Valider la série », « Tout est fait », minuteur de repos automatique (`useRestTimer`, calculé
+  depuis l'instant de fin : juste après une veille ; anneau, +15 s, Passer ; annonce polie au
+  début et à la fin, vibration à la fin), minuteur des mouvements d'échauffement, « Voir le tuto »,
+  « Remplacer » (trois remplaçants), « Ça fait mal » (confirmation, messages `douleur`, `urgence`,
+  `douleur-repetee`, remplaçant). Quitter propose « Reprendre plus tard » ou « Terminer
+  maintenant ». Fin : ressenti facultatif, récapitulatif, Nutry qui saute de joie, série du jour,
+  accessoire gagné ou prochain accessoire, rappel d'hydratation. Grand écran : mannequin à gauche,
+  détails à droite.
+- **Tuto** (`TutoSheet`, plein écran, large sur ordinateur) : mannequin avec repères, pause,
+  Mouvement / Départ / Arrivée, muscles principaux et en renfort, matériel, consignes numérotées,
+  conseils de sécurité, variantes plus facile et plus difficile, vidéo auto-hébergée si elle existe,
+  « Voir une vidéo » (recherche YouTube, nouvel onglet, `rel="noopener noreferrer"`), crédit MIT et
+  mention de prudence. Le détail défile dans son `ScrollArea`.
+- **Historique** (`HistorySheet`, « Mes séances ») : séances terminées et en cours, séries et
+  ressenti, séances par semaine en barres (sans pourcentage), prochain accessoire de Nutry.
+- **Crédits** : écran « Crédits exercices » (`/credits-exercices`, `EXERCISE_CREDITS_TEXTS`), lien
+  depuis Confidentialité et depuis « Crédits photos ».
+- **Textes** : libellés des identifiants du Sport (muscles, matériel, emojis, ressentis, conseils de
+  progression, accessoires) dans `presentation/i18n/labels.ts`, vérifiés exhaustifs par
+  `labels.test.ts` ; questions, réponses, garde-fous, avis et messages d'échec restent dans le
+  domain et l'application (ADR 0010).
+- **Tests** : `SessionPage.test.tsx` (séries, minuteur à horloge simulée, « Tout est fait »,
+  douleur, remplacement, tuto, fin), `SportOnboardingPage.test.tsx`, `SportPage.test.tsx`,
+  `useRestTimer.test.tsx` ; e2e `sport.spec.ts` (parcours complet et clavier + axe), `sans-scroll`
+  (tous les écrans et feuilles du Sport, du 360 × 640 au 1440 × 900), `responsive` (axe, mannequin à
+  gauche dès 1000 px), `csp`, `parcours-principal` (quatre onglets), captures `sport.png`,
+  `seance.png`, `tuto.png`, `sport-ordinateur.png`, `seance-ordinateur.png`, `onboarding-sport.png`.
+
+Écart assumé : l'aperçu des exercices et la séance montrent les poses de départ et d'arrivée côte à
+côte quand `prefers-reduced-motion` est actif (comportement d'`ExerciseFigure`), sans animation.

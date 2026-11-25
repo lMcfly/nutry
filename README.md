@@ -27,6 +27,15 @@ doigt (ou on touche les chevrons) pour passer au repas suivant. Sur tablette et 
 barre d'onglets devient un rail latéral et les écrans passent sur deux colonnes
 (`docs/captures/tablette.png`, `docs/captures/ordinateur.png`).
 
+| Sport : ma semaine                                    | Séance guidée                                  | Tuto d'un exercice                               | Onboarding Sport                                              |
+| ----------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| ![La semaine d'entraînement](docs/captures/sport.png) | ![Une séance guidée](docs/captures/seance.png) | ![Le tuto d'un exercice](docs/captures/tuto.png) | ![Les questions du Sport](docs/captures/onboarding-sport.png) |
+
+Le **Sport** (onglet entre Semaine et Courses) propose une semaine d'entraînement à son rythme et
+une séance guidée en mode concentré : mannequin animé, séries à valider, minuteur de repos, tuto,
+« Ça fait mal » et « Remplacer » (`docs/captures/sport-ordinateur.png`,
+`docs/captures/seance-ordinateur.png`).
+
 ## Fonctionnalités
 
 - **Premiers pas en moins de 2 minutes** : quelques questions (profil, objectif, régime,

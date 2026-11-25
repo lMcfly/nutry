@@ -1,6 +1,14 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
-import { completeOnboarding, dismissCelebration, expectQuestion } from './helpers';
+import {
+  completeOnboarding,
+  completeSportOnboarding,
+  dismissCelebration,
+  dismissQuiz,
+  expectQuestion,
+  openSportSession,
+  toFirstExercise,
+} from './helpers';
 
 /**
  * Captures d'écran du README (Pixel 7, densité 2). Lancées seulement à la demande :
@@ -176,4 +184,43 @@ test('capture Crédits photos', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'Liste des crédits photos' })).toBeVisible();
   await page.waitForTimeout(400);
   await page.screenshot({ path: 'docs/captures/credits-photos.png' });
+});
+
+test('captures Sport : onboarding, semaine, séance, tuto, ordinateur', async ({ page }) => {
+  test.setTimeout(120_000);
+  // Le mannequin animé : on montre le mouvement (et non les étapes de prefers-reduced-motion).
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('./');
+  await completeOnboarding(page);
+  await dismissQuiz(page);
+  await completeSportOnboarding(page, async (screen) => {
+    if (screen === 3) {
+      await page.waitForTimeout(500);
+      await page.screenshot({ path: 'docs/captures/onboarding-sport.png' });
+    }
+  });
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/sport.png' });
+
+  await openSportSession(page);
+  await toFirstExercise(page);
+  await page.getByRole('button', { name: 'Plus : Répétitions' }).click();
+  await page.getByRole('button', { name: 'Valider la série 1' }).click();
+  await page.waitForTimeout(1600);
+  await page.screenshot({ path: 'docs/captures/seance.png' });
+  await page.getByRole('button', { name: 'Passer' }).click();
+  await page.getByRole('button', { name: 'Voir le tuto' }).click();
+  await expect(page.getByRole('heading', { name: 'Comment faire' })).toBeVisible();
+  await page.waitForTimeout(900);
+  await page.screenshot({ path: 'docs/captures/tuto.png' });
+  await page.keyboard.press('Escape');
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.waitForTimeout(900);
+  await page.screenshot({ path: 'docs/captures/seance-ordinateur.png' });
+  await page.getByRole('button', { name: 'Quitter la séance' }).click();
+  await page.getByRole('button', { name: 'Reprendre plus tard' }).click();
+  await dismissCelebration(page);
+  await page.waitForTimeout(700);
+  await page.screenshot({ path: 'docs/captures/sport-ordinateur.png' });
 });

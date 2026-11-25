@@ -1,0 +1,61 @@
+/* Grilles des cartes : 3 colonnes pour la fréquence, 2 puis 4 pour la durée. */
+.frequency fieldset > div {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.duration fieldset > div {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 560px) {
+  .duration fieldset > div {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.days,
+.setting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.counter {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.disclosure {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: var(--space-1);
+  min-height: var(--touch-small);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.disclosure:hover {
+  background: var(--color-primary-soft);
+}
+
+.disclosure svg {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.disclosure .open {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disclosure svg {
+    transition: none;
+  }
+}

@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { PHOTO_CREDITS_TEXTS } from '@application/usecases';
 import { useDependencies } from '../app/dependencies';
 import { Badge } from '../components/Badge';
@@ -69,6 +70,10 @@ export function PhotoCreditsPage() {
           </ListGroup>
         </ScrollArea>
       )}
+      <p className={styles.footer}>
+        Les mannequins et les fiches d’exercices sont le contenu propre de Nutry (licence MIT) :{' '}
+        <Link to="/credits-exercices">crédits exercices</Link>.
+      </p>
     </Page>
   );
 }

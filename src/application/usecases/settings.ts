@@ -15,7 +15,16 @@ export const DEVICE_KEYS = {
   quizSessionId: 'quiz.session-id',
   /** Rappel de sauvegarde masqué pour cette session (portée `session`). */
   backupReminderDismissed: 'backup-reminder.dismissed',
+  /** Corps du mannequin des exercices choisi par la personne (portée `local`, ADR 0015). */
+  exerciseBody: 'sport.mannequin',
 } as const;
+
+/** Corps du mannequin des exercices, quand le profil ne le fixe pas (sexe « autre »). */
+export const EXERCISE_BODIES = ['femme', 'homme'] as const;
+export type ExerciseBody = (typeof EXERCISE_BODIES)[number];
+
+const isExerciseBody = (value: string | undefined): value is ExerciseBody =>
+  (EXERCISE_BODIES as readonly (string | undefined)[]).includes(value);
 
 const isTheme = (value: string | undefined): value is Theme =>
   (THEMES as readonly (string | undefined)[]).includes(value);
@@ -41,6 +50,9 @@ export interface SettingsUseCases {
   readonly requestPersistentStorage: () => Promise<boolean>;
   /** Le stockage est-il déjà persistant ? (écran Confidentialité) */
   readonly isStoragePersisted: () => Promise<boolean>;
+  /** Corps du mannequin choisi sur cet appareil (absent : celui du profil, ou par défaut). */
+  readonly exerciseBody: () => ExerciseBody | undefined;
+  readonly setExerciseBody: (body: ExerciseBody) => void;
 }
 
 export function createSettingsUseCases(
@@ -86,5 +98,14 @@ export function createSettingsUseCases(
     },
 
     isStoragePersisted: () => ports.persistence.isPersisted(),
+
+    exerciseBody() {
+      const value = ports.device.get('local', DEVICE_KEYS.exerciseBody);
+      return isExerciseBody(value) ? value : undefined;
+    },
+
+    setExerciseBody(body) {
+      if (isExerciseBody(body)) ports.device.set('local', DEVICE_KEYS.exerciseBody, body);
+    },
   };
 }

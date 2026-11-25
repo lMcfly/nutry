@@ -1,0 +1,21 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.inactive {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.issue {
+  color: var(--color-danger);
+}
+
+.note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}

@@ -7,6 +7,19 @@ import { QUIZ_CATEGORIES } from '@domain/quiz';
 import { AISLES, ALLERGENS, DIETS, LEVELS, PROTEIN_TYPES } from '@domain/recipe';
 import { SHOPPING_SECTIONS } from '@domain/shopping';
 import { THEMES } from '@domain/userdata';
+import {
+  EFFORT_FEELINGS,
+  EQUIPMENT,
+  EQUIPMENT_SETTINGS,
+  MUSCLE_GROUPS,
+  PREGNANCY_STAGES,
+  SESSION_DURATIONS,
+  SPORT_ACCESSORY_UNLOCKS,
+  TRAINING_FREQUENCIES,
+  TRAINING_GOALS,
+  TRAINING_LEVELS,
+} from '@domain/training';
+import type { ProgressionAdvice } from '@domain/training';
 import * as labels from './labels';
 
 const CASES: readonly (readonly [string, readonly string[], Readonly<Record<string, string>>])[] = [
@@ -38,6 +51,40 @@ const CASES: readonly (readonly [string, readonly string[], Readonly<Record<stri
   ['rayons courts', SHOPPING_SECTIONS, labels.SECTION_SHORT_LABELS],
   ['catégories du quiz', QUIZ_CATEGORIES, labels.QUIZ_CATEGORY_LABELS],
   ['thèmes', THEMES, labels.THEME_LABELS],
+  ['groupes musculaires', MUSCLE_GROUPS, labels.MUSCLE_GROUP_LABELS],
+  ['matériel', EQUIPMENT, labels.EQUIPMENT_LABELS],
+  ['emojis du matériel', EQUIPMENT, labels.EQUIPMENT_EMOJIS],
+  ['emojis des cadres', EQUIPMENT_SETTINGS, labels.EQUIPMENT_SETTING_EMOJIS],
+  ['emojis des niveaux sportifs', TRAINING_LEVELS, labels.TRAINING_LEVEL_EMOJIS],
+  ['emojis des objectifs sportifs', TRAINING_GOALS, labels.TRAINING_GOAL_EMOJIS],
+  ['emojis des fréquences', TRAINING_FREQUENCIES.map(String), labels.TRAINING_FREQUENCY_EMOJIS],
+  ['emojis des durées', SESSION_DURATIONS.map(String), labels.SESSION_DURATION_EMOJIS],
+  ['emojis des étapes de grossesse', PREGNANCY_STAGES, labels.PREGNANCY_STAGE_EMOJIS],
+  ['ressentis', EFFORT_FEELINGS, labels.EFFORT_LABELS],
+  [
+    'emojis des accessoires sportifs',
+    SPORT_ACCESSORY_UNLOCKS.map((a) => a.id),
+    labels.SPORT_ACCESSORY_EMOJIS,
+  ],
+  [
+    'accessoires sportifs avec article',
+    SPORT_ACCESSORY_UNLOCKS.map((a) => a.id),
+    labels.SPORT_ACCESSORY_PHRASES,
+  ],
+  ['emojis des ressentis', EFFORT_FEELINGS, labels.EFFORT_EMOJIS],
+  [
+    'conseils de progression',
+    [
+      'trouve-ta-charge',
+      'ajoute-une-repetition',
+      'augmente-la-charge',
+      'maintiens',
+      'allege',
+      'variante-plus-dure',
+      'semaine-allegee',
+    ] satisfies ProgressionAdvice[],
+    labels.PROGRESSION_ADVICE_LABELS,
+  ],
 ];
 
 describe('libellés français', () => {
@@ -73,5 +120,12 @@ describe('libellés français', () => {
     expect(labels.formatDecimal(72.5)).toBe('72,5');
     expect(labels.plural(1, 'repas', 'repas')).toBe('1 repas');
     expect(labels.plural(2, 'personne')).toBe('2 personnes');
+    expect(labels.formatSeconds(45)).toBe('45 s');
+    expect(labels.formatSeconds(90)).toBe('1 min 30');
+    expect(labels.formatSeconds(120)).toBe('2 min');
+    expect(labels.formatClock(65)).toBe('1:05');
+    expect(labels.formatClock(-3)).toBe('0:00');
+    expect(labels.formatKg(7.5)).toBe('7,5 kg');
+    expect(labels.frenchPunctuation('Prêt ? Oui !')).toBe('Prêt\u202f? Oui\u202f!');
   });
 });

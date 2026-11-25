@@ -121,3 +121,76 @@ export async function collectWeekNames(page: Page): Promise<string[]> {
   }
   return names;
 }
+
+/**
+ * Onboarding Sport depuis l'onglet Sport : invitation de Nutry, six questions (3 séances, jours
+ * proposés, à la maison, débutant, en forme, 30 min), garde-fous et « J'ai compris ».
+ * `onScreen` est appelé sur chaque écran (numéro à partir de 1 ; l'invitation est l'écran 0).
+ */
+export async function completeSportOnboarding(
+  page: Page,
+  onScreen?: (screen: number) => Promise<void>,
+): Promise<void> {
+  const nextBtn = page.getByRole('button', { name: 'Continuer' });
+  await page.getByRole('link', { name: 'Sport' }).click();
+  await expect(page.getByRole('heading', { name: /Envie de bouger avec Nutry/ })).toBeVisible();
+  await onScreen?.(0);
+  await page.getByRole('link', { name: 'Oui, on essaie' }).click();
+  await expectQuestion(page, /Combien de fois par semaine/);
+  await onScreen?.(1);
+  await page.getByText('3 fois', { exact: true }).click();
+  await expectQuestion(page, /Quels jours te conviennent/);
+  await onScreen?.(2);
+  await nextBtn.click();
+  await expectQuestion(page, /Où t’entraînes-tu/);
+  await onScreen?.(3);
+  await nextBtn.click();
+  await expectQuestion(page, /Quel est ton niveau/);
+  await onScreen?.(4);
+  await page.getByText('Débutant', { exact: true }).click();
+  await expectQuestion(page, /Quel est ton objectif/);
+  await onScreen?.(5);
+  await page.getByText('Me sentir en forme', { exact: true }).click();
+  await expectQuestion(page, /Combien de temps par séance/);
+  await onScreen?.(6);
+  await page.getByRole('button', { name: 'Créer mon programme' }).click();
+  await expectQuestion(page, /bouger en sécurité/);
+  await onScreen?.(7);
+  await page.getByRole('button', { name: 'J’ai compris' }).click();
+  await expect(page.getByRole('heading', { name: 'Sport', level: 1 })).toBeVisible();
+}
+
+/** Jours du bandeau de l'onglet Sport. */
+export const sportDayTabs = (page: Page) =>
+  page.getByRole('tablist', { name: 'Jours de la semaine d’entraînement' }).getByRole('tab');
+
+/** Choisit, dans le bandeau du Sport, le premier jour avec (ou sans) séance. */
+export async function pickSportDay(page: Page, withSession: boolean): Promise<void> {
+  const tabs = sportDayTabs(page);
+  await expect(tabs).toHaveCount(7);
+  const count = await tabs.count();
+  for (let i = 0; i < count; i += 1) {
+    const label = (await tabs.nth(i).getAttribute('aria-label')) ?? '';
+    if (label.endsWith(', repos') !== withSession) {
+      await tabs.nth(i).click();
+      return;
+    }
+  }
+  throw new Error(`aucun jour ${withSession ? 'de séance' : 'de repos'}`);
+}
+
+/** Ouvre la première séance de la semaine (mode concentré). */
+export async function openSportSession(page: Page): Promise<void> {
+  await pickSportDay(page, true);
+  await page.getByRole('button', { name: /Commencer la séance|Reprendre la séance/ }).click();
+  await expect(page.getByRole('progressbar', { name: 'Progression de la séance' })).toBeVisible();
+}
+
+/** Avance jusqu'au premier exercice principal (après l'échauffement). */
+export async function toFirstExercise(page: Page): Promise<void> {
+  for (let i = 0; i < 12; i += 1) {
+    if (await page.getByRole('button', { name: /Valider la série/ }).isVisible()) return;
+    await page.getByRole('button', { name: 'Exercice suivant' }).click();
+  }
+  throw new Error('pas d’exercice principal');
+}

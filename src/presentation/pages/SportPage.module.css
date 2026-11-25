@@ -1,0 +1,568 @@
+/*
+ * Onglet Sport : bandeau des jours (séances repérées), la séance du jour en grande carte
+ * (mannequins en aperçu), la semaine en résumé. Grand écran : carte et résumé côte à côte.
+ */
+.layout {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+.days {
+  flex: none;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+.loading {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.skeletonStrip,
+.skeletonCard {
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-alt);
+}
+
+.skeletonStrip {
+  height: 3.5rem;
+}
+
+.skeletonCard {
+  flex: 1;
+}
+
+/* Carte de la séance du jour. Téléphone : texte, aperçu, puis le grand bouton sous le pouce. */
+.card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+.cardText {
+  display: contents;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 1.5rem;
+}
+
+.eyebrow {
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.badge,
+.badgeDone {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.badgeDone {
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+}
+
+.title {
+  margin-top: calc(-1 * var(--space-2));
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: calc(-1 * var(--space-2));
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.meta svg {
+  flex: none;
+}
+
+.muscles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  list-style: none;
+}
+
+.muscles li {
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.start {
+  order: 3;
+  width: 100%;
+  min-height: 3.5rem;
+  font-size: var(--font-size-lg);
+}
+
+/* Programme détaillé : seulement sur grand écran (le téléphone montre l'aperçu). */
+.program {
+  display: none;
+}
+
+.programList {
+  list-style: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.programList li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.programName {
+  min-width: 0;
+}
+
+.programSets {
+  flex: none;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.programList .programPhase {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* Aperçu : petits mannequins et noms, la place restante de la carte. */
+.preview {
+  display: flex;
+  flex: 1;
+  order: 2;
+  gap: var(--space-2);
+  min-height: 5.5rem;
+  list-style: none;
+}
+
+.previewItem {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  min-height: 0;
+}
+
+.previewThumb {
+  flex: 1;
+  min-height: 3rem;
+}
+
+.previewName {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--font-size-xs);
+  line-height: 1.3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.previewMore {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Téléphone haut : les mannequins en grille 2 × 2, plus grands. */
+@media (max-width: 767px) and (min-height: 701px) {
+  .preview {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  .previewMore {
+    width: auto;
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* Jour de repos. */
+.rest {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.restNutry {
+  flex: none;
+}
+
+.restText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.rest .title,
+.rest .meta {
+  margin-top: 0;
+}
+
+.restBody {
+  max-width: 28rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Résumé de la semaine. */
+.summary {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+}
+
+.summaryNutry {
+  display: grid;
+  place-items: center;
+}
+
+.progress {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.dot,
+.dotDone {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-primary);
+}
+
+.dotDone {
+  background: var(--color-primary);
+}
+
+.progressText {
+  font-weight: var(--font-weight-medium);
+}
+
+.summaryActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-right: calc(-1 * var(--space-2));
+}
+
+.disclaimer {
+  flex: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sheetNote {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Invitation (premier passage). */
+.invitation {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  max-width: 30rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.invitationNutry {
+  animation: float 3.2s ease-in-out infinite;
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-0.4rem);
+  }
+}
+
+.invitationBubble {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+  line-height: 1.5;
+}
+
+.invitationTitle {
+  text-wrap: balance;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.invitationActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.invitationAccept {
+  min-height: 3.25rem;
+}
+
+/* Écran bas : la carte se resserre. */
+@media (max-height: 700px) {
+  .card {
+    gap: var(--space-2);
+    padding: var(--space-3);
+  }
+
+  .title,
+  .meta {
+    margin-top: calc(-1 * var(--space-1));
+  }
+
+  .start {
+    min-height: var(--touch-min);
+    font-size: var(--font-size-md);
+  }
+
+  .invitation {
+    gap: var(--space-2);
+  }
+
+  .invitationNutry {
+    margin: -1.5rem 0;
+  }
+
+  .invitationNutry > * {
+    transform: scale(0.75);
+  }
+
+  .invitationBubble {
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* Tablette portrait : l'aperçu passe en grille de grands mannequins. */
+@media (min-width: 768px) and (min-height: 540px) {
+  .card {
+    padding: var(--space-5);
+  }
+
+  .preview {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  .preview[data-columns='2'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .previewName {
+    font-size: var(--font-size-sm);
+  }
+
+  .previewMore {
+    display: none;
+  }
+
+  .summary {
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface);
+  }
+}
+
+/* Ordinateur et tablette paysage : texte et bouton à gauche, mannequins à droite ; résumé en colonne. */
+@media (min-width: 1000px) and (min-height: 540px) {
+  .main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    gap: var(--space-4);
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: minmax(16rem, 20rem) minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .cardText {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-height: 0;
+  }
+
+  .program {
+    display: block;
+    flex: 0 1 auto;
+    min-height: 0;
+  }
+
+  .start {
+    margin-top: auto;
+  }
+
+  .rest {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-6);
+  }
+
+  .restText {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .summary {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--space-4);
+  }
+
+  .progress {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .summaryActions {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
+  }
+}
+
+/* Séances de la semaine (colonne des grands écrans). */
+.weekList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  list-style: none;
+}
+
+.weekRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--touch-small);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.weekRow:hover {
+  background: var(--color-surface-alt);
+}
+
+.weekRowOn {
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+}
+
+.weekRow svg {
+  flex: none;
+  color: var(--color-primary);
+}
+
+.weekDay {
+  flex: none;
+  width: 2.25rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.weekTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invitationNutry {
+    animation: none;
+  }
+}

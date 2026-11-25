@@ -68,3 +68,14 @@
     flex-direction: row;
   }
 }
+
+/* Séance en cours (mode concentré) : pas de barre d'onglets, toute la hauteur pour la séance. */
+.focus .main {
+  padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) and (min-height: 540px) {
+  .focus .main {
+    max-width: 80rem;
+  }
+}

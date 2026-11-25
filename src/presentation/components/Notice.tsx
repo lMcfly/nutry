@@ -16,7 +16,7 @@ interface NoticeProps {
   readonly action?: ReactNode;
   /** Annonce le message dès son apparition (role="status"). */
   readonly live?: boolean;
-  readonly className?: string;
+  readonly className?: string | undefined;
 }
 
 /** Message doux en encart : information, réussite, attention ou erreur. */

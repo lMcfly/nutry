@@ -70,6 +70,8 @@ interface WeekData {
   readonly view: PlanView;
   readonly balance: readonly BalanceGauge[];
   readonly batch: readonly BatchPrepGroup[];
+  /** Jours de séance de la semaine (Sport activé), repérés dans le bandeau. */
+  readonly trainingDays: readonly DayIndex[];
 }
 
 const slotRank = (slot: MealSlot): number => MEAL_SLOTS.indexOf(slot);
@@ -80,6 +82,7 @@ export function WeekPage() {
     getCurrentPlan,
     getWeekBalance,
     getBatchCookingPlan,
+    getTrainingDays,
     generateWeeklyPlan,
     replaceMeal,
     rateMeal,
@@ -105,9 +108,15 @@ export function WeekPage() {
     const view = await getCurrentPlan();
     if (view.status !== 'ready') return undefined;
     setOrigin((o) => o ?? view.origin);
-    const [balance, batch] = await Promise.all([getWeekBalance(), getBatchCookingPlan()]);
-    return { view, balance, batch };
-  }, [getCurrentPlan, getWeekBalance, getBatchCookingPlan]);
+    const [balance, batch, training] = await Promise.all([
+      getWeekBalance(),
+      getBatchCookingPlan(),
+      // Le lien avec le Sport est facultatif : sans lui (ou en cas d'échec), rien ne change.
+      getTrainingDays().catch(() => undefined),
+    ]);
+    const trainingDays = training?.weekStart === view.plan.weekStart ? training.trainingDays : [];
+    return { view, balance, batch, trainingDays };
+  }, [getCurrentPlan, getWeekBalance, getBatchCookingPlan, getTrainingDays]);
 
   const { state, reload } = useAsync(load);
 
@@ -534,13 +543,17 @@ function WeekContent({
             onChange={(id) => {
               pickDay(Number(id));
             }}
-            days={days.map(({ dayIndex, date }) => ({
-              id: String(dayIndex),
-              weekday: DAY_SHORT_LABELS[dayIndex as DayIndex],
-              dayOfMonth: formatDayOfMonth(date),
-              ariaLabel: `${formatDayLong(date)}${date === today ? ', aujourd’hui' : ''}`,
-              isToday: date === today,
-            }))}
+            days={days.map(({ dayIndex, date }) => {
+              const training = data.trainingDays.includes(dayIndex as DayIndex);
+              return {
+                id: String(dayIndex),
+                weekday: DAY_SHORT_LABELS[dayIndex as DayIndex],
+                dayOfMonth: formatDayOfMonth(date),
+                ariaLabel: `${formatDayLong(date)}${date === today ? ', aujourd’hui' : ''}${training ? ', jour de séance' : ''}`,
+                isToday: date === today,
+                mark: training ? ('seance' as const) : undefined,
+              };
+            })}
           />
 
           {!dayView && (

@@ -79,6 +79,13 @@
   }
 }
 
+@media (min-width: 1000px) and (min-height: 540px) {
+  .full.wide {
+    width: min(100%, 64rem);
+    max-width: 64rem;
+  }
+}
+
 .handleArea {
   display: flex;
   justify-content: center;

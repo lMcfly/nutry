@@ -72,6 +72,7 @@ describe('<App />', () => {
     const tabs = within(screen.getByRole('navigation', { name: 'Navigation principale' }));
     expect(tabs.getAllByRole('link').map((l) => l.textContent)).toEqual([
       'Semaine',
+      'Sport',
       'Courses',
       'Moi',
     ]);

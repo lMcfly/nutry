@@ -1,0 +1,125 @@
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+}
+
+.total strong {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+}
+
+.next {
+  font-size: var(--font-size-sm);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.heading {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+.weeks {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.week {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.bars {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+}
+
+.bar,
+.barOn {
+  width: 1.75rem;
+  height: 0.75rem;
+  border-radius: 4px;
+  background: var(--color-surface-alt);
+}
+
+.barOn {
+  background: var(--color-primary);
+}
+
+.weekLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.empty {
+  color: var(--color-text-muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--touch-min);
+  padding: var(--space-2) var(--space-3);
+}
+
+.entry + .entry {
+  border-top: 1px solid var(--color-border);
+}
+
+.entryIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  color: var(--color-primary);
+}
+
+.entryText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.entryTitle {
+  font-weight: var(--font-weight-medium);
+}
+
+.entryMeta {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.effort {
+  flex: none;
+  font-size: 1.25rem;
+}

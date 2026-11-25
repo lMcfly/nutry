@@ -97,7 +97,7 @@ interface RadioGroupProps<T extends string> {
    * choisie) : l'onboarding passe alors à la question suivante. Jamais au clavier, pour ne
    * pas changer d'écran pendant qu'on parcourt les flèches.
    */
-  readonly onPick?: (value: T) => void;
+  readonly onPick?: ((value: T) => void) | undefined;
 }
 
 /** Choix unique : boutons radio natifs (flèches du clavier) habillés en cartes ou puces. */

@@ -1,0 +1,52 @@
+.status {
+  padding: var(--space-4) 0;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--color-primary);
+}
+
+.thumb {
+  flex: none;
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  font-weight: var(--font-weight-medium);
+}
+
+.muscles {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}

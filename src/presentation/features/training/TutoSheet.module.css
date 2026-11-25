@@ -1,0 +1,259 @@
+/*
+ * Fiche d'exercice : le mannequin reste visible en haut (en face du texte sur grand écran), le
+ * détail défile dans sa zone, jamais la page.
+ */
+.tuto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  min-height: 0;
+}
+
+.status {
+  padding: var(--space-5) 0;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.visual {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.figureBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(11rem, 36dvh, 22rem);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.figure {
+  width: 100%;
+  height: 100%;
+  padding: var(--space-2);
+}
+
+.figure > div {
+  width: 100%;
+  height: 100%;
+}
+
+.figureBox .figure svg[data-figure] {
+  width: 100%;
+  height: 100%;
+}
+
+.details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 0;
+  padding-right: var(--space-1);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.heading {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+}
+
+.chip.primary {
+  border-color: transparent;
+  background: var(--color-primary-soft);
+  color: var(--color-on-primary-soft);
+  font-weight: var(--font-weight-medium);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-strong);
+}
+
+.swatch.primary {
+  background: var(--figure-highlight);
+  border-color: transparent;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.steps li {
+  position: relative;
+  padding-left: 2.25rem;
+  line-height: 1.5;
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.tips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.tips li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  line-height: 1.5;
+}
+
+.tips svg {
+  flex: none;
+  margin-top: 0.15rem;
+  color: var(--color-primary);
+}
+
+.variants {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-2);
+}
+
+.variants > div {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+}
+
+.variants dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.variants dd {
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+}
+
+.video video {
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.video figcaption {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.youtube {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-2);
+  min-height: var(--touch-min);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.youtube:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.external {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: normal;
+}
+
+.credit {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* Grand écran : le mannequin à gauche, toute la hauteur ; la fiche à droite. */
+@media (min-width: 1000px) and (min-height: 540px) {
+  .tuto {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .visual {
+    min-height: 0;
+  }
+
+  .figureBox {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* Écran bas (téléphone en paysage, clavier) : un mannequin plus petit. */
+@media (max-height: 560px) {
+  .figureBox {
+    height: 9rem;
+  }
+}

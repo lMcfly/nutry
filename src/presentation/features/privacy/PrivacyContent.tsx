@@ -12,6 +12,7 @@ import styles from './PrivacyContent.module.css';
 import {
   CheckIcon,
   GlobeIcon,
+  DumbbellIcon,
   ImageIcon,
   LockIcon,
   PaletteIcon,
@@ -123,6 +124,13 @@ export function PrivacyContent() {
 
       <ListGroup label="Autres informations">
         <ListRow icon={<ImageIcon size={22} />} title="Crédits photos" to="/credits-photos" />
+        <ListRow
+          icon={<DumbbellIcon size={22} />}
+          title="Crédits exercices"
+          hint="mannequins et fiches"
+          ariaLabel="Crédits exercices : mannequins et fiches de Nutry"
+          to="/credits-exercices"
+        />
       </ListGroup>
     </div>
   );

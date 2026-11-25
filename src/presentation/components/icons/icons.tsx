@@ -294,3 +294,53 @@ export const ImageIcon = makeIcon(
 );
 
 export const ChevronDownIcon = makeIcon(<path d="m6 9.5 6 6 6-6" />);
+
+/* Sport (ADR 0015) : haltère, minuteur, lecture, pansement, lien sortant, coche ronde. */
+
+export const DumbbellIcon = makeIcon(
+  <>
+    <path d="M7 12h10" />
+    <rect x="4.5" y="6.5" width="3" height="11" rx="1.2" />
+    <rect x="16.5" y="6.5" width="3" height="11" rx="1.2" />
+    <path d="M2.5 9.5v5M21.5 9.5v5" />
+  </>,
+);
+
+export const TimerIcon = makeIcon(
+  <>
+    <circle cx="12" cy="13.5" r="7" />
+    <path d="M12 13.5V10M9.5 3.5h5M18 7.5l1.3-1.3" />
+  </>,
+);
+
+export const PlayIcon = makeIcon(<path d="M8.5 6.2v11.6L18 12Z" />);
+
+export const PauseIcon = makeIcon(<path d="M9 6.5v11M15 6.5v11" />);
+
+export const BandageIcon = makeIcon(
+  <>
+    <rect x="2.8" y="8.2" width="18.4" height="7.6" rx="3.8" transform="rotate(-45 12 12)" />
+    <path d="M10.6 10.6h.01M13.4 13.4h.01M13.4 10.6h.01M10.6 13.4h.01" />
+  </>,
+);
+
+export const ExternalIcon = makeIcon(
+  <>
+    <path d="M13.5 5.5h5v5M18.5 5.5 11 13" />
+    <path d="M17 13.5v4a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 5 17.5v-9A1.5 1.5 0 0 1 6.5 7H10" />
+  </>,
+);
+
+export const CheckCircleIcon = makeIcon(
+  <>
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="m8.5 12.3 2.4 2.4 4.6-5" />
+  </>,
+);
+
+export const MoonRestIcon = makeIcon(
+  <>
+    <path d="M17.5 14.5A6.5 6.5 0 0 1 9.5 6.5a6.5 6.5 0 1 0 8 8Z" />
+    <path d="M15 4h3l-3 3.5h3" />
+  </>,
+);

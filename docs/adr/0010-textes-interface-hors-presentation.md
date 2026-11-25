@@ -37,7 +37,8 @@ testées, jamais construites dans un composant :
 | `domain/training/safety.constants.ts`, `notices.ts`, `onboarding.ts` | `TRAINING_SAFETY_MESSAGES`, `TRAINING_DISCLAIMER`, `TRAINING_NOTICES`, questions et réponses de l'onboarding Sport (`TRAINING_QUESTIONS`, `TRAINING_ANSWERS`), messages de validation |
 | `application/usecases/training.ts`                                   | `TRAINING_FAILURE_MESSAGES`, `TRAINING_MESSAGES` (séance introuvable, série refusée, rien de coché, pas de remplaçant), `EXERCISE_CREDITS_TEXTS` (écran Crédits exercices)            |
 
-Les **libellés des identifiants** (niveaux, régimes, allergènes, thèmes…) restent dans
+Les **libellés des identifiants** (niveaux, régimes, allergènes, thèmes, et pour le Sport : muscles,
+matériel, ressentis, conseils de progression…) restent dans
 `presentation/i18n/labels.ts`, vérifiés exhaustifs par `labels.test.ts` ; les identifiants du
 domain restent en ASCII kebab-case.
 

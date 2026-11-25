@@ -21,6 +21,18 @@ describe('réglages', () => {
     expect(uc.cachedTheme()).toBeUndefined();
   });
 
+  it('retient le corps du mannequin des exercices sur l’appareil', () => {
+    const ports = createInMemoryPorts();
+    const uc = createUseCases(ports);
+    expect(uc.exerciseBody()).toBeUndefined();
+    uc.setExerciseBody('homme');
+    expect(uc.exerciseBody()).toBe('homme');
+    uc.setExerciseBody('robot' as never);
+    expect(uc.exerciseBody()).toBe('homme');
+    ports.device.set('local', 'sport.mannequin', 'robot');
+    expect(uc.exerciseBody()).toBeUndefined();
+  });
+
   it('ouvre la carte de la question du moment une fois par session', () => {
     const uc = createUseCases(createInMemoryPorts());
     expect(uc.claimQuizForSession()).toBe(true);

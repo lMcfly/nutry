@@ -5,7 +5,7 @@ import { AppStateContext } from './appState';
 import type { ProfileStatus } from './appState';
 import { TabBar } from '../components/TabBar';
 import type { Tab } from '../components/TabBar';
-import { BasketIcon, HomeIcon, PersonIcon } from '../components/icons';
+import { BasketIcon, DumbbellIcon, HomeIcon, PersonIcon } from '../components/icons';
 import { ToastProvider } from '../components/Toast';
 import { CelebrationProvider } from '../features/companion/Celebration';
 import { QuizCard } from '../features/quiz/QuizCard';
@@ -36,9 +36,21 @@ const PrivacyPage = lazy(() =>
 const PhotoCreditsPage = lazy(() =>
   import('../pages/PhotoCreditsPage').then((m) => ({ default: m.PhotoCreditsPage })),
 );
+// Sport (ADR 0015) : mannequins et fiches d'exercices chargés seulement à la demande.
+const SportPage = lazy(() => import('../pages/SportPage').then((m) => ({ default: m.SportPage })));
+const SportOnboardingPage = lazy(() =>
+  import('../pages/SportOnboardingPage').then((m) => ({ default: m.SportOnboardingPage })),
+);
+const SessionPage = lazy(() =>
+  import('../pages/SessionPage').then((m) => ({ default: m.SessionPage })),
+);
+const ExerciseCreditsPage = lazy(() =>
+  import('../pages/ExerciseCreditsPage').then((m) => ({ default: m.ExerciseCreditsPage })),
+);
 
 const TABS: readonly Tab[] = [
   { to: '/semaine', label: 'Semaine', icon: <HomeIcon /> },
+  { to: '/sport', label: 'Sport', icon: <DumbbellIcon /> },
   { to: '/courses', label: 'Courses', icon: <BasketIcon /> },
   { to: '/moi', label: 'Moi', icon: <PersonIcon /> },
 ];
@@ -63,8 +75,16 @@ function focusMain() {
   main?.focus();
 }
 
+/**
+ * Séance en cours et onboarding Sport : mode concentré, sans barre d'onglets ni question du
+ * moment (un bouton de retour ramène à l'onglet Sport).
+ */
+const FOCUS_ROUTE = /^\/sport\/(seance\/|bienvenue)/;
+
 function Shell() {
   const { getProfile, getSettings, cachedTheme } = useDependencies();
+  const { pathname } = useLocation();
+  const focus = FOCUS_ROUTE.test(pathname);
   const [profileStatus, setProfileStatus] = useState<ProfileStatus>('loading');
 
   useEffect(() => {
@@ -91,7 +111,7 @@ function Shell() {
   const ready = profileStatus === 'ready';
 
   const shell = (
-    <div className={styles.shell}>
+    <div className={focus ? `${styles.shell} ${styles.focus}` : styles.shell}>
       <a
         href="#contenu"
         className={styles.skip}
@@ -111,6 +131,9 @@ function Shell() {
             <Routes>
               <Route path="/" element={<Navigate to="/semaine" replace />} />
               <Route path="/semaine" element={<WeekPage />} />
+              <Route path="/sport" element={<SportPage />} />
+              <Route path="/sport/bienvenue" element={<SportOnboardingPage />} />
+              <Route path="/sport/seance/:weekStart/:sessionId" element={<SessionPage />} />
               <Route path="/courses" element={<ShoppingPage />} />
               <Route path="/moi" element={<MePage />} />
               {/* Anciens liens : Profil et Progrès sont réunis dans « Moi » (ADR 0013). */}
@@ -120,6 +143,7 @@ function Shell() {
               <Route path="/recette/:id" element={<RecipePage />} />
               <Route path="/confidentialite" element={<PrivacyPage />} />
               <Route path="/credits-photos" element={<PhotoCreditsPage />} />
+              <Route path="/credits-exercices" element={<ExerciseCreditsPage />} />
               <Route path="*" element={<Navigate to="/semaine" replace />} />
             </Routes>
           </Suspense>
@@ -134,8 +158,8 @@ function Shell() {
           </Suspense>
         )}
       </main>
-      {ready && <TabBar tabs={TABS} />}
-      {ready && <QuizCard />}
+      {ready && !focus && <TabBar tabs={TABS} />}
+      {ready && !focus && <QuizCard />}
     </div>
   );
 

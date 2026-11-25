@@ -2,7 +2,14 @@
 // Les callbacks de page.evaluate s’exécutent dans le navigateur : types DOM requis.
 import type { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
-import { completeOnboarding } from './helpers';
+import {
+  completeOnboarding,
+  completeSportOnboarding,
+  dismissQuiz,
+  openSportSession,
+  pickSportDay,
+  toFirstExercise,
+} from './helpers';
 
 /**
  * Règle de mise en page : chaque écran principal tient dans la hauteur de l'écran, sans
@@ -43,7 +50,8 @@ async function measure(page: Page): Promise<Fit> {
       document
         .getAnimations()
         .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
-        .map((a) => a.finished),
+        // Une animation annulée (élément retiré) rejette sa promesse : sans importance ici.
+        .map((a) => a.finished.catch(() => undefined)),
     ),
   );
   return page.evaluate(() => {
@@ -163,6 +171,90 @@ for (const viewport of VIEWPORTS) {
         await page.getByRole('tab', { name: tab }).click();
         await expectFits(page, `Recette, ${tab}`);
       }
+    });
+  });
+}
+
+for (const viewport of VIEWPORTS) {
+  test.describe(`Sport, ${viewport.name}`, () => {
+    if (viewport.size) test.use({ viewport: viewport.size });
+
+    test('onboarding Sport, semaine, séance, minuteur, tuto et feuilles tiennent sans scroll de page', async ({
+      page,
+    }) => {
+      test.setTimeout(120_000);
+      await page.goto('./');
+      await completeOnboarding(page);
+      await dismissQuiz(page);
+      await completeSportOnboarding(page, async (screen) => {
+        await expectFits(page, `onboarding Sport, écran ${screen}`);
+        if (screen > 0) {
+          await expectReachable(page.getByRole('heading', { level: 1 }));
+          await expectReachable(
+            page.getByRole('button', { name: /Continuer|Créer mon programme|J’ai compris/ }),
+          );
+        }
+      });
+
+      await expectFits(page, 'Sport');
+      await pickSportDay(page, false);
+      await expectFits(page, 'Sport, jour de repos');
+      await pickSportDay(page, true);
+      await expect(page.getByTestId('sport-session')).toBeVisible();
+      await expectFits(page, 'Sport, jour de séance');
+      await expectReachable(page.getByRole('button', { name: 'Commencer la séance' }));
+
+      for (const name of ['Mes séances', 'Plus d’options']) {
+        await page.getByRole('button', { name }).click();
+        await expect(page.getByRole('dialog')).toBeVisible();
+        await expectFits(page, `Sport, feuille ${name}`);
+        await page.keyboard.press('Escape');
+      }
+
+      await openSportSession(page);
+      await expectFits(page, 'Séance, échauffement');
+      await toFirstExercise(page);
+      const fit = await expectFits(page, 'Séance, exercice');
+      expect(fit.spare, `réserve sous la séance : ${JSON.stringify(fit)}`).toBeGreaterThanOrEqual(
+        0,
+      );
+      for (const name of [/Valider la série/, 'Exercice suivant', 'Ça fait mal', 'Voir le tuto']) {
+        await expectReachable(page.getByRole('button', { name }).first());
+      }
+      // Le mannequin garde une taille confortable.
+      const figure = await page.locator('main [data-figure]').first().boundingBox();
+      expect(figure?.height ?? 0, 'hauteur du mannequin').toBeGreaterThanOrEqual(110);
+
+      await page.getByRole('button', { name: /Valider la série/ }).click();
+      await expect(page.getByRole('region', { name: 'Repos' })).toBeVisible();
+      await expectFits(page, 'Séance, repos');
+      await page.getByRole('button', { name: 'Passer' }).click();
+
+      await page.getByRole('button', { name: 'Voir le tuto' }).click();
+      const tuto = page.getByRole('dialog', { name: /^Tuto/ });
+      await expect(tuto.getByRole('heading', { name: 'Comment faire' })).toBeVisible();
+      await expectFits(page, 'Tuto');
+      await expectReachable(tuto.getByRole('button', { name: 'Fermer le tuto' }));
+      await expectReachable(tuto.getByRole('link', { name: /^Voir une vidéo/ }));
+      await page.keyboard.press('Escape');
+
+      await page.getByRole('button', { name: 'Remplacer' }).click();
+      await expect(page.getByRole('dialog', { name: 'Remplacer l’exercice' })).toBeVisible();
+      await expectFits(page, 'Séance, remplacer');
+      await page.keyboard.press('Escape');
+
+      await page.getByRole('button', { name: 'Quitter la séance' }).click();
+      await page.getByRole('button', { name: 'Terminer maintenant' }).click();
+      await page.getByRole('button', { name: 'Terminer la séance' }).click();
+      await expect(page.getByRole('heading', { name: /Bravo/ })).toBeVisible();
+      await expectFits(page, 'Fin de séance');
+      await expectReachable(page.getByRole('link', { name: 'Retour à ma semaine' }));
+
+      await page.goto('./#/credits-exercices');
+      await expect(
+        page.getByRole('heading', { name: 'Crédits exercices', level: 1 }),
+      ).toBeVisible();
+      await expectFits(page, 'Crédits exercices');
     });
   });
 }
