@@ -1,0 +1,190 @@
+/*
+ * Mannequin d'exercice. Couleurs : jetons --figure-* (tokens.css), clairs et sombres.
+ * Aucun style en ligne (CSP) : chaque forme reçoit la classe de sa teinte.
+ */
+.root {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  max-width: 100%;
+}
+
+.svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.s .svg {
+  width: 9rem;
+}
+
+.m .svg {
+  width: 14rem;
+}
+
+.l .svg {
+  width: 21rem;
+}
+
+/* Deux poses ou plus côte à côte : chaque image se partage la largeur. */
+.multi .svg {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.s.multi .svg {
+  width: 6.5rem;
+}
+
+.m.multi .svg {
+  width: 10rem;
+}
+
+.l.multi .svg {
+  width: 14rem;
+}
+
+.arrow {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-text-muted);
+}
+
+.skin {
+  fill: var(--figure-skin);
+}
+
+.top {
+  fill: var(--figure-top);
+}
+
+.bottom {
+  fill: var(--figure-bottom);
+}
+
+.shoe {
+  fill: var(--figure-shoe);
+}
+
+.sole {
+  fill: var(--figure-sole);
+}
+
+.hair {
+  fill: var(--figure-hair);
+}
+
+.shade {
+  fill: var(--figure-shade);
+}
+
+.highlight {
+  fill: var(--figure-highlight);
+}
+
+.equip {
+  fill: var(--figure-equip);
+}
+
+.equipSoft {
+  fill: var(--figure-equip-soft);
+}
+
+.equipLine {
+  fill: none;
+  stroke: var(--figure-equip);
+  stroke-width: 1.5;
+}
+
+.plate {
+  fill: var(--figure-plate);
+}
+
+.plateFace {
+  fill: var(--figure-plate-face);
+}
+
+.cable {
+  fill: none;
+  stroke: var(--figure-cable);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+}
+
+.band {
+  fill: none;
+  stroke: var(--figure-band);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.ground {
+  fill: none;
+  stroke: var(--figure-ground);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.shadow {
+  fill: var(--figure-shadow);
+}
+
+.skinLine {
+  fill: var(--figure-skin);
+  stroke: var(--figure-skin-line);
+  stroke-width: 0.5;
+}
+
+.contact {
+  fill: var(--figure-contact);
+}
+
+.guide {
+  fill: none;
+  stroke: var(--figure-guide);
+  stroke-width: 1.3;
+  stroke-dasharray: 3 2.6;
+  stroke-linecap: round;
+}
+
+.guideHead {
+  fill: var(--figure-guide);
+}
+
+.far {
+  filter: var(--figure-far);
+}
+
+.toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-small);
+  height: var(--touch-small);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.toggle:hover {
+  border-color: var(--color-border-strong);
+}
