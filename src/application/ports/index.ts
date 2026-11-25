@@ -17,3 +17,15 @@ export type { ShoppingRepository } from './ShoppingRepository';
 export type { StoragePersistence } from './StoragePersistence';
 export type { UserDataStore } from './UserDataStore';
 export type { PhotoCatalog, PhotoProvider, RecipePhoto } from './PhotoCatalog';
+export type {
+  ExerciseCatalog,
+  ExerciseCredit,
+  ExerciseImage,
+  ExerciseLicense,
+  ExerciseLink,
+  ExerciseMedia,
+  ExerciseProvider,
+  ExerciseVideo,
+  VideoLicense,
+  VideoProvider,
+} from './ExerciseCatalog';
