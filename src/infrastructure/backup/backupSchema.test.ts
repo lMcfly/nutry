@@ -193,7 +193,7 @@ describe('migrations des exports', () => {
     delete rest['companion'];
     const v2 = { ...rest, schemaVersion: 2 };
     const result = parseBackupFile(v2);
-    expect(result.ok && result.snapshot.schemaVersion).toBe(3);
+    expect(result.ok && result.snapshot.schemaVersion).toBe(SNAPSHOT_SCHEMA_VERSION);
     expect(result.ok && result.snapshot.companion).toEqual(INITIAL_COMPANION_STATE);
     // Une clé `companion` parasite dans un fichier v2 est écrasée, jamais reprise.
     const stray = parseBackupFile({ ...v2, companion: { best: 99 } });
@@ -214,7 +214,7 @@ describe('migrations des exports', () => {
       },
     };
     const result = parseBackupFile(v1);
-    expect(result.ok && result.snapshot.schemaVersion).toBe(3);
+    expect(result.ok && result.snapshot.schemaVersion).toBe(SNAPSHOT_SCHEMA_VERSION);
     expect(result.ok && result.snapshot.companion).toEqual(INITIAL_COMPANION_STATE);
     expect(result.ok && result.snapshot.quiz.current?.sessionId).toBe('jour-2026-11-23');
   });

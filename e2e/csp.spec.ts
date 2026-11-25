@@ -2,7 +2,7 @@ import { completeOnboarding, dismissQuiz } from './helpers';
 import { UNSPLASH_HOST, expect, test } from './fixtures';
 
 const EXPECTED_CSP =
-  "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://images.unsplash.com; " +
+  "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://images.unsplash.com; media-src 'self'; " +
   "connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; " +
   "base-uri 'self'; form-action 'none'";
 

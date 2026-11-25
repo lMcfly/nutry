@@ -42,7 +42,7 @@ import {
   DexieShoppingRepository,
   DexieUserDataStore,
 } from '../db/repositories';
-import { createTestDatabase } from '../db/testing';
+import { createTestDatabase, dexieSportPorts } from '../db/testing';
 import { ZodBackupValidator } from './ZodBackupValidator';
 
 const QUESTIONS: readonly QuizQuestion[] = [
@@ -101,6 +101,7 @@ function realEnv(cipher = new WebCryptoCipher()): Env {
     backupValidator: new ZodBackupValidator(),
     persistence: new FakePersistence(),
     fileSaver: new RecordingFileSaver(),
+    ...dexieSportPorts(db),
   };
   return { db, ports, uc: createUseCases(ports) };
 }

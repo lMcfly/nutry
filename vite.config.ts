@@ -89,7 +89,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
         // Les photos de plats (public/photos, ~5 Mo) ne sont pas précachées : mises en cache
         // à la première vue (runtimeCaching ci-dessous), l'illustration prend le relais sinon.
-        globIgnores: ['photos/**'],
+        // Idem pour les médias d'exercices (public/exercices, ADR 0014 et 0015).
+        globIgnores: ['photos/**', 'exercices/**'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         clientsClaim: true,
@@ -105,6 +106,17 @@ export default defineConfig({
             options: {
               cacheName: 'nutry-photos',
               expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 60 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          {
+            // Images et vidéos d'exercices auto-hébergées : mises en cache à la première vue,
+            // hors précache (ADR 0015). Seules les réponses complètes (200) sont gardées.
+            urlPattern: new RegExp(`${BASE}exercices/`),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'nutry-exercices',
+              expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 60 },
               cacheableResponse: { statuses: [200] },
             },
           },

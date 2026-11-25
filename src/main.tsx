@@ -18,6 +18,8 @@ import {
   browserDownloadEnvironment,
 } from '@infrastructure/files/DownloadFileSaver';
 import { MathRandomSource } from '@infrastructure/random/MathRandomSource';
+import { NavigatorWakeLock } from '@infrastructure/screen/NavigatorWakeLock';
+import type { WakeLockApi } from '@infrastructure/screen/NavigatorWakeLock';
 import { NavigatorSharer } from '@infrastructure/share/NavigatorSharer';
 import { NavigatorStoragePersistence } from '@infrastructure/storage/NavigatorStoragePersistence';
 import { WebDeviceStorage, browserDeviceStorages } from '@infrastructure/storage/WebDeviceStorage';
@@ -73,6 +75,9 @@ const ports: AppPorts = {
   companion: lazyPort((r) => new r.DexieCompanionRepository(r.db)),
   shopping: lazyPort((r) => new r.DexieShoppingRepository(r.db)),
   settings: lazyPort((r) => new r.DexieSettingsRepository(r.db)),
+  training: lazyPort((r) => new r.DexieTrainingRepository(r.db)),
+  sessionLogs: lazyPort((r) => new r.DexieSessionLogRepository(r.db)),
+  painReports: lazyPort((r) => new r.DexiePainReportRepository(r.db)),
   userData: lazyPort((r) => new r.DexieUserDataStore(r.db)),
   // Catalogues chargés à la demande (import dynamique) : rien de plus au premier rendu.
   recipes: new JsonRecipeRepository(),
@@ -86,6 +91,8 @@ const ports: AppPorts = {
   persistence: new NavigatorStoragePersistence((navigator as { storage?: StorageManager }).storage),
   fileSaver: new DownloadFileSaver(browserDownloadEnvironment(document, URL)),
   device: new WebDeviceStorage(browserDeviceStorages(window)),
+  // Écran maintenu allumé pendant une séance ; repli silencieux sans l'API.
+  wakeLock: new NavigatorWakeLock((navigator as { wakeLock?: WakeLockApi }).wakeLock),
 };
 
 const useCases = createUseCases(ports);

@@ -65,7 +65,7 @@ const BALANCE_BLOCK: SessionBlock = [
 const round5 = (seconds: number): number => Math.max(5, Math.round(seconds / 5) * 5);
 
 /** Journaux antérieurs à la semaine, du plus ancien au plus récent, regroupés par exercice. */
-function historyByExercise(
+export function historyByExercise(
   logs: readonly SessionLog[],
   weekStart: IsoDate,
 ): ReadonlyMap<string, readonly ExerciseHistoryEntry[]> {

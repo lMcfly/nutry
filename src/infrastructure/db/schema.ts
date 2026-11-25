@@ -76,4 +76,24 @@ export const DB_VERSIONS: readonly DbVersion[] = [
       companion: 'id',
     },
   },
+  {
+    // Module Sport (ADR 0015) : profil sportif (singleton), programmes par semaine, journaux de
+    // séance et signalements de douleur. Tables nouvelles : pas de transformation (une base
+    // sans ligne = Sport non activé).
+    version: 4,
+    stores: {
+      profile: 'id',
+      plans: 'weekStart',
+      ratings: 'id, ratedAt',
+      progress: 'date',
+      quiz: 'id',
+      shopping: 'weekStart',
+      settings: 'id',
+      companion: 'id',
+      trainingProfile: 'id',
+      trainingPlans: 'weekStart',
+      sessionLogs: 'id, weekStart, date',
+      painReports: 'id, date, exerciseId',
+    },
+  },
 ];

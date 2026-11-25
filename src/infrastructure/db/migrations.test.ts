@@ -9,6 +9,7 @@ import {
   DexieProfileRepository,
   DexieProgressRepository,
   DexieQuizStateRepository,
+  DexieSessionLogRepository,
   DexieUserDataStore,
 } from './repositories';
 import { DB_VERSIONS, SINGLETON_KEY } from './schema';
@@ -18,6 +19,7 @@ import { fakeIndexedDb } from './testing';
 const LATEST = DB_VERSIONS.at(-1);
 const V1 = DB_VERSIONS.slice(0, 1);
 const V2 = DB_VERSIONS.slice(0, 2);
+const V3 = DB_VERSIONS.slice(0, 3);
 
 /**
  * Une future version imaginaire : nouvel index sur `progress` et donnée dérivée
@@ -38,8 +40,8 @@ const FUTURE: DbVersion = {
 };
 
 describe('migrations du schéma IndexedDB', () => {
-  it('la version 3 est la version courante', () => {
-    expect(DB_VERSIONS.map((v) => v.version)).toEqual([1, 2, 3]);
+  it('la version 4 est la version courante', () => {
+    expect(DB_VERSIONS.map((v) => v.version)).toEqual([1, 2, 3, 4]);
     const versions = DB_VERSIONS.map((v) => v.version);
     expect(versions).toEqual([...versions].sort((a, b) => a - b));
   });
@@ -174,7 +176,7 @@ describe('migrations du schéma IndexedDB', () => {
     expect(v2.tables.map((t) => t.name)).not.toContain('companion');
     v2.close();
 
-    const v3 = new NutryDatabase({ ...idb, name: 'compagnon' });
+    const v3 = new NutryDatabase({ ...idb, name: 'compagnon', versions: V3 });
     await v3.open();
     expect(v3.verno).toBe(3);
     expect(v3.tables.map((t) => t.name)).toContain('companion');
@@ -202,7 +204,7 @@ describe('migrations du schéma IndexedDB', () => {
       },
     });
     v1.close();
-    const v3 = new NutryDatabase({ ...idb, name: 'saut' });
+    const v3 = new NutryDatabase({ ...idb, name: 'saut', versions: V3 });
     await v3.open();
     expect(v3.verno).toBe(3);
     await expect(new DexieQuizStateRepository(v3).get()).resolves.toMatchObject({
@@ -210,5 +212,75 @@ describe('migrations du schéma IndexedDB', () => {
     });
     await expect(new DexieCompanionRepository(v3).get()).resolves.toEqual(INITIAL_COMPANION_STATE);
     v3.close();
+  });
+
+  it('v3 → v4 : les tables du Sport apparaissent vides, les données existantes sont conservées', async () => {
+    const idb = fakeIndexedDb();
+    const v3 = new NutryDatabase({ ...idb, name: 'sport', versions: V3 });
+    await new DexieProfileRepository(v3).save(makeProfile({ age: 41 }));
+    const companion = {
+      ...INITIAL_COMPANION_STATE,
+      lastActiveDay: '2026-11-23',
+      streak: 2,
+      best: 2,
+    };
+    await new DexieCompanionRepository(v3).save(companion);
+    await new DexieProgressRepository(v3).save({ date: '2026-11-25', weightKg: 62 });
+    const SPORT_TABLES = ['trainingProfile', 'trainingPlans', 'sessionLogs', 'painReports'];
+    for (const name of SPORT_TABLES) expect(v3.tables.map((t) => t.name)).not.toContain(name);
+    v3.close();
+
+    const v4 = new NutryDatabase({ ...idb, name: 'sport' });
+    await v4.open();
+    expect(v4.verno).toBe(4);
+    for (const name of SPORT_TABLES) expect(v4.tables.map((t) => t.name)).toContain(name);
+    // Données de la version 3 intactes…
+    expect((await new DexieProfileRepository(v4).get())?.age).toBe(41);
+    await expect(new DexieCompanionRepository(v4).get()).resolves.toEqual(companion);
+    await expect(new DexieProgressRepository(v4).list()).resolves.toEqual([
+      { date: '2026-11-25', weightKg: 62 },
+    ]);
+    // … et le Sport n'est pas activé : aucune ligne, aucun profil sportif.
+    const exported = await new DexieUserDataStore(v4).exportAll();
+    expect(exported).toMatchObject({
+      schemaVersion: 4,
+      trainingPlans: [],
+      sessionLogs: [],
+      painReports: [],
+    });
+    expect(exported.training).toBeUndefined();
+    // Les index prévus servent : semaine et date des journaux, date et exercice des douleurs.
+    const sessionLogs = new DexieSessionLogRepository(v4);
+    await sessionLogs.save({
+      id: '2026-11-23:d0',
+      weekStart: '2026-11-23',
+      sessionId: 'd0',
+      date: '2026-11-23',
+      status: 'en-cours',
+      startedAt: '2026-11-23T10:00:00.000Z',
+      exercises: [],
+    });
+    expect(v4.sessionLogs.schema.idxByName['weekStart']).toBeDefined();
+    expect(v4.sessionLogs.schema.idxByName['date']).toBeDefined();
+    expect(v4.painReports.schema.idxByName['date']).toBeDefined();
+    expect(v4.painReports.schema.idxByName['exerciseId']).toBeDefined();
+    expect(v4.trainingPlans.schema.primKey.name).toBe('weekStart');
+    expect(v4.trainingProfile.schema.primKey.name).toBe('id');
+    v4.close();
+  });
+
+  it('v1 → v4 directement : les quatre versions s’enchaînent', async () => {
+    const idb = fakeIndexedDb();
+    const v1 = new NutryDatabase({ ...idb, name: 'tout', versions: V1 });
+    await new DexieProfileRepository(v1).save(makeProfile({ age: 30 }));
+    v1.close();
+    const v4 = new NutryDatabase({ ...idb, name: 'tout' });
+    await v4.open();
+    expect(v4.verno).toBe(4);
+    expect((await new DexieProfileRepository(v4).get())?.age).toBe(30);
+    expect(v4.userTables.map((t) => t.name)).toEqual(
+      expect.arrayContaining(['trainingProfile', 'trainingPlans', 'sessionLogs', 'painReports']),
+    );
+    v4.close();
   });
 });

@@ -7,6 +7,7 @@ import type {
   ExerciseCatalog,
   FileSaver,
   PhotoCatalog,
+  PainReportRepository,
   PlanRepository,
   ProfileRepository,
   ProgressRepository,
@@ -15,10 +16,13 @@ import type {
   RandomSource,
   RatingRepository,
   RecipeRepository,
+  ScreenWakeLock,
+  SessionLogRepository,
   SettingsRepository,
   Sharer,
   ShoppingRepository,
   StoragePersistence,
+  TrainingRepository,
   UserDataStore,
 } from '../ports';
 import { learnWeights } from '@domain/preferences';
@@ -44,6 +48,10 @@ export interface AppPorts {
   readonly recipes: RecipeRepository;
   readonly photos: PhotoCatalog;
   readonly exercises: ExerciseCatalog;
+  readonly training: TrainingRepository;
+  readonly sessionLogs: SessionLogRepository;
+  readonly painReports: PainReportRepository;
+  readonly wakeLock: ScreenWakeLock;
   readonly sharer: Sharer;
   readonly userData: UserDataStore;
   readonly cipher: Cipher;

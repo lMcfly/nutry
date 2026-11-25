@@ -132,7 +132,7 @@ déploiement suivant remplace la version fautive.
 - **Content Security Policy** : une balise `<meta http-equiv="Content-Security-Policy">`
   dans `index.html` (GitHub Pages ne permet pas d'en-têtes HTTP) :
   `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://images.unsplash.com;
-connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none';
+media-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none';
 base-uri 'self'; form-action 'none'`. Aucun script ni style en ligne : l'enregistrement
   du service worker est dans `src/infrastructure/pwa/register.ts`, et Zod tourne en mode
   `jitless` (`src/infrastructure/data/zod.ts`) pour ne pas sonder `new Function`. Elle est

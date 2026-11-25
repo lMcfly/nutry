@@ -16,6 +16,10 @@ export type { ShareResult, Sharer } from './Sharer';
 export type { ShoppingRepository } from './ShoppingRepository';
 export type { StoragePersistence } from './StoragePersistence';
 export type { UserDataStore } from './UserDataStore';
+export type { TrainingRepository } from './TrainingRepository';
+export type { SessionLogRepository } from './SessionLogRepository';
+export type { PainReportRepository } from './PainReportRepository';
+export type { ScreenWakeLock } from './ScreenWakeLock';
 export type { PhotoCatalog, PhotoProvider, RecipePhoto } from './PhotoCatalog';
 export type {
   ExerciseCatalog,

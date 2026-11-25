@@ -6,6 +6,7 @@ import type { ProgressEntry } from '../progress';
 import type { QuizState } from '../quiz';
 import type { IsoDate, IsoDateTime } from '../shared';
 import type { ShoppingState } from '../shopping';
+import type { PainReport, SavedTrainingPlan, SessionLog, TrainingProfile } from '../training';
 
 export const THEMES = ['system', 'light', 'dark'] as const;
 /** Thème d'affichage : celui du système ou forcé. */
@@ -28,6 +29,8 @@ export interface UserSettings {
   readonly lastBackupReminderOn?: IsoDate;
   /** Le navigateur a accordé le stockage persistant (propre à cet appareil). */
   readonly persistenceGranted?: boolean;
+  /** Dernier jour (local) où la suggestion de niveau d'activité a été refusée (ADR 0015). */
+  readonly activitySuggestionDismissedOn?: IsoDate;
 }
 
 /**
@@ -61,7 +64,7 @@ export interface ShoppingRecord {
 }
 
 /** Version courante du format des données exportées. */
-export const SNAPSHOT_SCHEMA_VERSION = 3;
+export const SNAPSHOT_SCHEMA_VERSION = 4;
 
 /** Toutes les données de la personne, telles qu'exportées ou importées. */
 export interface UserDataSnapshot {
@@ -74,6 +77,11 @@ export interface UserDataSnapshot {
   readonly companion: CompanionState;
   readonly shopping: readonly ShoppingRecord[];
   readonly settings: UserSettings;
+  /** Profil sportif ; absent : le Sport n'est pas activé (ADR 0015). */
+  readonly training?: TrainingProfile;
+  readonly trainingPlans: readonly SavedTrainingPlan[];
+  readonly sessionLogs: readonly SessionLog[];
+  readonly painReports: readonly PainReport[];
 }
 
 /** Fichier de sauvegarde en clair : un instantané daté, marqué comme venant de Nutry. */

@@ -18,6 +18,9 @@ import { INITIAL_QUIZ_STATE } from '@domain/quiz';
 import { FIXTURE_RECIPES, makeProfile } from '@domain/testing/fixtures';
 import { DEFAULT_SETTINGS, SNAPSHOT_SCHEMA_VERSION } from '@domain/userdata';
 import type { RatingRecord, SavedPlan, UserDataSnapshot } from '@domain/userdata';
+import { planTrainingWeek, trainingConstraintsKey } from '@domain/training';
+import type { PainReport, SavedTrainingPlan, SessionLog } from '@domain/training';
+import { makePlanInput, makeTraining } from '@domain/testing/training.fixtures';
 import type { NutryDatabase } from './NutryDatabase';
 import {
   DexiePlanRepository,
@@ -26,11 +29,14 @@ import {
   DexieCompanionRepository,
   DexieQuizStateRepository,
   DexieRatingRepository,
+  DexiePainReportRepository,
+  DexieSessionLogRepository,
   DexieSettingsRepository,
   DexieShoppingRepository,
+  DexieTrainingRepository,
   DexieUserDataStore,
 } from './repositories';
-import { createTestDatabase } from './testing';
+import { createTestDatabase, dexieSportPorts } from './testing';
 
 const plan = (weekStart: string): SavedPlan => ({
   weekStart,
@@ -129,6 +135,133 @@ describe('dépôts Dexie', () => {
   });
 });
 
+const trainingPlan = (weekStart: string): SavedTrainingPlan => {
+  const input = makePlanInput({}, {}, { weekStart });
+  return {
+    ...planTrainingWeek(input),
+    constraintsKey: trainingConstraintsKey(input.profile, input.training),
+    generatedAt: `${weekStart}T08:00:00.000Z`,
+  };
+};
+
+const sessionLog = (weekStart: string, sessionId: string, date: string): SessionLog => ({
+  id: `${weekStart}:${sessionId}`,
+  weekStart,
+  sessionId,
+  date,
+  status: 'terminee',
+  startedAt: `${date}T10:00:00.000Z`,
+  completedAt: `${date}T11:00:00.000Z`,
+  exercises: [
+    {
+      slotId: 'b0-s0',
+      exerciseId: 'pompes',
+      sets: [{ index: 0, done: true, reps: 10, loadKg: 5 }],
+      done: true,
+    },
+  ],
+});
+
+const pain = (date: string, exerciseId: string): PainReport => ({
+  id: `${date}:${exerciseId}`,
+  date,
+  exerciseId,
+  muscles: ['pectoraux'],
+});
+
+describe('dépôts Dexie du Sport', () => {
+  it('profil sportif : absent puis enregistré (singleton)', async () => {
+    db = createTestDatabase();
+    const training = new DexieTrainingRepository(db);
+    await expect(training.getProfile()).resolves.toBeUndefined();
+    await training.saveProfile(makeTraining({ goal: 'force' }));
+    await training.saveProfile(makeTraining({ goal: 'endurance' }));
+    expect((await training.getProfile())?.goal).toBe('endurance');
+    await expect(db.trainingProfile.count()).resolves.toBe(1);
+  });
+
+  it('programmes : par semaine, remplacés à la même semaine, du plus récent au plus ancien', async () => {
+    db = createTestDatabase();
+    const training = new DexieTrainingRepository(db);
+    await training.savePlan(trainingPlan('2026-11-16'));
+    await training.savePlan(trainingPlan('2026-11-30'));
+    await training.savePlan(trainingPlan('2026-11-23'));
+    await training.savePlan({ ...trainingPlan('2026-11-23'), constraintsKey: 'k2' });
+    expect((await training.getPlan('2026-11-23'))?.constraintsKey).toBe('k2');
+    await expect(training.getPlan('2026-12-07')).resolves.toBeUndefined();
+    expect((await training.listPlans()).map((p) => p.weekStart)).toEqual([
+      '2026-11-30',
+      '2026-11-23',
+      '2026-11-16',
+    ]);
+  });
+
+  it('journaux : par identifiant, par semaine, tous par date', async () => {
+    db = createTestDatabase();
+    const logs = new DexieSessionLogRepository(db);
+    await logs.save(sessionLog('2026-11-23', 'd2', '2026-11-25'));
+    await logs.save(sessionLog('2026-11-16', 'd0', '2026-11-16'));
+    await logs.save(sessionLog('2026-11-23', 'd0', '2026-11-23'));
+    await logs.save({ ...sessionLog('2026-11-23', 'd0', '2026-11-23'), status: 'en-cours' });
+    expect((await logs.get('2026-11-23:d0'))?.status).toBe('en-cours');
+    await expect(logs.get('absent')).resolves.toBeUndefined();
+    expect((await logs.listByWeek('2026-11-23')).map((l) => l.id).sort()).toEqual([
+      '2026-11-23:d0',
+      '2026-11-23:d2',
+    ]);
+    expect((await logs.listAll()).map((l) => l.date)).toEqual([
+      '2026-11-16',
+      '2026-11-23',
+      '2026-11-25',
+    ]);
+  });
+
+  it('douleurs : un signalement par jour et exercice, par date', async () => {
+    db = createTestDatabase();
+    const reports = new DexiePainReportRepository(db);
+    await reports.save(pain('2026-11-25', 'pompes'));
+    await reports.save(pain('2026-11-20', 'squat'));
+    await reports.save({ ...pain('2026-11-25', 'pompes'), muscles: ['triceps'] });
+    const all = await reports.list();
+    expect(all.map((r) => r.id)).toEqual(['2026-11-20:squat', '2026-11-25:pompes']);
+    expect(all[1]?.muscles).toEqual(['triceps']);
+  });
+
+  it('exporte, importe atomiquement et efface toutes les données du Sport', async () => {
+    db = createTestDatabase();
+    const store = new DexieUserDataStore(db);
+    const snapshot: UserDataSnapshot = {
+      schemaVersion: SNAPSHOT_SCHEMA_VERSION,
+      plans: [],
+      ratings: [],
+      progress: [],
+      quiz: INITIAL_QUIZ_STATE,
+      companion: INITIAL_COMPANION_STATE,
+      shopping: [],
+      settings: { theme: 'system', activitySuggestionDismissedOn: '2026-11-25' },
+      training: makeTraining(),
+      trainingPlans: [trainingPlan('2026-11-23')],
+      sessionLogs: [sessionLog('2026-11-23', 'd0', '2026-11-23')],
+      painReports: [pain('2026-11-25', 'pompes')],
+    };
+    await store.importAll(snapshot);
+    await expect(store.exportAll()).resolves.toEqual(snapshot);
+    // Un import remplace tout, Sport compris (ici : sans profil sportif).
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { training: _training, ...withoutTraining } = snapshot;
+    await store.importAll({ ...withoutTraining, sessionLogs: [], painReports: [] });
+    const replaced = await store.exportAll();
+    expect(replaced.training).toBeUndefined();
+    expect(replaced.sessionLogs).toEqual([]);
+    expect(replaced.trainingPlans).toHaveLength(1);
+    await store.importAll(snapshot);
+    await store.clearAll();
+    for (const table of [db.trainingProfile, db.trainingPlans, db.sessionLogs, db.painReports]) {
+      await expect(table.count()).resolves.toBe(0);
+    }
+  });
+});
+
 describe('DexieUserDataStore', () => {
   const snapshot: UserDataSnapshot = {
     schemaVersion: SNAPSHOT_SCHEMA_VERSION,
@@ -148,6 +281,9 @@ describe('DexieUserDataStore', () => {
       { weekStart: '2026-11-23', basisKey: 'b', state: { checkedKeys: [], manualItems: [] } },
     ],
     settings: { theme: 'light', lastBackupAt: '2026-11-23T10:00:00.000Z' },
+    trainingPlans: [],
+    sessionLogs: [],
+    painReports: [],
   };
 
   it('exporte une base vide avec les valeurs par défaut', async () => {
@@ -161,6 +297,9 @@ describe('DexieUserDataStore', () => {
       companion: INITIAL_COMPANION_STATE,
       shopping: [],
       settings: DEFAULT_SETTINGS,
+      trainingPlans: [],
+      sessionLogs: [],
+      painReports: [],
     });
   });
 
@@ -233,6 +372,7 @@ describe('cas d’usage branchés sur Dexie', () => {
       backupValidator: new FakeBackupValidator(),
       persistence: new FakePersistence(),
       fileSaver: new RecordingFileSaver(),
+      ...dexieSportPorts(db),
     };
     const uc = createUseCases(ports);
     await uc.saveProfile(makeProfile());

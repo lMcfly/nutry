@@ -15,6 +15,7 @@ import type {
   FileToSave,
   ExerciseCatalog,
   ExerciseMedia,
+  PainReportRepository,
   PhotoCatalog,
   PlanRepository,
   ProfileRepository,
@@ -25,18 +26,27 @@ import type {
   RatingRepository,
   RecipePhoto,
   RecipeRepository,
+  ScreenWakeLock,
+  SessionLogRepository,
   SettingsRepository,
   ShareResult,
   Sharer,
   ShoppingRepository,
   StoragePersistence,
+  TrainingRepository,
   UserDataStore,
 } from '../ports';
 import type { AppPorts } from '../usecases/context';
 import { INITIAL_COMPANION_STATE } from '@domain/companion';
 import type { CompanionState } from '@domain/companion';
 import type { Profile } from '@domain/profile';
-import type { Exercise } from '@domain/training';
+import type {
+  Exercise,
+  PainReport,
+  SavedTrainingPlan,
+  SessionLog,
+  TrainingProfile,
+} from '@domain/training';
 import type { ProgressEntry } from '@domain/progress';
 import { INITIAL_QUIZ_STATE } from '@domain/quiz';
 import type { QuizQuestion, QuizState } from '@domain/quiz';
@@ -98,6 +108,10 @@ export interface InMemoryState {
   companion: CompanionState;
   shopping: Map<IsoDate, ShoppingRecord>;
   settings: UserSettings;
+  training?: TrainingProfile;
+  trainingPlans: Map<IsoDate, SavedTrainingPlan>;
+  sessionLogs: Map<string, SessionLog>;
+  painReports: Map<string, PainReport>;
 }
 
 export function emptyState(): InMemoryState {
@@ -109,6 +123,9 @@ export function emptyState(): InMemoryState {
     companion: INITIAL_COMPANION_STATE,
     shopping: new Map(),
     settings: DEFAULT_SETTINGS,
+    trainingPlans: new Map(),
+    sessionLogs: new Map(),
+    painReports: new Map(),
   };
 }
 
@@ -217,6 +234,83 @@ export class InMemorySettingsRepository implements SettingsRepository {
   }
 }
 
+export class InMemoryTrainingRepository implements TrainingRepository {
+  constructor(private readonly state: InMemoryState) {}
+  getProfile() {
+    return Promise.resolve(this.state.training);
+  }
+  saveProfile(profile: TrainingProfile) {
+    this.state.training = profile;
+    return Promise.resolve();
+  }
+  getPlan(weekStart: IsoDate) {
+    return Promise.resolve(this.state.trainingPlans.get(weekStart));
+  }
+  savePlan(plan: SavedTrainingPlan) {
+    this.state.trainingPlans.set(plan.weekStart, plan);
+    return Promise.resolve();
+  }
+  listPlans() {
+    return Promise.resolve(
+      [...this.state.trainingPlans.values()].sort((a, b) => b.weekStart.localeCompare(a.weekStart)),
+    );
+  }
+}
+
+export class InMemorySessionLogRepository implements SessionLogRepository {
+  constructor(private readonly state: InMemoryState) {}
+  get(id: string) {
+    return Promise.resolve(this.state.sessionLogs.get(id));
+  }
+  save(log: SessionLog) {
+    this.state.sessionLogs.set(log.id, log);
+    return Promise.resolve();
+  }
+  listByWeek(weekStart: IsoDate) {
+    return Promise.resolve(
+      [...this.state.sessionLogs.values()].filter((log) => log.weekStart === weekStart),
+    );
+  }
+  listAll() {
+    return Promise.resolve(
+      [...this.state.sessionLogs.values()].sort(
+        (a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id),
+      ),
+    );
+  }
+}
+
+export class InMemoryPainReportRepository implements PainReportRepository {
+  constructor(private readonly state: InMemoryState) {}
+  save(report: PainReport) {
+    this.state.painReports.set(report.id, report);
+    return Promise.resolve();
+  }
+  list() {
+    return Promise.resolve(
+      [...this.state.painReports.values()].sort((a, b) => a.date.localeCompare(b.date)),
+    );
+  }
+}
+
+/** Verrou d'écran factice : compte les demandes et les relâchements. */
+export class FakeScreenWakeLock implements ScreenWakeLock {
+  held = false;
+  acquisitions = 0;
+  releases = 0;
+  constructor(private readonly supported = true) {}
+  acquire() {
+    this.acquisitions += 1;
+    this.held = this.supported;
+    return Promise.resolve(this.supported);
+  }
+  release() {
+    this.releases += 1;
+    this.held = false;
+    return Promise.resolve();
+  }
+}
+
 export class InMemoryUserDataStore implements UserDataStore {
   constructor(private readonly state: InMemoryState) {}
   exportAll(): Promise<UserDataSnapshot> {
@@ -231,6 +325,10 @@ export class InMemoryUserDataStore implements UserDataStore {
       companion: s.companion,
       shopping: [...s.shopping.values()],
       settings: s.settings,
+      ...(s.training ? { training: s.training } : {}),
+      trainingPlans: [...s.trainingPlans.values()],
+      sessionLogs: [...s.sessionLogs.values()],
+      painReports: [...s.painReports.values()],
     });
   }
   importAll(snapshot: UserDataSnapshot) {
@@ -247,6 +345,9 @@ export class InMemoryUserDataStore implements UserDataStore {
       companion: INITIAL_COMPANION_STATE,
       shopping: [],
       settings: DEFAULT_SETTINGS,
+      trainingPlans: [],
+      sessionLogs: [],
+      painReports: [],
     });
     return Promise.resolve();
   }
@@ -261,6 +362,11 @@ export class InMemoryUserDataStore implements UserDataStore {
     s.companion = snapshot.companion;
     s.shopping = new Map(snapshot.shopping.map((r) => [r.weekStart, r]));
     s.settings = snapshot.settings;
+    if (snapshot.training) s.training = snapshot.training;
+    else delete s.training;
+    s.trainingPlans = new Map(snapshot.trainingPlans.map((p) => [p.weekStart, p]));
+    s.sessionLogs = new Map(snapshot.sessionLogs.map((l) => [l.id, l]));
+    s.painReports = new Map(snapshot.painReports.map((r) => [r.id, r]));
   }
 }
 
@@ -400,6 +506,7 @@ export interface InMemoryPorts extends AppPorts {
   readonly recipes: InMemoryRecipeRepository;
   readonly photos: InMemoryPhotoCatalog;
   readonly exercises: InMemoryExerciseCatalog;
+  readonly wakeLock: FakeScreenWakeLock;
   readonly quizBank: InMemoryQuizRepository;
   readonly sharer: RecordingSharer;
   readonly fileSaver: RecordingFileSaver;
@@ -414,6 +521,8 @@ export function createInMemoryPorts(
     readonly recipes?: readonly Recipe[];
     readonly photos?: readonly RecipePhoto[];
     readonly exercises?: readonly Exercise[];
+    readonly exerciseMedia?: readonly ExerciseMedia[];
+    readonly wakeLockSupported?: boolean;
     readonly questions?: readonly QuizQuestion[];
     readonly clock?: FixedClock;
     readonly seed?: number;
@@ -437,7 +546,11 @@ export function createInMemoryPorts(
     settings: new InMemorySettingsRepository(state),
     recipes: new InMemoryRecipeRepository(options.recipes ?? []),
     photos: new InMemoryPhotoCatalog(options.photos ?? []),
-    exercises: new InMemoryExerciseCatalog(options.exercises ?? []),
+    exercises: new InMemoryExerciseCatalog(options.exercises ?? [], options.exerciseMedia ?? []),
+    training: new InMemoryTrainingRepository(state),
+    sessionLogs: new InMemorySessionLogRepository(state),
+    painReports: new InMemoryPainReportRepository(state),
+    wakeLock: new FakeScreenWakeLock(options.wakeLockSupported),
     sharer: new RecordingSharer(options.shareResult),
     userData: new InMemoryUserDataStore(state),
     cipher: new FakeCipher(),

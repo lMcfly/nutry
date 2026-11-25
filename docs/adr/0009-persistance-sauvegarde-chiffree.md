@@ -47,7 +47,9 @@ navigateur n'évince les données. Le cœur (domain, application) reste sans bib
 
 - Base `nutry`, tables `profile`, `plans`, `ratings`, `progress`, `quiz`, `shopping`,
   `settings`. Le schéma est la liste `DB_VERSIONS` (`infrastructure/db/schema.ts`) ;
-  version 2 : état du quiz par session (ADR 0011).
+  version 2 : état du quiz par session (ADR 0011) ; version 3 : compagnon (ADR 0012) ;
+  version 4 : module Sport (tables `trainingProfile`, `trainingPlans`, `sessionLogs`,
+  `painReports`, format d'export 4, migration 3 → 4 ; ADR 0015).
 - **Ajouter une migration** : ajouter une entrée `{ version: n + 1, stores, upgrade }` à la
   fin (ne jamais modifier une version publiée), `stores` décrivant le schéma complet ;
   `upgrade` transforme les données dans la transaction de montée de version (échec →

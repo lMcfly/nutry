@@ -132,7 +132,7 @@ export {
   trimOptionsFor,
   trimSession,
 } from './duration';
-export { planTrainingWeek } from './plan';
+export { historyByExercise, planTrainingWeek } from './plan';
 export { trainingConstraintsKey } from './fingerprint';
 export {
   finishSessionLog,
@@ -163,3 +163,33 @@ export {
   templateHeavyGroups,
   templateSlots,
 } from './templates';
+export type {
+  TrainingInputIssue,
+  TrainingProfileInput,
+  TrainingQuestionId,
+  TrainingQuestionText,
+  TrainingAnswerText,
+} from './onboarding';
+export {
+  TRAINING_ANSWERS,
+  TRAINING_INPUT_MESSAGES,
+  TRAINING_INVITATION,
+  TRAINING_QUESTIONS,
+  TRAINING_QUESTION_IDS,
+  asksPregnancyStage,
+  buildTrainingProfile,
+  defaultTrainingInput,
+  trainingInputOf,
+  validateTrainingInput,
+} from './onboarding';
+export type { SportAccessoryUnlock } from './rewards';
+export {
+  SPORT_ACCESSORY_UNLOCKS,
+  completedSessionCount,
+  newSportAccessories,
+  nextSportAccessory,
+  unlockedSportAccessories,
+} from './rewards';
+export { replaceInPlan } from './replace';
+export type { SessionHistoryEntry } from './history';
+export { sessionHistory } from './history';

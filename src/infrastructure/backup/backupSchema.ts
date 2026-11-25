@@ -26,7 +26,37 @@ import type { Profile } from '@domain/profile';
 import type { ProgressEntry } from '@domain/progress';
 import type { QuizState } from '@domain/quiz';
 import { AISLES, ALLERGENS, DIETS, LEVELS } from '@domain/recipe';
-import { addDays, isIsoDate } from '@domain/shared';
+import { addDays, dayOfWeek, isIsoDate } from '@domain/shared';
+import {
+  EFFORT_FEELINGS,
+  EQUIPMENT,
+  EQUIPMENT_SETTINGS,
+  MOVEMENT_PATTERNS,
+  MUSCLE_GROUPS,
+  PREGNANCY_STAGES,
+  SESSION_DURATIONS,
+  SESSION_KINDS,
+  SLOT_ROLES,
+  TRAINING_FREQUENCIES,
+  TRAINING_GOALS,
+  TRAINING_LEVELS,
+} from '@domain/training';
+import type {
+  CycleInfo,
+  ExerciseLog,
+  PainReport,
+  PlannedExercise,
+  PlannedSession,
+  Prescription,
+  ProgressionAdvice,
+  SavedTrainingPlan,
+  SessionLog,
+  SessionStatus,
+  SetLog,
+  SplitName,
+  TrainingNoticeCode,
+  TrainingProfile,
+} from '@domain/training';
 import { SNAPSHOT_SCHEMA_VERSION, THEMES } from '@domain/userdata';
 import type {
   BackupFile,
@@ -57,6 +87,17 @@ export const BACKUP_LIMITS = {
   quizSeen: 10_000,
   streak: 100_000,
   meals: 21,
+  /** Programmes hebdomadaires (près de 29 ans), journaux de séance et signalements (ADR 0015). */
+  trainingPlans: 1_500,
+  sessionLogs: 3_000,
+  painReports: 500,
+  sessionsPerWeek: 7,
+  exercisesPerSession: 60,
+  setsPerExercise: 20,
+  reps: 200,
+  seconds: 3_600,
+  loadKg: 500,
+  notices: 10,
 } as const;
 
 const text = (max: number = BACKUP_LIMITS.shortText) => z.string().max(max);
@@ -257,6 +298,181 @@ const settingsSchema = z.object({
   lastBackupAt: isoDateTime.optional(),
   lastBackupReminderOn: isoDate.optional(),
   persistenceGranted: z.boolean().optional(),
+  activitySuggestionDismissedOn: isoDate.optional(),
+});
+
+// ---------------------------------------------------------------------------- Sport
+
+const dayIndex = z.union([
+  z.literal(0),
+  z.literal(1),
+  z.literal(2),
+  z.literal(3),
+  z.literal(4),
+  z.literal(5),
+  z.literal(6),
+]);
+/** Identifiant d'exercice du catalogue : kebab-case ASCII. */
+const exerciseId = z
+  .string()
+  .max(BACKUP_LIMITS.shortText)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'identifiant d’exercice attendu');
+const mondayDate = isoDate;
+
+const FREQUENCIES = z.union(
+  TRAINING_FREQUENCIES.map((n) => z.literal(n)) as unknown as [
+    z.ZodLiteral<1>,
+    z.ZodLiteral<2>,
+    ...z.ZodLiteral<3 | 4 | 5 | 6>[],
+  ],
+);
+const DURATIONS = z.union(
+  SESSION_DURATIONS.map((n) => z.literal(n)) as unknown as [
+    z.ZodLiteral<20>,
+    z.ZodLiteral<30>,
+    ...z.ZodLiteral<45 | 60>[],
+  ],
+);
+
+const trainingProfileSchema = z.object({
+  frequency: FREQUENCIES,
+  days: list(dayIndex, 6),
+  setting: z.enum(EQUIPMENT_SETTINGS),
+  equipment: list(z.enum(EQUIPMENT), EQUIPMENT.length),
+  level: z.enum(TRAINING_LEVELS),
+  goal: z.enum(TRAINING_GOALS),
+  sessionMinutes: DURATIONS,
+  pregnancyStage: z.enum(PREGNANCY_STAGES).optional(),
+  startedOn: mondayDate,
+  safetyAcknowledgedOn: isoDate.optional(),
+});
+
+const SPLIT_NAMES = [
+  'full-body',
+  'haut-bas',
+  'ppl',
+  'ppl-haut-bas',
+  'haut-bas-full',
+] as const satisfies readonly SplitName[];
+const NOTICE_CODES_TRAINING = [
+  'jours-rapproches',
+  'seances-plafonnees',
+  'catalogue-insuffisant',
+  'semaine-allegee',
+  'reprise',
+] as const satisfies readonly TrainingNoticeCode[];
+const ADVICE = [
+  'trouve-ta-charge',
+  'ajoute-une-repetition',
+  'augmente-la-charge',
+  'maintiens',
+  'allege',
+  'variante-plus-dure',
+  'semaine-allegee',
+] as const satisfies readonly ProgressionAdvice[];
+const STATUSES = ['en-cours', 'terminee'] as const satisfies readonly SessionStatus[];
+
+const reps = z.number().int().min(0).max(BACKUP_LIMITS.reps);
+const seconds = z.number().int().min(0).max(BACKUP_LIMITS.seconds);
+const loadKg = z.number().min(0).max(BACKUP_LIMITS.loadKg);
+const setCount = z.number().int().min(1).max(BACKUP_LIMITS.setsPerExercise);
+
+const prescriptionSchema = z.object({
+  sets: setCount,
+  target: z.union([
+    z.object({ measure: z.literal('repetitions'), minReps: reps, maxReps: reps }),
+    z.object({ measure: z.literal('duree'), minSeconds: seconds, maxSeconds: seconds }),
+  ]),
+  restSeconds: seconds,
+  loadKg: loadKg.optional(),
+  advice: z.enum(ADVICE),
+  repsInReserve: z.number().int().min(0).max(10),
+});
+
+const plannedExerciseSchema = z.object({
+  slotId: text(),
+  exerciseId,
+  pattern: z.enum(MOVEMENT_PATTERNS),
+  role: z.enum(SLOT_ROLES),
+  unilateral: z.boolean(),
+  prescription: prescriptionSchema,
+});
+
+const plannedExercises = list(plannedExerciseSchema, BACKUP_LIMITS.exercisesPerSession);
+
+const plannedSessionSchema = z.object({
+  id: text(),
+  dayIndex,
+  date: isoDate,
+  kind: z.enum(SESSION_KINDS),
+  title: text(),
+  warmup: plannedExercises,
+  main: plannedExercises,
+  cooldown: plannedExercises,
+  estimatedMinutes: z.number().min(0).max(1_000),
+  heavyGroups: list(z.enum(MUSCLE_GROUPS), MUSCLE_GROUPS.length),
+});
+
+const cycleSchema = z.object({
+  activeWeeks: count,
+  blockIndex: count,
+  weekInBlock: z.number().int().min(1).max(100),
+  blockLength: z.number().int().min(1).max(100),
+  deload: z.boolean(),
+  deloadReason: z.enum(['cycle', 'reprise']).optional(),
+});
+
+const trainingPlanSchema = z.object({
+  weekStart: mondayDate,
+  split: z.enum(SPLIT_NAMES),
+  cycle: cycleSchema,
+  sessions: list(plannedSessionSchema, BACKUP_LIMITS.sessionsPerWeek),
+  notices: list(
+    z.object({ code: z.enum(NOTICE_CODES_TRAINING), message: text(BACKUP_LIMITS.longText) }),
+    BACKUP_LIMITS.notices,
+  ),
+  constraintsKey: text(BACKUP_LIMITS.key),
+  generatedAt: isoDateTime,
+});
+
+const setLogSchema = z.object({
+  index: z
+    .number()
+    .int()
+    .min(0)
+    .max(BACKUP_LIMITS.setsPerExercise - 1),
+  done: z.boolean(),
+  reps: reps.optional(),
+  seconds: seconds.optional(),
+  loadKg: loadKg.optional(),
+});
+
+const exerciseLogSchema = z.object({
+  slotId: text(),
+  exerciseId,
+  replacedExerciseId: exerciseId.optional(),
+  sets: list(setLogSchema, BACKUP_LIMITS.setsPerExercise),
+  done: z.boolean(),
+  effort: z.enum(EFFORT_FEELINGS).optional(),
+});
+
+const sessionLogSchema = z.object({
+  id: text(),
+  weekStart: mondayDate,
+  sessionId: text(),
+  date: isoDate,
+  status: z.enum(STATUSES),
+  startedAt: isoDateTime,
+  completedAt: isoDateTime.optional(),
+  exercises: list(exerciseLogSchema, BACKUP_LIMITS.exercisesPerSession),
+  effort: z.enum(EFFORT_FEELINGS).optional(),
+});
+
+const painReportSchema = z.object({
+  id: text(),
+  date: isoDate,
+  exerciseId,
+  muscles: list(z.enum(MUSCLE_GROUPS), MUSCLE_GROUPS.length),
 });
 
 export const backupFileSchema = z.object({
@@ -277,6 +493,16 @@ export const backupFileSchema = z.object({
     unique((s) => s.weekStart, 'semaine'),
   ),
   settings: settingsSchema,
+  training: trainingProfileSchema.optional(),
+  trainingPlans: list(trainingPlanSchema, BACKUP_LIMITS.trainingPlans).superRefine(
+    unique((p) => p.weekStart, 'semaine'),
+  ),
+  sessionLogs: list(sessionLogSchema, BACKUP_LIMITS.sessionLogs).superRefine(
+    unique((l) => l.id, 'journal'),
+  ),
+  painReports: list(painReportSchema, BACKUP_LIMITS.painReports).superRefine(
+    unique((r) => r.id, 'signalement'),
+  ),
 });
 
 /** Marge tolérée après `exportedAt` (horloges et fuseaux décalés). */
@@ -302,6 +528,87 @@ function checkCompanion(companion: ParsedBackup['companion'], ctx: z.RefinementC
   if (!equip(companion as CompanionState, companion.look as CompanionState['look']).ok) {
     issue('look', 'apparence non débloquée');
   }
+}
+
+/** Cohérence du Sport (ADR 0015) : lundis, identifiants, jours triés, dates et statuts. */
+function checkTraining(
+  backup: ParsedBackup,
+  ctx: z.RefinementCtx,
+  limits: {
+    readonly day: (value: string | undefined, path: (string | number)[]) => void;
+    readonly instant: (value: string | undefined, path: (string | number)[]) => void;
+  },
+): void {
+  const issue = (path: (string | number)[], message: string) => {
+    ctx.addIssue({ code: 'custom', path, message });
+  };
+  const monday = (value: string, path: (string | number)[]) => {
+    if (isIsoDate(value) && dayOfWeek(value) !== 0) issue(path, 'un lundi est attendu');
+  };
+  const { training } = backup;
+  if (training) {
+    const { days } = training;
+    if (days.length !== training.frequency) {
+      issue(['training', 'days'], 'autant de jours que de séances par semaine');
+    }
+    if (days.some((d, i) => i > 0 && d <= (days[i - 1] ?? -1))) {
+      issue(['training', 'days'], 'jours triés et sans doublon attendus');
+    }
+    monday(training.startedOn, ['training', 'startedOn']);
+    limits.day(training.startedOn, ['training', 'startedOn']);
+    limits.day(training.safetyAcknowledgedOn, ['training', 'safetyAcknowledgedOn']);
+  }
+  backup.trainingPlans.forEach((plan, p) => {
+    monday(plan.weekStart, ['trainingPlans', p, 'weekStart']);
+    limits.day(plan.weekStart, ['trainingPlans', p, 'weekStart']);
+    limits.instant(plan.generatedAt, ['trainingPlans', p, 'generatedAt']);
+    const ids = new Set<string>();
+    plan.sessions.forEach((session, i) => {
+      if (ids.has(session.id)) issue(['trainingPlans', p, 'sessions', i, 'id'], 'séance en double');
+      ids.add(session.id);
+      if (isIsoDate(plan.weekStart) && session.date !== addDays(plan.weekStart, session.dayIndex)) {
+        issue(
+          ['trainingPlans', p, 'sessions', i, 'date'],
+          'date incohérente avec le jour de la séance',
+        );
+      }
+    });
+  });
+  backup.sessionLogs.forEach((log, l) => {
+    const at = (field: string) => ['sessionLogs', l, field];
+    if (log.id !== `${log.weekStart}:${log.sessionId}`) issue(at('id'), 'identifiant incohérent');
+    monday(log.weekStart, at('weekStart'));
+    if (log.date < log.weekStart) issue(at('date'), 'date antérieure à la semaine de la séance');
+    limits.day(log.date, at('date'));
+    limits.instant(log.startedAt, at('startedAt'));
+    limits.instant(log.completedAt, at('completedAt'));
+    if ((log.status === 'terminee') !== (log.completedAt !== undefined)) {
+      issue(at('completedAt'), 'fin incohérente avec le statut');
+    }
+    if (log.completedAt !== undefined && log.completedAt < log.startedAt) {
+      issue(at('completedAt'), 'fin antérieure au début');
+    }
+    const slots = new Set<string>();
+    log.exercises.forEach((exercise, e) => {
+      if (slots.has(exercise.slotId)) {
+        issue(['sessionLogs', l, 'exercises', e, 'slotId'], 'créneau en double');
+      }
+      slots.add(exercise.slotId);
+      const indexes = new Set<number>();
+      exercise.sets.forEach((set, k) => {
+        if (indexes.has(set.index)) {
+          issue(['sessionLogs', l, 'exercises', e, 'sets', k, 'index'], 'série en double');
+        }
+        indexes.add(set.index);
+      });
+    });
+  });
+  backup.painReports.forEach((report, r) => {
+    if (report.id !== `${report.date}:${report.exerciseId}`) {
+      issue(['painReports', r, 'id'], 'identifiant incohérent');
+    }
+    limits.day(report.date, ['painReports', r, 'date']);
+  });
 }
 
 /**
@@ -356,12 +663,14 @@ function checkCoherence(backup: ParsedBackup, ctx: z.RefinementCtx): void {
   backup.shopping.forEach((s, i) => {
     day(s.weekStart, ['shopping', i, 'weekStart']);
   });
+  checkTraining(backup, ctx, { day, instant });
   checkCompanion(backup.companion, ctx);
   day(backup.companion.lastActiveDay, ['companion', 'lastActiveDay']);
   const { settings } = backup;
   instant(settings.profileCreatedAt, ['settings', 'profileCreatedAt']);
   instant(settings.lastBackupAt, ['settings', 'lastBackupAt']);
   day(settings.lastBackupReminderOn, ['settings', 'lastBackupReminderOn']);
+  day(settings.activitySuggestionDismissedOn, ['settings', 'activitySuggestionDismissedOn']);
 }
 
 const coherentBackupSchema = backupFileSchema.superRefine(checkCoherence);
@@ -404,6 +713,16 @@ type Checks = [
   Same<Plain<z.infer<typeof companionSchema>>, Plain<CompanionState>>,
   Same<Plain<z.infer<typeof shoppingSchema>>, Plain<ShoppingRecord>>,
   Same<Plain<z.infer<typeof settingsSchema>>, Plain<UserSettings>>,
+  Same<Plain<z.infer<typeof trainingProfileSchema>>, Plain<TrainingProfile>>,
+  Same<Plain<z.infer<typeof cycleSchema>>, Plain<CycleInfo>>,
+  Same<Plain<z.infer<typeof prescriptionSchema>>, Plain<Prescription>>,
+  Same<Plain<z.infer<typeof plannedExerciseSchema>>, Plain<PlannedExercise>>,
+  Same<Plain<z.infer<typeof plannedSessionSchema>>, Plain<PlannedSession>>,
+  Same<Plain<z.infer<typeof trainingPlanSchema>>, Plain<SavedTrainingPlan>>,
+  Same<Plain<z.infer<typeof setLogSchema>>, Plain<SetLog>>,
+  Same<Plain<z.infer<typeof exerciseLogSchema>>, Plain<ExerciseLog>>,
+  Same<Plain<z.infer<typeof sessionLogSchema>>, Plain<SessionLog>>,
+  Same<Plain<z.infer<typeof painReportSchema>>, Plain<PainReport>>,
   Same<keyof z.infer<typeof backupFileSchema>, keyof BackupFile>,
   Same<Plain<z.infer<typeof encryptedPayloadSchema>>, Plain<EncryptedPayload>>,
 ];
@@ -428,6 +747,13 @@ export const SNAPSHOT_MIGRATIONS: Readonly<Record<number, SnapshotMigration>> = 
   1: (raw) => ({ ...raw, schemaVersion: 2, quiz: migrateQuizStateToSessions(raw['quiz']) }),
   // v2 → v3 : compagnon Nutry. Un export v2 n'en contient pas : état initial (ADR 0012).
   2: (raw) => ({ ...raw, schemaVersion: 3, companion: INITIAL_COMPANION_STATE }),
+  // v3 → v4 : module Sport (ADR 0015). Un export v3 n'en contient pas : pas de profil sportif,
+  // aucune liste. Les clés éventuelles du Sport dans un fichier v3 sont écrasées (jamais reprises).
+  3: (raw) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { training, ...rest } = raw;
+    return { ...rest, schemaVersion: 4, trainingPlans: [], sessionLogs: [], painReports: [] };
+  },
 };
 
 const MAX_ERRORS = 5;

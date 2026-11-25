@@ -22,6 +22,8 @@ import { createSettingsUseCases } from './settings';
 import type { SettingsUseCases } from './settings';
 import { createShoppingUseCases } from './shopping';
 import type { ShoppingUseCases } from './shopping';
+import { createTrainingUseCases } from './training';
+import type { TrainingUseCases } from './training';
 
 /** Tous les cas d'usage, seule API de l'application exposée à la présentation. */
 export type UseCases = ProfileUseCases &
@@ -34,7 +36,8 @@ export type UseCases = ProfileUseCases &
   SettingsUseCases &
   DataUseCases &
   CatalogUseCases &
-  CompanionUseCases;
+  CompanionUseCases &
+  TrainingUseCases;
 
 /**
  * Fabrique les cas d'usage à partir des ports (injection par paramètres, sans framework).
@@ -55,6 +58,7 @@ export function createUseCases(appPorts: AppPorts): UseCases {
     ...createDataUseCases(ports, serial),
     ...createCatalogUseCases(ports),
     ...createCompanionUseCases(ports, serial),
+    ...createTrainingUseCases(ports, serial),
   };
 }
 
@@ -102,3 +106,36 @@ export { DEVICE_KEYS } from './settings';
 export type { ShoppingResult, ShoppingView } from './shopping';
 export type { ShareResult } from '../ports';
 export { MANUAL_ITEM_MAX_LENGTH } from './shopping';
+export type {
+  ActiveSessionResult,
+  ActiveSessionView,
+  CompleteSessionResult,
+  ExerciseAlternativesResult,
+  ExerciseCreditsView,
+  ExerciseSheet,
+  PainResult,
+  SaveTrainingProfileResult,
+  SessionRef,
+  SlotRef,
+  SportInactive,
+  SportRewardsView,
+  TrainingFailure,
+  TrainingHistoryView,
+  TrainingOnboardingView,
+  TrainingProfileResult,
+  TrainingProfileView,
+  TrainingSessionResult,
+  TrainingSessionView,
+  TrainingUnavailable,
+  TrainingWeekResult,
+  TrainingWeekView,
+} from './training';
+export {
+  EXERCISE_CREDITS_TEXTS,
+  MAX_LOAD_KG,
+  MAX_REPS,
+  MAX_SECONDS,
+  MAX_SETS_PER_EXERCISE,
+  TRAINING_FAILURE_MESSAGES,
+  TRAINING_MESSAGES,
+} from './training';

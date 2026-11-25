@@ -1,6 +1,6 @@
 # ADR 0015 — Module Sport : programme de la semaine, séance guidée, lien avec la Nourriture
 
-- Statut : accepté ; phases 1 (domaine) et 2 (données) livrées, phases 3 à 6 à venir
+- Statut : accepté ; phases 1 (domaine), 2 (données) et 3 (application et infrastructure) livrées, phases 4 à 6 à venir
 - Date : 2026-11-25
 - Complète : ADR 0001 (frontières), 0005 (Zod), 0006 (moteur de menu), 0007 (garde-fous
   santé), 0009 (persistance), 0010 (textes), 0012 (compagnon), 0013 (interface sans scroll),
@@ -484,3 +484,49 @@ Livré dans `src/domain/training/` : `safety.ts`, `select.ts`, `cycle.ts`, `prog
 - Pour un exercice en durée, « Ajoute une répétition » veut dire « tiens un peu plus longtemps ».
 - Contrats : `training.contracts.ts` ne garde que les types d'entrée et `SuggestActivityLevel`
   (phase 5) ; les fonctions portent leur nom en camelCase dans leur fichier.
+
+## Complément (phase 3, application et infrastructure)
+
+Livré :
+
+- **Ports** (`application/ports/`) : `TrainingRepository` (profil sportif, programmes),
+  `SessionLogRepository`, `PainReportRepository`, `ScreenWakeLock` ; `AppPorts` gagne `training`,
+  `sessionLogs`, `painReports`, `wakeLock`. Fakes dans `application/testing` (`InMemoryTrainingRepository`,
+  `InMemorySessionLogRepository`, `InMemoryPainReportRepository`, `FakeScreenWakeLock`).
+- **Cas d'usage** (`application/usecases/training.ts`, `TrainingUseCases`, tous les écrits sous le
+  verrou sériel, échecs de stockage ou de catalogue en `{ status: 'failed', message }`) :
+  `getTrainingProfile`, `saveTrainingProfile`, `acknowledgeTrainingSafety`, `getTrainingWeek`,
+  `getTrainingDays`, `getTrainingSession`, `startSession`, `logSet`, `markExerciseDone`,
+  `getExerciseAlternatives`, `replaceExercise`, `reportPain`, `completeSession`, `getExerciseSheet`,
+  `listExerciseCredits`, `getTrainingHistory`, `getSportRewards`, `keepScreenOn`, `releaseScreen`.
+  Ajouts au-delà de la liste de la phase : `acknowledgeTrainingSafety` (« J'ai compris »),
+  `getTrainingSession` (lecture sans écrire), `getExerciseAlternatives` (le choix du « Remplacer »),
+  `getTrainingHistory`, `getSportRewards` et la paire `keepScreenOn` / `releaseScreen` (la
+  présentation n'atteint les ports que par les cas d'usage).
+- **Domain** (petits ajouts nécessaires aux cas d'usage) : `onboarding.ts` (textes et validation des
+  cinq écrans + étape de grossesse, ADR 0010), `rewards.ts` (seuils des accessoires sportifs,
+  nombre cumulé de séances terminées), `replace.ts` (`replaceInPlan`), `history.ts`, et
+  `historyByExercise` exporté de `plan.ts`.
+- **Infrastructure** : Dexie v4 (`trainingProfile`, `trainingPlans`, `sessionLogs`, `painReports`,
+  sans `upgrade`), `SNAPSHOT_SCHEMA_VERSION` 4, migration d'export 3 → 4 (listes vides, pas de
+  profil sportif ; les clés du Sport d'un fichier v3 sont écrasées), schémas Zod bornés alignés à
+  la compilation (`Same<…>`) avec les bornes de la section 8 et les contrôles de cohérence
+  (identifiants, lundis, dates, jours, statuts), `NavigatorWakeLock`, `runtimeCaching`
+  `nutry-exercices` hors précache, CSP `media-src 'self'` (le test `e2e/csp.spec.ts` suit).
+- **Règles retenues** : un programme enregistré est régénéré si l'empreinte change ou si un
+  exercice (échauffement, principal, retour au calme) n'existe plus ou n'est plus éligible
+  (douleur comprise) ; le programme est stable sinon, y compris après un remplacement (le
+  nouvel exercice est écrit dans le programme et le journal, `replacedExerciseId` garde la trace).
+  Terminer une séance sans aucune série cochée rend `nothing-done` et n'enregistre rien ; une
+  séance terminée est le geste de la série (`recordCompanionActivity`, au mieux) ; terminer deux
+  fois ne compte qu'une séance. Les saisies d'une série sont bornées comme l'import (répétitions
+  0–200, secondes 0–3 600, charge 0–500 kg, 20 séries).
+
+Écarts assumés avec le texte ci-dessus :
+
+- **`ScoreComponentKey` `sport`** (section 8) reste à la phase 5 avec le composant de score ; le
+  schéma Zod des menus l'ajoutera alors (un export v4 sans ce composant reste valide).
+- **Accessoires de Nutry** : la phase 3 fournit le décompte cumulé et les seuils (`getSportRewards`,
+  `SPORT_ACCESSORY_UNLOCKS`, accessoires débloqués renvoyés par `completeSession`) ; l'extension du
+  catalogue du compagnon (`unlockAt` à deux formes, équipement, dessins SVG) est la phase 5.
+- `ImportCounts` (résultat d'import) n'est pas étendu : l'interface actuelle ne l'affiche pas.

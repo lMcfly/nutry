@@ -1,12 +1,15 @@
 import type {
   CompanionRepository,
+  PainReportRepository,
   PlanRepository,
   ProfileRepository,
   ProgressRepository,
   QuizStateRepository,
   RatingRepository,
+  SessionLogRepository,
   SettingsRepository,
   ShoppingRepository,
+  TrainingRepository,
   UserDataStore,
 } from '@application/ports';
 import { INITIAL_COMPANION_STATE } from '@domain/companion';
@@ -16,6 +19,7 @@ import type { ProgressEntry } from '@domain/progress';
 import { INITIAL_QUIZ_STATE } from '@domain/quiz';
 import type { QuizState } from '@domain/quiz';
 import type { IsoDate } from '@domain/shared';
+import type { PainReport, SavedTrainingPlan, SessionLog, TrainingProfile } from '@domain/training';
 import { DEFAULT_SETTINGS, SNAPSHOT_SCHEMA_VERSION } from '@domain/userdata';
 import type {
   RatingRecord,
@@ -116,6 +120,51 @@ export class DexieSettingsRepository implements SettingsRepository {
   }
 }
 
+export class DexieTrainingRepository implements TrainingRepository {
+  constructor(private readonly db: NutryDatabase) {}
+  async getProfile(): Promise<TrainingProfile | undefined> {
+    return (await this.db.trainingProfile.get(SINGLETON_KEY))?.profile;
+  }
+  async saveProfile(profile: TrainingProfile): Promise<void> {
+    await this.db.trainingProfile.put({ id: SINGLETON_KEY, profile });
+  }
+  getPlan(weekStart: IsoDate): Promise<SavedTrainingPlan | undefined> {
+    return this.db.trainingPlans.get(weekStart);
+  }
+  async savePlan(plan: SavedTrainingPlan): Promise<void> {
+    await this.db.trainingPlans.put(plan);
+  }
+  listPlans(): Promise<readonly SavedTrainingPlan[]> {
+    return this.db.trainingPlans.reverse().toArray();
+  }
+}
+
+export class DexieSessionLogRepository implements SessionLogRepository {
+  constructor(private readonly db: NutryDatabase) {}
+  get(id: string): Promise<SessionLog | undefined> {
+    return this.db.sessionLogs.get(id);
+  }
+  async save(log: SessionLog): Promise<void> {
+    await this.db.sessionLogs.put(log);
+  }
+  listByWeek(weekStart: IsoDate): Promise<readonly SessionLog[]> {
+    return this.db.sessionLogs.where('weekStart').equals(weekStart).toArray();
+  }
+  listAll(): Promise<readonly SessionLog[]> {
+    return this.db.sessionLogs.orderBy('date').toArray();
+  }
+}
+
+export class DexiePainReportRepository implements PainReportRepository {
+  constructor(private readonly db: NutryDatabase) {}
+  async save(report: PainReport): Promise<void> {
+    await this.db.painReports.put(report);
+  }
+  list(): Promise<readonly PainReport[]> {
+    return this.db.painReports.orderBy('date').toArray();
+  }
+}
+
 /** Export, import et effacement de toutes les tables, chacun en UNE transaction. */
 export class DexieUserDataStore implements UserDataStore {
   constructor(private readonly db: NutryDatabase) {}
@@ -123,17 +172,33 @@ export class DexieUserDataStore implements UserDataStore {
   exportAll(): Promise<UserDataSnapshot> {
     const { db } = this;
     return db.transaction('r', db.userTables, async () => {
-      const [profile, plans, ratings, progress, quiz, companion, shopping, settings] =
-        await Promise.all([
-          db.profile.get(SINGLETON_KEY),
-          db.plans.toArray(),
-          db.ratings.orderBy('ratedAt').toArray(),
-          db.progress.toArray(),
-          db.quiz.get(SINGLETON_KEY),
-          db.companion.get(SINGLETON_KEY),
-          db.shopping.toArray(),
-          db.settings.get(SINGLETON_KEY),
-        ]);
+      const [
+        profile,
+        plans,
+        ratings,
+        progress,
+        quiz,
+        companion,
+        shopping,
+        settings,
+        training,
+        trainingPlans,
+        sessionLogs,
+        painReports,
+      ] = await Promise.all([
+        db.profile.get(SINGLETON_KEY),
+        db.plans.toArray(),
+        db.ratings.orderBy('ratedAt').toArray(),
+        db.progress.toArray(),
+        db.quiz.get(SINGLETON_KEY),
+        db.companion.get(SINGLETON_KEY),
+        db.shopping.toArray(),
+        db.settings.get(SINGLETON_KEY),
+        db.trainingProfile.get(SINGLETON_KEY),
+        db.trainingPlans.toArray(),
+        db.sessionLogs.toArray(),
+        db.painReports.toArray(),
+      ]);
       return {
         schemaVersion: SNAPSHOT_SCHEMA_VERSION,
         ...(profile ? { profile: profile.profile } : {}),
@@ -144,6 +209,10 @@ export class DexieUserDataStore implements UserDataStore {
         companion: companion?.state ?? INITIAL_COMPANION_STATE,
         shopping,
         settings: settings?.settings ?? DEFAULT_SETTINGS,
+        ...(training ? { training: training.profile } : {}),
+        trainingPlans,
+        sessionLogs,
+        painReports,
       };
     });
   }
@@ -161,6 +230,12 @@ export class DexieUserDataStore implements UserDataStore {
         db.companion.put({ id: SINGLETON_KEY, state: snapshot.companion }),
         db.shopping.bulkPut([...snapshot.shopping]),
         db.settings.put({ id: SINGLETON_KEY, settings: snapshot.settings }),
+        snapshot.training
+          ? db.trainingProfile.put({ id: SINGLETON_KEY, profile: snapshot.training })
+          : null,
+        db.trainingPlans.bulkPut([...snapshot.trainingPlans]),
+        db.sessionLogs.bulkPut([...snapshot.sessionLogs]),
+        db.painReports.bulkPut([...snapshot.painReports]),
       ]);
     });
   }

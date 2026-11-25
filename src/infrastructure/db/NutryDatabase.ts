@@ -5,6 +5,7 @@ import type { Profile } from '@domain/profile';
 import type { ProgressEntry } from '@domain/progress';
 import type { QuizState } from '@domain/quiz';
 import type { IsoDate } from '@domain/shared';
+import type { PainReport, SavedTrainingPlan, SessionLog, TrainingProfile } from '@domain/training';
 import type { RatingRecord, SavedPlan, ShoppingRecord, UserSettings } from '@domain/userdata';
 import { DB_NAME, DB_VERSIONS } from './schema';
 import type { DbVersion } from './schema';
@@ -20,6 +21,10 @@ export interface QuizRow {
 export interface CompanionRow {
   readonly id: string;
   readonly state: CompanionState;
+}
+export interface TrainingProfileRow {
+  readonly id: string;
+  readonly profile: TrainingProfile;
 }
 export interface SettingsRow {
   readonly id: string;
@@ -45,6 +50,10 @@ export class NutryDatabase extends Dexie {
   declare readonly companion: Table<CompanionRow, string>;
   declare readonly shopping: Table<ShoppingRecord, IsoDate>;
   declare readonly settings: Table<SettingsRow, string>;
+  declare readonly trainingProfile: Table<TrainingProfileRow, string>;
+  declare readonly trainingPlans: Table<SavedTrainingPlan, IsoDate>;
+  declare readonly sessionLogs: Table<SessionLog, string>;
+  declare readonly painReports: Table<PainReport, string>;
 
   constructor(options: NutryDatabaseOptions = {}) {
     super(options.name ?? DB_NAME, {
@@ -68,6 +77,10 @@ export class NutryDatabase extends Dexie {
       this.shopping,
       this.settings,
       this.companion,
+      this.trainingProfile,
+      this.trainingPlans,
+      this.sessionLogs,
+      this.painReports,
     ] as Table[];
   }
 }
