@@ -194,3 +194,18 @@ export async function toFirstExercise(page: Page): Promise<void> {
   }
   throw new Error('pas d’exercice principal');
 }
+
+/**
+ * Passe le niveau d'activité du profil à « Sédentaire » (Moi › Réglages › Moi) : avec le
+ * programme de Sport, la carte « Ton niveau d'activité pourrait monter d'un cran » apparaît.
+ */
+export async function setActivitySedentary(page: Page): Promise<void> {
+  await page.getByRole('link', { name: 'Moi' }).click();
+  await page.getByRole('button', { name: 'Réglages' }).click();
+  await page.getByRole('dialog', { name: 'Réglages' }).getByRole('button', { name: 'Moi' }).click();
+  const sheet = page.getByRole('dialog', { name: 'Moi' });
+  await sheet.getByText('Sédentaire', { exact: true }).click();
+  await sheet.getByRole('button', { name: 'Enregistrer mes réponses' }).click();
+  // L'enregistrement ferme la feuille.
+  await expect(sheet).toBeHidden();
+}

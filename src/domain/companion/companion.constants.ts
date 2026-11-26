@@ -1,6 +1,7 @@
 import type { CompanionState } from './companion.types';
 import type {
   AccessorySlot,
+  Unlock,
   Accessory,
   ColorItem,
   CompanionLook,
@@ -8,28 +9,32 @@ import type {
   EyesItem,
 } from './companion.types';
 
+const serie = (days: number): Unlock => ({ kind: 'serie', days });
+const seances = (count: number): Unlock => ({ kind: 'seances', count });
+
 /**
- * Catalogue des options de Nutry. `unlockAt` = record de série (en jours) qui débloque
- * l'élément ; 0 = disponible d'emblée. Valeurs à exposer telles quelles (ADR 0012).
+ * Catalogue des options de Nutry. `unlockAt` : record de série (en jours ; 0 = disponible
+ * d'emblée) ou nombre cumulé de séances terminées pour les accessoires sportifs (ADR 0012, 0015).
+ * Valeurs à exposer telles quelles.
  */
 export const COMPANION_COLORS: readonly ColorItem[] = [
-  { kind: 'color', id: 'menthe', label: 'Menthe', emoji: '🌿', unlockAt: 0 },
-  { kind: 'color', id: 'abricot', label: 'Abricot', emoji: '🍑', unlockAt: 0 },
-  { kind: 'color', id: 'myrtille', label: 'Myrtille', emoji: '🫐', unlockAt: 0 },
-  { kind: 'color', id: 'citron', label: 'Citron', emoji: '🍋', unlockAt: 0 },
-  { kind: 'color', id: 'framboise', label: 'Framboise', emoji: '🍓', unlockAt: 0 },
-  { kind: 'color', id: 'ciel', label: 'Ciel', emoji: '☁️', unlockAt: 0 },
-  { kind: 'color', id: 'aurore', label: 'Aurore', emoji: '🌅', unlockAt: 5 },
-  { kind: 'color', id: 'cosmos', label: 'Cosmos', emoji: '🌌', unlockAt: 15 },
-  { kind: 'color', id: 'arc-en-ciel', label: 'Arc-en-ciel', emoji: '🌈', unlockAt: 45 },
+  { kind: 'color', id: 'menthe', label: 'Menthe', emoji: '🌿', unlockAt: serie(0) },
+  { kind: 'color', id: 'abricot', label: 'Abricot', emoji: '🍑', unlockAt: serie(0) },
+  { kind: 'color', id: 'myrtille', label: 'Myrtille', emoji: '🫐', unlockAt: serie(0) },
+  { kind: 'color', id: 'citron', label: 'Citron', emoji: '🍋', unlockAt: serie(0) },
+  { kind: 'color', id: 'framboise', label: 'Framboise', emoji: '🍓', unlockAt: serie(0) },
+  { kind: 'color', id: 'ciel', label: 'Ciel', emoji: '☁️', unlockAt: serie(0) },
+  { kind: 'color', id: 'aurore', label: 'Aurore', emoji: '🌅', unlockAt: serie(5) },
+  { kind: 'color', id: 'cosmos', label: 'Cosmos', emoji: '🌌', unlockAt: serie(15) },
+  { kind: 'color', id: 'arc-en-ciel', label: 'Arc-en-ciel', emoji: '🌈', unlockAt: serie(45) },
 ];
 
 export const COMPANION_EYES: readonly EyesItem[] = [
-  { kind: 'eyes', id: 'ronds', label: 'Ronds', emoji: '👀', unlockAt: 0 },
-  { kind: 'eyes', id: 'rieurs', label: 'Rieurs', emoji: '😊', unlockAt: 0 },
-  { kind: 'eyes', id: 'brillants', label: 'Brillants', emoji: '✨', unlockAt: 0 },
-  { kind: 'eyes', id: 'malicieux', label: 'Malicieux', emoji: '😏', unlockAt: 0 },
-  { kind: 'eyes', id: 'doux', label: 'Doux', emoji: '🥰', unlockAt: 0 },
+  { kind: 'eyes', id: 'ronds', label: 'Ronds', emoji: '👀', unlockAt: serie(0) },
+  { kind: 'eyes', id: 'rieurs', label: 'Rieurs', emoji: '😊', unlockAt: serie(0) },
+  { kind: 'eyes', id: 'brillants', label: 'Brillants', emoji: '✨', unlockAt: serie(0) },
+  { kind: 'eyes', id: 'malicieux', label: 'Malicieux', emoji: '😏', unlockAt: serie(0) },
+  { kind: 'eyes', id: 'doux', label: 'Doux', emoji: '🥰', unlockAt: serie(0) },
 ];
 
 export const COMPANION_ACCESSORIES: readonly Accessory[] = [
@@ -39,7 +44,7 @@ export const COMPANION_ACCESSORIES: readonly Accessory[] = [
     slot: 'tete',
     label: 'Feuille sur la tête',
     emoji: '🍃',
-    unlockAt: 1,
+    unlockAt: serie(1),
   },
   {
     kind: 'accessory',
@@ -47,7 +52,7 @@ export const COMPANION_ACCESSORIES: readonly Accessory[] = [
     slot: 'visage',
     label: 'Lunettes rondes',
     emoji: '👓',
-    unlockAt: 3,
+    unlockAt: serie(3),
   },
   {
     kind: 'accessory',
@@ -55,18 +60,72 @@ export const COMPANION_ACCESSORIES: readonly Accessory[] = [
     slot: 'tete',
     label: 'Toque de chef',
     emoji: '👨‍🍳',
-    unlockAt: 7,
+    unlockAt: serie(7),
   },
-  { kind: 'accessory', id: 'echarpe', slot: 'cou', label: 'Écharpe', emoji: '🧣', unlockAt: 10 },
-  { kind: 'accessory', id: 'tablier', slot: 'corps', label: 'Tablier', emoji: '🍳', unlockAt: 14 },
-  { kind: 'accessory', id: 'bonnet', slot: 'tete', label: 'Bonnet', emoji: '🧶', unlockAt: 21 },
+  {
+    kind: 'accessory',
+    id: 'echarpe',
+    slot: 'cou',
+    label: 'Écharpe',
+    emoji: '🧣',
+    unlockAt: serie(10),
+  },
+  {
+    kind: 'accessory',
+    id: 'tablier',
+    slot: 'corps',
+    label: 'Tablier',
+    emoji: '🍳',
+    unlockAt: serie(14),
+  },
+  {
+    kind: 'accessory',
+    id: 'bonnet',
+    slot: 'tete',
+    label: 'Bonnet',
+    emoji: '🧶',
+    unlockAt: serie(21),
+  },
   {
     kind: 'accessory',
     id: 'couronne-de-fruits',
     slot: 'tete',
     label: 'Couronne de fruits',
     emoji: '👑',
-    unlockAt: 30,
+    unlockAt: serie(30),
+  },
+  // Accessoires sportifs : nombre cumulé de séances terminées (ADR 0015, section 6).
+  {
+    kind: 'accessory',
+    id: 'bandeau',
+    slot: 'tete',
+    label: 'Bandeau',
+    emoji: '🎽',
+    unlockAt: seances(1),
+  },
+  {
+    kind: 'accessory',
+    id: 'serviette',
+    slot: 'cou',
+    label: 'Serviette',
+    emoji: '🧣',
+    unlockAt: seances(5),
+  },
+  {
+    kind: 'accessory',
+    id: 'casquette',
+    slot: 'tete',
+    label: 'Casquette',
+    emoji: '🧢',
+    unlockAt: seances(10),
+  },
+  {
+    kind: 'accessory',
+    id: 'medaille',
+    slot: 'cou',
+    label: 'Médaille',
+    emoji: '🏅',
+    unlockAt: seances(20),
   },
 ];
 

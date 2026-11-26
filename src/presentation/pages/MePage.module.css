@@ -168,6 +168,13 @@
   font-weight: var(--font-weight-medium);
 }
 
+/* Une proposition de niveau d'activité occupe une ligne : Nutry rapetisse sur les grands téléphones. */
+@media (max-width: 767px) and (min-height: 761px) {
+  .compact .heroNutry {
+    --nutry-size: clamp(4.5rem, 10dvh, 6.5rem);
+  }
+}
+
 /* Petits écrans : Nutry à gauche de sa série, pour que tout tienne sans défiler. */
 @media (max-height: 760px) and (max-width: 767px) {
   .layout {

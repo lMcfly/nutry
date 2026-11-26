@@ -15,7 +15,13 @@ export type {
 export { DAY_NAMES, SLOT_NAMES, mealLabel } from './labels';
 export { dayRequirements } from './schedule';
 export type { DayRequirements } from './schedule';
-export { SCORE_RULES, isConsecutiveProtein, rankRecipes, scoreRecipe } from './scoring';
+export {
+  SCORE_RULES,
+  TRAINING_DAY_MIN_STARCH_SHARE,
+  isConsecutiveProtein,
+  rankRecipes,
+  scoreRecipe,
+} from './scoring';
 export type { RankedRecipe, ScoringContext } from './scoring';
 export { MAX_LEFTOVERS_PER_WEEK, PLAN_NOTICES, generateWeeklyPlan, mealId } from './generate';
 export type { GeneratePlanInput } from './generate';

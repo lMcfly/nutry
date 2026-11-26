@@ -10,6 +10,7 @@ import type { QuizCategory } from '@domain/quiz';
 import type { Aisle, Allergen, Diet, Level, ProteinType } from '@domain/recipe';
 import type { ShoppingSectionKey } from '@domain/shopping';
 import type { Theme } from '@domain/userdata';
+import type { HouseholdKind } from '../features/training/figure/exerciseFigure';
 import type {
   EffortFeeling,
   Equipment,
@@ -294,10 +295,30 @@ export const UNLOCK_PHRASES: Readonly<Record<string, string>> = {
   tablier: 'le tablier',
   bonnet: 'le bonnet',
   'couronne-de-fruits': 'la couronne de fruits',
+  bandeau: 'le bandeau',
+  serviette: 'la serviette',
+  casquette: 'la casquette',
+  medaille: 'la médaille',
   aurore: 'la teinte Aurore',
   cosmos: 'la teinte Cosmos',
   'arc-en-ciel': 'la teinte Arc-en-ciel',
 };
+
+/** « 5 jours de série » ou « 5 séances » : ce qui débloque un élément de Nutry. */
+export function unlockCondition(item: CompanionItem): string {
+  return item.unlockAt.kind === 'serie'
+    ? `${plural(item.unlockAt.days, 'jour')} de série`
+    : plural(item.unlockAt.count, 'séance');
+}
+
+/** « à 5 jours » ou « à 5 séances » (bulle verrouillée). */
+export function unlockHint(item: CompanionItem): string {
+  return `à ${
+    item.unlockAt.kind === 'serie'
+      ? plural(item.unlockAt.days, 'jour')
+      : plural(item.unlockAt.count, 'séance')
+  }`;
+}
 
 /** « la toque de chef » (sinon le libellé du catalogue en minuscules). */
 export function unlockPhrase(item: CompanionItem): string {
@@ -404,6 +425,33 @@ export const EQUIPMENT_LABELS: Readonly<Record<Equipment, string>> = {
   poulie: 'Poulie',
   'swiss-ball': 'Swiss ball',
   machine: 'Machines guidées',
+};
+
+/** À avoir sous la main sans rien acheter (accessoires du foyer dessinés par le mannequin). */
+export const HOUSEHOLD_LABELS: Readonly<Record<HouseholdKind, string>> = {
+  mur: 'Un mur',
+  chaise: 'Une chaise stable',
+  table: 'Une table ou un meuble stable',
+  step: 'Une marche stable',
+  banc: 'Un banc ou un canapé',
+  serviette: 'Une serviette',
+  'sac-a-dos': 'Un sac à dos chargé',
+  bouteilles: 'Deux bouteilles d’eau',
+  sliders: 'Des sliders ou des serviettes',
+  coussin: 'Un coussin ferme',
+};
+
+export const HOUSEHOLD_EMOJIS: Readonly<Record<HouseholdKind, string>> = {
+  mur: '🧱',
+  chaise: '🪑',
+  table: '🪵',
+  step: '🪜',
+  banc: '🛋️',
+  serviette: '🧻',
+  'sac-a-dos': '🎒',
+  bouteilles: '🧴',
+  sliders: '🧦',
+  coussin: '🛋️',
 };
 
 export const EQUIPMENT_EMOJIS: Readonly<Record<Equipment, string>> = {

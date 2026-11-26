@@ -28,9 +28,11 @@ export const HEAD_ACCESSORY_IDS = [
   'toque-de-chef',
   'bonnet',
   'couronne-de-fruits',
+  'bandeau',
+  'casquette',
 ] as const;
 export const FACE_ACCESSORY_IDS = ['lunettes-rondes'] as const;
-export const NECK_ACCESSORY_IDS = ['echarpe'] as const;
+export const NECK_ACCESSORY_IDS = ['echarpe', 'serviette', 'medaille'] as const;
 export const BODY_ACCESSORY_IDS = ['tablier'] as const;
 
 export const ACCESSORY_IDS = [
@@ -60,11 +62,19 @@ export interface CompanionLook {
 export const COMPANION_MOODS = ['joyeux', 'content', 'sieste'] as const;
 export type CompanionMood = (typeof COMPANION_MOODS)[number];
 
-/** Élément du catalogue. `unlockAt` : record de série (jours) qui le débloque, 0 = d'emblée. */
+/**
+ * Ce qui débloque un élément : le record de série (jours ; 0 = d'emblée) ou le nombre cumulé de
+ * séances de Sport terminées (ADR 0015, phase 5). Dans les deux cas, rien ne se reperd.
+ */
+export type Unlock =
+  | { readonly kind: 'serie'; readonly days: number }
+  | { readonly kind: 'seances'; readonly count: number };
+
+/** Élément du catalogue, avec son déblocage. */
 interface ItemBase {
   readonly label: string;
   readonly emoji: string;
-  readonly unlockAt: number;
+  readonly unlockAt: Unlock;
 }
 export interface ColorItem extends ItemBase {
   readonly kind: 'color';

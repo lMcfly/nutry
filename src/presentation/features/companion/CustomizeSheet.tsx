@@ -21,12 +21,12 @@ import { SegmentedTabs } from '../../components/SegmentedTabs';
 import { panelId, tabId } from '../../components/tabIds';
 import { Sheet } from '../../components/Sheet';
 import { useToast } from '../../components/Toast';
-import { plural } from '../../i18n/labels';
+import { unlockCondition, unlockHint } from '../../i18n/labels';
 import { Nutry } from './Nutry';
 import styles from './CustomizeSheet.module.css';
 import { LockIcon } from '../../components/icons';
 
-type CustomizeTab = 'couleur' | 'yeux' | 'accessoires';
+type CustomizeTab = 'couleur' | 'yeux' | 'accessoires' | 'sport';
 
 const HINT = 'Touche une bulle pour l’essayer sur Nutry.';
 
@@ -34,13 +34,19 @@ const TAB_TITLES = {
   couleur: 'Couleurs',
   yeux: 'Yeux',
   accessoires: 'Accessoires',
+  sport: 'Accessoires de sport',
 } as const;
 
 const TABS = [
   { id: 'couleur', label: 'Couleur' },
   { id: 'yeux', label: 'Yeux' },
   { id: 'accessoires', label: 'Accessoires' },
+  { id: 'sport', label: 'Sport' },
 ] as const;
+
+/** Accessoires de série (le reste du catalogue) et accessoires de sport (séances cumulées). */
+const SERIE_ACCESSORIES = COMPANION_ACCESSORIES.filter((a) => a.unlockAt.kind === 'serie');
+const SPORT_ACCESSORIES = COMPANION_ACCESSORIES.filter((a) => a.unlockAt.kind === 'seances');
 
 interface CustomizeSheetProps {
   readonly open: boolean;
@@ -76,11 +82,7 @@ function Bubble({ item, selected, unlocked, index, count, onPick }: BubbleProps)
         className={`${styles.bubble} ${selected ? styles.selected : ''} ${unlocked ? '' : styles.locked}`}
         aria-pressed={selected}
         aria-disabled={!unlocked}
-        aria-label={
-          unlocked
-            ? item.label
-            : `${item.label}, verrouillé, à ${plural(item.unlockAt, 'jour')} de série`
-        }
+        aria-label={unlocked ? item.label : `${item.label}, verrouillé, à ${unlockCondition(item)}`}
         onClick={() => {
           if (unlocked) onPick();
         }}
@@ -93,7 +95,7 @@ function Bubble({ item, selected, unlocked, index, count, onPick }: BubbleProps)
           <>
             <LockIcon size={18} />
             <span className={styles.lockHint} aria-hidden="true">
-              à {plural(item.unlockAt, 'jour')}
+              {unlockHint(item)}
             </span>
           </>
         )}
@@ -133,7 +135,13 @@ export function CustomizeSheet({ open, companion, onClose, onSaved }: CustomizeS
   };
 
   const items: readonly CompanionItem[] =
-    tab === 'couleur' ? COMPANION_COLORS : tab === 'yeux' ? COMPANION_EYES : COMPANION_ACCESSORIES;
+    tab === 'couleur'
+      ? COMPANION_COLORS
+      : tab === 'yeux'
+        ? COMPANION_EYES
+        : tab === 'sport'
+          ? SPORT_ACCESSORIES
+          : SERIE_ACCESSORIES;
 
   const isSelected = (item: CompanionItem): boolean => {
     if (item.kind === 'color') return look.color === item.id;
@@ -225,7 +233,7 @@ export function CustomizeSheet({ open, companion, onClose, onSaved }: CustomizeS
           <p className={styles.caption} aria-live="polite">
             {caption}
           </p>
-          {tab === 'accessoires' && (
+          {(tab === 'accessoires' || tab === 'sport') && (
             <Button
               variant="ghost"
               small

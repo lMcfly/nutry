@@ -3,6 +3,8 @@ import { createSeededRng } from '../shared';
 import { FIXTURE_RECIPES, fixture, makeProfile, makeRecipe } from '../testing/fixtures';
 import type { Recipe } from '../recipe';
 import { learnWeights } from '../preferences';
+import { filterCompatibleRecipes } from '../recipe';
+import { explainMeal } from './explain';
 import type { Profile } from '../profile';
 import {
   MAX_LEFTOVERS_PER_WEEK,
@@ -295,5 +297,61 @@ describe('profil', () => {
     const plan = generate(makeProfile({ likes: ['dinde'] }));
     expect(plan.meals.map((m) => m.recipeId)).toContain('dinde-patate-douce');
     expect(fixture('dinde-patate-douce').level).toBe('simple');
+  });
+});
+
+describe('jours de séance (Sport, ADR 0015)', () => {
+  const trainingDays = [0, 2, 4] as const;
+  const withDays = (profile = makeProfile(), seed = 3) =>
+    generateWeeklyPlan({
+      profile,
+      recipes: FIXTURE_RECIPES,
+      startDate: START,
+      rng: createSeededRng(seed),
+      trainingDays,
+    });
+
+  it('le composant sport n’apparaît qu’aux déjeuners et dîners des jours de séance', () => {
+    const plan = withDays(makeProfile({ breakfast: true }));
+    for (const meal of plan.meals) {
+      const has = meal.score.components.some((c) => c.key === 'sport');
+      const expected =
+        !meal.isLeftover &&
+        meal.slot !== 'petit-dejeuner' &&
+        (trainingDays as readonly number[]).includes(meal.dayIndex);
+      expect(has, meal.id).toBe(expected);
+    }
+  });
+
+  it('ne change jamais un filtre dur : tous les plats restent compatibles avec le profil', () => {
+    const profile = makeProfile({ allergens: ['poissons'] });
+    const compatible = new Set(filterCompatibleRecipes(FIXTURE_RECIPES, profile).map((r) => r.id));
+    for (let seed = 1; seed <= 12; seed += 1) {
+      for (const meal of withDays(profile, seed).meals) {
+        expect(compatible.has(meal.recipeId), `${seed} ${meal.id}`).toBe(true);
+      }
+    }
+  });
+
+  it('sans jours de séance, le menu est identique à celui d’avant le Sport', () => {
+    const plain = generate(makeProfile(), 3);
+    const empty = generateWeeklyPlan({
+      profile: makeProfile(),
+      recipes: FIXTURE_RECIPES,
+      startDate: START,
+      rng: createSeededRng(3),
+      trainingDays: [],
+    });
+    expect(empty).toEqual(plain);
+  });
+
+  it('« Pourquoi ce plat ? » dit de quoi bien récupérer quand le bonus s’applique', () => {
+    const boosted = withDays().meals.filter((m) => m.score.facts.trainingDay === true);
+    expect(boosted.length).toBeGreaterThan(0);
+    for (const meal of boosted) {
+      expect(explainMeal(meal)).toMatch(/^Jour de séance : de quoi bien récupérer/);
+    }
+    const others = generate(makeProfile(), 3).meals.filter((m) => !m.isLeftover);
+    for (const meal of others) expect(explainMeal(meal)).not.toContain('Jour de séance');
   });
 });

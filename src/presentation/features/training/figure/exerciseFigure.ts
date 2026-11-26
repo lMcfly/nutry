@@ -157,3 +157,24 @@ export function figureOf(exercise: Pick<Exercise, 'id' | 'movement' | 'equipment
     variant: override ? { equipmentOverride: override } : {},
   };
 }
+
+/** Accessoires du foyer dont l'exercice a besoin (hors matériel du catalogue). */
+export function householdPropsOf(exercise: Pick<Exercise, 'id' | 'equipment'>): EquipmentKind[] {
+  const catalogue = new Set<EquipmentKind>(exercise.equipment.map((e) => CATALOGUE_DRAWING[e]));
+  return (EXERCISE_FIGURES[exercise.id]?.extra ?? []).filter((kind) => !catalogue.has(kind));
+}
+
+/** Tous les accessoires du foyer que le mannequin sait dessiner (libellés : `labels.ts`). */
+export const HOUSEHOLD_KINDS = [
+  'mur',
+  'chaise',
+  'table',
+  'step',
+  'banc',
+  'serviette',
+  'sac-a-dos',
+  'bouteilles',
+  'sliders',
+  'coussin',
+] as const satisfies readonly EquipmentKind[];
+export type HouseholdKind = (typeof HOUSEHOLD_KINDS)[number];

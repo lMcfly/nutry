@@ -8,6 +8,7 @@ import {
   openSportSession,
   pickSportDay,
   seriousViolations,
+  setActivitySedentary,
   sportDayTabs,
   toFirstExercise,
 } from './helpers';
@@ -137,4 +138,45 @@ test('séance au clavier seulement, axe sans violation sérieuse', async ({ page
   expect(await seriousViolations(page)).toEqual([]);
   await page.keyboard.press('Escape');
   await expect(page.getByRole('button', { name: 'Voir le tuto' })).toBeFocused();
+});
+
+test('niveau d’activité suggéré (d’un cran), refusable, et accessoires de sport de Nutry', async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  await page.goto('./');
+  await completeOnboarding(page);
+  await dismissQuiz(page);
+  await completeSportOnboarding(page);
+
+  // Niveau « Un peu actif » déclaré, programme de 90 min : rien à proposer.
+  await page.getByRole('link', { name: 'Moi' }).click();
+  await expect(page.getByRole('button', { name: 'Personnaliser Nutry' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Niveau d’activité' })).toHaveCount(0);
+
+  // « Sédentaire » : la carte propose le niveau suivant seulement, sans rien changer.
+  await setActivitySedentary(page);
+  const card = page.getByRole('region', { name: 'Niveau d’activité' });
+  expect(await seriousViolations(page)).toEqual([]);
+  await card.getByRole('button', { name: /pourrait monter d’un cran/ }).click();
+  const proposal = page.getByRole('dialog', { name: /pourrait monter d’un cran/ });
+  await expect(proposal).toContainText('« sédentaire » pourrait passer à « un peu actif »');
+  expect(await seriousViolations(page)).toEqual([]);
+  await proposal.getByRole('button', { name: 'Non merci' }).click();
+  await expect(card).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Personnaliser Nutry' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Niveau d’activité' })).toHaveCount(0);
+
+  // Accessoires de sport : verrouillés « à N séances » tant que les séances ne sont pas faites.
+  await page.getByRole('button', { name: 'Personnaliser Nutry' }).click();
+  const sheet = page.getByRole('dialog', { name: 'Personnaliser Nutry' });
+  await sheet.getByRole('tab', { name: 'Sport' }).click();
+  await expect(
+    sheet.getByRole('button', { name: /Bandeau, verrouillé, à 1 séance/ }),
+  ).toBeVisible();
+  await expect(
+    sheet.getByRole('button', { name: /Médaille, verrouillé, à 20 séances/ }),
+  ).toBeVisible();
+  expect(await seriousViolations(page)).toEqual([]);
 });

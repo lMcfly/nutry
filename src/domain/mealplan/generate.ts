@@ -48,6 +48,11 @@ export interface GeneratePlanInput {
   readonly rng: Rng;
   /** Autoriser les restes du dîner au déjeuner du lendemain (par défaut : oui). */
   readonly leftovers?: boolean;
+  /**
+   * Jours de séance de la semaine (Sport, ADR 0015) : léger bonus de score aux déjeuners et
+   * dîners de ces jours. Jamais un filtre ; ni calories ni portions.
+   */
+  readonly trainingDays?: readonly DayIndex[];
 }
 
 interface PickRequest {
@@ -138,6 +143,7 @@ export function generateWeeklyPlan(input: GeneratePlanInput): WeeklyPlan {
   const mains = compatible.filter((r) => !isBreakfastRecipe(r));
   const breakfasts = compatible.filter(isBreakfastRecipe);
   const allowLeftovers = input.leftovers ?? true;
+  const trainingDays = new Set<DayIndex>(input.trainingDays ?? []);
 
   const notices: PlanNotice[] = [];
   if (mains.length === 0) notices.push(PLAN_NOTICES['aucune-recette-compatible']);
@@ -221,6 +227,7 @@ export function generateWeeklyPlan(input: GeneratePlanInput): WeeklyPlan {
           ...baseCtx,
           desiredLevel: req.level,
           proteinCounts,
+          ...(trainingDays.has(dayIndex) ? { trainingDay: true } : {}),
           ...(previousProtein ? { previousProtein } : {}),
         },
         used: usedMains,

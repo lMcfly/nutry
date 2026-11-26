@@ -743,3 +743,79 @@ describe('confidentialité', () => {
     expect(env.ports.state.training).toBeDefined();
   });
 });
+
+describe('lien Nourriture : niveau d’activité suggéré', () => {
+  it('Sport inactif ou volume faible : rien à proposer', async () => {
+    const { uc } = build();
+    await uc.saveProfile(makeProfile({ activity: 'sedentaire' }));
+    expect(await uc.getActivitySuggestion()).toBeUndefined();
+    const env = await setup({ frequency: 1, days: [0], sessionMinutes: 20 });
+    expect(await env.uc.getActivitySuggestion()).toBeUndefined();
+    expect(await env.uc.acceptActivitySuggestion()).toEqual({ status: 'none' });
+  });
+
+  it('propose le niveau suivant, d’un cran au plus, sans rien modifier tant qu’on ne confirme pas', async () => {
+    const env = await setup({ frequency: 5, days: [0, 1, 2, 3, 4], sessionMinutes: 60 });
+    await env.uc.saveProfile(makeProfile({ activity: 'sedentaire' }));
+    const before = await env.uc.getProfile();
+    expect(await env.uc.getActivitySuggestion()).toEqual({
+      current: 'sedentaire',
+      suggested: 'leger',
+      weeklyMinutes: 300,
+    });
+    expect(await env.uc.getProfile()).toEqual(before);
+  });
+
+  it('accepter met le profil à jour d’un cran ; la suivante attend 28 jours', async () => {
+    const env = await setup({ frequency: 5, days: [0, 1, 2, 3, 4], sessionMinutes: 60 });
+    await env.uc.saveProfile(makeProfile({ activity: 'sedentaire' }));
+    expect(await env.uc.acceptActivitySuggestion()).toEqual({ status: 'updated', level: 'leger' });
+    expect((await env.uc.getProfile())?.profile.activity).toBe('leger');
+    expect(await env.uc.getActivitySuggestion()).toBeUndefined();
+    env.ports.clock.set('2026-12-23T10:00:00.000Z');
+    expect(await env.uc.getActivitySuggestion()).toMatchObject({ suggested: 'modere' });
+  });
+
+  it('refuser la masque pendant 28 jours, puis elle peut revenir', async () => {
+    const env = await setup({ frequency: 5, days: [0, 1, 2, 3, 4], sessionMinutes: 60 });
+    await env.uc.saveProfile(makeProfile({ activity: 'sedentaire' }));
+    await env.uc.dismissActivitySuggestion();
+    expect((await env.uc.getSettings()).activitySuggestionDismissedOn).toBe('2026-11-25');
+    expect(await env.uc.getActivitySuggestion()).toBeUndefined();
+    expect(await env.uc.acceptActivitySuggestion()).toEqual({ status: 'none' });
+    env.ports.clock.set('2026-12-23T10:00:00.000Z');
+    expect(await env.uc.getActivitySuggestion()).toMatchObject({ suggested: 'leger' });
+  });
+
+  it('les portions et les calories ne bougent pas avec le Sport (profil protégé compris)', async () => {
+    for (const profile of [makeProfile(), makeProfile({ age: 16 })]) {
+      const plain = build();
+      await plain.uc.saveProfile(profile);
+      const sport = await setup({ frequency: 5, days: [0, 1, 2, 3, 4], sessionMinutes: 60 });
+      await sport.uc.saveProfile(profile);
+      const a = await plain.uc.getCurrentPlan();
+      const b = await sport.uc.getCurrentPlan();
+      if (a.status !== 'ready' || b.status !== 'ready') throw new Error('menu attendu');
+      expect(b.portionFactor).toBe(a.portionFactor);
+      expect((await sport.uc.getProfile())?.energyDetail).toEqual(
+        (await plain.uc.getProfile())?.energyDetail,
+      );
+    }
+  });
+
+  it('le menu de la semaine tient compte des jours de séance (composant sport), jamais des filtres', async () => {
+    const env = await setup({ frequency: 3, days: [0, 2, 4], sessionMinutes: 45 });
+    const plan = await env.uc.getCurrentPlan();
+    if (plan.status !== 'ready') throw new Error('menu attendu');
+    const days = (await env.uc.getTrainingDays())?.trainingDays ?? [];
+    expect(days.length).toBeGreaterThan(0);
+    for (const meal of plan.plan.meals) {
+      const has = meal.score.components.some((c) => c.key === 'sport');
+      const expected =
+        !meal.isLeftover && meal.slot !== 'petit-dejeuner' && days.includes(meal.dayIndex);
+      expect(has, meal.id).toBe(expected);
+    }
+    const alternatives = await env.uc.getMealAlternatives('0-diner');
+    expect(alternatives.length).toBeGreaterThan(0);
+  });
+});

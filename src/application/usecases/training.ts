@@ -1,6 +1,9 @@
-import { startOfWeek, isIsoDate } from '@domain/shared';
+import { daysBetween, startOfWeek, isIsoDate } from '@domain/shared';
 import type { IsoDate } from '@domain/shared';
 import {
+  ACTIVITY_SUGGESTION_SNOOZE_DAYS,
+  suggestActivityLevel,
+  weeklyTrainingMinutes,
   ALWAYS_AVAILABLE_EQUIPMENT,
   EFFORT_FEELINGS,
   TRAINING_DISCLAIMER,
@@ -53,7 +56,8 @@ import type {
   TrainingSafety,
   TrainingSafetyMessage,
 } from '@domain/training';
-import type { Profile } from '@domain/profile';
+import type { DayIndex } from '@domain/mealplan';
+import type { ActivityLevel, Profile } from '@domain/profile';
 import type { ExerciseCredit, ExerciseMedia, ExerciseVideo } from '../ports';
 import { NO_PROFILE } from './context';
 import type { AppPorts, NoProfile, SerialRunner } from './context';
@@ -258,6 +262,17 @@ export interface SportRewardsView {
     { readonly accessory: SportAccessoryUnlock; readonly remaining: number } | undefined;
 }
 
+/** Niveau d'activité suggéré par le programme de Sport (un cran au plus). */
+export interface ActivitySuggestion {
+  readonly current: ActivityLevel;
+  readonly suggested: ActivityLevel;
+  /** Fréquence × durée prévues, en minutes par semaine. */
+  readonly weeklyMinutes: number;
+}
+
+export type ActivitySuggestionResult =
+  { readonly status: 'updated'; readonly level: ActivityLevel } | { readonly status: 'none' };
+
 export interface SessionRef {
   readonly weekStart: IsoDate;
   readonly sessionId: string;
@@ -301,6 +316,19 @@ export interface TrainingUseCases {
   readonly getTrainingHistory: () => Promise<TrainingHistoryView>;
   /** Accessoires sportifs de Nutry, d'après le nombre cumulé de séances terminées. */
   readonly getSportRewards: () => Promise<SportRewardsView>;
+  /**
+   * Suggestion de relever d'UN cran le niveau d'activité du profil (carte dans « Moi ») : le
+   * programme prévoit plus d'entraînement que le niveau déclaré. `undefined` : rien à proposer
+   * (Sport inactif, niveau suffisant, ou refusée récemment).
+   */
+  readonly getActivitySuggestion: () => Promise<ActivitySuggestion | undefined>;
+  /**
+   * Accepte la suggestion (recalculée ici, jamais lue du client) : met le profil à jour d'un
+   * cran ; la suivante ne vient pas avant `ACTIVITY_SUGGESTION_SNOOZE_DAYS` jours.
+   */
+  readonly acceptActivitySuggestion: () => Promise<ActivitySuggestionResult>;
+  /** Refuse la suggestion : elle ne revient pas avant `ACTIVITY_SUGGESTION_SNOOZE_DAYS` jours. */
+  readonly dismissActivitySuggestion: () => Promise<void>;
   /** Garde l'écran allumé pendant la séance ; faux si le navigateur ne sait pas (sans erreur). */
   readonly keepScreenOn: () => Promise<boolean>;
   readonly releaseScreen: () => Promise<void>;
@@ -318,6 +346,21 @@ interface TrainingContext {
 
 type Loaded =
   NoProfile | SportInactive | { readonly status: 'ready'; readonly ctx: TrainingContext };
+
+/**
+ * Jours de séance de la semaine en cours pour la Nourriture (ADR 0015) ; vide sans Sport.
+ * À appeler depuis une tâche déjà sérialisée (écrit le programme s'il n'existe pas encore).
+ * Au mieux : le lien avec la Nourriture est facultatif, une erreur ne bloque jamais le menu.
+ */
+export async function trainingDaysFor(ports: AppPorts): Promise<readonly DayIndex[]> {
+  try {
+    const loaded = await loadContext(ports);
+    if (loaded.status !== 'ready') return [];
+    return trainingDaysOf((await ensureWeek(ports, loaded.ctx)).plan).trainingDays;
+  } catch {
+    return [];
+  }
+}
 
 async function loadContext(ports: AppPorts): Promise<Loaded> {
   const [profile, training] = await Promise.all([
@@ -500,6 +543,30 @@ function sanitizeSet(set: SetLog): SetLog | undefined {
 const unavailable = (message: string): TrainingUnavailable => ({ status: 'unavailable', message });
 
 // ------------------------------------------------------------------------------- Fabrique
+
+/** Suggestion en cours : volume prévu, niveau déclaré, et pas refusée depuis moins de 28 jours. */
+async function currentSuggestion(ports: AppPorts): Promise<ActivitySuggestion | undefined> {
+  const [profile, training, settings] = await Promise.all([
+    ports.profiles.get(),
+    ports.training.getProfile(),
+    ports.settings.get(),
+  ]);
+  if (!profile || !training) return undefined;
+  const dismissed = settings.activitySuggestionDismissedOn;
+  if (
+    dismissed !== undefined &&
+    daysBetween(dismissed, ports.clock.today()) < ACTIVITY_SUGGESTION_SNOOZE_DAYS
+  ) {
+    return undefined;
+  }
+  const suggested = suggestActivityLevel(profile.activity, training);
+  if (suggested === undefined) return undefined;
+  return {
+    current: profile.activity,
+    suggested,
+    weeklyMinutes: weeklyTrainingMinutes(training),
+  };
+}
 
 export function createTrainingUseCases(ports: AppPorts, serial: SerialRunner): TrainingUseCases {
   /** Sérialise et rend les échecs techniques en messages doux (jamais d'exception vers l'UI). */
@@ -907,6 +974,34 @@ export function createTrainingUseCases(ports: AppPorts, serial: SerialRunner): T
         sessionsCompleted: completedSessionCount(logs),
       };
     },
+
+    async getActivitySuggestion() {
+      return serial(() => currentSuggestion(ports));
+    },
+
+    acceptActivitySuggestion: () =>
+      serial(async (): Promise<ActivitySuggestionResult> => {
+        const suggestion = await currentSuggestion(ports);
+        const profile = await ports.profiles.get();
+        if (!suggestion || !profile) return { status: 'none' };
+        await ports.profiles.save({ ...profile, activity: suggestion.suggested });
+        // Un cran à la fois : la suivante, s'il y en a une, ne vient pas avant 28 jours.
+        const settings = await ports.settings.get();
+        await ports.settings.save({
+          ...settings,
+          activitySuggestionDismissedOn: ports.clock.today(),
+        });
+        return { status: 'updated', level: suggestion.suggested };
+      }),
+
+    dismissActivitySuggestion: () =>
+      serial(async () => {
+        const settings = await ports.settings.get();
+        await ports.settings.save({
+          ...settings,
+          activitySuggestionDismissedOn: ports.clock.today(),
+        });
+      }),
 
     async getSportRewards() {
       const count = completedSessionCount(await ports.sessionLogs.listAll());

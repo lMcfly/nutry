@@ -49,9 +49,9 @@ export interface PlanTrainingWeekInput {
 }
 
 /**
- * TODO(phase 5, `meals.ts`) : suggestion (jamais automatique) d'un niveau d'activité au moins
- * égal à `ACTIVITY_FLOOR_BY_WEEKLY_MINUTES`, un cran au plus au-dessus du niveau déclaré ;
- * `undefined` si rien à proposer.
+ * Suggestion (jamais automatique, `suggestActivityLevel` dans `meals.ts`) : le niveau juste
+ * au-dessus du niveau déclaré quand le volume prévu atteint le plancher
+ * `ACTIVITY_FLOOR_BY_WEEKLY_MINUTES` d'un niveau plus haut ; `undefined` si rien à proposer.
  */
 export type SuggestActivityLevel = (
   declared: ActivityLevel,

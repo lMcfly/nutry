@@ -10,7 +10,7 @@ export const DAY_INDEXES: readonly DayIndex[] = [0, 1, 2, 3, 4, 5, 6];
 
 /** Composantes nommées du score d'une recette. */
 export type ScoreComponentKey =
-  'aime' | 'notes' | 'saison' | 'temps' | 'niveau' | 'variete' | 'hasard';
+  'aime' | 'notes' | 'saison' | 'temps' | 'niveau' | 'variete' | 'sport' | 'hasard';
 
 export interface ScoreComponent {
   readonly key: ScoreComponentKey;
@@ -34,6 +34,11 @@ export interface ScoreFacts {
   readonly batchFriendly: boolean;
   /** Protéine pas encore servie cette semaine. */
   readonly newProtein: boolean;
+  /**
+   * Jour de séance (ADR 0015) : repas avec une protéine principale et au moins un quart de
+   * féculents. Préférence légère ; absent pour les menus d'avant le Sport.
+   */
+  readonly trainingDay?: boolean;
 }
 
 /** Score d'une recette : somme de composantes explicables. */

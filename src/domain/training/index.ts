@@ -2,6 +2,8 @@ export {
   ACCESSORY_REP_BONUS,
   ACCESSORY_REST_REDUCTION_SECONDS,
   ACTIVITY_FLOOR_BY_WEEKLY_MINUTES,
+  ACTIVITY_SUGGESTION_SNOOZE_DAYS,
+  ACTIVITY_SUGGESTION_TEXTS,
   ASSISTED_ID_PATTERN,
   ALWAYS_AVAILABLE_EQUIPMENT,
   BALANCE_RULES,
@@ -144,7 +146,7 @@ export {
   sessionLogId,
   startSessionLog,
 } from './session';
-export { trainingDaysOf } from './meals';
+export { suggestActivityLevel, trainingDaysOf, weeklyTrainingMinutes } from './meals';
 export { weeklySetsByPattern, weeklyVolumeByGroup } from './volume';
 export { TRAINING_NOTICES } from './notices';
 export {

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { CATALOGUE_DRAWING, figureEquipmentOf, figureOf } from './exerciseFigure';
+import {
+  CATALOGUE_DRAWING,
+  EXERCISE_FIGURES,
+  HOUSEHOLD_KINDS,
+  figureEquipmentOf,
+  figureOf,
+  householdPropsOf,
+} from './exerciseFigure';
 import { resolveMovement } from './library';
 import { EQUIPMENT_KINDS } from './equipment';
 
@@ -33,5 +40,20 @@ describe('du catalogue au mannequin', () => {
 
   it('chaque matériel du catalogue a un dessin connu', () => {
     for (const kind of Object.values(CATALOGUE_DRAWING)) expect(EQUIPMENT_KINDS).toContain(kind);
+  });
+
+  it('chaque accessoire du foyer déclaré est connu (libellé dans le tuto) ; le matériel du catalogue ne compte pas', () => {
+    const known = new Set<string>(HOUSEHOLD_KINDS);
+    for (const [id, entry] of Object.entries(EXERCISE_FIGURES)) {
+      for (const kind of entry.extra ?? []) expect(known.has(kind), `${id} ${kind}`).toBe(true);
+    }
+    expect(householdPropsOf({ id: 'squat-chaise', equipment: [] })).toEqual(['chaise']);
+    // Banc : listé par le catalogue pour un exercice, accessoire du foyer pour l'autre.
+    expect(householdPropsOf({ id: 'hip-thrust-halteres', equipment: ['halteres'] })).toEqual([
+      'banc',
+    ]);
+    expect(
+      householdPropsOf({ id: 'squat-bulgare-halteres', equipment: ['halteres', 'banc'] }),
+    ).toEqual([]);
   });
 });

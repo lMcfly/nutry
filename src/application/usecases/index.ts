@@ -109,6 +109,8 @@ export type { ShareResult } from '../ports';
 export { MANUAL_ITEM_MAX_LENGTH } from './shopping';
 export type {
   ActiveSessionResult,
+  ActivitySuggestion,
+  ActivitySuggestionResult,
   ActiveSessionView,
   CompleteSessionResult,
   ExerciseAlternativesResult,

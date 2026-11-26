@@ -21,11 +21,16 @@ export const SCORE_RULES = {
   levelMatch: 2,
   levelMismatch: -1,
   newProtein: 1,
+  /** Jour de séance : léger bonus, jamais un filtre (ADR 0015, section 6). */
+  trainingDay: 1,
   repeatedProteinPerOccurrence: -0.5,
   consecutiveProtein: -4,
   /** Bruit de départage, tiré de `rng` : [0 ; 0,5). */
   jitterMax: 0.5,
 } as const;
+
+/** Part minimale de féculents dans l'assiette pour le bonus « jour de séance ». */
+export const TRAINING_DAY_MIN_STARCH_SHARE = 0.25;
 
 export interface ScoringContext {
   readonly likes: readonly string[];
@@ -43,6 +48,11 @@ export interface ScoringContext {
   readonly nextProtein?: ProteinType;
   /** Occurrences de chaque protéine déjà planifiées dans la semaine. */
   readonly proteinCounts?: ReadonlyMap<ProteinType, number>;
+  /**
+   * Repas (déjeuner ou dîner) d'un jour de séance : léger bonus aux plats avec une protéine
+   * principale et des féculents. Ne touche ni aux filtres durs, ni aux calories, ni aux portions.
+   */
+  readonly trainingDay?: boolean;
   /** Valeur dans [0, 1) pour départager ; absente = 0. */
   readonly jitter?: number;
 }
@@ -115,6 +125,12 @@ export function scoreRecipe(recipe: Recipe, ctx: ScoringContext): ScoreBreakdown
     variety += R.consecutiveProtein;
   if (isConsecutiveProtein(recipe.mainProtein, ctx.nextProtein)) variety += R.consecutiveProtein;
 
+  // Jour de séance : de quoi bien récupérer = une protéine principale et un quart de féculents.
+  const recovery =
+    ctx.trainingDay === true &&
+    recipe.mainProtein !== 'aucune' &&
+    recipe.plateBalance.starches >= TRAINING_DAY_MIN_STARCH_SHARE;
+
   const components: ScoreComponent[] = [
     { key: 'aime', points: like },
     { key: 'notes', points: rating.total },
@@ -123,6 +139,9 @@ export function scoreRecipe(recipe: Recipe, ctx: ScoringContext): ScoreBreakdown
     { key: 'niveau', points: level },
     { key: 'variete', points: variety },
   ];
+  if (ctx.trainingDay === true) {
+    components.push({ key: 'sport', points: recovery ? R.trainingDay : 0 });
+  }
   if (ctx.jitter !== undefined)
     components.push({ key: 'hasard', points: ctx.jitter * R.jitterMax });
 
@@ -138,6 +157,7 @@ export function scoreRecipe(recipe: Recipe, ctx: ScoringContext): ScoreBreakdown
       ratedPositively: rating.recipe > 0,
       batchFriendly,
       newProtein,
+      ...(ctx.trainingDay === true ? { trainingDay: recovery } : {}),
     },
   };
 }

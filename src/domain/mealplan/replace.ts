@@ -2,7 +2,7 @@ import { filterCompatibleRecipes, isBreakfastRecipe } from '../recipe';
 import type { ProteinType, Recipe } from '../recipe';
 import type { Profile } from '../profile';
 import type { LearnedWeights } from '../preferences';
-import type { PlannedMeal, ScoreBreakdown, WeeklyPlan } from './mealplan.types';
+import type { DayIndex, PlannedMeal, ScoreBreakdown, WeeklyPlan } from './mealplan.types';
 import { dayRequirements } from './schedule';
 import { rankRecipes } from './scoring';
 import type { RankedRecipe } from './scoring';
@@ -15,6 +15,8 @@ export interface ReplaceMealInput {
   readonly weights?: LearnedWeights;
   /** Nombre d'alternatives (3 par défaut). */
   readonly count?: number;
+  /** Jours de séance de la semaine : léger bonus au déjeuner et au dîner de ces jours. */
+  readonly trainingDays?: readonly DayIndex[];
 }
 
 /**
@@ -69,6 +71,7 @@ export function replaceMeal(input: ReplaceMealInput): RankedRecipe[] {
     availableMinutes: req.minutes,
     weekend: req.weekend,
     ...(breakfast ? {} : { desiredLevel: req.level, proteinCounts }),
+    ...(!breakfast && input.trainingDays?.includes(meal.dayIndex) ? { trainingDay: true } : {}),
     ...(previousProtein ? { previousProtein } : {}),
     ...(nextProtein ? { nextProtein } : {}),
   })

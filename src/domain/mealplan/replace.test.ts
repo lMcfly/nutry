@@ -272,3 +272,35 @@ describe('replaceMeal et recettes évitées', () => {
     expect(after.at(-1)?.recipe.id).toBe(first.recipe.id);
   });
 });
+
+describe('replaceMeal : jours de séance', () => {
+  it('le déjeuner et le dîner d’un jour de séance gagnent le composant sport, pas le petit-déjeuner', () => {
+    const target = meal('0-diner');
+    const plain = replaceMeal({ plan, mealId: target.id, profile, recipes: FIXTURE_RECIPES });
+    expect(plain.every((a) => !a.score.components.some((c) => c.key === 'sport'))).toBe(true);
+    const training = replaceMeal({
+      plan,
+      mealId: target.id,
+      profile,
+      recipes: FIXTURE_RECIPES,
+      trainingDays: [0],
+    });
+    expect(training.every((a) => a.score.components.some((c) => c.key === 'sport'))).toBe(true);
+    const otherDay = replaceMeal({
+      plan,
+      mealId: target.id,
+      profile,
+      recipes: FIXTURE_RECIPES,
+      trainingDays: [3],
+    });
+    expect(otherDay.every((a) => !a.score.components.some((c) => c.key === 'sport'))).toBe(true);
+    const breakfast = replaceMeal({
+      plan,
+      mealId: '0-petit-dejeuner',
+      profile,
+      recipes: FIXTURE_RECIPES,
+      trainingDays: [0],
+    });
+    expect(breakfast.every((a) => !a.score.components.some((c) => c.key === 'sport'))).toBe(true);
+  });
+});

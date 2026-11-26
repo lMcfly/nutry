@@ -611,3 +611,22 @@ exercices dans `docs/audit-mannequins.md` (64 corrigés) :
   dessiné ;
 - abduction et adduction à la machine : de face, cuisses raccourcies, écart de 8° à 50°, boudins
   visibles côté extérieur (abduction) ou intérieur (adduction) du genou.
+
+## Complément (phase 5, Nourriture et compagnon)
+
+Livré :
+
+- **Score** : composant `sport` (+1) au déjeuner et au dîner d'un jour de séance pour une recette
+  avec protéine principale et au moins un quart de féculents ; fait `trainingDay`, phrase de
+  « Pourquoi ce plat ? », `GeneratePlanInput.trainingDays` et `ReplaceMealInput.trainingDays`
+  (ADR 0006 complété). Les tests montrent que ni un filtre dur, ni le facteur de portion, ni les
+  calories (profil protégé compris) ne bougent.
+- **Niveau d'activité** : `suggestActivityLevel` (le niveau suivant, d'un cran au plus), cas
+  d'usage `getActivitySuggestion` / `acceptActivitySuggestion` (recalculée côté application) /
+  `dismissActivitySuggestion` (réglage `activitySuggestionDismissedOn`, silence de 28 jours),
+  carte refusable dans « Moi » (`ActivitySuggestionCard`) ; textes dans le domain, sans calorie
+  ni dépense affichée.
+- **Nutry** : accessoires bandeau, serviette, casquette, médaille (SVG), `unlockAt` à deux formes,
+  onglet « Sport » de la feuille de personnalisation (ADR 0012 complété).
+- Écart assumé : un menu déjà enregistré garde ses scores ; le bonus apparaît à la prochaine
+  génération (« Nouveau menu ») ou aux alternatives proposées.

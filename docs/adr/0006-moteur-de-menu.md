@@ -110,6 +110,21 @@ qu'aucun 👍 plus récent n'existe : contrainte souple, assouplie juste après 
 - Performance : `tokenize` et `findProduce` sont mémoïsés (cache borné, sans effet observable) ;
   un menu se génère en ~2 ms sur 25 recettes.
 
+## Complément (phase 5 du Sport, ADR 0015) : jours de séance
+
+- `ScoreComponentKey` gagne `sport` ; `ScoreFacts.trainingDay` (facultatif : les menus d'avant le
+  Sport restent valides) ; `GeneratePlanInput.trainingDays` et `ReplaceMealInput.trainingDays`
+  donnent les jours de séance de la semaine.
+- Au déjeuner et au dîner d'un jour de séance, `SCORE_RULES.trainingDay` (+1) pour une recette
+  avec une protéine principale et au moins un quart de féculents
+  (`TRAINING_DAY_MIN_STARCH_SHARE`). Le composant n'existe que ces jours-là (0 point sinon) ;
+  jamais pour le petit-déjeuner ni les restes.
+- C'est une préférence, jamais un filtre : ni filtres durs (allergènes, régimes, aliments
+  détestés), ni calories, ni portions ne dépendent du Sport. « Pourquoi ce plat ? » commence par
+  « Jour de séance : de quoi bien récupérer ».
+- Les jours viennent du programme de la semaine (`trainingDaysFor`) ; un menu déjà enregistré
+  n'est pas régénéré quand le programme change (« Nouveau menu » en tient compte).
+
 ## Conséquences
 
 - Tous les barèmes sont des constantes exportées (`SCORE_RULES`, `LEARNING_RULES`,

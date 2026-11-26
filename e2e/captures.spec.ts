@@ -7,6 +7,7 @@ import {
   dismissQuiz,
   expectQuestion,
   openSportSession,
+  setActivitySedentary,
   toFirstExercise,
 } from './helpers';
 
@@ -223,4 +224,43 @@ test('captures Sport : onboarding, semaine, séance, tuto, ordinateur', async ({
   await dismissCelebration(page);
   await page.waitForTimeout(700);
   await page.screenshot({ path: 'docs/captures/sport-ordinateur.png' });
+});
+
+test('captures Sport : fin de séance, niveau d’activité suggéré, accessoires de Nutry', async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('./');
+  await completeOnboarding(page);
+  await dismissQuiz(page);
+  await completeSportOnboarding(page);
+  await openSportSession(page);
+  await toFirstExercise(page);
+  await page.getByRole('button', { name: 'Valider la série 1' }).click();
+  await page.getByRole('button', { name: 'Passer' }).click();
+  await page.getByRole('button', { name: 'Quitter la séance' }).click();
+  await page.getByRole('button', { name: 'Terminer maintenant' }).click();
+  await page.getByRole('button', { name: 'Terminer la séance' }).click();
+  await expect(page.getByText(/Nutry gagne/)).toContainText('le bandeau');
+  await page.waitForTimeout(1200);
+  await page.screenshot({ path: 'docs/captures/seance-fin.png' });
+  await page.getByRole('link', { name: 'Retour à ma semaine' }).click();
+  await dismissCelebration(page);
+
+  await setActivitySedentary(page);
+  await expect(page.getByRole('region', { name: 'Niveau d’activité' })).toBeVisible();
+  await page.waitForTimeout(4600);
+  await page.screenshot({ path: 'docs/captures/moi-activite.png' });
+  await page.getByRole('button', { name: /pourrait monter d’un cran/ }).click();
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: 'docs/captures/moi-activite-detail.png' });
+  await page.keyboard.press('Escape');
+
+  await page.getByRole('button', { name: 'Personnaliser Nutry' }).click();
+  const sheet = page.getByRole('dialog', { name: 'Personnaliser Nutry' });
+  await sheet.getByRole('tab', { name: 'Sport' }).click();
+  await sheet.getByRole('button', { name: 'Bandeau' }).click();
+  await page.waitForTimeout(700);
+  await page.screenshot({ path: 'docs/captures/nutry-sport.png' });
 });

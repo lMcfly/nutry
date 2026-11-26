@@ -34,7 +34,17 @@ barre d'onglets devient un rail latéral et les écrans passent sur deux colonne
 Le **Sport** (onglet entre Semaine et Courses) propose une semaine d'entraînement à son rythme et
 une séance guidée en mode concentré : mannequin animé, séries à valider, minuteur de repos, tuto,
 « Ça fait mal » et « Remplacer » (`docs/captures/sport-ordinateur.png`,
-`docs/captures/seance-ordinateur.png`).
+`docs/captures/seance-ordinateur.png`). Le mannequin montre exactement l'exercice du catalogue,
+avec son matériel (audit : `docs/audit-mannequins.md`).
+
+| Fin de séance                                               | Niveau d'activité suggéré                                          | Accessoires de sport de Nutry                                             |
+| ----------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| ![Fin de séance, Nutry gagne](docs/captures/seance-fin.png) | ![Une suggestion refusable](docs/captures/moi-activite-detail.png) | ![Bandeau, serviette, casquette, médaille](docs/captures/nutry-sport.png) |
+
+Les jours de séance donnent un léger bonus de score aux repas avec protéines et féculents (jamais
+un filtre, ni calories ni portions), le programme peut suggérer de relever d'un cran le niveau
+d'activité (refusable), et Nutry gagne un bandeau, une serviette, une casquette et une médaille
+à 1, 5, 10 et 20 séances.
 
 ## Fonctionnalités
 

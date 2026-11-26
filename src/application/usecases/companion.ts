@@ -10,6 +10,7 @@ import {
   recordActivity,
   unlockedItems,
 } from '@domain/companion';
+import { completedSessionCount } from '@domain/training';
 import type { CompanionItem, CompanionLook, CompanionMood, NextUnlock } from '@domain/companion';
 import type { AppPorts, SerialRunner } from './context';
 
@@ -23,6 +24,8 @@ export interface CompanionView {
   readonly streak: number;
   /** Record de série. */
   readonly best: number;
+  /** Séances de Sport terminées, toutes semaines confondues (accessoires sportifs). */
+  readonly sessionsCompleted: number;
   /** Tout ce qui est débloqué (teintes, yeux, accessoires), d'après le record. */
   readonly unlocked: readonly CompanionItem[];
   readonly nextUnlock: NextUnlock | undefined;
@@ -62,17 +65,28 @@ export async function recordCompanionActivity(ports: AppPorts): Promise<void> {
   }
 }
 
+/** Séances terminées (journaux du Sport) ; 0 si la lecture échoue : la série reste utilisable. */
+async function sessionsCompleted(ports: AppPorts): Promise<number> {
+  try {
+    return completedSessionCount(await ports.sessionLogs.listAll());
+  } catch {
+    return 0;
+  }
+}
+
 export function createCompanionUseCases(ports: AppPorts, serial: SerialRunner): CompanionUseCases {
   const view = async (): Promise<CompanionView> => {
     const state = await ports.companion.get();
     const today = ports.clock.today();
+    const sessions = await sessionsCompleted(ports);
     return {
       look: state.look,
       mood: moodOf(state, today),
       message: companionMessage(state, today),
       streak: currentStreak(state, today),
       best: state.best,
-      unlocked: unlockedItems(state),
+      sessionsCompleted: sessions,
+      unlocked: unlockedItems(state, sessions),
       nextUnlock: nextUnlock(state, today),
       newlyUnlocked: newlyUnlockedItems(state),
     };
@@ -83,7 +97,7 @@ export function createCompanionUseCases(ports: AppPorts, serial: SerialRunner): 
 
     customizeCompanion: (look) =>
       serial(async () => {
-        const result = equip(await ports.companion.get(), look);
+        const result = equip(await ports.companion.get(), look, await sessionsCompleted(ports));
         if (!result.ok) {
           return {
             status: 'refused',

@@ -53,6 +53,7 @@ export function explainMeal(meal: Pick<PlannedMeal, 'isLeftover' | 'score'>): st
   if (meal.isLeftover) return 'Les restes d’hier soir : rien à cuisiner, juste à réchauffer.';
   const f = meal.score.facts;
   const parts: string[] = [];
+  if (f.trainingDay === true) parts.push('jour de séance : de quoi bien récupérer');
   const liked = likedPhrase(f.likedTerms);
   if (liked) parts.push(liked);
   if (f.ratedPositively) parts.push('tu avais aimé ce plat');

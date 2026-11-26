@@ -20,6 +20,7 @@ import {
   TRAINING_LEVELS,
 } from '@domain/training';
 import type { ProgressionAdvice } from '@domain/training';
+import { HOUSEHOLD_KINDS } from '../features/training/figure/exerciseFigure';
 import * as labels from './labels';
 
 const CASES: readonly (readonly [string, readonly string[], Readonly<Record<string, string>>])[] = [
@@ -72,6 +73,8 @@ const CASES: readonly (readonly [string, readonly string[], Readonly<Record<stri
     labels.SPORT_ACCESSORY_PHRASES,
   ],
   ['emojis des ressentis', EFFORT_FEELINGS, labels.EFFORT_EMOJIS],
+  ['accessoires du foyer', [...HOUSEHOLD_KINDS], labels.HOUSEHOLD_LABELS],
+  ['emojis des accessoires du foyer', [...HOUSEHOLD_KINDS], labels.HOUSEHOLD_EMOJIS],
   [
     'conseils de progression',
     [
@@ -98,7 +101,7 @@ describe('libellés français', () => {
 
   it('chaque élément à débloquer de Nutry a sa phrase avec article', () => {
     const ids = [...COMPANION_COLORS, ...COMPANION_EYES, ...COMPANION_ACCESSORIES]
-      .filter((item) => item.unlockAt > 0)
+      .filter((item) => item.unlockAt.kind === 'seances' || item.unlockAt.days > 0)
       .map((item) => item.id);
     expect(Object.keys(labels.UNLOCK_PHRASES).sort()).toEqual([...ids].sort());
     const toque = COMPANION_ACCESSORIES.find((a) => a.id === 'toque-de-chef');

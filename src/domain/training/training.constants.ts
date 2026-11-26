@@ -434,3 +434,19 @@ export const ACTIVITY_FLOOR_BY_WEEKLY_MINUTES: readonly {
   { fromMinutes: 150, activity: 'modere' },
   { fromMinutes: 300, activity: 'actif' },
 ];
+
+/**
+ * Après un refus, la suggestion de niveau d'activité ne revient pas avant ce nombre de jours
+ * (réglage `activitySuggestionDismissedOn`, ADR 0015).
+ */
+export const ACTIVITY_SUGGESTION_SNOOZE_DAYS = 28;
+
+/** Textes de la carte « niveau d'activité » (Moi) : aucune calorie, aucune dépense affichée. */
+export const ACTIVITY_SUGGESTION_TEXTS = {
+  title: 'Ton niveau d’activité pourrait monter d’un cran',
+  body: (minutes: number, current: string, suggested: string): string =>
+    `Avec environ ${minutes} min de sport par semaine, ton niveau « ${current} » pourrait passer à « ${suggested} ». Ton menu s’adapterait un peu. C’est toi qui décides.`,
+  accept: 'Oui, mettre à jour',
+  dismiss: 'Non merci',
+  accepted: 'C’est noté, ton niveau d’activité est mis à jour.',
+} as const;

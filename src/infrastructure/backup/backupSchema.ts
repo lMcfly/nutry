@@ -166,6 +166,7 @@ const SCORE_KEYS = [
   'temps',
   'niveau',
   'variete',
+  'sport',
   'hasard',
 ] as const satisfies readonly ScoreComponentKey[];
 const RELAXED = [
@@ -193,6 +194,7 @@ const scoreSchema = z.object({
     ratedPositively: z.boolean(),
     batchFriendly: z.boolean(),
     newProtein: z.boolean(),
+    trainingDay: z.boolean().optional(),
   }),
 });
 
@@ -514,7 +516,11 @@ type ParsedBackup = z.infer<typeof backupFileSchema>;
  * Cohérence du compagnon : la série ne dépasse pas le record, un jour actif accompagne
  * toute série, et l'apparence ne porte que des éléments débloqués par le record.
  */
-function checkCompanion(companion: ParsedBackup['companion'], ctx: z.RefinementCtx): void {
+function checkCompanion(
+  companion: ParsedBackup['companion'],
+  sessions: number,
+  ctx: z.RefinementCtx,
+): void {
   const issue = (path: string, message: string) => {
     ctx.addIssue({ code: 'custom', path: ['companion', path], message });
   };
@@ -525,7 +531,7 @@ function checkCompanion(companion: ParsedBackup['companion'], ctx: z.RefinementC
   if ((companion.lastActiveDay === undefined) !== (companion.best === 0)) {
     issue('lastActiveDay', 'jour actif incohérent avec le record');
   }
-  if (!equip(companion as CompanionState, companion.look as CompanionState['look']).ok) {
+  if (!equip(companion as CompanionState, companion.look as CompanionState['look'], sessions).ok) {
     issue('look', 'apparence non débloquée');
   }
 }
@@ -664,7 +670,11 @@ function checkCoherence(backup: ParsedBackup, ctx: z.RefinementCtx): void {
     day(s.weekStart, ['shopping', i, 'weekStart']);
   });
   checkTraining(backup, ctx, { day, instant });
-  checkCompanion(backup.companion, ctx);
+  checkCompanion(
+    backup.companion,
+    backup.sessionLogs.filter((log) => log.status === 'terminee').length,
+    ctx,
+  );
   day(backup.companion.lastActiveDay, ['companion', 'lastActiveDay']);
   const { settings } = backup;
   instant(settings.profileCreatedAt, ['settings', 'profileCreatedAt']);

@@ -8,6 +8,7 @@ import {
   dismissQuiz,
   openSportSession,
   pickSportDay,
+  setActivitySedentary,
   toFirstExercise,
 } from './helpers';
 
@@ -255,6 +256,33 @@ for (const viewport of VIEWPORTS) {
         page.getByRole('heading', { name: 'Crédits exercices', level: 1 }),
       ).toBeVisible();
       await expectFits(page, 'Crédits exercices');
+    });
+
+    test('Moi avec la suggestion de niveau d’activité et Personnaliser Nutry (onglet Sport) tiennent sans scroll de page', async ({
+      page,
+    }) => {
+      test.setTimeout(120_000);
+      await page.goto('./');
+      await completeOnboarding(page);
+      await dismissQuiz(page);
+      await completeSportOnboarding(page);
+      await setActivitySedentary(page);
+      const card = page.getByRole('region', { name: 'Niveau d’activité' });
+      await expect(card).toBeVisible();
+      await expectFits(page, 'Moi, avec la suggestion');
+      await card.getByRole('button', { name: /pourrait monter d’un cran/ }).click();
+      const proposal = page.getByRole('dialog', { name: /pourrait monter d’un cran/ });
+      await expectFits(page, 'Moi, proposition de niveau d’activité');
+      await expectReachable(proposal.getByRole('button', { name: 'Oui, mettre à jour' }));
+      await expectReachable(proposal.getByRole('button', { name: 'Non merci' }));
+      await page.keyboard.press('Escape');
+
+      await page.getByRole('button', { name: 'Personnaliser Nutry' }).click();
+      const sheet = page.getByRole('dialog', { name: 'Personnaliser Nutry' });
+      await sheet.getByRole('tab', { name: 'Sport' }).click();
+      await expect(sheet.getByRole('button', { name: /Bandeau/ })).toBeVisible();
+      await expectFits(page, 'Personnaliser Nutry, Sport');
+      await expectReachable(sheet.getByRole('button', { name: 'Enregistrer ce look' }));
     });
   });
 }

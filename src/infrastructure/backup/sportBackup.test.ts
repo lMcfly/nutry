@@ -19,7 +19,7 @@ type Raw = Record<string, any>;
 const SPORT_KEYS = ['training', 'trainingPlans', 'sessionLogs', 'painReports'] as const;
 
 /** Une vraie sauvegarde v4 avec du Sport : profil, programme, séance terminée, douleur. */
-async function sportBackup(): Promise<Raw> {
+async function sportBackup(withPlan = false): Promise<Raw> {
   const ports = createInMemoryPorts({
     recipes: FIXTURE_RECIPES,
     exercises: EXERCISE_FIXTURES,
@@ -48,6 +48,7 @@ async function sportBackup(): Promise<Raw> {
   await uc.reportPain({ ...ref, slotId: slot.slotId });
   await uc.markExerciseDone({ ...ref, slotId: slot.slotId });
   await uc.completeSession({ ...ref, effort: 'correct' });
+  if (withPlan) await uc.getCurrentPlan();
   await uc.exportData();
   return JSON.parse(ports.fileSaver.files[0]?.content ?? '') as Raw;
 }
@@ -445,5 +446,38 @@ describe('bornes et cohérence du Sport', () => {
         });
       }
     }
+  });
+});
+
+describe('accessoires sportifs de Nutry et jours de séance dans une sauvegarde', () => {
+  const wear = (raw: Raw, id: 'bandeau' | 'casquette'): Raw => {
+    const next = clone(raw);
+    next['companion'] = {
+      ...next['companion'],
+      look: { color: 'menthe', eyes: 'ronds', accessories: { tete: id } },
+    };
+    return next;
+  };
+
+  it('un accessoire de sport est accepté avec assez de séances terminées dans le fichier', async () => {
+    const raw = await sportBackup();
+    expect(raw['sessionLogs']).toHaveLength(1);
+    expect(parseBackupFile(wear(raw, 'bandeau')).ok).toBe(true);
+  });
+
+  it('refusé sans la séance (ou sans assez de séances) : apparence non débloquée', async () => {
+    const raw = await sportBackup();
+    const noLogs = wear(raw, 'bandeau');
+    noLogs['sessionLogs'] = [];
+    noLogs['trainingPlans'] = [];
+    expect(errors(noLogs)).toContain('apparence non débloquée');
+    expect(errors(wear(raw, 'casquette'))).toContain('apparence non débloquée');
+  });
+
+  it('un menu avec le composant « sport » et le fait « jour de séance » se relit', async () => {
+    const raw = await sportBackup(true);
+    const meals = raw['plans'][0].meals as { score: { components: { key: string }[] } }[];
+    expect(meals.some((m) => m.score.components.some((c) => c.key === 'sport'))).toBe(true);
+    expect(errors(raw)).toBe('');
   });
 });

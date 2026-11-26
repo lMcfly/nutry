@@ -49,6 +49,20 @@ régularité, sans jamais culpabiliser. Seule la logique est décidée ici (pas 
   compilation et vérifie la cohérence (série ≤ record, jour actif présent dès qu'il y a un
   record, apparence débloquée par le record, pas de jour futur). `clearAll` l'efface.
 
+## Complément (phase 5 du Sport, ADR 0015) : accessoires sportifs
+
+- `unlockAt` devient `{ kind: 'serie', days } | { kind: 'seances', count }` : le record de série
+  d'un côté, le nombre cumulé de séances de Sport terminées de l'autre (dérivé des journaux, donc
+  rien ne se reperd ; aucun champ de plus dans l'état persisté ni dans la sauvegarde).
+- Quatre accessoires : bandeau (tête, 1 séance), serviette (cou, 5), casquette (tête, 10),
+  médaille (cou, 20) ; dessins SVG dans le repère de Nutry (`Accessories.tsx`). Les tuples
+  d'identifiants gagnent ces quatre valeurs et le schéma Zod suit.
+- `isUnlocked`, `unlockedItems` et `equip` reçoivent `sessions` (0 par défaut) ; l'application le
+  tire des journaux (`CompanionView.sessionsCompleted`) et la validation d'une sauvegarde le
+  compte dans le fichier importé. `nextUnlock` et `newlyUnlockedItems` ne parlent que des séries
+  (les accessoires sportifs sont célébrés à la fin de la séance).
+- « Personnaliser Nutry » : onglet Sport, bulles verrouillées avec « à N séances ».
+
 ## Conséquences
 
 - Changer un seuil ne reperd rien (déblocage = record) mais peut en débloquer de nouveaux.

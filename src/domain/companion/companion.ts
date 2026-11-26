@@ -70,9 +70,19 @@ export function companionMessage(state: CompanionState, today: IsoDate): string 
   return mood === 'content' ? COMPANION_MESSAGES.content : COMPANION_MESSAGES.sieste(state.best);
 }
 
-/** Éléments débloqués, d'après le RECORD de série (rien ne se reperd). */
-export function unlockedItems(state: CompanionState): readonly CompanionItem[] {
-  return COMPANION_CATALOG.filter((item) => item.unlockAt <= state.best);
+/**
+ * Un élément est débloqué par le RECORD de série ou par le nombre cumulé de séances terminées
+ * (`sessions`, dérivé des journaux du Sport) : rien ne se reperd.
+ */
+export function isUnlocked(item: CompanionItem, state: CompanionState, sessions = 0): boolean {
+  return item.unlockAt.kind === 'serie'
+    ? item.unlockAt.days <= state.best
+    : item.unlockAt.count <= sessions;
+}
+
+/** Éléments débloqués (série et séances). */
+export function unlockedItems(state: CompanionState, sessions = 0): readonly CompanionItem[] {
+  return COMPANION_CATALOG.filter((item) => isUnlocked(item, state, sessions));
 }
 
 /**
@@ -80,8 +90,12 @@ export function unlockedItems(state: CompanionState): readonly CompanionItem[] {
  * célèbre une fois.
  */
 export function newlyUnlockedItems(state: CompanionState): readonly CompanionItem[] {
+  // Les accessoires sportifs sont célébrés à la fin de la séance qui les débloque.
   return COMPANION_CATALOG.filter(
-    (item) => item.unlockAt > state.acknowledgedBest && item.unlockAt <= state.best,
+    (item) =>
+      item.unlockAt.kind === 'serie' &&
+      item.unlockAt.days > state.acknowledgedBest &&
+      item.unlockAt.days <= state.best,
   );
 }
 
@@ -95,11 +109,13 @@ export function acknowledge(state: CompanionState): CompanionState {
  * `inDays` compte depuis la série en cours (après une interruption, il faut repartir de 0).
  */
 export function nextUnlock(state: CompanionState, today: IsoDate): NextUnlock | undefined {
-  const upcoming = COMPANION_CATALOG.filter((item) => item.unlockAt > state.best).sort(
-    (a, b) => a.unlockAt - b.unlockAt,
-  )[0];
+  const upcoming = COMPANION_CATALOG.flatMap((item) =>
+    item.unlockAt.kind === 'serie' && item.unlockAt.days > state.best
+      ? [{ item, days: item.unlockAt.days }]
+      : [],
+  ).sort((a, b) => a.days - b.days)[0];
   if (!upcoming) return undefined;
-  return { item: upcoming, inDays: upcoming.unlockAt - currentStreak(state, today) };
+  return { item: upcoming.item, inDays: upcoming.days - currentStreak(state, today) };
 }
 
 function findItem(kind: CompanionItem['kind'], id: string): CompanionItem | undefined {
@@ -108,9 +124,10 @@ function findItem(kind: CompanionItem['kind'], id: string): CompanionItem | unde
 
 /**
  * Applique une apparence. Refuse (sans rien changer) un élément inconnu, un accessoire
- * rangé dans le mauvais emplacement ou un élément non débloqué.
+ * rangé dans le mauvais emplacement ou un élément non débloqué (record de série, ou séances
+ * terminées pour les accessoires sportifs).
  */
-export function equip(state: CompanionState, look: CompanionLook): EquipResult {
+export function equip(state: CompanionState, look: CompanionLook, sessions = 0): EquipResult {
   const chosen: { kind: CompanionItem['kind']; id: string }[] = [
     { kind: 'color', id: look.color },
     { kind: 'eyes', id: look.eyes },
@@ -127,7 +144,7 @@ export function equip(state: CompanionState, look: CompanionLook): EquipResult {
   for (const { kind, id } of chosen) {
     const item = findItem(kind, id);
     if (!item) return { ok: false, reason: 'unknown', id };
-    if (item.unlockAt > state.best) return { ok: false, reason: 'locked', item };
+    if (!isUnlocked(item, state, sessions)) return { ok: false, reason: 'locked', item };
   }
   return { ok: true, state: { ...state, look: normalizeLook(look) } };
 }

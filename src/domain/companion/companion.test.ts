@@ -19,8 +19,10 @@ import {
   nextUnlock,
   recordActivity,
   unlockedItems,
+  isUnlocked,
 } from '.';
-import type { CompanionLook, CompanionState } from '.';
+import type { CompanionItem, CompanionLook, CompanionState, Unlock } from '.';
+import { SPORT_ACCESSORY_UNLOCKS } from '../training';
 
 /** Enregistre un geste à chacun des jours donnés. */
 const play = (...days: string[]): CompanionState =>
@@ -38,34 +40,57 @@ function run(n: number, from = '2026-01-01'): CompanionState {
 
 const ids = (items: readonly { id: string }[]) => items.map((i) => i.id);
 
+const accessory = (id: string): CompanionItem => {
+  const found = COMPANION_ACCESSORIES.find((a) => a.id === id);
+  if (!found) throw new Error(id);
+  return found;
+};
+
 describe('catalogue', () => {
   it('ses identifiants correspondent aux vocabulaires fermés', () => {
     expect(ids(COMPANION_COLORS)).toEqual([...COLOR_IDS]);
     expect(ids(COMPANION_EYES)).toEqual([...EYE_IDS]);
     expect([...ids(COMPANION_ACCESSORIES)].sort()).toEqual([...ACCESSORY_IDS].sort());
-    expect(new Set(ids(COMPANION_CATALOG.filter((i) => i.kind === 'accessory'))).size).toBe(7);
+    expect(new Set(ids(COMPANION_CATALOG.filter((i) => i.kind === 'accessory'))).size).toBe(11);
   });
 
   it('6 teintes de base, 3 spéciales, 5 yeux ; libellés et emoji renseignés', () => {
-    expect(COMPANION_COLORS.filter((c) => c.unlockAt === 0)).toHaveLength(6);
-    expect(COMPANION_COLORS.filter((c) => c.unlockAt > 0).map((c) => c.unlockAt)).toEqual([
-      5, 15, 45,
-    ]);
+    const days = (item: { unlockAt: Unlock }) =>
+      item.unlockAt.kind === 'serie' ? item.unlockAt.days : -1;
+    expect(COMPANION_COLORS.filter((c) => days(c) === 0)).toHaveLength(6);
+    expect(COMPANION_COLORS.filter((c) => days(c) > 0).map(days)).toEqual([5, 15, 45]);
     expect(COMPANION_EYES).toHaveLength(5);
-    expect(COMPANION_EYES.every((e) => e.unlockAt === 0)).toBe(true);
+    expect(COMPANION_EYES.every((e) => days(e) === 0)).toBe(true);
     expect(COMPANION_CATALOG.every((i) => i.label.length > 0 && i.emoji.length > 0)).toBe(true);
   });
 
   it('seuils des accessoires', () => {
     expect(COMPANION_ACCESSORIES.map((a) => [a.id, a.unlockAt])).toEqual([
-      ['feuille', 1],
-      ['lunettes-rondes', 3],
-      ['toque-de-chef', 7],
-      ['echarpe', 10],
-      ['tablier', 14],
-      ['bonnet', 21],
-      ['couronne-de-fruits', 30],
+      ['feuille', { kind: 'serie', days: 1 }],
+      ['lunettes-rondes', { kind: 'serie', days: 3 }],
+      ['toque-de-chef', { kind: 'serie', days: 7 }],
+      ['echarpe', { kind: 'serie', days: 10 }],
+      ['tablier', { kind: 'serie', days: 14 }],
+      ['bonnet', { kind: 'serie', days: 21 }],
+      ['couronne-de-fruits', { kind: 'serie', days: 30 }],
+      ['bandeau', { kind: 'seances', count: 1 }],
+      ['serviette', { kind: 'seances', count: 5 }],
+      ['casquette', { kind: 'seances', count: 10 }],
+      ['medaille', { kind: 'seances', count: 20 }],
     ]);
+  });
+
+  it('les accessoires sportifs suivent les seuils du Sport (1, 5, 10, 20 séances)', () => {
+    const sport = COMPANION_ACCESSORIES.flatMap((a) =>
+      a.unlockAt.kind === 'seances' ? [{ id: a.id, slot: a.slot, sessions: a.unlockAt.count }] : [],
+    );
+    expect(sport).toEqual(
+      SPORT_ACCESSORY_UNLOCKS.map(({ id, slot, sessions }) => ({
+        id,
+        slot: slot === 'tete' ? 'tete' : 'cou',
+        sessions,
+      })),
+    );
   });
 });
 
@@ -167,8 +192,26 @@ describe('unlockedItems', () => {
     expect(unlockedAt(days - 1).split(',')).not.toContain(id);
   });
 
-  it('tout est débloqué à 45 jours', () => {
-    expect(unlockedItems(run(45))).toHaveLength(COMPANION_CATALOG.length);
+  it('tout est débloqué à 45 jours de série et 20 séances', () => {
+    expect(unlockedItems(run(45), 20)).toHaveLength(COMPANION_CATALOG.length);
+    // La série seule ne débloque pas les accessoires de sport.
+    expect(unlockedItems(run(45))).toHaveLength(COMPANION_CATALOG.length - 4);
+  });
+
+  it.each([
+    [1, 'bandeau'],
+    [5, 'serviette'],
+    [10, 'casquette'],
+    [20, 'medaille'],
+  ])('à %i séances, « %s » est débloqué (et pas la veille) ; aucune série requise', (n, id) => {
+    const names = (sessions: number) => ids(unlockedItems(INITIAL_COMPANION_STATE, sessions));
+    expect(names(n)).toContain(id);
+    expect(names(n - 1)).not.toContain(id);
+  });
+
+  it('les séances débloquent sans série, et ne dépendent pas du record', () => {
+    expect(isUnlocked(accessory('bandeau'), INITIAL_COMPANION_STATE, 1)).toBe(true);
+    expect(isUnlocked(accessory('bandeau'), run(45), 0)).toBe(false);
   });
 
   it('les déblocages suivent le record : une série interrompue ne reperd rien', () => {
@@ -281,5 +324,42 @@ describe('equip', () => {
       accessories: { tete: undefined },
     } as unknown as CompanionLook;
     expect(equip(week, noisy)).toEqual({ ok: true, state: { ...week, look: DEFAULT_LOOK } });
+  });
+});
+
+describe('equip : accessoires de sport', () => {
+  const look = (id: 'bandeau' | 'casquette'): CompanionLook => ({
+    ...DEFAULT_LOOK,
+    accessories: { tete: id },
+  });
+
+  it('refuse un accessoire de sport tant que les séances ne sont pas faites', () => {
+    expect(equip(run(45), look('bandeau'))).toMatchObject({ ok: false, reason: 'locked' });
+    expect(equip(INITIAL_COMPANION_STATE, look('casquette'), 9)).toMatchObject({
+      ok: false,
+      reason: 'locked',
+    });
+  });
+
+  it('accepte un accessoire de sport débloqué, même sans aucune série', () => {
+    expect(equip(INITIAL_COMPANION_STATE, look('bandeau'), 1)).toMatchObject({ ok: true });
+    expect(equip(INITIAL_COMPANION_STATE, look('casquette'), 10)).toMatchObject({ ok: true });
+  });
+
+  it('refuse un accessoire de sport rangé dans le mauvais emplacement', () => {
+    const wrong: CompanionLook = {
+      ...DEFAULT_LOOK,
+      accessories: { cou: 'bandeau' } as unknown as CompanionLook['accessories'],
+    };
+    expect(equip(INITIAL_COMPANION_STATE, wrong, 20)).toEqual({
+      ok: false,
+      reason: 'unknown',
+      id: 'bandeau',
+    });
+  });
+
+  it('nextUnlock et newlyUnlockedItems ne parlent que des séries', () => {
+    expect(nextUnlock(run(45), '2026-02-14')).toBeUndefined();
+    expect(newlyUnlockedItems(run(45)).every((i) => i.unlockAt.kind === 'serie')).toBe(true);
   });
 });

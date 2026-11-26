@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { FIXTURE_RECIPES, fixture, ing, makeRecipe } from '../testing/fixtures';
 import { learnWeights } from '../preferences';
 import type { MealRating } from '../preferences';
-import { SCORE_RULES, isConsecutiveProtein, rankRecipes, scoreRecipe } from './index';
+import {
+  SCORE_RULES,
+  TRAINING_DAY_MIN_STARCH_SHARE,
+  isConsecutiveProtein,
+  rankRecipes,
+  scoreRecipe,
+} from './index';
 import { isPreservedIngredient } from './scoring';
 import type { ScoringContext } from './index';
 
@@ -179,5 +185,50 @@ describe('apprentissage : effet des avis sur le classement', () => {
     const a = { ...fixture('dahl-lentilles-corail'), id: 'b-dahl' };
     const b = { ...fixture('dahl-lentilles-corail'), id: 'a-dahl' };
     expect(rankRecipes([a, b], ctx).map((r) => r.recipe.id)).toEqual(['a-dahl', 'b-dahl']);
+  });
+});
+
+describe('scoreRecipe : jour de séance (composant sport)', () => {
+  const plate = (starches: number) => ({
+    vegetables: 0.4,
+    starches,
+    proteins: Math.round((0.6 - starches) * 100) / 100,
+  });
+  const meal = (starches: number, protein: 'poulet' | 'aucune' = 'poulet') =>
+    makeRecipe({
+      id: `plat-${starches}-${protein}`,
+      mainProtein: protein === 'poulet' ? 'volaille' : 'aucune',
+      plateBalance: plate(starches),
+    });
+
+  it('sans jour de séance : aucun composant sport, score inchangé', () => {
+    const recipe = meal(0.3);
+    const base = scoreRecipe(recipe, ctx);
+    expect(base.components.map((c) => c.key)).not.toContain('sport');
+    expect(base.facts.trainingDay).toBeUndefined();
+    const flagged = scoreRecipe(recipe, { ...ctx, trainingDay: false });
+    expect(flagged).toEqual(base);
+  });
+
+  it('jour de séance : +1 pour une protéine principale et au moins un quart de féculents', () => {
+    const recipe = meal(TRAINING_DAY_MIN_STARCH_SHARE);
+    const base = scoreRecipe(recipe, ctx);
+    const training = scoreRecipe(recipe, { ...ctx, trainingDay: true });
+    expect(points(training, 'sport')).toBe(SCORE_RULES.trainingDay);
+    expect(training.facts.trainingDay).toBe(true);
+    expect(training.total - base.total).toBeCloseTo(SCORE_RULES.trainingDay, 10);
+  });
+
+  it('jour de séance : 0 point sans féculents suffisants ou sans protéine principale', () => {
+    for (const recipe of [meal(0.2), meal(0.3, 'aucune')]) {
+      const s = scoreRecipe(recipe, { ...ctx, trainingDay: true });
+      expect(points(s, 'sport')).toBe(0);
+      expect(s.facts.trainingDay).toBe(false);
+      expect(s.total).toBeCloseTo(scoreRecipe(recipe, ctx).total, 10);
+    }
+  });
+
+  it('un léger bonus : il ne dépasse pas le poids d’une préférence aimée', () => {
+    expect(SCORE_RULES.trainingDay).toBeLessThanOrEqual(SCORE_RULES.likePerTerm / 2);
   });
 });

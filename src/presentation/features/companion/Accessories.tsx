@@ -148,6 +148,75 @@ function Apron({ clipId }: AccessoryProps) {
   );
 }
 
+/** Bandeau de sport : ruban tendu autour du front, liseré blanc et petit nœud sur le côté. */
+function Headband() {
+  return (
+    <g>
+      <path d="M29 53 Q60 36 91 53 L91 62 Q60 45 29 62 Z" fill="#2f86d6" />
+      <path d="M29 57.5 Q60 40.5 91 57.5" stroke="#ffffff" strokeWidth="2.2" fill="none" />
+      <path d="M29 53 Q60 36 91 53" stroke="#1f64a8" strokeWidth="1.2" fill="none" />
+      <path d="M86 52 L100 44 L98 58 Z" fill="#2f86d6" />
+      <path d="M86 56 L99 64 L94 50 Z" fill="#1f64a8" />
+      <circle cx="87" cy="54" r="3.2" fill="#1f64a8" />
+    </g>
+  );
+}
+
+/** Casquette de sport : dôme rouge, bouton, visière large vue de face. */
+function Cap() {
+  return (
+    <g>
+      <path d="M31 50 C30 20 90 20 89 50 Z" fill="#e0483f" />
+      <path
+        d="M60 22 V50 M45 26 C42 34 40 42 40 50 M75 26 C78 34 80 42 80 50"
+        stroke="#bd3730"
+        strokeWidth="1.6"
+        fill="none"
+      />
+      <circle cx="60" cy="22" r="3" fill="#bd3730" />
+      <ellipse cx="60" cy="50" rx="40" ry="7" fill="#b9332b" />
+      <path d="M22 52 Q60 62 98 52 Q60 47 22 52 Z" fill="#d23f36" />
+      <path d="M52 36 H68" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" opacity=".9" />
+    </g>
+  );
+}
+
+/** Serviette de sport posée sur les épaules, deux pans qui pendent, liserés blancs. */
+function Towel({ clipId }: AccessoryProps) {
+  return (
+    <g>
+      <g clipPath={`url(#${clipId})`}>
+        <path d="M10 92 Q60 110 110 92 V106 Q60 124 10 106 Z" fill="#7cc0e8" />
+        <path d="M10 99 Q60 117 110 99" stroke="#ffffff" strokeWidth="2.4" fill="none" />
+      </g>
+      <path d="M34 103 L52 108 L50 130 L33 127 Z" fill="#8ccbf0" />
+      <path d="M70 108 L88 103 L87 127 L70 130 Z" fill="#7cc0e8" />
+      <path
+        d="M33 116 L51 119 M70 119 L87 116"
+        stroke="#ffffff"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+    </g>
+  );
+}
+
+/** Médaille : ruban en V autour du cou, disque doré avec une étoile. */
+function Medal() {
+  return (
+    <g>
+      <path d="M38 92 L60 116 L68 111 L48 90 Z" fill="#e8564b" />
+      <path d="M82 92 L60 116 L52 111 L72 90 Z" fill="#2f86d6" />
+      <circle cx="60" cy="118" r="10.5" fill="#f2c230" stroke="#c9981a" strokeWidth="1.8" />
+      <circle cx="60" cy="118" r="7" fill="none" stroke="#c9981a" strokeWidth="1.2" />
+      <path
+        d="M60 112.5 l1.7 3.6 l3.9 .5 l-2.9 2.7 l.8 3.9 l-3.5 -2 l-3.5 2 l.8 -3.9 l-2.9 -2.7 l3.9 -.5 Z"
+        fill="#fff3b8"
+      />
+    </g>
+  );
+}
+
 /** Calque d'un accessoire (dessin dans le repère de Nutry). */
 export function AccessoryLayer({
   id,
@@ -171,5 +240,13 @@ export function AccessoryLayer({
       return <Scarf clipId={clipId} />;
     case 'tablier':
       return <Apron clipId={clipId} />;
+    case 'bandeau':
+      return <Headband />;
+    case 'casquette':
+      return <Cap />;
+    case 'serviette':
+      return <Towel clipId={clipId} />;
+    case 'medaille':
+      return <Medal />;
   }
 }

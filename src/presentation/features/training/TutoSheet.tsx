@@ -7,10 +7,17 @@ import { ExternalIcon, ShieldIcon } from '../../components/icons';
 import { ScrollArea } from '../../components/ScrollArea';
 import { Sheet } from '../../components/Sheet';
 import { useAsync } from '../../hooks/useAsync';
-import { EQUIPMENT_EMOJIS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../../i18n/labels';
+import {
+  EQUIPMENT_EMOJIS,
+  EQUIPMENT_LABELS,
+  HOUSEHOLD_EMOJIS,
+  HOUSEHOLD_LABELS,
+  MUSCLE_GROUP_LABELS,
+} from '../../i18n/labels';
 import type { BodyId } from './figure/body';
 import { ExerciseFigure } from './figure/ExerciseFigure';
-import { figureOf } from './figure/exerciseFigure';
+import { HOUSEHOLD_KINDS, figureOf, householdPropsOf } from './figure/exerciseFigure';
+import type { HouseholdKind } from './figure/exerciseFigure';
 import type { FigureMode } from './figure/ExerciseFigure';
 import { figureMuscles } from './format';
 import styles from './TutoSheet.module.css';
@@ -40,6 +47,10 @@ interface TutoSheetProps {
  * « Voir le tuto » : mannequin animé avec repères (pause, départ, arrivée), consignes
  * numérotées, conseils de sécurité, muscles, matériel, variantes et recherche de vidéo.
  */
+/** Accessoires du foyer qu'on liste (le matériel du catalogue a déjà sa propre liste). */
+const isHousehold = (kind: string): kind is HouseholdKind =>
+  (HOUSEHOLD_KINDS as readonly string[]).includes(kind);
+
 export function TutoSheet({ exercise, body, onClose }: TutoSheetProps) {
   return (
     <Sheet
@@ -86,6 +97,7 @@ function TutoContent({ exerciseId, body }: { readonly exerciseId: string; readon
     );
   }
   const { exercise, media, disclaimer } = sheet;
+  const home = householdPropsOf(exercise).filter(isHousehold);
   const data = state.status === 'ready' ? state.data : undefined;
   const youtube = media?.links[0];
 
@@ -148,13 +160,18 @@ function TutoContent({ exerciseId, body }: { readonly exerciseId: string; readon
           <h4 id="tuto-materiel" className={styles.heading}>
             Matériel
           </h4>
-          {exercise.equipment.length === 0 ? (
+          {exercise.equipment.length === 0 && home.length === 0 ? (
             <p>Aucun : le poids du corps suffit.</p>
           ) : (
             <ul className={styles.chips}>
               {exercise.equipment.map((e) => (
                 <li key={e} className={styles.chip}>
                   <span aria-hidden="true">{EQUIPMENT_EMOJIS[e]}</span> {EQUIPMENT_LABELS[e]}
+                </li>
+              ))}
+              {home.map((kind) => (
+                <li key={kind} className={styles.chip}>
+                  <span aria-hidden="true">{HOUSEHOLD_EMOJIS[kind]}</span> {HOUSEHOLD_LABELS[kind]}
                 </li>
               ))}
             </ul>

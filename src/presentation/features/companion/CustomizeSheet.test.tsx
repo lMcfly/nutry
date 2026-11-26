@@ -22,14 +22,14 @@ async function openCustomizer(user: ReturnType<typeof renderScreen>['user']) {
 }
 
 describe('Personnaliser Nutry', () => {
-  it('aperçu vivant, onglets Couleur / Yeux / Accessoires', async () => {
+  it('aperçu vivant, onglets Couleur / Yeux / Accessoires / Sport', async () => {
     const { user } = renderScreen(<MePage />, { existing: setup(10) });
     const sheet = await openCustomizer(user);
     expect(
       within(sheet)
         .getAllByRole('tab')
         .map((t) => t.textContent),
-    ).toEqual(['Couleur', 'Yeux', 'Accessoires']);
+    ).toEqual(['Couleur', 'Yeux', 'Accessoires', 'Sport']);
     const preview = () => within(sheet).getByRole('img');
     expect(preview()).toHaveAccessibleName(/couleur menthe, yeux ronds, sans accessoire/);
 
@@ -74,6 +74,43 @@ describe('Personnaliser Nutry', () => {
 
     await user.click(within(sheet).getByRole('tab', { name: 'Couleur' }));
     expect(within(sheet).getByRole('button', { name: /Cosmos/ })).toHaveTextContent('à 15 jours');
+  });
+
+  it('accessoires de sport : verrouillés « à N séances », débloqués par les séances terminées', async () => {
+    const existing = setup(0);
+    const done = (n: number) => ({
+      id: `log-${n}`,
+      weekStart: '2026-11-23',
+      sessionId: `s-${n}`,
+      date: '2026-11-23',
+      status: 'terminee' as const,
+      startedAt: '2026-11-23T08:00:00.000Z',
+      completedAt: '2026-11-23T08:40:00.000Z',
+      exercises: [],
+    });
+    for (let n = 0; n < 5; n += 1) existing.ports.state.sessionLogs.set(`log-${n}`, done(n));
+    const { user } = renderScreen(<MePage />, { existing });
+    const sheet = await openCustomizer(user);
+    await user.click(within(sheet).getByRole('tab', { name: 'Sport' }));
+    const towel = within(sheet).getByRole('button', { name: /Serviette/ });
+    expect(towel).toHaveAttribute('aria-disabled', 'false');
+    const cap = within(sheet).getByRole('button', { name: /Casquette/ });
+    expect(cap).toHaveAttribute('aria-disabled', 'true');
+    expect(cap).toHaveAccessibleName(/verrouillé, à 10 séances/);
+    expect(cap).toHaveTextContent('à 10 séances');
+    expect(within(sheet).getByRole('button', { name: /Médaille/ })).toHaveTextContent(
+      'à 20 séances',
+    );
+    await user.click(within(sheet).getByRole('button', { name: /Bandeau/ }));
+    await user.click(towel);
+    expect(within(sheet).getByRole('img')).toHaveAccessibleName(/avec bandeau, serviette/);
+    await user.click(within(sheet).getByRole('button', { name: 'Enregistrer ce look' }));
+    await waitFor(() => {
+      expect(existing.ports.state.companion.look.accessories).toEqual({
+        tete: 'bandeau',
+        cou: 'serviette',
+      });
+    });
   });
 
   it('enregistre avec customizeCompanion et met à jour Nutry', async () => {

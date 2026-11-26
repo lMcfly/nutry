@@ -33,6 +33,7 @@ import { CustomizeSheet } from '../features/companion/CustomizeSheet';
 import { Nutry } from '../features/companion/Nutry';
 import { useCompanion } from '../features/companion/useCompanion';
 import { DataSection } from '../features/data/DataSection';
+import { ActivitySuggestionCard } from '../features/training/ActivitySuggestionCard';
 import { SportSettingsSheet } from '../features/training/SportSettingsSheet';
 import { PrivacyContent } from '../features/privacy/PrivacyContent';
 import { ProgressCards } from '../features/progress/ProgressCards';
@@ -310,12 +311,14 @@ function ProfileContent({
   onTheme,
   onTracking,
 }: ProfileContentProps) {
-  const { previewProfile, saveProfile, setTheme, setWeightTracking } = useDependencies();
+  const { getProfile, previewProfile, saveProfile, setTheme, setWeightTracking } =
+    useDependencies();
   const toast = useToast();
   const location = useLocation();
   const { companion, setCompanion } = useCompanion();
   const [sheet, setSheet] = useState<SheetId | undefined>();
   const [customizing, setCustomizing] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
   const [draft, setDraft] = useState<ProfileDraft>(() => draftFromProfile(view.profile));
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -475,7 +478,18 @@ function ProfileContent({
         </div>
       )}
 
-      <div className={styles.layout}>
+      {/* Changer d'activité recharge la suggestion (le niveau déclaré a bougé). */}
+      <ActivitySuggestionCard
+        key={view.profile.activity}
+        onVisibleChange={setSuggesting}
+        onAccepted={() => {
+          void getProfile().then((next) => {
+            if (next) onSaved(next);
+          });
+        }}
+      />
+
+      <div className={`${styles.layout} ${suggesting ? styles.compact : ''}`}>
         {companion && (
           <section className={styles.hero} aria-label="Nutry">
             <button

@@ -25,6 +25,7 @@ export type {
   EyeId,
   EyesItem,
   NextUnlock,
+  Unlock,
 } from './companion.types';
 export {
   ACCESSORY_SLOT_LABELS,
@@ -45,6 +46,7 @@ export {
   moodOf,
   newlyUnlockedItems,
   nextUnlock,
+  isUnlocked,
   recordActivity,
   unlockedItems,
 } from './companion';

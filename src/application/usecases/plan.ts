@@ -6,7 +6,13 @@ import {
   generateWeeklyPlan,
   replaceMeal,
 } from '@domain/mealplan';
-import type { BalanceGauge, BatchPrepGroup, PlannedMeal, ScoreBreakdown } from '@domain/mealplan';
+import type {
+  BalanceGauge,
+  BatchPrepGroup,
+  DayIndex,
+  PlannedMeal,
+  ScoreBreakdown,
+} from '@domain/mealplan';
 import { scaleRecipeForHousehold } from '@domain/profile';
 import { isRecipeCompatible, suggestsBread, totalMinutes } from '@domain/recipe';
 import type { Recipe } from '@domain/recipe';
@@ -17,6 +23,7 @@ import type { IsoDate } from '@domain/shared';
 import { dietaryFingerprint } from '@domain/userdata';
 import type { RatingRecord, SavedPlan } from '@domain/userdata';
 import { NO_PROFILE, indexRecipes, loadPlanningContext } from './context';
+import { trainingDaysFor } from './training';
 import type { AppPorts, NoProfile, PlanningContext, SerialRunner } from './context';
 
 /**
@@ -126,8 +133,14 @@ export function currentWeekStart(ports: AppPorts): IsoDate {
   return startOfWeek(ports.clock.today());
 }
 
-function generate(ports: AppPorts, ctx: PlanningContext, weekStart: IsoDate): SavedPlan {
+function generate(
+  ports: AppPorts,
+  ctx: PlanningContext,
+  weekStart: IsoDate,
+  trainingDays: readonly DayIndex[],
+): SavedPlan {
   const plan = generateWeeklyPlan({
+    trainingDays,
     profile: ctx.profile,
     recipes: ctx.recipes,
     weights: ctx.weights,
@@ -157,7 +170,7 @@ export async function ensureCurrentPlan(
     stored.constraintsKey === dietaryFingerprint(ctx.profile) &&
     isPlanSafe(stored, ctx);
   if (stored && upToDate && !force) return { plan: stored, origin: 'stored' };
-  const plan = generate(ports, ctx, weekStart);
+  const plan = generate(ports, ctx, weekStart, await trainingDaysFor(ports));
   await ports.plans.save(plan);
   return { plan, origin: stored && !upToDate ? 'regenerated' : 'generated' };
 }
@@ -259,8 +272,15 @@ export function createPlanUseCases(ports: AppPorts, serial: SerialRunner): PlanU
       return task(ctx, plan, origin);
     });
 
-  const alternatives = (ctx: PlanningContext, plan: SavedPlan, mealId: string, count: number) =>
+  const alternatives = (
+    ctx: PlanningContext,
+    plan: SavedPlan,
+    mealId: string,
+    count: number,
+    trainingDays: readonly DayIndex[],
+  ) =>
     replaceMeal({
+      trainingDays,
       plan,
       mealId,
       profile: ctx.profile,
@@ -283,20 +303,26 @@ export function createPlanUseCases(ports: AppPorts, serial: SerialRunner): PlanU
 
     getMealAlternatives: (mealId) =>
       withPlan(
-        (ctx, plan) =>
-          alternatives(ctx, plan, mealId, 3).map(({ recipe, score }) => ({
-            recipe,
-            score,
-            explanation: explainMeal({ isLeftover: false, score }),
-          })),
+        async (ctx, plan) =>
+          alternatives(ctx, plan, mealId, 3, await trainingDaysFor(ports)).map(
+            ({ recipe, score }) => ({
+              recipe,
+              score,
+              explanation: explainMeal({ isLeftover: false, score }),
+            }),
+          ),
         [],
       ),
 
     replaceMeal: ({ mealId, recipeId }) =>
       withPlan<PlanResult | { readonly status: 'unavailable' }>(async (ctx, plan) => {
-        const choice = alternatives(ctx, plan, mealId, Number.POSITIVE_INFINITY).find(
-          (a) => a.recipe.id === recipeId,
-        );
+        const choice = alternatives(
+          ctx,
+          plan,
+          mealId,
+          Number.POSITIVE_INFINITY,
+          await trainingDaysFor(ports),
+        ).find((a) => a.recipe.id === recipeId);
         if (!choice) return { status: 'unavailable' };
         const next: SavedPlan = { ...plan, ...applyReplacement(plan, mealId, choice) };
         await ports.plans.save(next);
