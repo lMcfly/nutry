@@ -1,6 +1,6 @@
-import type { Load, SceneItem } from '../equipment';
+import type { EquipmentKind, Load, LoadKind, SceneItem } from '../equipment';
 import type { FigureMuscle } from '../muscles';
-import type { JointName, View } from '../rig';
+import type { Grip, JointName, View } from '../rig';
 import type { Timeline } from '../timeline';
 
 /** Mouvement illustré : poses clés, tempo, vue, muscles et matériel par défaut. */
@@ -26,8 +26,51 @@ export interface MovementDef {
   readonly mirrored?: boolean;
 }
 
+/**
+ * Montage particulier d'une pose, interprété par la fabrique du mouvement (le même geste avec un
+ * autre support) : appui sur une table, une chaise ou une marche, élastique ancré ou aux pieds,
+ * poulie, mur, coussin, sliders…
+ */
+export type Rig =
+  | 'table'
+  | 'chaise'
+  | 'marche'
+  | 'mur'
+  | 'coussin'
+  | 'sliders'
+  | 'elastique-dos'
+  | 'elastique-pieds'
+  | 'elastique-ancre'
+  | 'elastique-ancre-haut'
+  | 'elastique-assistance'
+  | 'poulie-basse'
+  | 'poulie-dos'
+  | 'machine'
+  | 'banc-bas'
+  | 'barre-dos'
+  | 'poitrine';
+
+/**
+ * Matériel réellement utilisé par l'exercice quand il diffère de celui de la pose générique :
+ * charge tenue (remplace celle de la pose ; `null` : aucune) et montage.
+ */
+export interface EquipmentOverride {
+  /**
+   * Un type de charge garde l'emplacement de celle de la pose (même position, autre objet :
+   * barre → haltères, haltères → bouteilles…) ; une charge complète choisit aussi où elle est
+   * tenue ; `null` : aucune charge.
+   */
+  readonly load?: Load | LoadKind | null;
+  readonly rig?: Rig | readonly Rig[];
+  /** Prise imposée (marteau, supination…). */
+  readonly grip?: Grip;
+}
+
 /** Paramètres de variante : matériel, côté de travail, inclinaison du banc. */
 export interface Variant {
+  readonly equipmentOverride?: EquipmentOverride;
+  /** Matériel de l'exercice : seules ces pièces de décor et ces charges sont dessinées. */
+  readonly equipment?: readonly EquipmentKind[];
   readonly side?: 'gauche' | 'droite';
   /** Inclinaison du dossier (degrés) pour les mouvements sur banc. */
   readonly incline?: number;

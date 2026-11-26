@@ -61,6 +61,10 @@
   --figure-cable: #7a827c;
   --figure-band: #d9826a;
   --figure-ground: #dcdad0;
+  --figure-cloth: #7fa7b8;
+  --figure-bag: #b8604a;
+  --figure-bag-pocket: #8f4636;
+  --figure-bottle: #8fc1d6;
   --figure-shadow: rgb(40 50 40 / 13%);
   --figure-far: brightness(0.82) contrast(0.85);
   --figure-skin-line: #b98262;
@@ -167,6 +171,10 @@
     --figure-cable: #9aa39c;
     --figure-band: #eb9a7e;
     --figure-ground: #343d35;
+    --figure-cloth: #8fb6c6;
+    --figure-bag: #d27a62;
+    --figure-bag-pocket: #a85a47;
+    --figure-bottle: #6fa3bb;
     --figure-shadow: rgb(0 0 0 / 35%);
     --figure-far: brightness(0.72) contrast(0.9);
     --figure-skin-line: #9c6d52;
@@ -224,6 +232,10 @@
   --figure-cable: #9aa39c;
   --figure-band: #eb9a7e;
   --figure-ground: #343d35;
+  --figure-cloth: #8fb6c6;
+  --figure-bag: #d27a62;
+  --figure-bag-pocket: #a85a47;
+  --figure-bottle: #6fa3bb;
   --figure-shadow: rgb(0 0 0 / 35%);
   --figure-far: brightness(0.72) contrast(0.9);
   --figure-skin-line: #9c6d52;

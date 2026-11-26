@@ -1,13 +1,16 @@
 /**
  * Captures de la planche des mannequins d'exercice (page de développement mannequins.html).
  *
- *   npm run mannequins -- <dossier de sortie> [nom=requête ...]
+ *   npx tsx --tsconfig tsconfig.node.json scripts/training/planche.ts <dossier> [nom=requête ...]
+ *
+ * Requête `ex=all` (ou `ex=id1,id2`, `from=0&count=48`) : un mannequin par exercice du catalogue,
+ * avec son matériel réel (le catalogue est injecté dans la page).
  *
  * Construit mannequins.html avec Vite (même CSP que l'app), la sert en local, puis enregistre
  * une capture PNG par requête. Sans requête : planche femme, planche homme et trois séquences.
  * Échoue si la page enfreint la CSP ou si un élément porte un attribut `style`.
  */
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from '@playwright/test';
@@ -22,6 +25,11 @@ const DEFAULTS = [
   'seq-rowing=seq=rowing-unilateral',
 ];
 const BUILD_DIR = join(outDir, '.build');
+const EXERCISES = (
+  JSON.parse(readFileSync('src/infrastructure/data/exercises.json', 'utf8')) as {
+    exercises: { id: string; name: string; movement: string; equipment: string[] }[];
+  }
+).exercises.map(({ id, name, movement, equipment }) => ({ id, name, movement, equipment }));
 const LOCAL_CHROMIUM = process.env['PW_CHROMIUM_PATH'] ?? '/opt/pw-browsers/chromium';
 
 async function main(): Promise<void> {
@@ -50,6 +58,7 @@ async function main(): Promise<void> {
         deviceScaleFactor: 1.5,
         viewport: { width: 1200, height: 800 },
       });
+      await page.addInitScript(`window.__EXERCISES__ = ${JSON.stringify(EXERCISES)};`);
       const violations: string[] = [];
       page.on('console', (message) => {
         if (/Content Security Policy|Refused to/i.test(message.text()))

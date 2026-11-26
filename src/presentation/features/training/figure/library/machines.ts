@@ -85,6 +85,64 @@ function legPressScene(p: Pose): SceneItem[] {
   ];
 }
 
+/**
+ * Abduction / adduction assis, vue de face. Les cuisses viennent vers le spectateur : on les
+ * raccourcit (`fold`) pour que l'écart des genoux se lise nettement, de 8° (jambes serrées) à
+ * 50° (jambes ouvertes). Les boudins se tiennent côté extérieur (abduction : les genoux
+ * poussent vers l'extérieur) ou côté intérieur (adduction : les genoux se ferment dessus) ;
+ * ils suivent les genoux, et leurs bras de levier rejoignent le montant central.
+ */
+function legMachine(kind: 'abduction' | 'adduction') {
+  const closed = 8;
+  const open = 50;
+  const sit = (hip: number) =>
+    pose({
+      hip,
+      knee: hip,
+      shoulder: 8,
+      elbow: 34,
+      fold: { thighL: 0.62, thighR: 0.62, shinL: 0.8, shinR: 0.8 },
+      anchor: on('pelvis', 0, 65),
+      grip: 'neutre',
+      contacts: ['pelvis'],
+    });
+  // Côté du boudin par rapport au genou (+x : vers la gauche du mannequin, à droite de l'image).
+  const side = kind === 'abduction' ? 1 : -1;
+  const pads = (['L', 'R'] as const).flatMap((leg) => {
+    const s = leg === 'L' ? side : -side;
+    const knee = { joint: `knee${leg}` as const };
+    return [
+      frame({ ...knee, dx: s * 8.5, dy: -9 }, { ...knee, dx: s * 8.5, dy: -30 }, 1.2),
+      {
+        ...frame({ ...knee, dx: s * 8.5, dy: 12 }, { ...knee, dx: s * 8.5, dy: -9 }, 4.2),
+        front: true,
+      },
+    ];
+  });
+  return move({
+    key: `${kind}-machine`,
+    label: kind === 'abduction' ? 'Abduction à la machine' : 'Adduction à la machine',
+    description:
+      kind === 'abduction'
+        ? 'Abduction à la machine, vue de face : assis, dos au dossier, genoux contre les boudins extérieurs, on écarte les jambes le plus largement possible, puis on les referme lentement.'
+        : 'Adduction à la machine, vue de face : assis, jambes écartées, genoux contre les boudins intérieurs, on rapproche les genoux jusqu’à les joindre, puis on les rouvre lentement.',
+    view: 'face',
+    muscles: ['fessiers'],
+    guides: { path: 'kneeL' },
+    scene: [
+      pad(pt(-15, 57), pt(15, 57), 11),
+      pad(pt(-14, 104), pt(14, 104), 11),
+      frame(pt(0, 0.8), pt(0, 46), 2),
+      frame(pt(-22, 0.8), pt(22, 0.8), 1),
+      frame(pt(-26, 62), pt(-26, 150), 2.2),
+      frame(pt(26, 62), pt(26, 150), 2.2),
+      ...pads,
+    ],
+    keys: kind === 'abduction' ? [sit(closed), sit(open)] : [sit(open), sit(closed)],
+    ms: [1100, 1300],
+  });
+}
+
 export const MACHINES: Record<string, MovementFactory> = {
   'presse-cuisses': () => {
     const start = legPress(pt(38, 74), -135);
@@ -361,69 +419,9 @@ export const MACHINES: Record<string, MovementFactory> = {
     });
   },
 
-  'abduction-machine': () => {
-    const sit = (hip: number) =>
-      pose({
-        hip,
-        knee: hip,
-        shoulder: 10,
-        elbow: 30,
-        fold: { thighL: 0.34, thighR: 0.34, shinL: 0.87, shinR: 0.87 },
-        anchor: on('pelvis', 0, 56),
-        grip: 'neutre',
-        contacts: ['pelvis'],
-      });
-    return move({
-      key: 'abduction-machine',
-      label: 'Abduction à la machine',
-      description:
-        'Abduction à la machine, vue de face : assis, genoux contre les coussins extérieurs, on écarte les jambes puis on les referme lentement.',
-      view: 'face',
-      muscles: ['fessiers'],
-      guides: { path: 'kneeL' },
-      scene: [
-        pad(pt(-16, 60), pt(16, 60), 13),
-        pad(pt(-15, 100), pt(15, 100), 13),
-        frame(pt(0, 0.8), pt(0, 44), 2),
-        pad({ joint: 'kneeL', dx: 6, dy: 4 }, { joint: 'kneeL', dx: 6, dy: -8 }, 3),
-        pad({ joint: 'kneeR', dx: -6, dy: 4 }, { joint: 'kneeR', dx: -6, dy: -8 }, 3),
-      ],
-      keys: [sit(4), sit(30)],
-      ms: [1000, 1200],
-    });
-  },
+  'abduction-machine': () => legMachine('abduction'),
 
-  'adduction-machine': () => {
-    const sit = (hip: number) =>
-      pose({
-        hip,
-        knee: hip,
-        shoulder: 10,
-        elbow: 30,
-        fold: { thighL: 0.34, thighR: 0.34, shinL: 0.87, shinR: 0.87 },
-        anchor: on('pelvis', 0, 56),
-        grip: 'neutre',
-        contacts: ['pelvis'],
-      });
-    return move({
-      key: 'adduction-machine',
-      label: 'Adduction à la machine',
-      description:
-        'Adduction à la machine, vue de face : assis, jambes écartées contre les coussins intérieurs, on rapproche les genoux puis on les rouvre lentement.',
-      view: 'face',
-      muscles: ['fessiers'],
-      guides: { path: 'kneeL' },
-      scene: [
-        pad(pt(-16, 60), pt(16, 60), 13),
-        pad(pt(-15, 100), pt(15, 100), 13),
-        frame(pt(0, 0.8), pt(0, 44), 2),
-        pad({ joint: 'kneeL', dx: -6, dy: 4 }, { joint: 'kneeL', dx: -6, dy: -8 }, 3),
-        pad({ joint: 'kneeR', dx: 6, dy: 4 }, { joint: 'kneeR', dx: 6, dy: -8 }, 3),
-      ],
-      keys: [sit(30), sit(4)],
-      ms: [1000, 1200],
-    });
-  },
+  'adduction-machine': () => legMachine('adduction'),
 
   'mollets-machine-debout': () => {
     const block = 10;
@@ -784,8 +782,10 @@ export const MACHINES: Record<string, MovementFactory> = {
         frame(pt(bar.x - 4, 0.8), pt(bar.x - 4, 210), 2),
         frame(pt(bar.x - 24, 210), pt(bar.x + 16, 210), 2),
         frame(pt(bar.x - 20, 0.8), pt(bar.x + 14, 0.8), 1.2),
+        // La barre guidée fait partie de la machine : vue en bout, elle suit le haut du dos.
+        roller({ joint: 'handL', dx: -2 }, 3.4),
+        stack(bar.x - 30, 40),
       ],
-      loads: [{ kind: 'barre', at: 'back' }],
       keys: [base, bottom],
       ms: [1300, 1100],
     });

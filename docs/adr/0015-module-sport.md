@@ -593,3 +593,21 @@ Livré dans `src/presentation` :
 
 Écart assumé : l'aperçu des exercices et la séance montrent les poses de départ et d'arrivée côte à
 côte quand `prefers-reduced-motion` est actif (comportement d'`ExerciseFigure`), sans animation.
+
+## Complément (mannequins exacts, sécurité)
+
+Le mannequin doit montrer l'exercice, pas celui d'un voisin qui partage sa pose. Audit des 192
+exercices dans `docs/audit-mannequins.md` (64 corrigés) :
+
+- le composant reçoit le matériel réel : `figureOf(exercise)` (`figure/exerciseFigure.ts`) donne la
+  clé de pose, le matériel dessiné et la variante ; une pose ne dessine que ce matériel ;
+- table d'équivalences explicite : matériel du catalogue → dessin (`CATALOGUE_DRAWING`),
+  accessoires du foyer (mur, chaise, table, marche, serviette, sac à dos, bouteilles, sliders,
+  coussin) déclarés par exercice (`EXERCISE_FIGURES`) ;
+- même position, autre objet : `Variant.equipmentOverride` (`load`, `rig`, `grip`) ; position
+  différente : pose dédiée (`library/variants.ts`, douze nouvelles clés de `movement`) ;
+- test `scripts/training/figure-equipment.test.ts` : pour chaque exercice, matériel dessiné =
+  matériel du catalogue + accessoires déclarés, et tout accessoire cité dans les consignes est
+  dessiné ;
+- abduction et adduction à la machine : de face, cuisses raccourcies, écart de 8° à 50°, boudins
+  visibles côté extérieur (abduction) ou intérieur (adduction) du genou.

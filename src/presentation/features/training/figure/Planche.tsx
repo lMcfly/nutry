@@ -3,12 +3,28 @@
  * départ et d'arrivée en grille, ou une séquence d'images interpolées d'un mouvement.
  *
  * Paramètres : `?body=female|male`, `keys=squat,pompe`, `seq=squat` (séquence), `frames=4`,
- * `theme=dark`.
+ * `theme=dark`, `ex=id1,id2` ou `ex=all` (un mannequin par exercice du catalogue, avec son
+ * matériel réel ; le script `planche.ts` injecte le catalogue dans `window.__EXERCISES__`).
  */
+
+interface CatalogueEntry {
+  readonly id: string;
+  readonly name: string;
+  readonly movement: string;
+  readonly equipment: readonly Equipment[];
+}
+declare global {
+  interface Window {
+    __EXERCISES__?: readonly CatalogueEntry[];
+  }
+}
 import { Fragment } from 'react';
+import type { Equipment } from '@domain/training';
 import { BODIES } from './body';
 import type { BodyId } from './body';
 import { FigureSvg } from './FigureSvg';
+import { figureOf } from './exerciseFigure';
+import type { FigureSpec } from './exerciseFigure';
 import { distinctMovementKeys, resolveMovement } from './library';
 import { movementViewBox, skeletonFor } from './model';
 import type { ViewBox } from './model';
@@ -19,6 +35,8 @@ import styles from './Planche.module.css';
 
 interface CellProps {
   readonly movementKey: string;
+  /** Exercice du catalogue : matériel et montage réels. */
+  readonly entry?: CatalogueEntry | undefined;
   readonly body: BodyId;
   readonly size: number;
   readonly focus: string | null;
@@ -36,8 +54,12 @@ function handsBox(def: MovementDef, pose: Pose, body: BodyId): ViewBox {
   return { x: c.x - w / 2, y: -c.y - h / 2, width: w, height: h };
 }
 
-function Cell({ movementKey, body, size, focus }: CellProps) {
-  const def = resolveMovement(movementKey);
+function Cell({ movementKey, entry, body, size, focus }: CellProps) {
+  const spec: FigureSpec | undefined = entry ? figureOf(entry) : undefined;
+  const def = resolveMovement(
+    movementKey,
+    spec ? { ...spec.variant, equipment: spec.equipment } : {},
+  );
   if (!def) return null;
   const full = movementViewBox(def, body);
   const keys = def.timeline.keys.map((k) => k.pose);
@@ -59,7 +81,12 @@ function Cell({ movementKey, body, size, focus }: CellProps) {
         ))}
       </div>
       <figcaption className={styles.caption}>
-        <strong>{def.label}</strong> <span>{def.key}</span>
+        <strong>{entry ? entry.name : def.label}</strong>{' '}
+        <span>
+          {entry
+            ? `${entry.id} · ${figureOf(entry).equipment.join('+') || 'sans matériel'}`
+            : def.key}
+        </span>
       </figcaption>
     </figure>
   );
@@ -117,6 +144,35 @@ export function Planche({ query }: { query: string }) {
     return (
       <main id="planche" className={styles.page}>
         <Sequence movementKey={seq} body={body} frames={Number(params.get('frames') ?? 4)} />
+      </main>
+    );
+  }
+  const ex = params.get('ex');
+  if (ex) {
+    const all = window.__EXERCISES__ ?? [];
+    const wanted = ex === 'all' ? all : all.filter((e) => ex.split(',').includes(e.id));
+    const from = Number(params.get('from') ?? 0);
+    const count = Number(params.get('count') ?? wanted.length);
+    const shown = wanted.slice(from, from + count);
+    const size = Number(params.get('w') ?? 200);
+    const cols = Number(params.get('cols') ?? 4);
+    return (
+      <main id="planche" className={styles.page}>
+        <h1 className={styles.title}>
+          Exercices Nutry <span>— {shown.length} exercices avec leur matériel</span>
+        </h1>
+        <div className={`${styles.grid} ${styles[`cols${cols}`] ?? ''}`}>
+          {shown.map((entry) => (
+            <Cell
+              key={entry.id}
+              movementKey={entry.movement}
+              entry={entry}
+              body={body}
+              size={size}
+              focus={params.get('focus')}
+            />
+          ))}
+        </div>
       </main>
     );
   }

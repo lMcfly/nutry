@@ -1,5 +1,6 @@
 /** Mobilité, étirements et équilibre. */
 import { mat, wall, item } from './scene';
+import { hasRig } from './rigs';
 import { jointOf, move } from './build';
 import { FEET, prone, quad, quadHands, seatedFloor } from './helpers';
 import { ANKLE_Y, KNEE_Y, PALM_Y, ground, on, pose, pt } from './pose';
@@ -365,28 +366,35 @@ export const MOBILITY: Record<string, MovementFactory> = {
     });
   },
 
-  'equilibre-une-jambe': () =>
-    move({
+  'equilibre-une-jambe': (variant) => {
+    // Sur un coussin ferme : le pied d'appui est surélevé, le coussin se tasse un peu sous lui.
+    const cushion = hasRig(variant, 'coussin') ? 6 : 0;
+    return move({
       key: 'equilibre-une-jambe',
       label: 'Équilibre sur une jambe',
       description:
         'Équilibre sur une jambe : debout, on lève un pied derrière soi, genou fléchi, regard fixe, et on tient sans bouger.',
       view: 'profil',
       muscles: ['mollets'],
+      scene:
+        cushion > 0
+          ? [item('coussin', { kind: 'pad', a: pt(-16, 3.4), b: pt(16, 3.4), r: 3.4 })]
+          : [],
       keys: [
-        pose({ shoulder: 10, anchor: on('ankleR', 0, ANKLE_Y) }),
+        pose({ shoulder: 10, anchor: on('ankleR', 0, ANKLE_Y + cushion) }),
         pose({
           hipL: -4,
           kneeL: 72,
           ankleL: -30,
           feet: { R: 'flat', L: 'free' },
           shoulder: 14,
-          anchor: on('ankleR', 0, ANKLE_Y),
+          anchor: on('ankleR', 0, ANKLE_Y + cushion),
         }),
       ],
       ms: [900, 900],
       holds: [300, 2000],
-    }),
+    });
+  },
 
   'equilibre-genou-leve': () =>
     move({

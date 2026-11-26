@@ -10,6 +10,7 @@ import { useAsync } from '../../hooks/useAsync';
 import { EQUIPMENT_EMOJIS, EQUIPMENT_LABELS, MUSCLE_GROUP_LABELS } from '../../i18n/labels';
 import type { BodyId } from './figure/body';
 import { ExerciseFigure } from './figure/ExerciseFigure';
+import { figureOf } from './figure/exerciseFigure';
 import type { FigureMode } from './figure/ExerciseFigure';
 import { figureMuscles } from './format';
 import styles from './TutoSheet.module.css';
@@ -93,7 +94,7 @@ function TutoContent({ exerciseId, body }: { readonly exerciseId: string; readon
       <div className={styles.visual}>
         <div className={styles.figureBox}>
           <ExerciseFigure
-            movement={exercise.movement}
+            {...figureOf(exercise)}
             body={body}
             mode={mode}
             guides

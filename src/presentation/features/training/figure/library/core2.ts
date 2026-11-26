@@ -1,5 +1,6 @@
 /** Gainage et abdominaux (suite), lombaires, cardio. */
-import { ball, mat, pulley, pullupBar, machine } from './scene';
+import { anchorAt, ball, band, mat, pulley, pullupBar, machine } from './scene';
+import { hasRig } from './rigs';
 import { jointOf, move } from './build';
 import { FEET, nape, prone, quad, quadHands, supine } from './helpers';
 import { ANKLE_Y, KNEE_Y, PALM_Y, ground, on, pose, pt } from './pose';
@@ -340,7 +341,7 @@ export const CORE2: Record<string, MovementFactory> = {
       ms: [1100, 1100],
     }),
 
-  pallof: () => {
+  pallof: (variant) => {
     const stand = (fold: number) =>
       pose({
         hip: 12,
@@ -365,7 +366,9 @@ export const CORE2: Record<string, MovementFactory> = {
       view: 'face',
       muscles: ['abdominaux'],
       guides: { path: 'handL' },
-      scene: pulley(-80, pt(-80, chest.y), { joint: 'handR' }, 150),
+      scene: hasRig(variant, 'elastique-ancre')
+        ? [...band({ joint: 'handR' }, pt(-80, chest.y)), ...anchorAt(pt(-80, chest.y))]
+        : pulley(-80, pt(-80, chest.y), { joint: 'handR' }, 150),
       keys: [stand(0), stand(1)],
       ms: [1000, 1000],
       holds: [300, 800],

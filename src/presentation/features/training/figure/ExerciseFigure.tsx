@@ -19,7 +19,10 @@ export type FigureSize = 's' | 'm' | 'l' | number;
 export interface ExerciseFigureProps {
   /** Clé de mouvement du catalogue (champ `movement` d'un exercice). */
   readonly movement: string;
-  /** Matériel montré (celui du mouvement par défaut). */
+  /**
+   * Matériel de l'exercice : seules ces pièces sont dessinées (`figureOf` le tire du catalogue).
+   * Sans lui, le mouvement montre tout son décor par défaut.
+   */
   readonly equipment?: readonly EquipmentKind[] | undefined;
   /** Muscles surlignés (ceux du mouvement par défaut ; liste vide : aucun). */
   readonly highlight?: readonly FigureMuscle[] | undefined;
@@ -99,11 +102,12 @@ export function ExerciseFigure({
   const rootRef = useRef<HTMLDivElement>(null);
   const visible = useVisible(rootRef);
   const [paused, setPaused] = useState(false);
+  // La variante et le matériel sont de petits objets : on les compare par valeur.
+  const variantKey = JSON.stringify([variant ?? null, equipment ?? null]);
   const def = useMemo(
-    () => resolveMovement(movement, variant),
-    // La variante est un petit objet : on la compare par valeur.
+    () => resolveMovement(movement, { ...variant, ...(equipment ? { equipment } : {}) }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [movement, variant?.side, variant?.incline],
+    [movement, variantKey],
   );
   const box = useMemo(() => (def ? movementViewBox(def, body) : null), [def, body]);
   const effective: FigureMode = mode === 'animated' && reduced ? 'steps' : mode;
@@ -111,7 +115,7 @@ export function ExerciseFigure({
   const time = useClock(animating);
 
   if (!def || !box) return null;
-  const options = { body, highlight, equipment, guides: guides ?? effective !== 'animated' };
+  const options = { body, highlight, guides: guides ?? effective !== 'animated' };
   const keys = def.timeline.keys.map((k) => k.pose);
   const endIndex = def.endIndex ?? keys.length - 1;
   const first = keys[0];

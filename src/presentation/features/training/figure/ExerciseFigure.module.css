@@ -131,6 +131,22 @@
   stroke-linecap: round;
 }
 
+.cloth {
+  fill: var(--figure-cloth);
+}
+
+.bag {
+  fill: var(--figure-bag);
+}
+
+.bagPocket {
+  fill: var(--figure-bag-pocket);
+}
+
+.bottle {
+  fill: var(--figure-bottle);
+}
+
 .ground {
   fill: none;
   stroke: var(--figure-ground);

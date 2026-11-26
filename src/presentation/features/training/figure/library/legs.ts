@@ -1,5 +1,6 @@
 /** Jambes et fessiers : squats, fentes, charnières de hanche, ponts. */
-import { bench, box, chair, mat, wall } from './scene';
+import { bench, box, chair, machine, mat, retag, wall } from './scene';
+import { hasRig } from './rigs';
 import { move, jointOf } from './build';
 import { ANKLE_Y, on, pose, pt } from './pose';
 import { tune } from './tune';
@@ -165,7 +166,7 @@ export const LEGS: Record<string, MovementFactory> = {
     });
   },
 
-  'hip-thrust': () => {
+  'hip-thrust': (variant) => {
     const benchTop = 42;
     const shoulders = on('neck', -40, benchTop + 6);
     const heels = { ankleL: pt(34, ANKLE_Y), ankleR: pt(34, ANKLE_Y) };
@@ -196,7 +197,14 @@ export const LEGS: Record<string, MovementFactory> = {
         'Hip thrust : le haut du dos appuyé sur un banc, pieds à plat, on pousse le bassin vers le haut jusqu’à l’horizontale, puis on redescend.',
       view: 'profil',
       muscles: ['fessiers', 'ischio-jambiers'],
-      scene: bench(-110, -34, benchTop),
+      scene: hasRig(variant, 'machine')
+        ? [
+            ...retag(bench(-110, -34, benchTop), 'banc', 'machine'),
+            // Ceinture sur les hanches, tenue par un bras de levier articulé derrière la machine.
+            machine.arm(pt(-124, 40), { joint: 'pelvis', dx: 4, dy: 10 }, 2),
+            machine.roller({ joint: 'pelvis', dx: 4, dy: 10 }, 5),
+          ]
+        : bench(-110, -34, benchTop),
       loads: [{ kind: 'barre', at: 'hips' }],
       keys: [holding(-52), holding(-90)],
       ms: [1100, 1200],
@@ -297,8 +305,19 @@ export const LEGS: Record<string, MovementFactory> = {
     });
   },
 
-  'mollets-debout': () =>
-    move({
+  'mollets-debout': (variant) => {
+    const onMarche = hasRig(variant, 'marche') || hasRig(variant, 'banc-bas');
+    const stepH = 9;
+    const lift = onMarche ? stepH : 0;
+    const wallX = 62;
+    const atWall = hasRig(variant, 'mur');
+    const arms = atWall
+      ? {
+          grip: 'paume' as const,
+          reach: { handL: pt(wallX - 2.6, 128), handR: pt(wallX - 2.6, 128) },
+        }
+      : {};
+    return move({
       key: 'mollets-debout',
       guides: { path: 'heelL' },
       label: 'Mollets debout',
@@ -306,13 +325,20 @@ export const LEGS: Record<string, MovementFactory> = {
         'Extension des mollets debout : jambes tendues, on monte sur la pointe des pieds le plus haut possible, puis on redescend lentement.',
       view: 'profil',
       muscles: ['mollets'],
+      // Pointes sur le bord d'une marche (ou d'un banc bas) : les talons descendent dans le vide.
+      scene: [
+        ...(hasRig(variant, 'marche') ? box(-6, 40, stepH) : []),
+        ...(hasRig(variant, 'banc-bas') ? box(-6, 40, stepH, 'banc') : []),
+        ...(atWall ? wall(wallX, 1) : []),
+      ],
       keys: [
-        pose({ ankle: 0, anchor: on('toeL', 14, 0) }),
-        pose({ ankle: -34, anchor: on('toeL', 14, 0) }),
+        pose({ ankle: onMarche ? 14 : 0, anchor: on('toeL', 14, lift), ...arms }),
+        pose({ ankle: -34, anchor: on('toeL', 14, lift), ...arms }),
       ],
       ms: [800, 1100],
       holds: [300, 500],
-    }),
+    });
+  },
 
   'chaise-murale': () => {
     const back = 0;

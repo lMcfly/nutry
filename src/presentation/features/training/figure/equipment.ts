@@ -24,10 +24,26 @@ export const EQUIPMENT_KINDS = [
   'mur',
   'chaise',
   'step',
+  // Accessoires du foyer : absents du catalogue du matériel, déclarés par exercice (voir
+  // `exerciseFigure.ts`).
+  'table',
+  'serviette',
+  'sac-a-dos',
+  'bouteilles',
+  'sliders',
+  'coussin',
 ] as const;
 export type EquipmentKind = (typeof EQUIPMENT_KINDS)[number];
 
-export const LOAD_KINDS = ['halteres', 'barre', 'barre-ez', 'kettlebell'] as const;
+export const LOAD_KINDS = [
+  'halteres',
+  'barre',
+  'barre-ez',
+  'kettlebell',
+  'serviette',
+  'sac-a-dos',
+  'bouteilles',
+] as const;
 export type LoadKind = (typeof LOAD_KINDS)[number];
 
 /**
@@ -62,7 +78,11 @@ export type Prop =
       readonly w: number;
       readonly h: number;
     }
-  | { readonly kind: 'bar'; readonly c: Ref; readonly top: number };
+  | { readonly kind: 'bar'; readonly c: Ref; readonly top: number }
+  /** Table ou plan de travail : plateau et deux pieds. */
+  | { readonly kind: 'table'; readonly x0: number; readonly x1: number; readonly h: number }
+  /** Point d'ancrage d'un élastique (anneau accroché à une poignée de porte, un montant…). */
+  | { readonly kind: 'anchor'; readonly at: Ref };
 
 /** Une pièce de décor, rattachée à un type de matériel (filtrable) et à un plan. */
 export interface SceneItem {
@@ -190,6 +210,25 @@ function propShapes(prop: Prop, sk: Skeleton): Shape[] {
         });
       }
       return shapes;
+    }
+    case 'table':
+      return [
+        {
+          d: capsule({ x: prop.x0, y: prop.h - 2.6 }, { x: prop.x1, y: prop.h - 2.6 }, 2.6),
+          tone: 'equip',
+        },
+        ...[prop.x0 + 3, prop.x1 - 3].map((x) => ({
+          d: capsule({ x, y: 0.8 }, { x, y: prop.h - 4 }, 1.5),
+          tone: 'equipSoft' as const,
+        })),
+      ];
+    case 'anchor': {
+      const c = resolveRef(prop.at, sk);
+      return [
+        { d: capsule({ x: c.x, y: c.y + 9 }, { x: c.x, y: c.y - 9 }, 1.6), tone: 'equip' },
+        { d: circle(c, 2.6), tone: 'equip' },
+        { d: circle(c, 1.2), tone: 'equipSoft' },
+      ];
     }
     case 'bar': {
       const c = resolveRef(prop.c, sk);
@@ -373,6 +412,84 @@ function kettlebell(c: Point, down: Point): Shape[] {
   ];
 }
 
+/** Serviette tendue entre les deux mains (vue de face) ou vue en raccourci (profil). */
+function towel(sk: Skeleton): Held {
+  const l = sk.joints.handL;
+  const r = sk.joints.handR;
+  if (sk.view === 'profil') {
+    const a = add(l, scale(DEPTH, 8));
+    const b = add(l, scale(DEPTH, -8));
+    return {
+      under: [{ d: capsule(a, b, 1.9), tone: 'cloth' }],
+      over: [{ d: capsule(add(b, { x: 0, y: -1 }), add(b, { x: 0, y: -6 }), 1.5), tone: 'cloth' }],
+    };
+  }
+  const over = Math.sign(l.x - r.x) || 1;
+  return {
+    under: [
+      {
+        d: capsule(add(l, { x: over * 4, y: 0 }), add(r, { x: -over * 4, y: 0 }), 1.9),
+        tone: 'cloth',
+      },
+    ],
+    over: [
+      { d: capsule(add(l, { x: 0, y: -1 }), add(l, { x: over * 1, y: -6 }), 1.5), tone: 'cloth' },
+      { d: capsule(add(r, { x: 0, y: -1 }), add(r, { x: -over * 1, y: -6 }), 1.5), tone: 'cloth' },
+    ],
+  };
+}
+
+/** Sac à dos tenu par ses sangles : il pend sous les mains. */
+function backpack(c: Point): Shape[] {
+  const top = { x: c.x, y: c.y - 3 };
+  return [
+    { d: capsule(top, { x: c.x, y: c.y - 9 }, 0.9), tone: 'equip' },
+    {
+      d: smoothClosed([
+        { x: c.x - 6.5, y: c.y - 10 },
+        { x: c.x + 6.5, y: c.y - 10 },
+        { x: c.x + 7.5, y: c.y - 21 },
+        { x: c.x + 6, y: c.y - 31 },
+        { x: c.x - 6, y: c.y - 31 },
+        { x: c.x - 7.5, y: c.y - 21 },
+      ]),
+      tone: 'bag',
+    },
+    {
+      d: capsule({ x: c.x - 4, y: c.y - 22 }, { x: c.x + 4, y: c.y - 22 }, 2.6),
+      tone: 'bagPocket',
+    },
+  ];
+}
+
+/** Bouteille tenue dans le poing (axe oblique en profil, comme les haltères). */
+function bottle(sk: Skeleton, hand: 'L' | 'R'): Held {
+  const c = sk.joints[`hand${hand}`];
+  if (sk.view === 'profil') {
+    const base = add(c, scale(DEPTH, -10));
+    const neck = add(c, scale(DEPTH, 11));
+    return {
+      under: [
+        { d: capsule(base, add(c, scale(DEPTH, 4)), 4.4), tone: 'bottle' },
+        { d: capsule(add(c, scale(DEPTH, 4)), neck, 2.2), tone: 'bottle' },
+      ],
+      over: [
+        { d: capsule(add(c, scale(DEPTH, -3)), add(c, scale(DEPTH, 1)), 4.8), tone: 'bottle' },
+        { d: circle(add(neck, scale(DEPTH, 1.5)), 2.3), tone: 'equip' },
+      ],
+    };
+  }
+  const u = dir(sk.psi[`forearm${hand}`]);
+  const n = { x: -u.y, y: u.x };
+  return {
+    under: [
+      { d: capsule(add(c, scale(n, -9)), add(c, scale(n, 4)), 4.4), tone: 'bottle' },
+      { d: capsule(add(c, scale(n, 4)), add(c, scale(n, 10)), 2.2), tone: 'bottle' },
+    ],
+    over: [{ d: circle(add(c, scale(n, 11.5)), 2.3), tone: 'equip' }],
+  };
+}
+
 export interface LoadDrawing {
   /** Derrière tout le mannequin. */
   readonly back: Shape[];
@@ -399,6 +516,25 @@ export function loadShapes(load: Load, sk: Skeleton, frameHalf: number): LoadDra
       out[hand].under.push(...d.under);
       out[hand].over.push(...d.over);
     }
+    return out;
+  }
+  if (load.kind === 'bouteilles') {
+    for (const hand of ['L', 'R'] as const) {
+      const b = bottle(sk, hand);
+      out[hand].under.push(...b.under);
+      out[hand].over.push(...b.over);
+    }
+    return out;
+  }
+  if (load.kind === 'serviette') {
+    const t = towel(sk);
+    out.L.under.push(...t.under);
+    out.L.over.push(...t.over);
+    return out;
+  }
+  if (load.kind === 'sac-a-dos') {
+    const c = holderPoint(sk, load.at);
+    out.L.under.push(...backpack(c));
     return out;
   }
   if (load.kind === 'kettlebell') {

@@ -6,7 +6,7 @@ import { BODIES } from './body';
 import type { BodyId } from './body';
 import { drawFigure } from './draw';
 import type { Shape } from './draw';
-import { LOAD_KINDS, loadShapes, resolveRef, sceneShapes } from './equipment';
+import { loadShapes, resolveRef, sceneShapes } from './equipment';
 import type { EquipmentKind, Load, Ref, SceneItem } from './equipment';
 import type { MovementDef } from './library/types';
 import type { FigureMuscle } from './muscles';
@@ -36,7 +36,10 @@ export interface ViewBox {
 const MIN_ASPECT = 0.95;
 const MAX_ASPECT = 1.9;
 
-/** Scène et charges filtrées par le matériel demandé (une charge peut en remplacer une autre). */
+/**
+ * Scène et charges de la pose, limitées au matériel de l'exercice : on ne dessine jamais une
+ * pièce que l'exercice n'utilise pas (le catalogue décide, pas la pose générique).
+ */
 export function equipmentFor(
   def: MovementDef,
   equipment: readonly EquipmentKind[] | undefined,
@@ -44,15 +47,9 @@ export function equipmentFor(
   const scene = def.scene ?? [];
   const loads = def.loads ?? [];
   if (!equipment) return { scene: [...scene], loads: [...loads] };
-  const wantedLoad = LOAD_KINDS.find((kind) => equipment.includes(kind));
   return {
     scene: scene.filter((item) => equipment.includes(item.equipment)),
-    loads:
-      wantedLoad === undefined
-        ? []
-        : loads.length > 0
-          ? loads.map((load) => ({ ...load, kind: wantedLoad }))
-          : [{ kind: wantedLoad, at: 'hands' }],
+    loads: loads.filter((load) => equipment.includes(load.kind)),
   };
 }
 
@@ -270,6 +267,18 @@ function propPoints(item: SceneItem, sk: Skeleton): Point[] {
         { x: p.x - p.w / 2, y: p.y },
         { x: p.x + p.w / 2, y: p.y + p.h },
       ];
+    case 'table':
+      return [
+        { x: p.x0, y: 0 },
+        { x: p.x1, y: p.h },
+      ];
+    case 'anchor': {
+      const c = at(p.at);
+      return [
+        { x: c.x, y: c.y + 9 },
+        { x: c.x, y: c.y - 9 },
+      ];
+    }
     case 'bar': {
       const c = at(p.c);
       return [
@@ -306,6 +315,8 @@ export function movementViewBox(def: MovementDef, body: BodyId): ViewBox {
     }
   }
   const hasPlate = (def.loads ?? []).some((l) => l.kind === 'barre' || l.kind === 'barre-ez');
+  const hasBag = (def.loads ?? []).some((l) => l.kind === 'sac-a-dos');
+  if (hasBag) minY -= 24;
   if (hasPlate) {
     minY -= 6;
     maxY += 10;

@@ -1,5 +1,18 @@
 /** Haut du corps (suite) : variantes de pompes, développés, écartés, tirages, triceps. */
-import { band, bench, chair, inclineBench, mat, pulley, pullupBar, wall } from './scene';
+import {
+  anchorAt,
+  band,
+  bench,
+  chair,
+  inclineBench,
+  mat,
+  pulley,
+  pullupBar,
+  retag,
+  table,
+  wall,
+} from './scene';
+import { hasRig } from './rigs';
 import { jointOf, move } from './build';
 import { FEET, offset, onTorso, prone, seatedFloor, supine, torsoFrame } from './helpers';
 import { ANKLE_Y, PALM_Y, ground, on, pose, pt } from './pose';
@@ -10,7 +23,12 @@ import type { SceneItem } from '../equipment';
 import { item } from './scene';
 
 /** Pompe sur un appui à `handY` (mur, banc) : corps gainé, pointes de pieds au sol. */
-function supportedPushup(handY: number, wallX?: number): { keys: Pose[]; handX: number } {
+function supportedPushup(
+  handY: number,
+  wallX?: number,
+  rise = 0,
+  lower = 28,
+): { keys: Pose[]; handX: number } {
   const base = (trunk: number) =>
     pose({ trunk, ankle: trunk - 82, anchor: on('toeL', 0, 0), grip: 'paume' });
   if (wallX !== undefined) {
@@ -18,7 +36,10 @@ function supportedPushup(handY: number, wallX?: number): { keys: Pose[]; handX: 
     const top = tune((t) => jointOf(base(t), 'shoulderL').x, wallX - 56, 5, 60);
     const down = tune((t) => jointOf(base(t), 'shoulderL').x, wallX - 26, 5, 70);
     const sh = jointOf(base(top), 'shoulderL');
-    const hands = { handL: pt(wallX - 2.6, sh.y - 2), handR: pt(wallX - 2.6, sh.y - 2) };
+    const hands = {
+      handL: pt(wallX - 2.6, sh.y - 2 + rise),
+      handR: pt(wallX - 2.6, sh.y - 2 + rise),
+    };
     return {
       keys: [
         { ...base(top), reach: hands },
@@ -28,7 +49,7 @@ function supportedPushup(handY: number, wallX?: number): { keys: Pose[]; handX: 
     };
   }
   const top = tune((t) => jointOf(base(t), 'shoulderL').y, handY + 57, 20, 89);
-  const down = tune((t) => jointOf(base(t), 'shoulderL').y, handY + 28, 20, 89);
+  const down = tune((t) => jointOf(base(t), 'shoulderL').y, handY + lower, 20, 89);
   const sh = jointOf(base(top), 'shoulderL');
   const hands = { handL: pt(sh.x + 6, handY + PALM_Y), handR: pt(sh.x + 6, handY + PALM_Y) };
   return {
@@ -106,8 +127,9 @@ export const UPPER2: Record<string, MovementFactory> = {
     });
   },
 
-  'pompe-inclinee': () => {
-    const top = 44;
+  'pompe-inclinee': (variant) => {
+    const onTable = hasRig(variant, 'table');
+    const top = onTable ? 76 : 44;
     const { keys, handX } = supportedPushup(top);
     return move({
       key: 'pompe-inclinee',
@@ -117,13 +139,13 @@ export const UPPER2: Record<string, MovementFactory> = {
       view: 'profil',
       muscles: ['pectoraux', 'triceps'],
       guides: { path: 'neck', back: true },
-      scene: bench(handX - 20, handX + 40, top),
+      scene: onTable ? table(handX - 16, handX + 46, top) : bench(handX - 20, handX + 40, top),
       keys,
       ms: [1100, 1000],
     });
   },
 
-  'pompe-declinee': () => {
+  'pompe-declinee': (variant) => {
     const feet = 42;
     const base = (trunk: number) =>
       pose({ trunk, ankle: trunk - 100, anchor: on('toeL', 0, feet), grip: 'paume' });
@@ -139,7 +161,10 @@ export const UPPER2: Record<string, MovementFactory> = {
       view: 'profil',
       muscles: ['pectoraux', 'epaules', 'triceps'],
       guides: { path: 'neck', back: true },
-      scene: [...bench(-40, 14, feet), ...mat(sh.x - 20, sh.x + 30)],
+      scene: [
+        ...(hasRig(variant, 'chaise') ? chair(-36, 14, feet, -1) : bench(-40, 14, feet)),
+        ...mat(sh.x - 20, sh.x + 30),
+      ],
       keys: [
         { ...base(topT), reach: hands },
         { ...base(downT), reach: hands },
@@ -406,7 +431,7 @@ export const UPPER2: Record<string, MovementFactory> = {
     });
   },
 
-  'rowing-assis': () => {
+  'rowing-assis': (variant) => {
     const feetAt = jointOf(seatedFloor(), 'toeL');
     const sh = jointOf(seatedFloor({ trunk: 8 }), 'shoulderL');
     return move({
@@ -418,7 +443,17 @@ export const UPPER2: Record<string, MovementFactory> = {
       muscles: ['dos', 'biceps'],
       guides: { path: 'handL', back: true },
       grip: 'neutre',
-      scene: [...band({ joint: 'handL' }, feetAt), ...mat(-30, 100)],
+      scene: hasRig(variant, 'poulie-basse')
+        ? [
+            ...pulley(feetAt.x + 34, pt(feetAt.x + 10, 12), { joint: 'handL' }, 64, 'poulie'),
+            item('poulie', {
+              kind: 'pad',
+              a: pt(feetAt.x + 3, 4),
+              b: pt(feetAt.x + 3, 24),
+              r: 2.4,
+            }),
+          ]
+        : [...band({ joint: 'handL' }, feetAt), ...mat(-30, 100)],
       keys: [
         seatedFloor({
           trunk: 12,
@@ -447,7 +482,7 @@ export const UPPER2: Record<string, MovementFactory> = {
       muscles: ['epaules', 'dos'],
       guides: { path: 'handL' },
       grip: 'pronation',
-      scene: [...band({ joint: 'handL' }, anchor), ...wall(anchor.x + 2, 1)],
+      scene: [...band({ joint: 'handL' }, anchor), ...anchorAt(anchor)],
       keys: [
         pose({
           anchor: FEET,
@@ -522,7 +557,7 @@ export const UPPER2: Record<string, MovementFactory> = {
     });
   },
 
-  'tirage-vertical': () => {
+  'tirage-vertical': (variant) => {
     const seatTop = 46;
     const sit = (trunk: number) =>
       pose({
@@ -541,12 +576,14 @@ export const UPPER2: Record<string, MovementFactory> = {
       view: 'profil',
       muscles: ['dos', 'biceps'],
       guides: { path: 'handL' },
-      scene: [
+      scene: (hasRig(variant, 'machine')
+        ? (s: SceneItem[]) => retag(s, 'poulie', 'machine')
+        : (s: SceneItem[]) => s)([
         ...pulley(-30, wheel, { joint: 'handL' }, 216, 'poulie'),
         item('poulie', { kind: 'pad', a: pt(-14, seatTop - 3), b: pt(22, seatTop - 3), r: 3 }),
         item('poulie', { kind: 'frame', a: pt(4, 0.8), b: pt(4, seatTop - 6), r: 1.8 }),
         item('poulie', { kind: 'pad', a: pt(14, seatTop + 22), b: pt(30, seatTop + 22), r: 3 }),
-      ],
+      ]),
       keys: [
         {
           ...sit(-6),
@@ -605,7 +642,7 @@ export const UPPER2: Record<string, MovementFactory> = {
       ms: [1400, 1400],
     }),
 
-  'elevation-frontale': () => {
+  'elevation-frontale': (variant) => {
     const toe = jointOf(pose({ anchor: FEET }), 'toeL');
     return move({
       key: 'elevation-frontale',
@@ -616,7 +653,10 @@ export const UPPER2: Record<string, MovementFactory> = {
       muscles: ['epaules'],
       guides: { path: 'handL' },
       grip: 'pronation',
-      scene: band({ joint: 'handL' }, pt(toe.x - 6, 1)),
+      scene: hasRig(variant, 'poulie-dos')
+        ? // Dos à la poulie basse : le câble part derrière le mannequin.
+          pulley(-46, pt(-38, 12), { joint: 'handL' }, 110)
+        : band({ joint: 'handL' }, pt(toe.x - 6, 1)),
       keys: [
         pose({ shoulderL: 4, elbowL: 2, anchor: FEET }),
         pose({ shoulderL: 90, elbowL: 2, anchor: FEET }),
@@ -708,7 +748,7 @@ export const UPPER2: Record<string, MovementFactory> = {
     });
   },
 
-  'extension-triceps-bas': () => {
+  'extension-triceps-bas': (variant) => {
     const stand = pose({ trunk: 8, anchor: FEET });
     const sh = jointOf(stand, 'shoulderL');
     const wheel = pt(sh.x + 26, 200);
@@ -721,7 +761,9 @@ export const UPPER2: Record<string, MovementFactory> = {
       muscles: ['triceps'],
       guides: { path: 'handL' },
       grip: 'pronation',
-      scene: pulley(sh.x + 26, wheel, { joint: 'handL' }, 206),
+      scene: hasRig(variant, 'elastique-ancre-haut')
+        ? [...band({ joint: 'handL' }, wheel), ...anchorAt(wheel)]
+        : pulley(sh.x + 26, wheel, { joint: 'handL' }, 206),
       keys: [
         pose({ trunk: 8, shoulder: 10, elbow: 100, anchor: FEET }),
         pose({ trunk: 8, shoulder: 10, elbow: 6, anchor: FEET }),

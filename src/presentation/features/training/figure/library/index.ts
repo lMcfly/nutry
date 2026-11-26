@@ -16,9 +16,12 @@ import { MACHINES } from './machines';
 import { MOBILITY } from './mobility';
 import { UPPER } from './upper';
 import { UPPER2 } from './upper2';
+import { VARIANTS } from './variants';
+import { applyGenericRigs } from './rigs';
+import type { Load, LoadKind } from '../equipment';
 import type { Alias, MovementDef, MovementFactory, Variant } from './types';
 
-export type { Alias, MovementDef, Variant } from './types';
+export type { Alias, EquipmentOverride, MovementDef, Rig, Variant } from './types';
 
 export const MOVEMENTS: Readonly<Record<string, MovementFactory>> = {
   ...LEGS,
@@ -29,6 +32,7 @@ export const MOVEMENTS: Readonly<Record<string, MovementFactory>> = {
   ...CORE2,
   ...MOBILITY,
   ...MACHINES,
+  ...VARIANTS,
 };
 
 export const ALIASES: Readonly<Record<string, Alias>> = {
@@ -40,6 +44,7 @@ export const ALIASES: Readonly<Record<string, Alias>> = {
   },
   'traction-supination': {
     base: 'traction',
+    variant: { equipmentOverride: { grip: 'supination' } },
     label: 'Traction en supination',
     description:
       'Traction en supination : suspendu à la barre paumes tournées vers soi, mains à largeur d’épaules, on tire jusqu’au menton au-dessus de la barre, puis on redescend.',
@@ -59,12 +64,14 @@ export const ALIASES: Readonly<Record<string, Alias>> = {
   },
   'tirage-vertical-machine': {
     base: 'tirage-vertical',
+    variant: { equipmentOverride: { rig: 'machine' } },
     label: 'Tirage vertical à la machine',
     description:
       'Tirage vertical à la machine : assis, cuisses calées, mains aux poignées hautes, on tire vers le haut de la poitrine en abaissant les coudes, puis on remonte.',
   },
   'hip-thrust-machine': {
     base: 'hip-thrust',
+    variant: { equipmentOverride: { rig: 'machine', load: null } },
     label: 'Hip thrust à la machine',
     description:
       'Hip thrust à la machine : haut du dos contre l’appui, charge sur les hanches, on pousse le bassin vers le haut jusqu’à l’horizontale, puis on redescend.',
@@ -97,13 +104,31 @@ export function hasMovement(key: string): boolean {
   return key in MOVEMENTS || key in ALIASES;
 }
 
+function loadsFor(def: MovementDef, load: Load | LoadKind | null): Load[] {
+  if (load === null) return [];
+  if (typeof load !== 'string') return [load];
+  const held = def.loads ?? [];
+  return held.length > 0 ? held.map((l) => ({ ...l, kind: load })) : [{ kind: load, at: 'hands' }];
+}
+
 /** Dessin d'un mouvement (ou d'un alias), avec sa variante. `undefined` si la clé est inconnue. */
 export function resolveMovement(key: string, variant: Variant = {}): MovementDef | undefined {
   const alias = ALIASES[key];
   const factory = MOVEMENTS[alias ? alias.base : key];
   if (!factory) return undefined;
   const merged: Variant = { ...alias?.variant, ...variant };
-  const base = factory(merged);
+  const made = applyGenericRigs(factory(merged), merged);
+  const load = merged.equipmentOverride?.load;
+  const loaded: MovementDef = load === undefined ? made : { ...made, loads: loadsFor(made, load) };
+  const kinds = merged.equipment;
+  // Le matériel de l'exercice borne le dessin : rien n'est montré qui n'y soit pas.
+  const base: MovementDef = kinds
+    ? {
+        ...loaded,
+        scene: (loaded.scene ?? []).filter((it) => kinds.includes(it.equipment)),
+        loads: (loaded.loads ?? []).filter((l) => kinds.includes(l.kind)),
+      }
+    : loaded;
   const def: MovementDef = alias
     ? { ...base, key, label: alias.label, description: alias.description }
     : base;

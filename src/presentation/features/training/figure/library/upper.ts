@@ -1,5 +1,6 @@
 /** Haut du corps : poussées, tirages, bras. */
-import { mat, pullupFrame } from './scene';
+import { band, chair, item, mat, pulley, pullupFrame } from './scene';
+import { hasRig } from './rigs';
 import { jointOf, move } from './build';
 import { ANKLE_Y, PALM_Y, ground, on, pose, pt } from './pose';
 import { tune } from './tune';
@@ -21,7 +22,7 @@ function pushupKeys(base: (trunk: number) => ReturnType<typeof pose>, upHeight: 
 }
 
 export const UPPER: Record<string, MovementFactory> = {
-  pompe: () =>
+  pompe: (variant) =>
     move({
       key: 'pompe',
       guides: { path: 'neck', back: true },
@@ -31,7 +32,23 @@ export const UPPER: Record<string, MovementFactory> = {
         'Pompe : en planche haute, mains sous les épaules, corps aligné de la tête aux talons, on fléchit les coudes pour descendre la poitrine près du sol, puis on pousse.',
       view: 'profil',
       muscles: ['pectoraux', 'triceps'],
-      scene: mat(-10, 140),
+      scene: [
+        ...mat(-10, 140),
+        // Élastique passé dans le haut du dos, extrémités tenues sous les mains.
+        ...(hasRig(variant, 'elastique-dos')
+          ? [
+              item(
+                'elastique',
+                {
+                  kind: 'band',
+                  a: { joint: 'handL' },
+                  b: { joint: 'neck', seg: 'torso', along: -2, front: -9 },
+                },
+                true,
+              ),
+            ]
+          : []),
+      ],
       keys: pushupKeys((trunk) => pose({ trunk, ankle: trunk - 78, anchor: on('toeL', 0, 0) }), 60),
       ms: [1200, 1000],
     }),
@@ -90,7 +107,7 @@ export const UPPER: Record<string, MovementFactory> = {
       ms: [1100, 1400],
     }),
 
-  'rowing-unilateral': () => {
+  'rowing-unilateral': (variant) => {
     // Fente courte, main libre en appui sur la cuisse avant, dos plat.
     const base = {
       trunk: 68,
@@ -102,7 +119,10 @@ export const UPPER: Record<string, MovementFactory> = {
       anchor: feet,
     };
     const knee = jointOf(pose(base), 'kneeR');
-    const support = pt(knee.x - 6, knee.y + 9);
+    // Main libre sur la cuisse avant, ou sur l'assise d'une chaise placée devant.
+    const seat = 45;
+    const onChair = hasRig(variant, 'chaise');
+    const support = onChair ? pt(knee.x + 10, seat + 3) : pt(knee.x - 6, knee.y + 9);
     return move({
       key: 'rowing-unilateral',
       guides: { path: 'handL', back: true },
@@ -112,6 +132,7 @@ export const UPPER: Record<string, MovementFactory> = {
         'Rowing un bras : buste penché dos plat, une main en appui sur la cuisse avant, on tire l’haltère vers la hanche, coude près du corps, puis on redescend bras tendu.',
       view: 'profil',
       muscles: ['dos', 'biceps'],
+      scene: onChair ? chair(support.x - 14, support.x + 16, seat, 1) : [],
       loads: [{ kind: 'halteres', at: 'handL' }],
       keys: [
         pose({ ...base, shoulderL: 70, elbowL: 4, reach: { handR: support } }),
@@ -122,7 +143,7 @@ export const UPPER: Record<string, MovementFactory> = {
     });
   },
 
-  traction: () => {
+  traction: (variant) => {
     const barY = 214;
     const grip = { handL: pt(27, barY), handR: pt(-27, barY) };
     const hang = { hip: 1, knee: 2 };
@@ -135,7 +156,13 @@ export const UPPER: Record<string, MovementFactory> = {
         'Traction : suspendu à la barre bras tendus, mains un peu plus larges que les épaules, on tire les coudes vers les côtes jusqu’à passer le menton au-dessus de la barre, puis on redescend.',
       view: 'face',
       muscles: ['dos', 'biceps'],
-      scene: pullupFrame(barY, 50),
+      scene: [
+        ...pullupFrame(barY, 50),
+        // Élastique noué à la barre, genou passé dans la boucle.
+        ...(hasRig(variant, 'elastique-assistance')
+          ? band(pt(-4, barY - 1), { joint: 'kneeL' })
+          : []),
+      ],
       keys: [
         pose({ ...hang, anchor: on('pelvis', 0, barY - 103), reach: grip }),
         pose({ ...hang, neck: -6, anchor: on('pelvis', 0, barY - 60), reach: grip }),
@@ -145,7 +172,7 @@ export const UPPER: Record<string, MovementFactory> = {
     });
   },
 
-  curl: () =>
+  curl: (variant) =>
     move({
       key: 'curl',
       guides: { path: 'handL' },
@@ -155,6 +182,7 @@ export const UPPER: Record<string, MovementFactory> = {
         'Curl biceps : debout, coudes collés au corps, on fléchit les avant-bras pour monter les haltères vers les épaules, puis on redescend lentement.',
       view: 'profil',
       muscles: ['biceps'],
+      scene: hasRig(variant, 'poulie-basse') ? pulley(62, pt(54, 12), { joint: 'handL' }, 100) : [],
       loads: [{ kind: 'halteres', at: 'hands' }],
       keys: [
         pose({ shoulder: 2, elbow: 8, anchor: feet }),

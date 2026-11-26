@@ -140,5 +140,17 @@ export const MOVEMENT_KEYS = [
   'hack-squat',
   'squat-smith',
   'releve-genoux-chaise',
+  'elevation-laterale-poulie',
+  'curl-sous-table',
+  'curl-ischio-sliders',
+  'curl-incline',
+  'crunch-swiss-ball',
+  'planche-swiss-ball',
+  'ecarte-sol',
+  'tirage-vertical-serviette',
+  'tirage-vertical-elastique',
+  'extension-triceps-mur',
+  'extension-triceps-table',
+  'squat-sumo',
 ] as const;
 export type MovementKey = (typeof MOVEMENT_KEYS)[number];

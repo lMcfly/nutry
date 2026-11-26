@@ -164,3 +164,18 @@ export const machine = {
   cable: (a: Ref, b: Ref): SceneItem => item('machine', { kind: 'cable', a, b }, true),
   wheel: (c: Point, r = 3.2): SceneItem => item('machine', { kind: 'wheel', c, r }),
 };
+
+/** Table ou plan de travail, vu de profil : plateau de `x0` à `x1`, dessus à `h`. */
+export const table = (x0: number, x1: number, h: number): SceneItem[] => [
+  item('table', { kind: 'table', x0, x1, h }),
+];
+
+/** Point d'ancrage d'un élastique (porte, montant) à `at`. */
+export const anchorAt = (at: Ref): SceneItem[] => [item('elastique', { kind: 'anchor', at })];
+
+/** Change le type de matériel de pièces déjà composées (même dessin, autre matériel). */
+export const retag = (
+  items: readonly SceneItem[],
+  from: EquipmentKind,
+  to: EquipmentKind,
+): SceneItem[] => items.map((it) => (it.equipment === from ? { ...it, equipment: to } : it));

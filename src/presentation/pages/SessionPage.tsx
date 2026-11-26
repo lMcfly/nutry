@@ -42,6 +42,7 @@ import { Nutry } from '../features/companion/Nutry';
 import { AlternativesSheet } from '../features/training/AlternativesSheet';
 import type { BodyId } from '../features/training/figure/body';
 import { ExerciseFigure } from '../features/training/figure/ExerciseFigure';
+import { figureOf } from '../features/training/figure/exerciseFigure';
 import { bodyFor, figureMuscles, setsSpoken, setsText } from '../features/training/format';
 import { SetTracker } from '../features/training/SetTracker';
 import { TimerRing } from '../features/training/TimerRing';
@@ -492,7 +493,7 @@ function ActiveSession({ initial, body }: ActiveSessionProps) {
         <div className={styles.figureCol}>
           {exercise && (
             <ExerciseFigure
-              movement={exercise.movement}
+              {...figureOf(exercise)}
               body={body}
               highlight={figureMuscles(exercise)}
               size="l"

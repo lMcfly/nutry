@@ -1,5 +1,6 @@
 /** Jambes et fessiers (suite) : quatre pattes, couché sur le côté, charnières, unilatéral. */
-import { band, bench, machine, mat, pulley } from './scene';
+import { band, bench, chair, item, mat, pulley, wall } from './scene';
+import { hasRig } from './rigs';
 import { jointOf, move } from './build';
 import { FEET, offset, prone, quad, supine, torsoFrame } from './helpers';
 import { ANKLE_Y, KNEE_Y, ground, on, pose, pt } from './pose';
@@ -214,7 +215,7 @@ export const LEGS2: Record<string, MovementFactory> = {
     });
   },
 
-  'squat-bulgare': () => {
+  'squat-bulgare': (variant) => {
     const benchTop = 44;
     const rear = { ankleR: pt(-62, benchTop + 5) };
     return move({
@@ -226,7 +227,7 @@ export const LEGS2: Record<string, MovementFactory> = {
       muscles: ['quadriceps', 'fessiers'],
       guides: { path: 'pelvis' },
       grip: 'neutre',
-      scene: bench(-90, -48, benchTop),
+      scene: hasRig(variant, 'chaise') ? chair(-90, -50, benchTop, -1) : bench(-90, -48, benchTop),
       loads: [{ kind: 'halteres', at: 'hands' }],
       keys: [
         pose({
@@ -288,8 +289,10 @@ export const LEGS2: Record<string, MovementFactory> = {
       ms: [1500, 1300],
     }),
 
-  'good-morning': () =>
-    move({
+  'good-morning': (variant) => {
+    const bottom = barOnBack({ trunk: 70, hip: 84, knee: 16, neck: -28, anchor: FEET });
+    const hips = jointOf(bottom, 'pelvis');
+    return move({
       key: 'good-morning',
       label: 'Good morning',
       description:
@@ -297,13 +300,13 @@ export const LEGS2: Record<string, MovementFactory> = {
       view: 'profil',
       muscles: ['ischio-jambiers', 'lombaires'],
       guides: { path: 'neck', back: true },
+      // Charnière au mur : le bout des fesses vient toucher le mur, derrière soi.
+      scene: hasRig(variant, 'mur') ? wall(hips.x - 12.5, -1) : [],
       loads: [{ kind: 'barre', at: 'back' }],
-      keys: [
-        barOnBack({ anchor: FEET }),
-        barOnBack({ trunk: 70, hip: 84, knee: 16, neck: -28, anchor: FEET }),
-      ],
+      keys: [barOnBack({ anchor: FEET }), bottom],
       ms: [1400, 1200],
-    }),
+    });
+  },
 
   arabesque: () =>
     move({
@@ -355,7 +358,22 @@ export const LEGS2: Record<string, MovementFactory> = {
       view: 'profil',
       muscles: ['ischio-jambiers'],
       guides: { path: 'neck', back: true },
-      scene: [...mat(-60, 110), machine.roller({ joint: 'ankleL', dy: 7 }, 3.6)],
+      scene: [
+        ...mat(-60, 110),
+        // Chevilles calées sous un meuble lourd (ou tenues par un partenaire).
+        item('table', {
+          kind: 'frame',
+          a: { joint: 'ankleL', dx: -14, dy: 8 },
+          b: { joint: 'ankleL', dx: 12, dy: 8 },
+          r: 2.6,
+        }),
+        item('table', {
+          kind: 'frame',
+          a: { joint: 'ankleL', dx: 12, dy: 8 },
+          b: { joint: 'ankleL', dx: 12, dy: -6 },
+          r: 2.2,
+        }),
+      ],
       keys: [kneel(0), kneel(58)],
       ms: [2200, 1200],
     });
@@ -374,6 +392,7 @@ export const LEGS2: Record<string, MovementFactory> = {
       guides: { path: 'ankleL' },
       grip: 'plat',
       scene: [
+        ...mat(-84, 110),
         {
           equipment: 'swiss-ball',
           prop: { kind: 'ball', c: { joint: 'ankleL', dx: 6, dy: -32 }, r: 30 },
